@@ -1,0 +1,6 @@
+node_modules
+.env*.csv
+.DS_Store
+prisma/src
+prisma/prisma
+src/schema/generated

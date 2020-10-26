@@ -1,0 +1,39 @@
+// This is your Prisma schema file,
+// learn more about it in the docs https//pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["transactionApi", "connectOrCreate", "atomicNumberOperations"]
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Gender {
+  Female
+  Male
+  Other
+}
+
+model User {
+  id             String         @id @default(cuid())
+  username       String         @unique
+  email          String         @unique
+  firstName      String?        @default("")
+  lastName       String?        @default("")
+  birthdate      DateTime?
+  gender         Gender?
+  score          Int            @default(0)
+  phoneNumber    Int?
+  teamId         String?
+  picture        String?        @default("")
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}

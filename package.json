@@ -1,0 +1,63 @@
+{
+  "name": "prisma-nexus-boilerplote",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "postinstall": "yarn run generate",
+    "predev": "yarn run generate:prisma",
+    "dev": "cross-env NODE_ENV=development tsnd --no-notify --respawn --transpileOnly ./src",
+    "prebuild": "yarn run clean && yarn run generate",
+    "build": "tsc",
+    "seed": "ts-node prisma/seed.ts",
+    "clean": "rimraf dist",
+    "generate": "yarn run generate:prisma && yarn run generate:nexus",
+    "generate:prisma": "prisma generate",
+    "generate:nexus": "ts-node --transpile-only ./src/schema",
+    "start": "cross-env NODE_ENV=production node dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/giva9712/prisma-nexus-boilerplate.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/giva9712/prisma-nexus-boilerplate/issues"
+  },
+  "homepage": "https://github.com/giva9712/prisma-nexus-boilerplate#readme",
+  "dependencies": {
+    "@nexus/schema": "^0.15.0",
+    "apollo-errors": "^1.9.0",
+    "dotenv-flow": "^3.2.0",
+    "graphql-shield": "^7.3.3",
+    "graphql-yoga": "^1.18.3",
+    "jsonwebtoken": "^8.5.1",
+    "jwk-to-pem": "^2.0.4",
+    "moment-timezone": "^0.5.31",
+    "nexus-plugin-prisma": "^0.18.2"
+  },
+  "devDependencies": {
+    "@types/dotenv-flow": "^3.1.0",
+    "@types/jsonwebtoken": "8.5.0",
+    "@types/node": "12.12.54",
+    "@types/ws": "7.2.6",
+    "cross-env": "7.0.2",
+    "rimraf": "3.0.2",
+    "ts-node": "8.10.2",
+    "ts-node-dev": "1.0.0-pre.50",
+    "typescript": "3.9.6"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "semi": false,
+    "trailingComma": "all"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "prisma": {
+    "schema": "prisma/schema.prisma"
+  }
+}
