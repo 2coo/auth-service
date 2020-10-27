@@ -1,5 +1,5 @@
-import { config } from 'dotenv'
-config()
+// import { config } from 'dotenv-flow'
+// config()
 import { join } from 'path'
 import { makeSchema } from '@nexus/schema'
 import { nexusSchemaPrisma } from 'nexus-plugin-prisma/schema'
