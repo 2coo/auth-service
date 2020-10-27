@@ -1,6 +1,30 @@
-node_modules
-.env*.csv
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
 .DS_Store
+.env
+.env.*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# runtime types
 prisma/src
 prisma/prisma
 src/schema/generated
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
