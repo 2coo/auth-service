@@ -11,237 +11,186 @@ generator client {
   previewFeatures = ["transactionApi", "connectOrCreate", "atomicNumberOperations"]
 }
 
-enum GrantType {
-  AUTHORIZATION_CODE
-  PASSWORD
-  REFRESH_TOKEN
-  CLIENT_CREDENTIALS
-  EXTENSION
-}
-
-model oAuthClient {
-  id                   String                   @id @default(uuid())
-  name                 String                   @unique
-  secret               String
-  grants               oAuthClientGrants[]
-  redirectUris         oAuthRedirectURI[]
-  javascriptOrigins    oAuthJavascriptOrigins[]
-  scopes               oAuthClientScope[]
-  accessTokens         oAuthAccessToken[]
-  authorizationCodes   oAuthAuthorizationCode[]
-  refreshTokens        oAuthRefreshToken[]
-  refreshTokenLifetime Int                      @default(43200)
-  accessTokenLifetime  Int                      @default(60)
-  idTokenLifetime      Int                      @default(5)
-  createdAt            DateTime                 @default(now())
-  updatedAt            DateTime                 @updatedAt
-}
-
-model oAuthScope {
-  id                 String                        @id @default(uuid())
-  name               String
-  description        String?
-  clients            oAuthClientScope[]
-  accessTokens       oAuthAccessTokenScope[]
-  authorizationCodes oAuthAuthorizationCodeScope[]
-  refreshTokenScope  oAuthRefreshTokenScope[]
-  createdAt          DateTime                      @default(now())
-  updatedAt          DateTime                      @updatedAt
-}
-
-model oAuthClientScope {
-  id            String      @id @default(uuid())
-  client        oAuthClient @relation(fields: [oAuthClientId], references: [id])
-  scope         oAuthScope  @relation(fields: [oAuthScopeId], references: [id])
-  oAuthClientId String
-  oAuthScopeId  String
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-}
-
-model oAuthClientGrants {
-  id            String      @id @default(uuid())
-  client        oAuthClient @relation(fields: [oAuthClientId], references: [id])
-  grant         oAuthGrant  @relation(fields: [oAuthGrantId], references: [id])
-  oAuthClientId String
-  oAuthGrantId  String
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-}
-
-model oAuthGrant {
-  id        String              @id @default(uuid())
-  grantType GrantType
-  clients   oAuthClientGrants[]
-  createdAt DateTime            @default(now())
-  updatedAt DateTime            @updatedAt
-}
-
-model oAuthRedirectURI {
-  id            String      @id @default(uuid())
-  client        oAuthClient @relation(fields: [oAuthClientId], references: [id])
-  oAuthClientId String
-  url           String
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-}
-
-model oAuthJavascriptOrigins {
-  id            String      @id @default(uuid())
-  client        oAuthClient @relation(fields: [oAuthClientId], references: [id])
-  oAuthClientId String
-  uri           String
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-}
-
-model oAuthResourceServer {
-  id         String             @id @default(uuid())
-  name       String
-  identifier String             @unique
-  scopes     oAuthCustomScope[]
-  createdAt  DateTime           @default(now())
-  updatedAt  DateTime           @updatedAt
-}
-
-model oAuthCustomScope {
-  id                    String              @id @default(uuid())
-  name                  String
-  description           String?
-  resourceServer        oAuthResourceServer @relation(fields: [oAuthResourceServerId], references: [id])
-  oAuthResourceServerId String
-  createdAt             DateTime            @default(now())
-  updatedAt             DateTime            @updatedAt
-}
-
-model oAuthAccessTokenScope {
-  id                 String           @id @default(uuid())
-  accessToken        oAuthAccessToken @relation(fields: [oAuthAccessTokenId], references: [id])
-  scope              oAuthScope       @relation(fields: [oAuthScopeId], references: [id])
-  oAuthAccessTokenId String
-  oAuthScopeId       String
-  createdAt          DateTime         @default(now())
-  updatedAt          DateTime         @updatedAt
-}
-
-// Authentication
-
-model oAuthAccessToken {
-  id            String                  @id @default(uuid())
-  accessToken   String
-  expireTime    DateTime
-  scopes        oAuthAccessTokenScope[]
-  user          User                    @relation(fields: [userId], references: [id])
-  userId        String
-  client        oAuthClient             @relation(fields: [oAuthClientId], references: [id])
-  oAuthClientId String
-  createdAt     DateTime                @default(now())
-  updatedAt     DateTime                @updatedAt
-}
-
-model oAuthRefreshTokenScope {
-  id                  String            @id @default(uuid())
-  refreshToken        oAuthRefreshToken @relation(fields: [oAuthRefreshTokenId], references: [id])
-  scope               oAuthScope        @relation(fields: [oAuthScopeId], references: [id])
-  oAuthRefreshTokenId String
-  oAuthScopeId        String
-  createdAt           DateTime          @default(now())
-  updatedAt           DateTime          @updatedAt
-}
-
-model oAuthRefreshToken {
-  id            String                   @id @default(uuid())
-  refreshToken  String
-  expireTime    DateTime
-  scopes        oAuthRefreshTokenScope[]
-  user          User                     @relation(fields: [userId], references: [id])
-  userId        String
-  client        oAuthClient              @relation(fields: [oAuthClientId], references: [id])
-  oAuthClientId String
-  createdAt     DateTime                 @default(now())
-  updatedAt     DateTime                 @updatedAt
-}
-
-model oAuthAuthorizationCodeScope {
-  id                       String                 @id @default(uuid())
-  authorizationCode        oAuthAuthorizationCode @relation(fields: [oAuthAuthorizationCodeId], references: [id])
-  scope                    oAuthScope             @relation(fields: [oAuthScopeId], references: [id])
-  oAuthAuthorizationCodeId String
-  oAuthScopeId             String
-  createdAt                DateTime               @default(now())
-  updatedAt                DateTime               @updatedAt
-}
-
-model oAuthAuthorizationCode {
-  id            String                        @id @default(uuid())
-  code          String
-  expiresAt     DateTime
-  redirectURI   String
-  scopes        oAuthAuthorizationCodeScope[]
-  user          User                          @relation(fields: [userId], references: [id])
-  userId        String
-  client        oAuthClient                   @relation(fields: [oAuthClientId], references: [id])
-  oAuthClientId String
-  createdAt     DateTime                      @default(now())
-  updatedAt     DateTime                      @updatedAt
-}
-
 enum Gender {
   FEMALE
   MALE
   OTHER
 }
 
-enum SystemRole {
-  SUPER_ADMIN
-  ADMIN
-  DEVELOPER
+enum OwnerType {
+  CLIENT
   USER
 }
 
-model Group {
-  id          String       @id @default(uuid())
-  name        String
-  description String?
-  users       UserGroups[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+enum SystemRole {
+    SUPER_ADMIN
+    ADMIN
+    DEVELOPER
+    EMPLOYEE
 }
 
-model UserGroups {
-  id            String   @id @default(uuid())
-  user          User     @relation(fields: [systemUserId], references: [id])
-  group         Group    @relation(fields: [systemGroupId], references: [id])
-  systemUserId  String
-  systemGroupId String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+model oAuthScope {
+  id                String                  @id @default(uuid())
+  scope             String
+  description       String
+  isDefault         Boolean                 @default(false)
+  oAuthGrants       oAuthGrantScope[]
+  oAuthClients      oAuthClientScope[]
+  oAuthSessions     oAuthSessionScopes[]
+  oAuthAuthcodes    oAuthAuthCodeScopes[]
+  oAuthAccessTokens oAuthAccessTokenScope[]
+  createdAt         DateTime                @default(now())
+  updatedAt         DateTime                @updatedAt
+}
+
+model oAuthGrant {
+  id           String             @id @default(uuid())
+  oAuthScopes  oAuthGrantScope[]
+  oAuthClients oAuthClientGrant[]
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+}
+
+model oAuthGrantScope {
+  id           String     @id @default(uuid())
+  oAuthScope   oAuthScope @relation(fields: [oAuthScopeId], references: [id])
+  oAuthScopeId String
+  oAuthGrant   oAuthGrant @relation(fields: [oAuthGrantId], references: [id])
+  oAuthGrantId String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model oAuthClient {
+  id             String                @id @default(uuid())
+  name           String
+  secret         String
+  oAuthEndpoints oAuthClientEndpoint[]
+  oAuthScopes    oAuthClientScope[]
+  oAuthGrants    oAuthClientGrant[]
+  oAuthSessions  oAuthSession[]
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
+}
+
+model oAuthClientEndpoint {
+  id            String      @id @default(uuid())
+  oAuthClient   oAuthClient @relation(fields: [oAuthClientId], references: [id])
+  oAuthClientId String
+  redirectUri   String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model oAuthClientScope {
+  id            String      @id @default(uuid())
+  oAuthScope    oAuthScope  @relation(fields: [oAuthScopeId], references: [id])
+  oAuthClient   oAuthClient @relation(fields: [oAuthClientId], references: [id])
+  oAuthScopeId  String
+  oAuthClientId String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model oAuthClientGrant {
+  id            String      @id @default(uuid())
+  oAuthGrant    oAuthGrant  @relation(fields: [oAuthGrantId], references: [id])
+  oAuthClient   oAuthClient @relation(fields: [oAuthClientId], references: [id])
+  oAuthClientId String
+  oAuthGrantId  String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model oAuthSession {
+  id                String               @id @default(uuid())
+  oAuthClient       oAuthClient          @relation(fields: [oAuthClientId], references: [id])
+  oAuthClientId     String
+  ownerType         OwnerType            @default(USER)
+  ownerId           String
+  clientRedirectUri String
+  oAuthScopes       oAuthSessionScopes[]
+  oAuthAuthcodes    oAuthAuthCode[]
+  oAuthAccessTokens oAuthAccessToken[]
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
+}
+
+model oAuthSessionScopes {
+  id             String       @id @default(uuid())
+  oAuthSession   oAuthSession @relation(fields: [oAuthSessionId], references: [id])
+  oAuthSessionId String
+  oAuthScope     oAuthScope   @relation(fields: [oAuthScopeId], references: [id])
+  oAuthScopeId   String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model oAuthAuthCode {
+  id             String                @id @default(uuid())
+  oAuthSession   oAuthSession          @relation(fields: [oAuthSessionId], references: [id])
+  redirectUri    String
+  expireTime     Int
+  oAuthSessionId String
+  oAuthScopes    oAuthAuthCodeScopes[]
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
+}
+
+model oAuthAuthCodeScopes {
+  id              String        @id @default(uuid())
+  oAuthAuthcode   oAuthAuthCode @relation(fields: [oAuthAuthCodeId], references: [id])
+  oAuthScope      oAuthScope    @relation(fields: [oAuthScopeId], references: [id])
+  oAuthAuthCodeId String
+  oAuthScopeId    String
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+model oAuthAccessToken {
+  id                 String                  @id @default(uuid())
+  oAuthSessionId     String
+  oAuthSession       oAuthSession            @relation(fields: [oAuthSessionId], references: [id])
+  expireTime         Int
+  oAuthScopes        oAuthAccessTokenScope[]
+  oAuthRefreshTokens oAuthRefreshToken[]
+  createdAt          DateTime                @default(now())
+  updatedAt          DateTime                @updatedAt
+}
+
+model oAuthAccessTokenScope {
+  id                 String           @id @default(uuid())
+  oAuthAccessToken   oAuthAccessToken @relation(fields: [oAuthAccessTokenId], references: [id])
+  oAuthScope         oAuthScope       @relation(fields: [oAuthScopeId], references: [id])
+  oAuthAccessTokenId String
+  oAuthScopeId       String
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+}
+
+model oAuthRefreshToken {
+  id                 String           @id @default(uuid())
+  oauthAccessToken   oAuthAccessToken @relation(fields: [oAuthAccessTokenId], references: [id])
+  oAuthAccessTokenId String
+  expireTime         Int
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
 }
 
 model User {
-  id                     String                   @id @default(uuid())
-  email                  String                   @unique
-  username               String                   @unique @default(cuid())
-  email_verified         Boolean                  @default(false)
-  email_verified_at      DateTime?
-  isDisabled             Boolean                  @default(false)
-  profile                Profile
-  groups                 UserGroups[]
-  password               String
-  passwordResets         PasswordReset[]
-  role                   SystemRole               @default(USER)
-  oAuthAccessToken       oAuthAccessToken[]
-  oAuthAuthorizationCode oAuthAuthorizationCode[]
-  oAuthRefreshToken      oAuthRefreshToken[]
-  devices                UserDevice[]
-  createdAt              DateTime                 @default(now())
-  updatedAt              DateTime                 @updatedAt
+  id                String          @id @default(uuid())
+  email             String          @unique
+  username          String          @unique @default(cuid())
+  email_verified    Boolean         @default(false)
+  email_verified_at DateTime?
+  password          String
+  passwordResets    PasswordReset[]
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
 }
 
 model Profile {
   id           String    @id @default(uuid())
-  user         User      @relation(fields: [userId], references: [id])
-  userId       String
   firstName    String?   @default("")
   lastName     String?   @default("")
   displayName  String?
@@ -262,18 +211,4 @@ model PasswordReset {
   token     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
-
-model UserDevice {
-  id           String   @id @default(uuid())
-  user         User     @relation(fields: [userId], references: [id])
-  userId       String
-  deviceKey    String
-  name         String?
-  lastIP       String
-  isRemembered Boolean  @default(false)
-  SDK          String?
-  lastSeen     DateTime
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
 }
