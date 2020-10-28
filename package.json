@@ -29,14 +29,26 @@
   "homepage": "https://github.com/giva9712/prisma-nexus-boilerplate#readme",
   "dependencies": {
     "@nexus/schema": "^0.15.0",
+    "@types/bcryptjs": "^2.4.2",
+    "@types/connect-ensure-login": "^0.1.5",
+    "@types/express-session": "^1.17.0",
+    "@types/lodash": "^4.14.162",
+    "@types/oauth2orize": "^1.8.8",
+    "@types/passport": "^1.0.4",
     "apollo-errors": "^1.9.0",
+    "bcryptjs": "^2.4.3",
+    "connect-ensure-login": "^0.1.1",
     "dotenv-flow": "^3.2.0",
+    "express-session": "^1.17.1",
     "graphql-shield": "^7.3.3",
     "graphql-yoga": "^1.18.3",
     "jsonwebtoken": "^8.5.1",
     "jwk-to-pem": "^2.0.4",
+    "lodash": "^4.17.20",
     "moment-timezone": "^0.5.31",
-    "nexus-plugin-prisma": "^0.18.2"
+    "nexus-plugin-prisma": "^0.18.2",
+    "oauth2orize": "^1.11.0",
+    "passport": "^0.4.1"
   },
   "devDependencies": {
     "@types/dotenv-flow": "^3.1.0",

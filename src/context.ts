@@ -4,7 +4,7 @@ import { PubSub } from 'graphql-yoga'
 import { ContextParameters } from 'graphql-yoga/dist/types'
 import { getUserEmail, Token } from './utils'
 
-const prisma = new PrismaClient({
+export const prisma = new PrismaClient({
   datasources: {
     db: {
       url: process.env.DATABASE_URL,

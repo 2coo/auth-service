@@ -33,6 +33,7 @@ model oAuthClient {
   refreshTokenLifetime Int                      @default(43200)
   accessTokenLifetime  Int                      @default(60)
   idTokenLifetime      Int                      @default(5)
+  isTrusted            Boolean                  @default(false)
   createdAt            DateTime                 @default(now())
   updatedAt            DateTime                 @updatedAt
 }
@@ -70,11 +71,11 @@ model oAuthClientGrant {
 }
 
 model oAuthGrant {
-  id        String              @id @default(uuid())
+  id        String             @id @default(uuid())
   grantType GrantType
   clients   oAuthClientGrant[]
-  createdAt DateTime            @default(now())
-  updatedAt DateTime            @updatedAt
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
 }
 
 model oAuthRedirectURI {
@@ -127,16 +128,16 @@ model oAuthAccessTokenScope {
 // Authentication
 
 model oAuthAccessToken {
-  id            String                  @id @default(uuid())
-  accessToken   String
-  expireTime    DateTime
-  scopes        oAuthAccessTokenScope[]
-  user          User                    @relation(fields: [userId], references: [id])
-  userId        String
-  client        oAuthClient             @relation(fields: [oAuthClientId], references: [id])
-  oAuthClientId String
-  createdAt     DateTime                @default(now())
-  updatedAt     DateTime                @updatedAt
+  id             String                  @id @default(uuid())
+  accessToken    String                  @default(uuid())
+  expirationDate DateTime
+  scopes         oAuthAccessTokenScope[]
+  user           User?                   @relation(fields: [userId], references: [id])
+  userId         String?
+  client         oAuthClient             @relation(fields: [oAuthClientId], references: [id])
+  oAuthClientId  String
+  createdAt      DateTime                @default(now())
+  updatedAt      DateTime                @updatedAt
 }
 
 model oAuthRefreshTokenScope {
@@ -150,16 +151,16 @@ model oAuthRefreshTokenScope {
 }
 
 model oAuthRefreshToken {
-  id            String                   @id @default(uuid())
-  refreshToken  String
-  expireTime    DateTime
-  scopes        oAuthRefreshTokenScope[]
-  user          User                     @relation(fields: [userId], references: [id])
-  userId        String
-  client        oAuthClient              @relation(fields: [oAuthClientId], references: [id])
-  oAuthClientId String
-  createdAt     DateTime                 @default(now())
-  updatedAt     DateTime                 @updatedAt
+  id             String                   @id @default(uuid())
+  refreshToken   String                   @default(uuid())
+  expirationDate DateTime
+  scopes         oAuthRefreshTokenScope[]
+  user           User?                     @relation(fields: [userId], references: [id])
+  userId         String?
+  client         oAuthClient              @relation(fields: [oAuthClientId], references: [id])
+  oAuthClientId  String
+  createdAt      DateTime                 @default(now())
+  updatedAt      DateTime                 @updatedAt
 }
 
 model oAuthAuthorizationCodeScope {
@@ -173,17 +174,19 @@ model oAuthAuthorizationCodeScope {
 }
 
 model oAuthAuthorizationCode {
-  id            String                        @id @default(uuid())
-  code          String
-  expiresAt     DateTime
-  redirectURI   String
-  scopes        oAuthAuthorizationCodeScope[]
-  user          User                          @relation(fields: [userId], references: [id])
-  userId        String
-  client        oAuthClient                   @relation(fields: [oAuthClientId], references: [id])
-  oAuthClientId String
-  createdAt     DateTime                      @default(now())
-  updatedAt     DateTime                      @updatedAt
+  id             String                        @id @default(uuid())
+  code           String                        @default(uuid(16))
+  expirationDate DateTime
+  redirectURI    String
+  scopes         oAuthAuthorizationCodeScope[]
+  user           User                          @relation(fields: [userId], references: [id])
+  userId         String
+  client         oAuthClient                   @relation(fields: [oAuthClientId], references: [id])
+  oAuthClientId  String
+  createdAt      DateTime                      @default(now())
+  updatedAt      DateTime                      @updatedAt
+
+  @@unique([code, oAuthClientId])
 }
 
 enum Gender {
@@ -200,12 +203,12 @@ enum SystemRole {
 }
 
 model Group {
-  id          String       @id @default(uuid())
+  id          String      @id @default(uuid())
   name        String
   description String?
   users       UserGroup[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 }
 
 model UserGroup {
