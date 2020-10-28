@@ -23,9 +23,9 @@ model oAuthClient {
   id                   String                   @id @default(uuid())
   name                 String                   @unique
   secret               String
-  grants               oAuthClientGrants[]
+  grants               oAuthClientGrant[]
   redirectUris         oAuthRedirectURI[]
-  javascriptOrigins    oAuthJavascriptOrigins[]
+  javascriptOrigins    oAuthJavascriptOrigin[]
   scopes               oAuthClientScope[]
   accessTokens         oAuthAccessToken[]
   authorizationCodes   oAuthAuthorizationCode[]
@@ -59,7 +59,7 @@ model oAuthClientScope {
   updatedAt     DateTime    @updatedAt
 }
 
-model oAuthClientGrants {
+model oAuthClientGrant {
   id            String      @id @default(uuid())
   client        oAuthClient @relation(fields: [oAuthClientId], references: [id])
   grant         oAuthGrant  @relation(fields: [oAuthGrantId], references: [id])
@@ -72,7 +72,7 @@ model oAuthClientGrants {
 model oAuthGrant {
   id        String              @id @default(uuid())
   grantType GrantType
-  clients   oAuthClientGrants[]
+  clients   oAuthClientGrant[]
   createdAt DateTime            @default(now())
   updatedAt DateTime            @updatedAt
 }
@@ -86,7 +86,7 @@ model oAuthRedirectURI {
   updatedAt     DateTime    @updatedAt
 }
 
-model oAuthJavascriptOrigins {
+model oAuthJavascriptOrigin {
   id            String      @id @default(uuid())
   client        oAuthClient @relation(fields: [oAuthClientId], references: [id])
   oAuthClientId String
@@ -203,12 +203,12 @@ model Group {
   id          String       @id @default(uuid())
   name        String
   description String?
-  users       UserGroups[]
+  users       UserGroup[]
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 }
 
-model UserGroups {
+model UserGroup {
   id            String   @id @default(uuid())
   user          User     @relation(fields: [systemUserId], references: [id])
   group         Group    @relation(fields: [systemGroupId], references: [id])
@@ -226,7 +226,7 @@ model User {
   email_verified_at      DateTime?
   isDisabled             Boolean                  @default(false)
   profile                Profile
-  groups                 UserGroups[]
+  groups                 UserGroup[]
   password               String
   passwordResets         PasswordReset[]
   role                   SystemRole               @default(USER)
