@@ -30,3 +30,4 @@ graphqlServer.start(
       }`,
     ),
 )
+require('./api/')(graphqlServer.express)

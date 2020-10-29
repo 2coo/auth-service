@@ -8,7 +8,7 @@ datasource db {
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["transactionApi", "connectOrCreate", "atomicNumberOperations"]
+  previewFeatures = ["transactionApi", "connectOrCreate"]
 }
 
 enum GrantType {
@@ -51,23 +51,25 @@ model oAuthScope {
 }
 
 model oAuthClientScope {
-  id            String      @id @default(uuid())
   client        oAuthClient @relation(fields: [oAuthClientId], references: [id])
   scope         oAuthScope  @relation(fields: [oAuthScopeId], references: [id])
   oAuthClientId String
   oAuthScopeId  String
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
+
+  @@id([oAuthClientId, oAuthScopeId])
 }
 
 model oAuthClientGrant {
-  id            String      @id @default(uuid())
   client        oAuthClient @relation(fields: [oAuthClientId], references: [id])
   grant         oAuthGrant  @relation(fields: [oAuthGrantId], references: [id])
   oAuthClientId String
   oAuthGrantId  String
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
+
+  @@id([oAuthClientId, oAuthGrantId])
 }
 
 model oAuthGrant {
@@ -116,13 +118,14 @@ model oAuthCustomScope {
 }
 
 model oAuthAccessTokenScope {
-  id                 String           @id @default(uuid())
   accessToken        oAuthAccessToken @relation(fields: [oAuthAccessTokenId], references: [id])
   scope              oAuthScope       @relation(fields: [oAuthScopeId], references: [id])
   oAuthAccessTokenId String
   oAuthScopeId       String
   createdAt          DateTime         @default(now())
   updatedAt          DateTime         @updatedAt
+
+  @@id([oAuthScopeId, oAuthAccessTokenId])
 }
 
 // Authentication
@@ -138,16 +141,20 @@ model oAuthAccessToken {
   oAuthClientId  String
   createdAt      DateTime                @default(now())
   updatedAt      DateTime                @updatedAt
+
+  @@unique([accessToken, oAuthClientId])
+  @@unique([userId, oAuthClientId])
 }
 
 model oAuthRefreshTokenScope {
-  id                  String            @id @default(uuid())
   refreshToken        oAuthRefreshToken @relation(fields: [oAuthRefreshTokenId], references: [id])
   scope               oAuthScope        @relation(fields: [oAuthScopeId], references: [id])
   oAuthRefreshTokenId String
   oAuthScopeId        String
   createdAt           DateTime          @default(now())
   updatedAt           DateTime          @updatedAt
+
+  @@id([oAuthRefreshTokenId, oAuthScopeId])
 }
 
 model oAuthRefreshToken {
@@ -155,22 +162,26 @@ model oAuthRefreshToken {
   refreshToken   String                   @default(uuid())
   expirationDate DateTime
   scopes         oAuthRefreshTokenScope[]
-  user           User?                     @relation(fields: [userId], references: [id])
+  user           User?                    @relation(fields: [userId], references: [id])
   userId         String?
   client         oAuthClient              @relation(fields: [oAuthClientId], references: [id])
   oAuthClientId  String
   createdAt      DateTime                 @default(now())
   updatedAt      DateTime                 @updatedAt
+
+  @@unique([refreshToken, oAuthClientId])
+  @@unique([userId, oAuthClientId])
 }
 
 model oAuthAuthorizationCodeScope {
-  id                       String                 @id @default(uuid())
   authorizationCode        oAuthAuthorizationCode @relation(fields: [oAuthAuthorizationCodeId], references: [id])
   scope                    oAuthScope             @relation(fields: [oAuthScopeId], references: [id])
   oAuthAuthorizationCodeId String
   oAuthScopeId             String
   createdAt                DateTime               @default(now())
   updatedAt                DateTime               @updatedAt
+
+  @@id([oAuthAuthorizationCodeId, oAuthScopeId])
 }
 
 model oAuthAuthorizationCode {
@@ -212,13 +223,14 @@ model Group {
 }
 
 model UserGroup {
-  id            String   @id @default(uuid())
   user          User     @relation(fields: [systemUserId], references: [id])
   group         Group    @relation(fields: [systemGroupId], references: [id])
   systemUserId  String
   systemGroupId String
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+
+  @@id([systemUserId, systemGroupId])
 }
 
 model User {

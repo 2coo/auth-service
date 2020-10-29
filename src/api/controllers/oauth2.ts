@@ -1,10 +1,9 @@
-import { oAuthClient, User } from '@prisma/client'
-import { prisma } from '../../context'
-import * as oauth2orize from 'oauth2orize'
-import * as passport from 'passport'
+import { compare } from 'bcryptjs'
 import * as login from 'connect-ensure-login'
 import * as moment from 'moment-timezone'
-import { compare, hash } from 'bcryptjs'
+import * as oauth2orize from 'oauth2orize'
+import * as passport from 'passport'
+import { prisma } from '../../context'
 
 // Create OAuth 2.0 server
 const server = oauth2orize.createServer()
@@ -313,3 +312,104 @@ server.exchange(
       })
   }),
 )
+
+// User authorization endpoint.
+//
+// `authorization` middleware accepts a `validate` callback which is
+// responsible for validating the client making the authorization request. In
+// doing so, is recommended that the `redirectUri` be checked against a
+// registered value, although security requirements may vary across
+// implementations. Once validated, the `done` callback must be invoked with
+// a `client` instance, as well as the `redirectUri` to which the user will be
+// redirected after an authorization decision is obtained.
+//
+// This middleware simply initializes a new authorization transaction. It is
+// the application's responsibility to authenticate the user and render a dialog
+// to obtain their approval (displaying details about the client requesting
+// authorization). We accomplish that here by routing through `ensureLoggedIn()`
+// first, and rendering the `dialog` view.
+
+export const authorization = [
+  login.ensureLoggedIn(),
+  server.authorization(
+    (clientId, redirectUri, done) => {
+      prisma.oAuthClient
+        .findOne({
+          where: {
+            id: clientId,
+          },
+          include: {
+            redirectUris: true,
+          },
+        })
+        .then((client) => {
+          if (!client) return done(null, false)
+          if (
+            client.redirectUris.some(
+              (localRedirectUri) => localRedirectUri.url === redirectUri,
+            )
+          ) {
+            return done(null, client, redirectUri)
+          }
+          return done(null, false)
+        })
+        .catch((error) => {
+          return done(error)
+        })
+    },
+    (client, user, done: any) => {
+      // Check if grant request qualifies for immediate approval
+
+      // Auto-approve
+      if (client.isTrusted) return done(null, true)
+      prisma.oAuthAccessToken
+        .findOne({
+          where: {
+            userId_oAuthClientId: {
+              userId: user.id,
+              oAuthClientId: client.id,
+            },
+          },
+        })
+        .then((accessToken) => {
+          // Auto-approve
+          if (accessToken) return done(null, true)
+
+          // Otherwise ask user
+          return done(null, false)
+        })
+        .catch((error) => done(error))
+    },
+  ),
+  (request: any, response: any) => {
+    response.render('dialog', {
+      transactionId: request.oauth2.transactionID,
+      user: request.user,
+      client: request.oauth2.client,
+    })
+  },
+]
+
+// User decision endpoint.
+//
+// `decision` middleware processes a user's decision to allow or deny access
+// requested by a client application. Based on the grant type requested by the
+// client, the above grant middleware configured above will be invoked to send
+// a response.
+
+export const decision = [login.ensureLoggedIn(), server.decision()]
+
+// Token endpoint.
+//
+// `token` middleware handles client requests to exchange authorization grants
+// for access tokens. Based on the grant type being exchanged, the above
+// exchange middleware will be invoked to handle the request. Clients must
+// authenticate when making requests to this endpoint.
+
+export const token = [
+  passport.authenticate(['basic', 'oauth2-client-password'], {
+    session: false,
+  }),
+  server.token(),
+  server.errorHandler(),
+]
