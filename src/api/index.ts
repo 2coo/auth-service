@@ -5,8 +5,12 @@ import * as passport from 'passport'
 import * as routes from './controllers'
 import * as cookieParser from 'cookie-parser'
 import * as errorHandler from 'errorhandler'
+import * as path from 'path'
+var express = require('express')
 
 module.exports = function (app: Express.Application) {
+  app.set('view engine', 'ejs')
+  app.set('views', path.join(__dirname, './views'))
   app.use(Express.json())
   app.use(
     Express.urlencoded({
@@ -30,6 +34,12 @@ module.exports = function (app: Express.Application) {
   require('./auth')
 
   const router = Express.Router()
+  // site
+
+  router.get('/', routes.site.index)
+  router.route('/login').get(routes.site.loginForm).post(routes.site.login)
+  router.get('/logout', routes.site.logout)
+  router.get('/account', routes.site.account)
 
   // Create endpoint handlers for oauth2 authorize
   router

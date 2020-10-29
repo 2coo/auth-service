@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 import * as passport from 'passport'
 import { Strategy as LocalStrategy } from 'passport-local'
@@ -16,7 +16,8 @@ import { User } from '@prisma/client'
  * a user is logged in before asking them to approve the request.
  */
 passport.use(
-  new LocalStrategy((email, password, done) => {
+  new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
+    console.log('#eey', email, password)
     prisma.user
       .findOne({
         where: {
