@@ -1,8 +1,8 @@
 import { compare } from 'bcryptjs'
-import * as login from 'connect-ensure-login'
-import * as moment from 'moment-timezone'
-import * as oauth2orize from 'oauth2orize'
-import * as passport from 'passport'
+import login from 'connect-ensure-login'
+import moment from 'moment-timezone'
+import oauth2orize from 'oauth2orize'
+import passport from 'passport'
 import { prisma } from '../../context'
 
 // Create OAuth 2.0 server

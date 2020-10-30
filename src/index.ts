@@ -1,33 +1,25 @@
 import { config } from 'dotenv-flow'
 config()
-import { GraphQLServer } from 'graphql-yoga'
+import { ApolloServer } from 'apollo-server-express'
+import { applyMiddleware } from 'graphql-middleware'
 import { createContext } from './context'
 import { permissions } from './permissions'
 import { schema } from './schema'
-import { formatError } from 'apollo-errors'
+import express from 'express'
+import * as HTTP from 'http'
 
-const graphqlServer = new GraphQLServer({
-  schema,
+const graphqlServer = new ApolloServer({
+  schema: applyMiddleware(schema, permissions),
   context: createContext,
-  middlewares: [permissions],
 })
+const app = express()
+const http = HTTP.createServer(app)
 
-graphqlServer.start(
-  {
-    endpoint: '/graphql',
-    subscriptions: '/subscriptions',
-    playground: process.env.NODE_ENV === 'development' ? '/playground' : false,
-    debug: process.env.NODE_ENV === 'development',
-    formatError,
-    port: 4040,
-  },
-  ({ port, endpoint, subscriptions, playground }) =>
-    console.log(
-      `🚀 Server ready at: http://localhost:${port}${endpoint}, http://localhost:${port}${subscriptions}. ⭐️${
-        playground
-          ? `\n🚀 Playground ready at: http://localhost:${port}${playground} ⭐️`
-          : ''
-      }`,
-    ),
-)
-require('./api/')(graphqlServer.express)
+require('./api/')(app)
+
+graphqlServer.applyMiddleware({ app })
+graphqlServer.installSubscriptionHandlers(http)
+
+http.listen(4000, () => {
+  console.log(`🚀 GraphQL service ready at http://localhost:4000/graphql`)
+})

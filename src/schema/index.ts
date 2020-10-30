@@ -1,21 +1,18 @@
-// import { config } from 'dotenv-flow'
-// config()
 import { join } from 'path'
 import { makeSchema } from '@nexus/schema'
 import { nexusSchemaPrisma } from 'nexus-plugin-prisma/schema'
 import * as types from './types'
+import path from 'path'
 
 export const schema = makeSchema({
+  shouldExitAfterGenerateArtifacts:
+    process.env.NEXUS_SHOULD_EXIT_AFTER_GENERATE_ARTIFACTS === 'true',
   types,
   plugins: [
     nexusSchemaPrisma({
       experimentalCRUD: true,
     }),
   ],
-  outputs: {
-    typegen: join(__dirname, 'generated', 'index.d.ts'),
-    schema: join(__dirname, 'generated', 'schema.graphql'),
-  },
   typegenAutoConfig: {
     sources: [
       {
@@ -28,5 +25,12 @@ export const schema = makeSchema({
       },
     ],
     contextType: 'ctx.Context',
+  },
+  outputs: {
+    typegen: path.join(
+      __dirname,
+      '../../node_modules/@types/nexus-typegen/index.d.ts',
+    ),
+    schema: path.join(__dirname, '../../api.graphql'),
   },
 })

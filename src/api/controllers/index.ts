@@ -1,7 +1,7 @@
 import * as oauth2 from './oauth2'
 import * as site from './site'
 
-export {
+export default {
   site,
   oauth2,
   // user,

@@ -1,7 +1,6 @@
 import { PrismaClient, GrantType } from '@prisma/client'
-const prisma = new PrismaClient()
 
-async function seed() {
+export const seedGrantTypes = async (prisma: PrismaClient) => {
   const type1 = prisma.oAuthGrant.create({
     data: {
       grantType: GrantType.AUTHORIZATION_CODE,
@@ -29,9 +28,3 @@ async function seed() {
   })
   await prisma.$transaction([type1, type2, type3, type4, type5])
 }
-
-seed()
-  .catch((e) => console.error(e))
-  .finally(async () => {
-    await prisma.$disconnect()
-  })

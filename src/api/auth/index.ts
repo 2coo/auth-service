@@ -1,6 +1,6 @@
 'use strict'
 
-import * as passport from 'passport'
+import passport from 'passport'
 import { Strategy as LocalStrategy } from 'passport-local'
 import { BasicStrategy } from 'passport-http'
 import { Strategy as ClientPasswordStrategy } from 'passport-oauth2-client-password'
@@ -17,7 +17,6 @@ import { User } from '@prisma/client'
  */
 passport.use(
   new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
-    console.log('#eey', email, password)
     prisma.user
       .findOne({
         where: {

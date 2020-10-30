@@ -21,12 +21,8 @@ const rules: any = {
 
 export const permissions = shield(
   {
-    Query: {
-      me: rules.isAuthenticated,
-    },
-    Mutation: {
-      registerMe: rules.isAuthenticated,
-    },
+    Query: {},
+    Mutation: {},
   },
   {
     allowExternalErrors: true,

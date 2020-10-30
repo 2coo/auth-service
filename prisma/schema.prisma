@@ -30,6 +30,7 @@ model oAuthClient {
   accessTokens         oAuthAccessToken[]
   authorizationCodes   oAuthAuthorizationCode[]
   refreshTokens        oAuthRefreshToken[]
+  users                User[]
   refreshTokenLifetime Int                      @default(43200)
   accessTokenLifetime  Int                      @default(60)
   idTokenLifetime      Int                      @default(5)
@@ -243,6 +244,8 @@ model User {
   oAuthAuthorizationCode oAuthAuthorizationCode[]
   oAuthRefreshToken      oAuthRefreshToken[]
   devices                UserDevice[]
+  oAuthClient            oAuthClient?             @relation(fields: [oAuthClientId], references: [id])
+  oAuthClientId          String?
   createdAt              DateTime                 @default(now())
   updatedAt              DateTime                 @updatedAt
 }

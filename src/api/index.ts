@@ -1,12 +1,11 @@
-import * as Express from 'express'
-import * as session from 'express-session'
-import * as _ from 'lodash'
-import * as passport from 'passport'
-import * as routes from './controllers'
-import * as cookieParser from 'cookie-parser'
-import * as errorHandler from 'errorhandler'
+import Express from 'express'
+import session from 'express-session'
+import _ from 'lodash'
+import passport from 'passport'
+import routes from './controllers'
+import cookieParser from 'cookie-parser'
+import errorHandler from 'errorhandler'
 import * as path from 'path'
-var express = require('express')
 
 module.exports = function (app: Express.Application) {
   app.set('view engine', 'ejs')
@@ -21,7 +20,7 @@ module.exports = function (app: Express.Application) {
   app.use(cookieParser())
   app.use(
     session({
-      secret: 'Super Secret Session Key',
+      secret: 'Super Secret Sesion Key',
       saveUninitialized: false,
       resave: false,
     }),
