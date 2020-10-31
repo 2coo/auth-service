@@ -1,6 +1,6 @@
-import * as schema from '@nexus/schema'
+import { enumType } from '@nexus/schema'
 
-export const GrantType = schema.enumType({
+export const GrantType = enumType({
   name: 'GrantType',
   description: '',
   members: [

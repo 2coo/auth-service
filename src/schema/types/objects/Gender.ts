@@ -1,6 +1,6 @@
-import * as schema from '@nexus/schema'
+import { enumType } from '@nexus/schema'
 
-export const Gender = schema.enumType({
+export const Gender = enumType({
   name: 'Gender',
   members: ['MALE', 'FEMALE', 'OTHER'],
   description: 'Gender of users',

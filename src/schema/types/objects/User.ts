@@ -1,6 +1,6 @@
-import * as schema from '@nexus/schema'
+import { objectType } from '@nexus/schema'
 
-export const User = schema.objectType({
+export const User = objectType({
   name: 'User',
   definition(t){
       t.model.email()

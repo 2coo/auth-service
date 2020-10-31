@@ -1,6 +1,6 @@
-import * as schema from '@nexus/schema'
+import { objectType } from '@nexus/schema'
 
-export const Profile = schema.objectType({
+export const Profile = objectType({
   name: 'Profile',
   definition(t) {
     t.model.firstName()
@@ -8,7 +8,8 @@ export const Profile = schema.objectType({
     t.model.displayName()
     t.model.birthdate()
     t.model.gender()
-    t.model.image()
+    t.model.currentProfileImage()
+    t.model.photos()
     t.model.mobileNumber()
     t.model.user()
     t.model.createdAt()

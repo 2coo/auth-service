@@ -1,6 +1,6 @@
-import * as schema from '@nexus/schema'
+import { objectType } from '@nexus/schema'
 
-export const oAuthClient = schema.objectType({
+export const oAuthClient = objectType({
   name: 'oAuthClient',
   definition(t) {
     t.model.id()

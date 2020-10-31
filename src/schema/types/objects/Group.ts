@@ -1,6 +1,6 @@
-import * as schema from '@nexus/schema'
+import { objectType } from '@nexus/schema'
 
-export const Group = schema.objectType({
+export const Group = objectType({
   name: 'Group',
   definition(t) {
     t.model.name()

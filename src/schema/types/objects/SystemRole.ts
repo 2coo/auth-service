@@ -1,6 +1,6 @@
-import * as schema from '@nexus/schema'
+import { enumType } from '@nexus/schema'
 
-export const SystemRole = schema.enumType({
+export const SystemRole = enumType({
   name: 'SystemRole',
   members: ['SUPER_ADMIN', 'ADMIN', 'DEVELOPER', 'USER'],
   description: 'Roles of oauth system',

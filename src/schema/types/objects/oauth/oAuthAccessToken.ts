@@ -1,6 +1,6 @@
-import * as schema from '@nexus/schema'
+import { objectType } from '@nexus/schema'
 
-export const oAuthAccessToken = schema.objectType({
+export const oAuthAccessToken = objectType({
   name: 'oAuthAccessToken',
   definition(t) {
     t.model.accessToken()

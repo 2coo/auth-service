@@ -1,6 +1,6 @@
-import * as schema from '@nexus/schema'
+import { objectType } from '@nexus/schema'
 
-export const oAuthJavascriptOrigin = schema.objectType({
+export const oAuthJavascriptOrigin = objectType({
   name: 'oAuthJavascriptOrigin',
   definition(t) {
     t.model.uri()

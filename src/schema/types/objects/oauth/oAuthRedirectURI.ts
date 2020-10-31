@@ -1,6 +1,6 @@
-import * as schema from '@nexus/schema'
+import { objectType } from '@nexus/schema'
 
-export const oAuthRedirectURI = schema.objectType({
+export const oAuthRedirectURI = objectType({
   name: 'oAuthRedirectURI',
   definition(t) {
     t.model.url()

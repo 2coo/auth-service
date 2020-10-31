@@ -1,6 +1,6 @@
-import * as schema from '@nexus/schema'
+import { queryType } from '@nexus/schema'
 import moment = require('moment-timezone')
-export const Query = schema.queryType({
+export const Query = queryType({
   definition(t) {
     t.crud.user()
     t.crud.users()
