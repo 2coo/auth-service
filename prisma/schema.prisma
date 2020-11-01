@@ -19,6 +19,29 @@ enum GrantType {
   EXTENSION
 }
 
+model Organization {
+  id        String   @id @default(uuid())
+  name      String
+  url       String?
+  address   String?
+  users     User[]
+  roles     Role[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Role {
+  id             String             @id @default(uuid())
+  name           String
+  users          User[]
+  scopes         oAuthScope[]
+  customScopes   oAuthCustomScope[]
+  organization   Organization       @relation(fields: [organizationId], references: [id])
+  organizationId String
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+}
+
 model oAuthClient {
   id                   String                   @id @default(uuid())
   name                 String                   @unique
@@ -30,10 +53,11 @@ model oAuthClient {
   accessTokens         oAuthAccessToken[]
   authorizationCodes   oAuthAuthorizationCode[]
   refreshTokens        oAuthRefreshToken[]
-  users                User[]
+  resourceServers      oAuthResourceServer[]
   refreshTokenLifetime Int                      @default(43200)
   accessTokenLifetime  Int                      @default(60)
   idTokenLifetime      Int                      @default(5)
+  logo                 String
   isTrusted            Boolean                  @default(false)
   createdAt            DateTime                 @default(now())
   updatedAt            DateTime                 @updatedAt
@@ -47,6 +71,7 @@ model oAuthScope {
   accessTokens       oAuthAccessToken[]
   authorizationCodes oAuthAuthorizationCode[]
   refreshTokenScope  oAuthRefreshToken[]
+  roles              Role[]
   createdAt          DateTime                 @default(now())
   updatedAt          DateTime                 @updatedAt
 }
@@ -78,12 +103,14 @@ model oAuthJavascriptOrigin {
 }
 
 model oAuthResourceServer {
-  id         String             @id @default(uuid())
-  name       String
-  identifier String             @unique
-  scopes     oAuthCustomScope[]
-  createdAt  DateTime           @default(now())
-  updatedAt  DateTime           @updatedAt
+  id            String             @id @default(uuid())
+  name          String
+  identifier    String             @unique
+  scopes        oAuthCustomScope[]
+  oAuthClient   oAuthClient        @relation(fields: [oAuthClientId], references: [id])
+  oAuthClientId String
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
 }
 
 model oAuthCustomScope {
@@ -92,6 +119,7 @@ model oAuthCustomScope {
   description           String?
   resourceServer        oAuthResourceServer @relation(fields: [oAuthResourceServerId], references: [id])
   oAuthResourceServerId String
+  roles                 Role[]
   createdAt             DateTime            @default(now())
   updatedAt             DateTime            @updatedAt
 }
@@ -150,13 +178,6 @@ enum Gender {
   OTHER
 }
 
-enum SystemRole {
-  SUPER_ADMIN
-  ADMIN
-  DEVELOPER
-  USER
-}
-
 model Group {
   id          String   @id @default(uuid())
   name        String
@@ -176,13 +197,13 @@ model User {
   profile                Profile
   groups                 Group[]
   passwordResets         PasswordReset[]
-  role                   SystemRole               @default(USER)
+  roles                  Role[]
   devices                UserDevice[]
   oAuthAccessToken       oAuthAccessToken[]
   oAuthAuthorizationCode oAuthAuthorizationCode[]
   oAuthRefreshToken      oAuthRefreshToken[]
-  oAuthClient            oAuthClient?             @relation(fields: [oAuthClientId], references: [id])
-  oAuthClientId          String?
+  Organization           Organization             @relation(fields: [organizationId], references: [id])
+  organizationId         String
   createdAt              DateTime                 @default(now())
   updatedAt              DateTime                 @updatedAt
 }
