@@ -9,7 +9,7 @@ input AccessTokenOAuthClientIdCompoundUniqueInput {
 
 type AuthPayload {
   token: String
-  user: User
+  user: SystemUser
 }
 
 input CodeOAuthClientIdCompoundUniqueInput {
@@ -146,6 +146,7 @@ input GroupWhereUniqueInput {
 type Mutation {
   createOneoAuthClient(data: oAuthClientCreateInput!): oAuthClient!
   createOneUser(data: UserCreateInput!): User!
+  login(email: String!, password: String!): AuthPayload
 }
 
 type oAuthAccessToken {

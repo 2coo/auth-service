@@ -10,7 +10,7 @@
     "dev:migrate": "dotenv -e .env.development.local -- prisma migrate save --experimental -c && dotenv -e .env.development.local -- prisma migrate up --experimental -c",
     "prebuild": "yarn run clean && yarn run generate",
     "build": "tsc",
-    "seed": "ts-node prisma/seed.ts",
+    "seed": "dotenv -e .env.development.local -- ts-node prisma/seed",
     "clean": "rimraf dist",
     "generate": "yarn -s generate:prisma && yarn -s generate:nexus",
     "generate:prisma": "prisma generate",

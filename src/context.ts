@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import { Request, Response } from 'express'
 import { PubSub } from 'apollo-server-express'
-import { getUserEmail, Token } from './utils'
+import { getUserId, Token } from './utils'
 import { ExpressContext } from 'apollo-server-express/dist/ApolloServer'
 
 export const prisma = new PrismaClient({
@@ -27,6 +27,6 @@ export async function createContext(ctx: ExpressContext): Promise<Context> {
     ...ctx,
     prisma: prisma,
     pubsub,
-    auth: await getUserEmail(ctx),
+    auth: getUserId(ctx),
   }
 }
