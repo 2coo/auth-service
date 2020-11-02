@@ -1,9 +1,12 @@
 import { PrismaClient } from '@prisma/client'
 import { seedGrantTypes } from './granttypes'
+import { seedSystemUser } from './organization'
 const prisma = new PrismaClient()
 
 async function seed() {
-  await seedGrantTypes(prisma)
+  const grantTypes = seedGrantTypes(prisma)
+  const systemUser = seedSystemUser(prisma)
+  await prisma.$transaction([grantTypes, systemUser])
 }
 
 seed()

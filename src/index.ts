@@ -20,6 +20,8 @@ require('./api/')(app)
 graphqlServer.applyMiddleware({ app })
 graphqlServer.installSubscriptionHandlers(http)
 
-http.listen(4000, () => {
-  console.log(`🚀 GraphQL service ready at http://localhost:4000/graphql`)
+http.listen(process.env.PORT, () => {
+  console.log(
+    `🚀 GraphQL service ready at http://localhost:${process.env.PORT}/graphql`,
+  )
 })

@@ -7,6 +7,11 @@ input AccessTokenOAuthClientIdCompoundUniqueInput {
   oAuthClientId: String!
 }
 
+type AuthPayload {
+  token: String
+  user: User
+}
+
 input CodeOAuthClientIdCompoundUniqueInput {
   code: String!
   oAuthClientId: String!
@@ -18,44 +23,27 @@ type Email {
   createdAt: DateTime!
   email: String!
   isVerified: Boolean!
-  PrimaryEmailOf: User!
+  Profile: Profile!
   updatedAt: DateTime!
-  User: User!
 }
 
-input EmailCreateManyWithoutUserInput {
+input EmailCreateManyWithoutProfileInput {
   connect: [EmailWhereUniqueInput!]
-  connectOrCreate: [EmailCreateOrConnectWithoutUserInput!]
-  create: [EmailCreateWithoutUserInput!]
+  connectOrCreate: [EmailCreateOrConnectWithoutProfileInput!]
+  create: [EmailCreateWithoutProfileInput!]
 }
 
-input EmailCreateOneWithoutPrimaryEmailOfInput {
-  connect: EmailWhereUniqueInput
-  connectOrCreate: EmailCreateOrConnectWithoutUserInput
-  create: EmailCreateWithoutPrimaryEmailOfInput
-}
-
-input EmailCreateOrConnectWithoutUserInput {
-  create: EmailCreateWithoutUserInput!
+input EmailCreateOrConnectWithoutProfileInput {
+  create: EmailCreateWithoutProfileInput!
   where: EmailWhereUniqueInput!
 }
 
-input EmailCreateWithoutPrimaryEmailOfInput {
+input EmailCreateWithoutProfileInput {
   createdAt: DateTime
   email: String!
   id: String
-  isVerified: Boolean!
-  updatedAt: DateTime
-  User: UserCreateOneWithoutEmailsInput!
-  userId: String!
-}
-
-input EmailCreateWithoutUserInput {
-  createdAt: DateTime
-  email: String!
-  id: String
-  isVerified: Boolean!
-  PrimaryEmailOf: UserCreateOneWithoutPrimaryEmailInput!
+  isPrimary: Boolean
+  isVerified: Boolean
   updatedAt: DateTime
   userId: String!
 }
@@ -1027,31 +1015,15 @@ input PhotoCreateManyWithoutProfileInput {
   create: [PhotoCreateWithoutProfileInput!]
 }
 
-input PhotoCreateOneWithoutCurrentPhotoOfInput {
-  connect: PhotoWhereUniqueInput
-  connectOrCreate: PhotoCreateOrConnectWithoutProfileInput
-  create: PhotoCreateWithoutCurrentPhotoOfInput
-}
-
 input PhotoCreateOrConnectWithoutProfileInput {
-  create: PhotoCreateWithoutCurrentPhotoOfInput!
+  create: PhotoCreateWithoutProfileInput!
   where: PhotoWhereUniqueInput!
-}
-
-input PhotoCreateWithoutCurrentPhotoOfInput {
-  createdAt: DateTime
-  id: String
-  Profile: ProfileCreateOneWithoutPhotosInput!
-  profileId: String!
-  updatedAt: DateTime
-  value: String!
 }
 
 input PhotoCreateWithoutProfileInput {
   createdAt: DateTime
-  CurrentPhotoOf: ProfileCreateOneWithoutCurrentProfileImageInput!
   id: String
-  profileId: String!
+  isCurrentProfileImage: Boolean!
   updatedAt: DateTime
   value: String!
 }
@@ -1063,7 +1035,6 @@ input PhotoWhereUniqueInput {
 type Profile {
   birthdate: DateTime
   createdAt: DateTime!
-  CurrentProfileImage: Photo!
   displayName: String
   firstName: String
   gender: Gender
@@ -1074,27 +1045,10 @@ type Profile {
   User: User!
 }
 
-input ProfileCreateOneWithoutCurrentProfileImageInput {
-  connect: ProfileWhereUniqueInput
-  connectOrCreate: ProfileCreateOrConnectWithoutPhotoInput
-  create: ProfileCreateWithoutCurrentProfileImageInput
-}
-
-input ProfileCreateOneWithoutPhotosInput {
-  connect: ProfileWhereUniqueInput
-  connectOrCreate: ProfileCreateOrConnectWithoutPhotoInput
-  create: ProfileCreateWithoutPhotosInput
-}
-
 input ProfileCreateOneWithoutUserInput {
   connect: ProfileWhereUniqueInput
   connectOrCreate: ProfileCreateOrConnectWithoutUserInput
   create: ProfileCreateWithoutUserInput
-}
-
-input ProfileCreateOrConnectWithoutPhotoInput {
-  create: ProfileCreateWithoutCurrentProfileImageInput!
-  where: ProfileWhereUniqueInput!
 }
 
 input ProfileCreateOrConnectWithoutUserInput {
@@ -1102,39 +1056,11 @@ input ProfileCreateOrConnectWithoutUserInput {
   where: ProfileWhereUniqueInput!
 }
 
-input ProfileCreateWithoutCurrentProfileImageInput {
-  birthdate: DateTime
-  createdAt: DateTime
-  displayName: String
-  firstName: String
-  gender: Gender
-  id: String
-  lastName: String
-  mobileNumber: String
-  Photos: PhotoCreateManyWithoutProfileInput
-  updatedAt: DateTime
-  User: UserCreateOneWithoutProfileInput!
-}
-
-input ProfileCreateWithoutPhotosInput {
-  birthdate: DateTime
-  createdAt: DateTime
-  CurrentProfileImage: PhotoCreateOneWithoutCurrentPhotoOfInput
-  displayName: String
-  firstName: String
-  gender: Gender
-  id: String
-  lastName: String
-  mobileNumber: String
-  updatedAt: DateTime
-  User: UserCreateOneWithoutProfileInput!
-}
-
 input ProfileCreateWithoutUserInput {
   birthdate: DateTime
   createdAt: DateTime
-  CurrentProfileImage: PhotoCreateOneWithoutCurrentPhotoOfInput
   displayName: String
+  Emails: EmailCreateManyWithoutProfileInput
   firstName: String
   gender: Gender
   id: String
@@ -1292,11 +1218,27 @@ input RoleWhereUniqueInput {
   id: String
 }
 
+enum SystemRole {
+  ADMIN
+  DEVELOPER
+  SUPER_ADMIN
+  USER
+}
+
+type SystemUser {
+  createdAt: DateTime!
+  email: String!
+  id: String!
+  role: SystemRole!
+  updatedAt: DateTime!
+  username: String!
+}
+
 type User {
   createdAt: DateTime!
   Devices(after: UserDeviceWhereUniqueInput, before: UserDeviceWhereUniqueInput, first: Int, last: Int): [UserDevice!]!
   Groups(after: GroupWhereUniqueInput, before: GroupWhereUniqueInput, first: Int, last: Int): [Group!]!
-  PrimaryEmail: Email!
+  primaryEmail: String!
   Profile: Profile!
   Roles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int): [Role!]!
   sub: String!
@@ -1309,20 +1251,19 @@ input UserCreateInput {
   AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutUserInput
   createdAt: DateTime
   Devices: UserDeviceCreateManyWithoutUserInput
-  Emails: EmailCreateManyWithoutUserInput
   Groups: GroupCreateManyWithoutUsersInput
   id: String
   isDisabled: Boolean
   password: String!
   PasswordResets: PasswordResetCreateManyWithoutUserInput
-  PrimaryEmail: EmailCreateOneWithoutPrimaryEmailOfInput
+  primaryEmail: String!
   Profile: ProfileCreateOneWithoutUserInput
   RefreshTokens: oAuthRefreshTokenCreateManyWithoutUserInput
   Roles: RoleCreateManyWithoutUsersInput
   sub: String
   updatedAt: DateTime
   username: String!
-  UserPool: UserPoolCreateOneWithoutUsersInput!
+  UserPool: UserPoolCreateOneWithoutUsersInput
 }
 
 input UserCreateManyWithoutGroupsInput {
@@ -1355,33 +1296,10 @@ input UserCreateOneWithoutAuthorizationCodesInput {
   create: UserCreateWithoutAuthorizationCodesInput
 }
 
-input UserCreateOneWithoutEmailsInput {
-  connect: UserWhereUniqueInput
-  connectOrCreate: UserCreateOrConnectWithoutEmailInput
-  create: UserCreateWithoutEmailsInput
-}
-
-input UserCreateOneWithoutPrimaryEmailInput {
-  connect: UserWhereUniqueInput
-  connectOrCreate: UserCreateOrConnectWithoutEmailInput
-  create: UserCreateWithoutPrimaryEmailInput
-}
-
-input UserCreateOneWithoutProfileInput {
-  connect: UserWhereUniqueInput
-  connectOrCreate: UserCreateOrConnectWithoutProfileInput
-  create: UserCreateWithoutProfileInput
-}
-
 input UserCreateOneWithoutRefreshTokensInput {
   connect: UserWhereUniqueInput
   connectOrCreate: UserCreateOrConnectWithoutoAuthRefreshTokenInput
   create: UserCreateWithoutRefreshTokensInput
-}
-
-input UserCreateOrConnectWithoutEmailInput {
-  create: UserCreateWithoutPrimaryEmailInput!
-  where: UserWhereUniqueInput!
 }
 
 input UserCreateOrConnectWithoutGroupInput {
@@ -1404,11 +1322,6 @@ input UserCreateOrConnectWithoutoAuthRefreshTokenInput {
   where: UserWhereUniqueInput!
 }
 
-input UserCreateOrConnectWithoutProfileInput {
-  create: UserCreateWithoutProfileInput!
-  where: UserWhereUniqueInput!
-}
-
 input UserCreateOrConnectWithoutRoleInput {
   create: UserCreateWithoutRolesInput!
   where: UserWhereUniqueInput!
@@ -1423,60 +1336,38 @@ input UserCreateWithoutAccessTokensInput {
   AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutUserInput
   createdAt: DateTime
   Devices: UserDeviceCreateManyWithoutUserInput
-  Emails: EmailCreateManyWithoutUserInput
   Groups: GroupCreateManyWithoutUsersInput
   id: String
   isDisabled: Boolean
   password: String!
   PasswordResets: PasswordResetCreateManyWithoutUserInput
-  PrimaryEmail: EmailCreateOneWithoutPrimaryEmailOfInput
+  primaryEmail: String!
   Profile: ProfileCreateOneWithoutUserInput
   RefreshTokens: oAuthRefreshTokenCreateManyWithoutUserInput
   Roles: RoleCreateManyWithoutUsersInput
   sub: String
   updatedAt: DateTime
   username: String!
-  UserPool: UserPoolCreateOneWithoutUsersInput!
+  UserPool: UserPoolCreateOneWithoutUsersInput
 }
 
 input UserCreateWithoutAuthorizationCodesInput {
   AccessTokens: oAuthAccessTokenCreateManyWithoutUserInput
   createdAt: DateTime
   Devices: UserDeviceCreateManyWithoutUserInput
-  Emails: EmailCreateManyWithoutUserInput
   Groups: GroupCreateManyWithoutUsersInput
   id: String
   isDisabled: Boolean
   password: String!
   PasswordResets: PasswordResetCreateManyWithoutUserInput
-  PrimaryEmail: EmailCreateOneWithoutPrimaryEmailOfInput
+  primaryEmail: String!
   Profile: ProfileCreateOneWithoutUserInput
   RefreshTokens: oAuthRefreshTokenCreateManyWithoutUserInput
   Roles: RoleCreateManyWithoutUsersInput
   sub: String
   updatedAt: DateTime
   username: String!
-  UserPool: UserPoolCreateOneWithoutUsersInput!
-}
-
-input UserCreateWithoutEmailsInput {
-  AccessTokens: oAuthAccessTokenCreateManyWithoutUserInput
-  AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutUserInput
-  createdAt: DateTime
-  Devices: UserDeviceCreateManyWithoutUserInput
-  Groups: GroupCreateManyWithoutUsersInput
-  id: String
-  isDisabled: Boolean
-  password: String!
-  PasswordResets: PasswordResetCreateManyWithoutUserInput
-  PrimaryEmail: EmailCreateOneWithoutPrimaryEmailOfInput
-  Profile: ProfileCreateOneWithoutUserInput
-  RefreshTokens: oAuthRefreshTokenCreateManyWithoutUserInput
-  Roles: RoleCreateManyWithoutUsersInput
-  sub: String
-  updatedAt: DateTime
-  username: String!
-  UserPool: UserPoolCreateOneWithoutUsersInput!
+  UserPool: UserPoolCreateOneWithoutUsersInput
 }
 
 input UserCreateWithoutGroupsInput {
@@ -1484,59 +1375,18 @@ input UserCreateWithoutGroupsInput {
   AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutUserInput
   createdAt: DateTime
   Devices: UserDeviceCreateManyWithoutUserInput
-  Emails: EmailCreateManyWithoutUserInput
   id: String
   isDisabled: Boolean
   password: String!
   PasswordResets: PasswordResetCreateManyWithoutUserInput
-  PrimaryEmail: EmailCreateOneWithoutPrimaryEmailOfInput
+  primaryEmail: String!
   Profile: ProfileCreateOneWithoutUserInput
   RefreshTokens: oAuthRefreshTokenCreateManyWithoutUserInput
   Roles: RoleCreateManyWithoutUsersInput
   sub: String
   updatedAt: DateTime
   username: String!
-  UserPool: UserPoolCreateOneWithoutUsersInput!
-}
-
-input UserCreateWithoutPrimaryEmailInput {
-  AccessTokens: oAuthAccessTokenCreateManyWithoutUserInput
-  AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutUserInput
-  createdAt: DateTime
-  Devices: UserDeviceCreateManyWithoutUserInput
-  Emails: EmailCreateManyWithoutUserInput
-  Groups: GroupCreateManyWithoutUsersInput
-  id: String
-  isDisabled: Boolean
-  password: String!
-  PasswordResets: PasswordResetCreateManyWithoutUserInput
-  Profile: ProfileCreateOneWithoutUserInput
-  RefreshTokens: oAuthRefreshTokenCreateManyWithoutUserInput
-  Roles: RoleCreateManyWithoutUsersInput
-  sub: String
-  updatedAt: DateTime
-  username: String!
-  UserPool: UserPoolCreateOneWithoutUsersInput!
-}
-
-input UserCreateWithoutProfileInput {
-  AccessTokens: oAuthAccessTokenCreateManyWithoutUserInput
-  AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutUserInput
-  createdAt: DateTime
-  Devices: UserDeviceCreateManyWithoutUserInput
-  Emails: EmailCreateManyWithoutUserInput
-  Groups: GroupCreateManyWithoutUsersInput
-  id: String
-  isDisabled: Boolean
-  password: String!
-  PasswordResets: PasswordResetCreateManyWithoutUserInput
-  PrimaryEmail: EmailCreateOneWithoutPrimaryEmailOfInput
-  RefreshTokens: oAuthRefreshTokenCreateManyWithoutUserInput
-  Roles: RoleCreateManyWithoutUsersInput
-  sub: String
-  updatedAt: DateTime
-  username: String!
-  UserPool: UserPoolCreateOneWithoutUsersInput!
+  UserPool: UserPoolCreateOneWithoutUsersInput
 }
 
 input UserCreateWithoutRefreshTokensInput {
@@ -1544,19 +1394,18 @@ input UserCreateWithoutRefreshTokensInput {
   AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutUserInput
   createdAt: DateTime
   Devices: UserDeviceCreateManyWithoutUserInput
-  Emails: EmailCreateManyWithoutUserInput
   Groups: GroupCreateManyWithoutUsersInput
   id: String
   isDisabled: Boolean
   password: String!
   PasswordResets: PasswordResetCreateManyWithoutUserInput
-  PrimaryEmail: EmailCreateOneWithoutPrimaryEmailOfInput
+  primaryEmail: String!
   Profile: ProfileCreateOneWithoutUserInput
   Roles: RoleCreateManyWithoutUsersInput
   sub: String
   updatedAt: DateTime
   username: String!
-  UserPool: UserPoolCreateOneWithoutUsersInput!
+  UserPool: UserPoolCreateOneWithoutUsersInput
 }
 
 input UserCreateWithoutRolesInput {
@@ -1564,19 +1413,18 @@ input UserCreateWithoutRolesInput {
   AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutUserInput
   createdAt: DateTime
   Devices: UserDeviceCreateManyWithoutUserInput
-  Emails: EmailCreateManyWithoutUserInput
   Groups: GroupCreateManyWithoutUsersInput
   id: String
   isDisabled: Boolean
   password: String!
   PasswordResets: PasswordResetCreateManyWithoutUserInput
-  PrimaryEmail: EmailCreateOneWithoutPrimaryEmailOfInput
+  primaryEmail: String!
   Profile: ProfileCreateOneWithoutUserInput
   RefreshTokens: oAuthRefreshTokenCreateManyWithoutUserInput
   sub: String
   updatedAt: DateTime
   username: String!
-  UserPool: UserPoolCreateOneWithoutUsersInput!
+  UserPool: UserPoolCreateOneWithoutUsersInput
 }
 
 input UserCreateWithoutUserPoolInput {
@@ -1584,13 +1432,12 @@ input UserCreateWithoutUserPoolInput {
   AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutUserInput
   createdAt: DateTime
   Devices: UserDeviceCreateManyWithoutUserInput
-  Emails: EmailCreateManyWithoutUserInput
   Groups: GroupCreateManyWithoutUsersInput
   id: String
   isDisabled: Boolean
   password: String!
   PasswordResets: PasswordResetCreateManyWithoutUserInput
-  PrimaryEmail: EmailCreateOneWithoutPrimaryEmailOfInput
+  primaryEmail: String!
   Profile: ProfileCreateOneWithoutUserInput
   RefreshTokens: oAuthRefreshTokenCreateManyWithoutUserInput
   Roles: RoleCreateManyWithoutUsersInput

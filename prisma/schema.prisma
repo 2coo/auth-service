@@ -11,6 +11,23 @@ generator client {
   previewFeatures = ["transactionApi", "connectOrCreate"]
 }
 
+enum SystemRole {
+  SUPER_ADMIN
+  ADMIN
+  DEVELOPER
+  USER
+}
+
+model SystemUser {
+  id        String     @id @default(uuid())
+  username  String     @unique
+  email     String     @unique
+  password  String
+  role      SystemRole @default(USER)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
 enum GrantType {
   AUTHORIZATION_CODE
   PASSWORD
@@ -222,8 +239,8 @@ model User {
   AccessTokens       oAuthAccessToken[]
   AuthorizationCodes oAuthAuthorizationCode[]
   RefreshTokens      oAuthRefreshToken[]
-  UserPool           UserPool                 @relation(fields: [userPoolId], references: [id])
-  userPoolId         String
+  UserPool           UserPool?                @relation(fields: [userPoolId], references: [id])
+  userPoolId         String?
   createdAt          DateTime                 @default(now())
   updatedAt          DateTime                 @updatedAt
 }

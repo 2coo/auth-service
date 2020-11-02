@@ -1,6 +1,8 @@
-import { PrismaClient, GrantType } from '@prisma/client'
+import { PrismaClient, GrantType, oAuthGrant } from '@prisma/client'
 
-export const seedGrantTypes = async (prisma: PrismaClient) => {
+export const seedGrantTypes = async (
+  prisma: PrismaClient,
+): Promise<oAuthGrant[]> => {
   const type1 = prisma.oAuthGrant.create({
     data: {
       grantType: GrantType.AUTHORIZATION_CODE,
@@ -26,5 +28,5 @@ export const seedGrantTypes = async (prisma: PrismaClient) => {
       grantType: GrantType.REFRESH_TOKEN,
     },
   })
-  await prisma.$transaction([type1, type2, type3, type4, type5])
+  return prisma.$transaction([type1, type2, type3, type4, type5])
 }

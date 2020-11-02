@@ -1,11 +1,12 @@
 import { objectType } from '@nexus/schema'
 
-export const Email = objectType({
-  name: 'Email',
+export const SystemUser = objectType({
+  name: 'SystemUser',
   definition(t) {
+    t.model.id()
+    t.model.username()
     t.model.email()
-    t.model.Profile()
-    t.model.isVerified()
+    t.model.role()
     t.model.createdAt()
     t.model.updatedAt()
   },
