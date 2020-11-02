@@ -5,7 +5,7 @@ export const oAuthResourceServer = objectType({
   definition(t) {
     t.model.name()
     t.model.identifier()
-    t.model.scopes()
+    t.model.Scopes()
     t.model.createdAt()
   },
 })

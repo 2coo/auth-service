@@ -14,45 +14,50 @@ input CodeOAuthClientIdCompoundUniqueInput {
 
 scalar DateTime
 
-input EmailCreateManyWithoutProfileInput {
-  connect: [EmailWhereUniqueInput!]
-  connectOrCreate: [EmailCreateOrConnectWithoutProfileInput!]
-  create: [EmailCreateWithoutProfileInput!]
+type Email {
+  createdAt: DateTime!
+  email: String!
+  isVerified: Boolean!
+  PrimaryEmailOf: User!
+  updatedAt: DateTime!
+  User: User!
 }
 
-input EmailCreateOrConnectWithoutProfileInput {
-  create: EmailCreateWithoutProfileInput!
+input EmailCreateManyWithoutUserInput {
+  connect: [EmailWhereUniqueInput!]
+  connectOrCreate: [EmailCreateOrConnectWithoutUserInput!]
+  create: [EmailCreateWithoutUserInput!]
+}
+
+input EmailCreateOneWithoutPrimaryEmailOfInput {
+  connect: EmailWhereUniqueInput
+  connectOrCreate: EmailCreateOrConnectWithoutUserInput
+  create: EmailCreateWithoutPrimaryEmailOfInput
+}
+
+input EmailCreateOrConnectWithoutUserInput {
+  create: EmailCreateWithoutUserInput!
   where: EmailWhereUniqueInput!
 }
 
-input EmailCreateWithoutProfileInput {
+input EmailCreateWithoutPrimaryEmailOfInput {
   createdAt: DateTime
   email: String!
-  emailType: EmailTypeCreateOneWithoutEmailsInput!
   id: String
+  isVerified: Boolean!
   updatedAt: DateTime
+  User: UserCreateOneWithoutEmailsInput!
+  userId: String!
 }
 
-input EmailTypeCreateOneWithoutEmailsInput {
-  connect: EmailTypeWhereUniqueInput
-  connectOrCreate: EmailTypeCreateOrConnectWithoutEmailInput
-  create: EmailTypeCreateWithoutEmailsInput
-}
-
-input EmailTypeCreateOrConnectWithoutEmailInput {
-  create: EmailTypeCreateWithoutEmailsInput!
-  where: EmailTypeWhereUniqueInput!
-}
-
-input EmailTypeCreateWithoutEmailsInput {
+input EmailCreateWithoutUserInput {
   createdAt: DateTime
+  email: String!
   id: String
-  type: String!
+  isVerified: Boolean!
+  PrimaryEmailOf: UserCreateOneWithoutPrimaryEmailInput!
   updatedAt: DateTime
-}
-
-input EmailTypeWhereUniqueInput {
-  id: String
+  userId: String!
 }
 
 input EmailWhereUniqueInput {
@@ -80,7 +85,19 @@ type Group {
   description: String
   name: String!
   updatedAt: DateTime!
-  users(after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int): [User!]!
+  Users(after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int): [User!]!
+}
+
+input GroupCreateManyWithoutRolesInput {
+  connect: [GroupWhereUniqueInput!]
+  connectOrCreate: [GroupCreateOrConnectWithoutRoleInput!]
+  create: [GroupCreateWithoutRolesInput!]
+}
+
+input GroupCreateManyWithoutUserPoolInput {
+  connect: [GroupWhereUniqueInput!]
+  connectOrCreate: [GroupCreateOrConnectWithoutUserPoolInput!]
+  create: [GroupCreateWithoutUserPoolInput!]
 }
 
 input GroupCreateManyWithoutUsersInput {
@@ -89,9 +106,39 @@ input GroupCreateManyWithoutUsersInput {
   create: [GroupCreateWithoutUsersInput!]
 }
 
+input GroupCreateOrConnectWithoutRoleInput {
+  create: GroupCreateWithoutRolesInput!
+  where: GroupWhereUniqueInput!
+}
+
 input GroupCreateOrConnectWithoutUserInput {
   create: GroupCreateWithoutUsersInput!
   where: GroupWhereUniqueInput!
+}
+
+input GroupCreateOrConnectWithoutUserPoolInput {
+  create: GroupCreateWithoutUserPoolInput!
+  where: GroupWhereUniqueInput!
+}
+
+input GroupCreateWithoutRolesInput {
+  createdAt: DateTime
+  description: String
+  id: String
+  name: String!
+  updatedAt: DateTime
+  UserPool: UserPoolCreateOneWithoutGroupsInput!
+  Users: UserCreateManyWithoutGroupsInput
+}
+
+input GroupCreateWithoutUserPoolInput {
+  createdAt: DateTime
+  description: String
+  id: String
+  name: String!
+  Roles: RoleCreateManyWithoutGroupsInput
+  updatedAt: DateTime
+  Users: UserCreateManyWithoutGroupsInput
 }
 
 input GroupCreateWithoutUsersInput {
@@ -99,7 +146,9 @@ input GroupCreateWithoutUsersInput {
   description: String
   id: String
   name: String!
+  Roles: RoleCreateManyWithoutGroupsInput
   updatedAt: DateTime
+  UserPool: UserPoolCreateOneWithoutGroupsInput!
 }
 
 input GroupWhereUniqueInput {
@@ -113,11 +162,11 @@ type Mutation {
 
 type oAuthAccessToken {
   accessToken: String!
-  client: oAuthClient!
+  Client: oAuthClient!
   createdAt: DateTime!
   expirationDate: DateTime!
-  scopes(after: oAuthScopeWhereUniqueInput, before: oAuthScopeWhereUniqueInput, first: Int, last: Int): [oAuthScope!]!
-  user: User
+  Scopes(after: oAuthScopeWhereUniqueInput, before: oAuthScopeWhereUniqueInput, first: Int, last: Int): [oAuthScope!]!
+  User: User
 }
 
 input oAuthAccessTokenCreateManyWithoutClientInput {
@@ -158,28 +207,28 @@ input oAuthAccessTokenCreateWithoutClientInput {
   createdAt: DateTime
   expirationDate: DateTime!
   id: String
-  scopes: oAuthScopeCreateManyWithoutAccessTokensInput
+  Scopes: oAuthScopeCreateManyWithoutAccessTokensInput
   updatedAt: DateTime
-  user: UserCreateOneWithoutOAuthAccessTokenInput
+  User: UserCreateOneWithoutAccessTokensInput
 }
 
 input oAuthAccessTokenCreateWithoutScopesInput {
   accessToken: String
-  client: oAuthClientCreateOneWithoutAccessTokensInput!
+  Client: oAuthClientCreateOneWithoutAccessTokensInput!
   createdAt: DateTime
   expirationDate: DateTime!
   id: String
   updatedAt: DateTime
-  user: UserCreateOneWithoutOAuthAccessTokenInput
+  User: UserCreateOneWithoutAccessTokensInput
 }
 
 input oAuthAccessTokenCreateWithoutUserInput {
   accessToken: String
-  client: oAuthClientCreateOneWithoutAccessTokensInput!
+  Client: oAuthClientCreateOneWithoutAccessTokensInput!
   createdAt: DateTime
   expirationDate: DateTime!
   id: String
-  scopes: oAuthScopeCreateManyWithoutAccessTokensInput
+  Scopes: oAuthScopeCreateManyWithoutAccessTokensInput
   updatedAt: DateTime
 }
 
@@ -190,13 +239,13 @@ input oAuthAccessTokenWhereUniqueInput {
 }
 
 type oAuthAuthorizationCode {
-  client: oAuthClient!
+  Client: oAuthClient!
   code: String!
   createdAt: DateTime!
   expirationDate: DateTime!
   redirectURI: String!
-  scopes(after: oAuthScopeWhereUniqueInput, before: oAuthScopeWhereUniqueInput, first: Int, last: Int): [oAuthScope!]!
-  user: User!
+  Scopes(after: oAuthScopeWhereUniqueInput, before: oAuthScopeWhereUniqueInput, first: Int, last: Int): [oAuthScope!]!
+  User: User!
 }
 
 input oAuthAuthorizationCodeCreateManyWithoutClientInput {
@@ -238,30 +287,30 @@ input oAuthAuthorizationCodeCreateWithoutClientInput {
   expirationDate: DateTime!
   id: String
   redirectURI: String!
-  scopes: oAuthScopeCreateManyWithoutAuthorizationCodesInput
+  Scopes: oAuthScopeCreateManyWithoutAuthorizationCodesInput
   updatedAt: DateTime
-  user: UserCreateOneWithoutOAuthAuthorizationCodeInput!
+  User: UserCreateOneWithoutAuthorizationCodesInput!
 }
 
 input oAuthAuthorizationCodeCreateWithoutScopesInput {
-  client: oAuthClientCreateOneWithoutAuthorizationCodesInput!
+  Client: oAuthClientCreateOneWithoutAuthorizationCodesInput!
   code: String
   createdAt: DateTime
   expirationDate: DateTime!
   id: String
   redirectURI: String!
   updatedAt: DateTime
-  user: UserCreateOneWithoutOAuthAuthorizationCodeInput!
+  User: UserCreateOneWithoutAuthorizationCodesInput!
 }
 
 input oAuthAuthorizationCodeCreateWithoutUserInput {
-  client: oAuthClientCreateOneWithoutAuthorizationCodesInput!
+  Client: oAuthClientCreateOneWithoutAuthorizationCodesInput!
   code: String
   createdAt: DateTime
   expirationDate: DateTime!
   id: String
   redirectURI: String!
-  scopes: oAuthScopeCreateManyWithoutAuthorizationCodesInput
+  Scopes: oAuthScopeCreateManyWithoutAuthorizationCodesInput
   updatedAt: DateTime
 }
 
@@ -272,46 +321,54 @@ input oAuthAuthorizationCodeWhereUniqueInput {
 
 type oAuthClient {
   accessTokenLifetime: Int!
-  accessTokens(after: oAuthAccessTokenWhereUniqueInput, before: oAuthAccessTokenWhereUniqueInput, first: Int, last: Int): [oAuthAccessToken!]!
-  authorizationCodes(after: oAuthAuthorizationCodeWhereUniqueInput, before: oAuthAuthorizationCodeWhereUniqueInput, first: Int, last: Int): [oAuthAuthorizationCode!]!
+  AccessTokens(after: oAuthAccessTokenWhereUniqueInput, before: oAuthAccessTokenWhereUniqueInput, first: Int, last: Int): [oAuthAccessToken!]!
+  AuthorizationCodes(after: oAuthAuthorizationCodeWhereUniqueInput, before: oAuthAuthorizationCodeWhereUniqueInput, first: Int, last: Int): [oAuthAuthorizationCode!]!
   createdAt: DateTime!
-  grants(after: oAuthGrantWhereUniqueInput, before: oAuthGrantWhereUniqueInput, first: Int, last: Int): [oAuthGrant!]!
+  Grants(after: oAuthGrantWhereUniqueInput, before: oAuthGrantWhereUniqueInput, first: Int, last: Int): [oAuthGrant!]!
   id: String!
   idTokenLifetime: Int!
   isTrusted: Boolean!
-  javascriptOrigins(after: oAuthJavascriptOriginWhereUniqueInput, before: oAuthJavascriptOriginWhereUniqueInput, first: Int, last: Int): [oAuthJavascriptOrigin!]!
+  JavascriptOrigins(after: oAuthJavascriptOriginWhereUniqueInput, before: oAuthJavascriptOriginWhereUniqueInput, first: Int, last: Int): [oAuthJavascriptOrigin!]!
   name: String!
-  redirectUris(after: oAuthRedirectURIWhereUniqueInput, before: oAuthRedirectURIWhereUniqueInput, first: Int, last: Int): [oAuthRedirectURI!]!
+  RedirectUris(after: oAuthRedirectURIWhereUniqueInput, before: oAuthRedirectURIWhereUniqueInput, first: Int, last: Int): [oAuthRedirectURI!]!
   refreshTokenLifetime: Int!
-  refreshTokens(after: oAuthRefreshTokenWhereUniqueInput, before: oAuthRefreshTokenWhereUniqueInput, first: Int, last: Int): [oAuthRefreshToken!]!
-  scopes(after: oAuthScopeWhereUniqueInput, before: oAuthScopeWhereUniqueInput, first: Int, last: Int): [oAuthScope!]!
+  RefreshTokens(after: oAuthRefreshTokenWhereUniqueInput, before: oAuthRefreshTokenWhereUniqueInput, first: Int, last: Int): [oAuthRefreshToken!]!
+  Scopes(after: oAuthScopeWhereUniqueInput, before: oAuthScopeWhereUniqueInput, first: Int, last: Int): [oAuthScope!]!
   updatedAt: DateTime!
 }
 
 input oAuthClientCreateInput {
   accessTokenLifetime: Int
-  accessTokens: oAuthAccessTokenCreateManyWithoutClientInput
-  authorizationCodes: oAuthAuthorizationCodeCreateManyWithoutClientInput
+  AccessTokens: oAuthAccessTokenCreateManyWithoutClientInput
+  AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutClientInput
   createdAt: DateTime
-  grants: oAuthGrantCreateManyWithoutClientsInput
+  Grants: oAuthGrantCreateManyWithoutClientsInput
   id: String
   idTokenLifetime: Int
   isTrusted: Boolean
-  javascriptOrigins: oAuthJavascriptOriginCreateManyWithoutClientInput
+  JavascriptOrigins: oAuthJavascriptOriginCreateManyWithoutClientInput
+  logo: String!
   name: String!
-  redirectUris: oAuthRedirectURICreateManyWithoutClientInput
+  RedirectUris: oAuthRedirectURICreateManyWithoutClientInput
   refreshTokenLifetime: Int
-  refreshTokens: oAuthRefreshTokenCreateManyWithoutClientInput
-  scopes: oAuthScopeCreateManyWithoutClientsInput
+  RefreshTokens: oAuthRefreshTokenCreateManyWithoutClientInput
+  ResourceServers: oAuthResourceServerCreateManyWithoutClientInput
+  Scopes: oAuthScopeCreateManyWithoutClientsInput
   secret: String
   updatedAt: DateTime
-  users: UserCreateManyWithoutOAuthClientInput
+  UserPool: UserPoolCreateOneWithoutClientsInput!
 }
 
 input oAuthClientCreateManyWithoutScopesInput {
   connect: [oAuthClientWhereUniqueInput!]
   connectOrCreate: [oAuthClientCreateOrConnectWithoutoAuthScopeInput!]
   create: [oAuthClientCreateWithoutScopesInput!]
+}
+
+input oAuthClientCreateManyWithoutUserPoolInput {
+  connect: [oAuthClientWhereUniqueInput!]
+  connectOrCreate: [oAuthClientCreateOrConnectWithoutUserPoolInput!]
+  create: [oAuthClientCreateWithoutUserPoolInput!]
 }
 
 input oAuthClientCreateOneWithoutAccessTokensInput {
@@ -332,10 +389,10 @@ input oAuthClientCreateOneWithoutRefreshTokensInput {
   create: oAuthClientCreateWithoutRefreshTokensInput
 }
 
-input oAuthClientCreateOneWithoutUsersInput {
+input oAuthClientCreateOneWithoutResourceServersInput {
   connect: oAuthClientWhereUniqueInput
-  connectOrCreate: oAuthClientCreateOrConnectWithoutUserInput
-  create: oAuthClientCreateWithoutUsersInput
+  connectOrCreate: oAuthClientCreateOrConnectWithoutoAuthResourceServerInput
+  create: oAuthClientCreateWithoutResourceServersInput
 }
 
 input oAuthClientCreateOrConnectWithoutoAuthAccessTokenInput {
@@ -353,107 +410,143 @@ input oAuthClientCreateOrConnectWithoutoAuthRefreshTokenInput {
   where: oAuthClientWhereUniqueInput!
 }
 
+input oAuthClientCreateOrConnectWithoutoAuthResourceServerInput {
+  create: oAuthClientCreateWithoutResourceServersInput!
+  where: oAuthClientWhereUniqueInput!
+}
+
 input oAuthClientCreateOrConnectWithoutoAuthScopeInput {
   create: oAuthClientCreateWithoutScopesInput!
   where: oAuthClientWhereUniqueInput!
 }
 
-input oAuthClientCreateOrConnectWithoutUserInput {
-  create: oAuthClientCreateWithoutUsersInput!
+input oAuthClientCreateOrConnectWithoutUserPoolInput {
+  create: oAuthClientCreateWithoutUserPoolInput!
   where: oAuthClientWhereUniqueInput!
 }
 
 input oAuthClientCreateWithoutAccessTokensInput {
   accessTokenLifetime: Int
-  authorizationCodes: oAuthAuthorizationCodeCreateManyWithoutClientInput
+  AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutClientInput
   createdAt: DateTime
-  grants: oAuthGrantCreateManyWithoutClientsInput
+  Grants: oAuthGrantCreateManyWithoutClientsInput
   id: String
   idTokenLifetime: Int
   isTrusted: Boolean
-  javascriptOrigins: oAuthJavascriptOriginCreateManyWithoutClientInput
+  JavascriptOrigins: oAuthJavascriptOriginCreateManyWithoutClientInput
+  logo: String!
   name: String!
-  redirectUris: oAuthRedirectURICreateManyWithoutClientInput
+  RedirectUris: oAuthRedirectURICreateManyWithoutClientInput
   refreshTokenLifetime: Int
-  refreshTokens: oAuthRefreshTokenCreateManyWithoutClientInput
-  scopes: oAuthScopeCreateManyWithoutClientsInput
+  RefreshTokens: oAuthRefreshTokenCreateManyWithoutClientInput
+  ResourceServers: oAuthResourceServerCreateManyWithoutClientInput
+  Scopes: oAuthScopeCreateManyWithoutClientsInput
   secret: String
   updatedAt: DateTime
-  users: UserCreateManyWithoutOAuthClientInput
+  UserPool: UserPoolCreateOneWithoutClientsInput!
 }
 
 input oAuthClientCreateWithoutAuthorizationCodesInput {
   accessTokenLifetime: Int
-  accessTokens: oAuthAccessTokenCreateManyWithoutClientInput
+  AccessTokens: oAuthAccessTokenCreateManyWithoutClientInput
   createdAt: DateTime
-  grants: oAuthGrantCreateManyWithoutClientsInput
+  Grants: oAuthGrantCreateManyWithoutClientsInput
   id: String
   idTokenLifetime: Int
   isTrusted: Boolean
-  javascriptOrigins: oAuthJavascriptOriginCreateManyWithoutClientInput
+  JavascriptOrigins: oAuthJavascriptOriginCreateManyWithoutClientInput
+  logo: String!
   name: String!
-  redirectUris: oAuthRedirectURICreateManyWithoutClientInput
+  RedirectUris: oAuthRedirectURICreateManyWithoutClientInput
   refreshTokenLifetime: Int
-  refreshTokens: oAuthRefreshTokenCreateManyWithoutClientInput
-  scopes: oAuthScopeCreateManyWithoutClientsInput
+  RefreshTokens: oAuthRefreshTokenCreateManyWithoutClientInput
+  ResourceServers: oAuthResourceServerCreateManyWithoutClientInput
+  Scopes: oAuthScopeCreateManyWithoutClientsInput
   secret: String
   updatedAt: DateTime
-  users: UserCreateManyWithoutOAuthClientInput
+  UserPool: UserPoolCreateOneWithoutClientsInput!
 }
 
 input oAuthClientCreateWithoutRefreshTokensInput {
   accessTokenLifetime: Int
-  accessTokens: oAuthAccessTokenCreateManyWithoutClientInput
-  authorizationCodes: oAuthAuthorizationCodeCreateManyWithoutClientInput
+  AccessTokens: oAuthAccessTokenCreateManyWithoutClientInput
+  AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutClientInput
   createdAt: DateTime
-  grants: oAuthGrantCreateManyWithoutClientsInput
+  Grants: oAuthGrantCreateManyWithoutClientsInput
   id: String
   idTokenLifetime: Int
   isTrusted: Boolean
-  javascriptOrigins: oAuthJavascriptOriginCreateManyWithoutClientInput
+  JavascriptOrigins: oAuthJavascriptOriginCreateManyWithoutClientInput
+  logo: String!
   name: String!
-  redirectUris: oAuthRedirectURICreateManyWithoutClientInput
+  RedirectUris: oAuthRedirectURICreateManyWithoutClientInput
   refreshTokenLifetime: Int
-  scopes: oAuthScopeCreateManyWithoutClientsInput
+  ResourceServers: oAuthResourceServerCreateManyWithoutClientInput
+  Scopes: oAuthScopeCreateManyWithoutClientsInput
   secret: String
   updatedAt: DateTime
-  users: UserCreateManyWithoutOAuthClientInput
+  UserPool: UserPoolCreateOneWithoutClientsInput!
+}
+
+input oAuthClientCreateWithoutResourceServersInput {
+  accessTokenLifetime: Int
+  AccessTokens: oAuthAccessTokenCreateManyWithoutClientInput
+  AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutClientInput
+  createdAt: DateTime
+  Grants: oAuthGrantCreateManyWithoutClientsInput
+  id: String
+  idTokenLifetime: Int
+  isTrusted: Boolean
+  JavascriptOrigins: oAuthJavascriptOriginCreateManyWithoutClientInput
+  logo: String!
+  name: String!
+  RedirectUris: oAuthRedirectURICreateManyWithoutClientInput
+  refreshTokenLifetime: Int
+  RefreshTokens: oAuthRefreshTokenCreateManyWithoutClientInput
+  Scopes: oAuthScopeCreateManyWithoutClientsInput
+  secret: String
+  updatedAt: DateTime
+  UserPool: UserPoolCreateOneWithoutClientsInput!
 }
 
 input oAuthClientCreateWithoutScopesInput {
   accessTokenLifetime: Int
-  accessTokens: oAuthAccessTokenCreateManyWithoutClientInput
-  authorizationCodes: oAuthAuthorizationCodeCreateManyWithoutClientInput
+  AccessTokens: oAuthAccessTokenCreateManyWithoutClientInput
+  AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutClientInput
   createdAt: DateTime
-  grants: oAuthGrantCreateManyWithoutClientsInput
+  Grants: oAuthGrantCreateManyWithoutClientsInput
   id: String
   idTokenLifetime: Int
   isTrusted: Boolean
-  javascriptOrigins: oAuthJavascriptOriginCreateManyWithoutClientInput
+  JavascriptOrigins: oAuthJavascriptOriginCreateManyWithoutClientInput
+  logo: String!
   name: String!
-  redirectUris: oAuthRedirectURICreateManyWithoutClientInput
+  RedirectUris: oAuthRedirectURICreateManyWithoutClientInput
   refreshTokenLifetime: Int
-  refreshTokens: oAuthRefreshTokenCreateManyWithoutClientInput
+  RefreshTokens: oAuthRefreshTokenCreateManyWithoutClientInput
+  ResourceServers: oAuthResourceServerCreateManyWithoutClientInput
   secret: String
   updatedAt: DateTime
-  users: UserCreateManyWithoutOAuthClientInput
+  UserPool: UserPoolCreateOneWithoutClientsInput!
 }
 
-input oAuthClientCreateWithoutUsersInput {
+input oAuthClientCreateWithoutUserPoolInput {
   accessTokenLifetime: Int
-  accessTokens: oAuthAccessTokenCreateManyWithoutClientInput
-  authorizationCodes: oAuthAuthorizationCodeCreateManyWithoutClientInput
+  AccessTokens: oAuthAccessTokenCreateManyWithoutClientInput
+  AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutClientInput
   createdAt: DateTime
-  grants: oAuthGrantCreateManyWithoutClientsInput
+  Grants: oAuthGrantCreateManyWithoutClientsInput
   id: String
   idTokenLifetime: Int
   isTrusted: Boolean
-  javascriptOrigins: oAuthJavascriptOriginCreateManyWithoutClientInput
+  JavascriptOrigins: oAuthJavascriptOriginCreateManyWithoutClientInput
+  logo: String!
   name: String!
-  redirectUris: oAuthRedirectURICreateManyWithoutClientInput
+  RedirectUris: oAuthRedirectURICreateManyWithoutClientInput
   refreshTokenLifetime: Int
-  refreshTokens: oAuthRefreshTokenCreateManyWithoutClientInput
-  scopes: oAuthScopeCreateManyWithoutClientsInput
+  RefreshTokens: oAuthRefreshTokenCreateManyWithoutClientInput
+  ResourceServers: oAuthResourceServerCreateManyWithoutClientInput
+  Scopes: oAuthScopeCreateManyWithoutClientsInput
   secret: String
   updatedAt: DateTime
 }
@@ -467,8 +560,48 @@ type oAuthCustomScope {
   createdAt: DateTime!
   description: String
   name: String!
-  resourceServer: oAuthResourceServer!
+  ResourceServer: oAuthResourceServer!
   updatedAt: DateTime!
+}
+
+input oAuthCustomScopeCreateManyWithoutResourceServerInput {
+  connect: [oAuthCustomScopeWhereUniqueInput!]
+  connectOrCreate: [oAuthCustomScopeCreateOrConnectWithoutoAuthResourceServerInput!]
+  create: [oAuthCustomScopeCreateWithoutResourceServerInput!]
+}
+
+input oAuthCustomScopeCreateManyWithoutRolesInput {
+  connect: [oAuthCustomScopeWhereUniqueInput!]
+  connectOrCreate: [oAuthCustomScopeCreateOrConnectWithoutRoleInput!]
+  create: [oAuthCustomScopeCreateWithoutRolesInput!]
+}
+
+input oAuthCustomScopeCreateOrConnectWithoutoAuthResourceServerInput {
+  create: oAuthCustomScopeCreateWithoutResourceServerInput!
+  where: oAuthCustomScopeWhereUniqueInput!
+}
+
+input oAuthCustomScopeCreateOrConnectWithoutRoleInput {
+  create: oAuthCustomScopeCreateWithoutRolesInput!
+  where: oAuthCustomScopeWhereUniqueInput!
+}
+
+input oAuthCustomScopeCreateWithoutResourceServerInput {
+  createdAt: DateTime
+  description: String
+  id: String
+  name: String!
+  Roles: RoleCreateManyWithoutCustomScopesInput
+  updatedAt: DateTime
+}
+
+input oAuthCustomScopeCreateWithoutRolesInput {
+  createdAt: DateTime
+  description: String
+  id: String
+  name: String!
+  ResourceServer: oAuthResourceServerCreateOneWithoutScopesInput!
+  updatedAt: DateTime
 }
 
 input oAuthCustomScopeWhereUniqueInput {
@@ -600,28 +733,28 @@ input oAuthRefreshTokenCreateWithoutClientInput {
   expirationDate: DateTime!
   id: String
   refreshToken: String
-  scopes: oAuthScopeCreateManyWithoutRefreshTokenScopeInput
+  Scopes: oAuthScopeCreateManyWithoutRefreshTokenScopeInput
   updatedAt: DateTime
-  user: UserCreateOneWithoutOAuthRefreshTokenInput
+  User: UserCreateOneWithoutRefreshTokensInput
 }
 
 input oAuthRefreshTokenCreateWithoutScopesInput {
-  client: oAuthClientCreateOneWithoutRefreshTokensInput!
+  Client: oAuthClientCreateOneWithoutRefreshTokensInput!
   createdAt: DateTime
   expirationDate: DateTime!
   id: String
   refreshToken: String
   updatedAt: DateTime
-  user: UserCreateOneWithoutOAuthRefreshTokenInput
+  User: UserCreateOneWithoutRefreshTokensInput
 }
 
 input oAuthRefreshTokenCreateWithoutUserInput {
-  client: oAuthClientCreateOneWithoutRefreshTokensInput!
+  Client: oAuthClientCreateOneWithoutRefreshTokensInput!
   createdAt: DateTime
   expirationDate: DateTime!
   id: String
   refreshToken: String
-  scopes: oAuthScopeCreateManyWithoutRefreshTokenScopeInput
+  Scopes: oAuthScopeCreateManyWithoutRefreshTokenScopeInput
   updatedAt: DateTime
 }
 
@@ -635,7 +768,75 @@ type oAuthResourceServer {
   createdAt: DateTime!
   identifier: String!
   name: String!
-  scopes(after: oAuthCustomScopeWhereUniqueInput, before: oAuthCustomScopeWhereUniqueInput, first: Int, last: Int): [oAuthCustomScope!]!
+  Scopes(after: oAuthCustomScopeWhereUniqueInput, before: oAuthCustomScopeWhereUniqueInput, first: Int, last: Int): [oAuthCustomScope!]!
+}
+
+input oAuthResourceServerCreateManyWithoutClientInput {
+  connect: [oAuthResourceServerWhereUniqueInput!]
+  connectOrCreate: [oAuthResourceServerCreateOrConnectWithoutoAuthClientInput!]
+  create: [oAuthResourceServerCreateWithoutClientInput!]
+}
+
+input oAuthResourceServerCreateManyWithoutUserPoolInput {
+  connect: [oAuthResourceServerWhereUniqueInput!]
+  connectOrCreate: [oAuthResourceServerCreateOrConnectWithoutUserPoolInput!]
+  create: [oAuthResourceServerCreateWithoutUserPoolInput!]
+}
+
+input oAuthResourceServerCreateOneWithoutScopesInput {
+  connect: oAuthResourceServerWhereUniqueInput
+  connectOrCreate: oAuthResourceServerCreateOrConnectWithoutoAuthCustomScopeInput
+  create: oAuthResourceServerCreateWithoutScopesInput
+}
+
+input oAuthResourceServerCreateOrConnectWithoutoAuthClientInput {
+  create: oAuthResourceServerCreateWithoutClientInput!
+  where: oAuthResourceServerWhereUniqueInput!
+}
+
+input oAuthResourceServerCreateOrConnectWithoutoAuthCustomScopeInput {
+  create: oAuthResourceServerCreateWithoutScopesInput!
+  where: oAuthResourceServerWhereUniqueInput!
+}
+
+input oAuthResourceServerCreateOrConnectWithoutUserPoolInput {
+  create: oAuthResourceServerCreateWithoutUserPoolInput!
+  where: oAuthResourceServerWhereUniqueInput!
+}
+
+input oAuthResourceServerCreateWithoutClientInput {
+  createdAt: DateTime
+  id: String
+  identifier: String!
+  name: String!
+  Scopes: oAuthCustomScopeCreateManyWithoutResourceServerInput
+  updatedAt: DateTime
+  UserPool: UserPoolCreateOneWithoutResourceServersInput!
+}
+
+input oAuthResourceServerCreateWithoutScopesInput {
+  Client: oAuthClientCreateOneWithoutResourceServersInput!
+  createdAt: DateTime
+  id: String
+  identifier: String!
+  name: String!
+  updatedAt: DateTime
+  UserPool: UserPoolCreateOneWithoutResourceServersInput!
+}
+
+input oAuthResourceServerCreateWithoutUserPoolInput {
+  Client: oAuthClientCreateOneWithoutResourceServersInput!
+  createdAt: DateTime
+  id: String
+  identifier: String!
+  name: String!
+  Scopes: oAuthCustomScopeCreateManyWithoutResourceServerInput
+  updatedAt: DateTime
+}
+
+input oAuthResourceServerWhereUniqueInput {
+  id: String
+  identifier: String
 }
 
 type oAuthScope {
@@ -667,6 +868,12 @@ input oAuthScopeCreateManyWithoutRefreshTokenScopeInput {
   create: [oAuthScopeCreateWithoutRefreshTokenScopeInput!]
 }
 
+input oAuthScopeCreateManyWithoutRolesInput {
+  connect: [oAuthScopeWhereUniqueInput!]
+  connectOrCreate: [oAuthScopeCreateOrConnectWithoutRoleInput!]
+  create: [oAuthScopeCreateWithoutRolesInput!]
+}
+
 input oAuthScopeCreateOrConnectWithoutoAuthAccessTokenInput {
   create: oAuthScopeCreateWithoutAccessTokensInput!
   where: oAuthScopeWhereUniqueInput!
@@ -687,51 +894,103 @@ input oAuthScopeCreateOrConnectWithoutoAuthRefreshTokenInput {
   where: oAuthScopeWhereUniqueInput!
 }
 
+input oAuthScopeCreateOrConnectWithoutRoleInput {
+  create: oAuthScopeCreateWithoutRolesInput!
+  where: oAuthScopeWhereUniqueInput!
+}
+
 input oAuthScopeCreateWithoutAccessTokensInput {
-  authorizationCodes: oAuthAuthorizationCodeCreateManyWithoutScopesInput
-  clients: oAuthClientCreateManyWithoutScopesInput
+  AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutScopesInput
+  Clients: oAuthClientCreateManyWithoutScopesInput
   createdAt: DateTime
   description: String
   id: String
   name: String!
-  refreshTokenScope: oAuthRefreshTokenCreateManyWithoutScopesInput
+  RefreshTokenScope: oAuthRefreshTokenCreateManyWithoutScopesInput
+  Roles: RoleCreateManyWithoutScopesInput
   updatedAt: DateTime
 }
 
 input oAuthScopeCreateWithoutAuthorizationCodesInput {
-  accessTokens: oAuthAccessTokenCreateManyWithoutScopesInput
-  clients: oAuthClientCreateManyWithoutScopesInput
+  AccessTokens: oAuthAccessTokenCreateManyWithoutScopesInput
+  Clients: oAuthClientCreateManyWithoutScopesInput
   createdAt: DateTime
   description: String
   id: String
   name: String!
-  refreshTokenScope: oAuthRefreshTokenCreateManyWithoutScopesInput
+  RefreshTokenScope: oAuthRefreshTokenCreateManyWithoutScopesInput
+  Roles: RoleCreateManyWithoutScopesInput
   updatedAt: DateTime
 }
 
 input oAuthScopeCreateWithoutClientsInput {
-  accessTokens: oAuthAccessTokenCreateManyWithoutScopesInput
-  authorizationCodes: oAuthAuthorizationCodeCreateManyWithoutScopesInput
+  AccessTokens: oAuthAccessTokenCreateManyWithoutScopesInput
+  AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutScopesInput
   createdAt: DateTime
   description: String
   id: String
   name: String!
-  refreshTokenScope: oAuthRefreshTokenCreateManyWithoutScopesInput
+  RefreshTokenScope: oAuthRefreshTokenCreateManyWithoutScopesInput
+  Roles: RoleCreateManyWithoutScopesInput
   updatedAt: DateTime
 }
 
 input oAuthScopeCreateWithoutRefreshTokenScopeInput {
-  accessTokens: oAuthAccessTokenCreateManyWithoutScopesInput
-  authorizationCodes: oAuthAuthorizationCodeCreateManyWithoutScopesInput
-  clients: oAuthClientCreateManyWithoutScopesInput
+  AccessTokens: oAuthAccessTokenCreateManyWithoutScopesInput
+  AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutScopesInput
+  Clients: oAuthClientCreateManyWithoutScopesInput
   createdAt: DateTime
   description: String
   id: String
   name: String!
+  Roles: RoleCreateManyWithoutScopesInput
+  updatedAt: DateTime
+}
+
+input oAuthScopeCreateWithoutRolesInput {
+  AccessTokens: oAuthAccessTokenCreateManyWithoutScopesInput
+  AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutScopesInput
+  Clients: oAuthClientCreateManyWithoutScopesInput
+  createdAt: DateTime
+  description: String
+  id: String
+  name: String!
+  RefreshTokenScope: oAuthRefreshTokenCreateManyWithoutScopesInput
   updatedAt: DateTime
 }
 
 input oAuthScopeWhereUniqueInput {
+  id: String
+}
+
+type Organization {
+  address: String
+  name: String!
+  UserPools(after: UserPoolWhereUniqueInput, before: UserPoolWhereUniqueInput, first: Int, last: Int): [UserPool!]!
+}
+
+input OrganizationCreateOneWithoutUserPoolsInput {
+  connect: OrganizationWhereUniqueInput
+  connectOrCreate: OrganizationCreateOrConnectWithoutUserPoolInput
+  create: OrganizationCreateWithoutUserPoolsInput
+}
+
+input OrganizationCreateOrConnectWithoutUserPoolInput {
+  create: OrganizationCreateWithoutUserPoolsInput!
+  where: OrganizationWhereUniqueInput!
+}
+
+input OrganizationCreateWithoutUserPoolsInput {
+  address: String
+  createdAt: DateTime
+  id: String
+  name: String!
+  phoneNumber: String
+  updatedAt: DateTime
+  url: String
+}
+
+input OrganizationWhereUniqueInput {
   id: String
 }
 
@@ -759,7 +1018,7 @@ input PasswordResetWhereUniqueInput {
 }
 
 type Photo {
-  profile: Profile!
+  Profile: Profile!
 }
 
 input PhotoCreateManyWithoutProfileInput {
@@ -782,7 +1041,7 @@ input PhotoCreateOrConnectWithoutProfileInput {
 input PhotoCreateWithoutCurrentPhotoOfInput {
   createdAt: DateTime
   id: String
-  profile: ProfileCreateOneWithoutPhotosInput!
+  Profile: ProfileCreateOneWithoutPhotosInput!
   profileId: String!
   updatedAt: DateTime
   value: String!
@@ -790,7 +1049,7 @@ input PhotoCreateWithoutCurrentPhotoOfInput {
 
 input PhotoCreateWithoutProfileInput {
   createdAt: DateTime
-  currentPhotoOf: ProfileCreateOneWithoutCurrentProfileImageInput!
+  CurrentPhotoOf: ProfileCreateOneWithoutCurrentProfileImageInput!
   id: String
   profileId: String!
   updatedAt: DateTime
@@ -804,15 +1063,15 @@ input PhotoWhereUniqueInput {
 type Profile {
   birthdate: DateTime
   createdAt: DateTime!
-  currentProfileImage: Photo!
+  CurrentProfileImage: Photo!
   displayName: String
   firstName: String
   gender: Gender
   lastName: String
   mobileNumber: String
-  photos(after: PhotoWhereUniqueInput, before: PhotoWhereUniqueInput, first: Int, last: Int): [Photo!]!
+  Photos(after: PhotoWhereUniqueInput, before: PhotoWhereUniqueInput, first: Int, last: Int): [Photo!]!
   updatedAt: DateTime!
-  user: User!
+  User: User!
 }
 
 input ProfileCreateOneWithoutCurrentProfileImageInput {
@@ -847,44 +1106,41 @@ input ProfileCreateWithoutCurrentProfileImageInput {
   birthdate: DateTime
   createdAt: DateTime
   displayName: String
-  emails: EmailCreateManyWithoutProfileInput
   firstName: String
   gender: Gender
   id: String
   lastName: String
   mobileNumber: String
-  photos: PhotoCreateManyWithoutProfileInput
+  Photos: PhotoCreateManyWithoutProfileInput
   updatedAt: DateTime
-  user: UserCreateOneWithoutProfileInput!
+  User: UserCreateOneWithoutProfileInput!
 }
 
 input ProfileCreateWithoutPhotosInput {
   birthdate: DateTime
   createdAt: DateTime
-  currentProfileImage: PhotoCreateOneWithoutCurrentPhotoOfInput
+  CurrentProfileImage: PhotoCreateOneWithoutCurrentPhotoOfInput
   displayName: String
-  emails: EmailCreateManyWithoutProfileInput
   firstName: String
   gender: Gender
   id: String
   lastName: String
   mobileNumber: String
   updatedAt: DateTime
-  user: UserCreateOneWithoutProfileInput!
+  User: UserCreateOneWithoutProfileInput!
 }
 
 input ProfileCreateWithoutUserInput {
   birthdate: DateTime
   createdAt: DateTime
-  currentProfileImage: PhotoCreateOneWithoutCurrentPhotoOfInput
+  CurrentProfileImage: PhotoCreateOneWithoutCurrentPhotoOfInput
   displayName: String
-  emails: EmailCreateManyWithoutProfileInput
   firstName: String
   gender: Gender
   id: String
   lastName: String
   mobileNumber: String
-  photos: PhotoCreateManyWithoutProfileInput
+  Photos: PhotoCreateManyWithoutProfileInput
   updatedAt: DateTime
 }
 
@@ -908,66 +1164,207 @@ input RefreshTokenOAuthClientIdCompoundUniqueInput {
   refreshToken: String!
 }
 
-"""Roles of oauth system"""
-enum SystemRole {
-  ADMIN
-  DEVELOPER
-  SUPER_ADMIN
-  USER
+type Role {
+  createdAt: DateTime!
+  Groups(after: GroupWhereUniqueInput, before: GroupWhereUniqueInput, first: Int, last: Int): [Group!]!
+  name: String!
+  Scopes(after: oAuthScopeWhereUniqueInput, before: oAuthScopeWhereUniqueInput, first: Int, last: Int): [oAuthScope!]!
+  updatedAt: DateTime!
+  Users(after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int): [User!]!
+}
+
+input RoleCreateManyWithoutCustomScopesInput {
+  connect: [RoleWhereUniqueInput!]
+  connectOrCreate: [RoleCreateOrConnectWithoutoAuthCustomScopeInput!]
+  create: [RoleCreateWithoutCustomScopesInput!]
+}
+
+input RoleCreateManyWithoutGroupsInput {
+  connect: [RoleWhereUniqueInput!]
+  connectOrCreate: [RoleCreateOrConnectWithoutGroupInput!]
+  create: [RoleCreateWithoutGroupsInput!]
+}
+
+input RoleCreateManyWithoutScopesInput {
+  connect: [RoleWhereUniqueInput!]
+  connectOrCreate: [RoleCreateOrConnectWithoutoAuthScopeInput!]
+  create: [RoleCreateWithoutScopesInput!]
+}
+
+input RoleCreateManyWithoutUserPoolInput {
+  connect: [RoleWhereUniqueInput!]
+  connectOrCreate: [RoleCreateOrConnectWithoutUserPoolInput!]
+  create: [RoleCreateWithoutUserPoolInput!]
+}
+
+input RoleCreateManyWithoutUsersInput {
+  connect: [RoleWhereUniqueInput!]
+  connectOrCreate: [RoleCreateOrConnectWithoutUserInput!]
+  create: [RoleCreateWithoutUsersInput!]
+}
+
+input RoleCreateOrConnectWithoutGroupInput {
+  create: RoleCreateWithoutGroupsInput!
+  where: RoleWhereUniqueInput!
+}
+
+input RoleCreateOrConnectWithoutoAuthCustomScopeInput {
+  create: RoleCreateWithoutCustomScopesInput!
+  where: RoleWhereUniqueInput!
+}
+
+input RoleCreateOrConnectWithoutoAuthScopeInput {
+  create: RoleCreateWithoutScopesInput!
+  where: RoleWhereUniqueInput!
+}
+
+input RoleCreateOrConnectWithoutUserInput {
+  create: RoleCreateWithoutUsersInput!
+  where: RoleWhereUniqueInput!
+}
+
+input RoleCreateOrConnectWithoutUserPoolInput {
+  create: RoleCreateWithoutUserPoolInput!
+  where: RoleWhereUniqueInput!
+}
+
+input RoleCreateWithoutCustomScopesInput {
+  createdAt: DateTime
+  description: String
+  Groups: GroupCreateManyWithoutRolesInput
+  id: String
+  name: String!
+  Scopes: oAuthScopeCreateManyWithoutRolesInput
+  updatedAt: DateTime
+  UserPool: UserPoolCreateOneWithoutRolesInput!
+  Users: UserCreateManyWithoutRolesInput
+}
+
+input RoleCreateWithoutGroupsInput {
+  createdAt: DateTime
+  CustomScopes: oAuthCustomScopeCreateManyWithoutRolesInput
+  description: String
+  id: String
+  name: String!
+  Scopes: oAuthScopeCreateManyWithoutRolesInput
+  updatedAt: DateTime
+  UserPool: UserPoolCreateOneWithoutRolesInput!
+  Users: UserCreateManyWithoutRolesInput
+}
+
+input RoleCreateWithoutScopesInput {
+  createdAt: DateTime
+  CustomScopes: oAuthCustomScopeCreateManyWithoutRolesInput
+  description: String
+  Groups: GroupCreateManyWithoutRolesInput
+  id: String
+  name: String!
+  updatedAt: DateTime
+  UserPool: UserPoolCreateOneWithoutRolesInput!
+  Users: UserCreateManyWithoutRolesInput
+}
+
+input RoleCreateWithoutUserPoolInput {
+  createdAt: DateTime
+  CustomScopes: oAuthCustomScopeCreateManyWithoutRolesInput
+  description: String
+  Groups: GroupCreateManyWithoutRolesInput
+  id: String
+  name: String!
+  Scopes: oAuthScopeCreateManyWithoutRolesInput
+  updatedAt: DateTime
+  Users: UserCreateManyWithoutRolesInput
+}
+
+input RoleCreateWithoutUsersInput {
+  createdAt: DateTime
+  CustomScopes: oAuthCustomScopeCreateManyWithoutRolesInput
+  description: String
+  Groups: GroupCreateManyWithoutRolesInput
+  id: String
+  name: String!
+  Scopes: oAuthScopeCreateManyWithoutRolesInput
+  updatedAt: DateTime
+  UserPool: UserPoolCreateOneWithoutRolesInput!
+}
+
+input RoleWhereUniqueInput {
+  id: String
 }
 
 type User {
   createdAt: DateTime!
-  email: String!
-  groups(after: GroupWhereUniqueInput, before: GroupWhereUniqueInput, first: Int, last: Int): [Group!]!
-  profile: Profile!
-  role: SystemRole!
+  Devices(after: UserDeviceWhereUniqueInput, before: UserDeviceWhereUniqueInput, first: Int, last: Int): [UserDevice!]!
+  Groups(after: GroupWhereUniqueInput, before: GroupWhereUniqueInput, first: Int, last: Int): [Group!]!
+  PrimaryEmail: Email!
+  Profile: Profile!
+  Roles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int): [Role!]!
+  sub: String!
   updatedAt: DateTime!
   username: String!
 }
 
 input UserCreateInput {
+  AccessTokens: oAuthAccessTokenCreateManyWithoutUserInput
+  AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutUserInput
   createdAt: DateTime
-  devices: UserDeviceCreateManyWithoutUserInput
-  email: String!
-  groups: GroupCreateManyWithoutUsersInput
+  Devices: UserDeviceCreateManyWithoutUserInput
+  Emails: EmailCreateManyWithoutUserInput
+  Groups: GroupCreateManyWithoutUsersInput
   id: String
   isDisabled: Boolean
-  oAuthAccessToken: oAuthAccessTokenCreateManyWithoutUserInput
-  oAuthAuthorizationCode: oAuthAuthorizationCodeCreateManyWithoutUserInput
-  oAuthClient: oAuthClientCreateOneWithoutUsersInput
-  oAuthRefreshToken: oAuthRefreshTokenCreateManyWithoutUserInput
   password: String!
-  passwordResets: PasswordResetCreateManyWithoutUserInput
-  profile: ProfileCreateOneWithoutUserInput
-  role: SystemRole
+  PasswordResets: PasswordResetCreateManyWithoutUserInput
+  PrimaryEmail: EmailCreateOneWithoutPrimaryEmailOfInput
+  Profile: ProfileCreateOneWithoutUserInput
+  RefreshTokens: oAuthRefreshTokenCreateManyWithoutUserInput
+  Roles: RoleCreateManyWithoutUsersInput
   sub: String
   updatedAt: DateTime
   username: String!
+  UserPool: UserPoolCreateOneWithoutUsersInput!
 }
 
-input UserCreateManyWithoutOAuthClientInput {
+input UserCreateManyWithoutGroupsInput {
   connect: [UserWhereUniqueInput!]
-  connectOrCreate: [UserCreateOrConnectWithoutoAuthClientInput!]
-  create: [UserCreateWithoutOAuthClientInput!]
+  connectOrCreate: [UserCreateOrConnectWithoutGroupInput!]
+  create: [UserCreateWithoutGroupsInput!]
 }
 
-input UserCreateOneWithoutOAuthAccessTokenInput {
+input UserCreateManyWithoutRolesInput {
+  connect: [UserWhereUniqueInput!]
+  connectOrCreate: [UserCreateOrConnectWithoutRoleInput!]
+  create: [UserCreateWithoutRolesInput!]
+}
+
+input UserCreateManyWithoutUserPoolInput {
+  connect: [UserWhereUniqueInput!]
+  connectOrCreate: [UserCreateOrConnectWithoutUserPoolInput!]
+  create: [UserCreateWithoutUserPoolInput!]
+}
+
+input UserCreateOneWithoutAccessTokensInput {
   connect: UserWhereUniqueInput
   connectOrCreate: UserCreateOrConnectWithoutoAuthAccessTokenInput
-  create: UserCreateWithoutOAuthAccessTokenInput
+  create: UserCreateWithoutAccessTokensInput
 }
 
-input UserCreateOneWithoutOAuthAuthorizationCodeInput {
+input UserCreateOneWithoutAuthorizationCodesInput {
   connect: UserWhereUniqueInput
   connectOrCreate: UserCreateOrConnectWithoutoAuthAuthorizationCodeInput
-  create: UserCreateWithoutOAuthAuthorizationCodeInput
+  create: UserCreateWithoutAuthorizationCodesInput
 }
 
-input UserCreateOneWithoutOAuthRefreshTokenInput {
+input UserCreateOneWithoutEmailsInput {
   connect: UserWhereUniqueInput
-  connectOrCreate: UserCreateOrConnectWithoutoAuthRefreshTokenInput
-  create: UserCreateWithoutOAuthRefreshTokenInput
+  connectOrCreate: UserCreateOrConnectWithoutEmailInput
+  create: UserCreateWithoutEmailsInput
+}
+
+input UserCreateOneWithoutPrimaryEmailInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutEmailInput
+  create: UserCreateWithoutPrimaryEmailInput
 }
 
 input UserCreateOneWithoutProfileInput {
@@ -976,23 +1373,34 @@ input UserCreateOneWithoutProfileInput {
   create: UserCreateWithoutProfileInput
 }
 
+input UserCreateOneWithoutRefreshTokensInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutoAuthRefreshTokenInput
+  create: UserCreateWithoutRefreshTokensInput
+}
+
+input UserCreateOrConnectWithoutEmailInput {
+  create: UserCreateWithoutPrimaryEmailInput!
+  where: UserWhereUniqueInput!
+}
+
+input UserCreateOrConnectWithoutGroupInput {
+  create: UserCreateWithoutGroupsInput!
+  where: UserWhereUniqueInput!
+}
+
 input UserCreateOrConnectWithoutoAuthAccessTokenInput {
-  create: UserCreateWithoutOAuthAccessTokenInput!
+  create: UserCreateWithoutAccessTokensInput!
   where: UserWhereUniqueInput!
 }
 
 input UserCreateOrConnectWithoutoAuthAuthorizationCodeInput {
-  create: UserCreateWithoutOAuthAuthorizationCodeInput!
-  where: UserWhereUniqueInput!
-}
-
-input UserCreateOrConnectWithoutoAuthClientInput {
-  create: UserCreateWithoutOAuthClientInput!
+  create: UserCreateWithoutAuthorizationCodesInput!
   where: UserWhereUniqueInput!
 }
 
 input UserCreateOrConnectWithoutoAuthRefreshTokenInput {
-  create: UserCreateWithoutOAuthRefreshTokenInput!
+  create: UserCreateWithoutRefreshTokensInput!
   where: UserWhereUniqueInput!
 }
 
@@ -1001,103 +1409,198 @@ input UserCreateOrConnectWithoutProfileInput {
   where: UserWhereUniqueInput!
 }
 
-input UserCreateWithoutOAuthAccessTokenInput {
-  createdAt: DateTime
-  devices: UserDeviceCreateManyWithoutUserInput
-  email: String!
-  groups: GroupCreateManyWithoutUsersInput
-  id: String
-  isDisabled: Boolean
-  oAuthAuthorizationCode: oAuthAuthorizationCodeCreateManyWithoutUserInput
-  oAuthClient: oAuthClientCreateOneWithoutUsersInput
-  oAuthRefreshToken: oAuthRefreshTokenCreateManyWithoutUserInput
-  password: String!
-  passwordResets: PasswordResetCreateManyWithoutUserInput
-  profile: ProfileCreateOneWithoutUserInput
-  role: SystemRole
-  sub: String
-  updatedAt: DateTime
-  username: String!
+input UserCreateOrConnectWithoutRoleInput {
+  create: UserCreateWithoutRolesInput!
+  where: UserWhereUniqueInput!
 }
 
-input UserCreateWithoutOAuthAuthorizationCodeInput {
-  createdAt: DateTime
-  devices: UserDeviceCreateManyWithoutUserInput
-  email: String!
-  groups: GroupCreateManyWithoutUsersInput
-  id: String
-  isDisabled: Boolean
-  oAuthAccessToken: oAuthAccessTokenCreateManyWithoutUserInput
-  oAuthClient: oAuthClientCreateOneWithoutUsersInput
-  oAuthRefreshToken: oAuthRefreshTokenCreateManyWithoutUserInput
-  password: String!
-  passwordResets: PasswordResetCreateManyWithoutUserInput
-  profile: ProfileCreateOneWithoutUserInput
-  role: SystemRole
-  sub: String
-  updatedAt: DateTime
-  username: String!
+input UserCreateOrConnectWithoutUserPoolInput {
+  create: UserCreateWithoutUserPoolInput!
+  where: UserWhereUniqueInput!
 }
 
-input UserCreateWithoutOAuthClientInput {
+input UserCreateWithoutAccessTokensInput {
+  AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutUserInput
   createdAt: DateTime
-  devices: UserDeviceCreateManyWithoutUserInput
-  email: String!
-  groups: GroupCreateManyWithoutUsersInput
+  Devices: UserDeviceCreateManyWithoutUserInput
+  Emails: EmailCreateManyWithoutUserInput
+  Groups: GroupCreateManyWithoutUsersInput
   id: String
   isDisabled: Boolean
-  oAuthAccessToken: oAuthAccessTokenCreateManyWithoutUserInput
-  oAuthAuthorizationCode: oAuthAuthorizationCodeCreateManyWithoutUserInput
-  oAuthRefreshToken: oAuthRefreshTokenCreateManyWithoutUserInput
   password: String!
-  passwordResets: PasswordResetCreateManyWithoutUserInput
-  profile: ProfileCreateOneWithoutUserInput
-  role: SystemRole
+  PasswordResets: PasswordResetCreateManyWithoutUserInput
+  PrimaryEmail: EmailCreateOneWithoutPrimaryEmailOfInput
+  Profile: ProfileCreateOneWithoutUserInput
+  RefreshTokens: oAuthRefreshTokenCreateManyWithoutUserInput
+  Roles: RoleCreateManyWithoutUsersInput
   sub: String
   updatedAt: DateTime
   username: String!
+  UserPool: UserPoolCreateOneWithoutUsersInput!
 }
 
-input UserCreateWithoutOAuthRefreshTokenInput {
+input UserCreateWithoutAuthorizationCodesInput {
+  AccessTokens: oAuthAccessTokenCreateManyWithoutUserInput
   createdAt: DateTime
-  devices: UserDeviceCreateManyWithoutUserInput
-  email: String!
-  groups: GroupCreateManyWithoutUsersInput
+  Devices: UserDeviceCreateManyWithoutUserInput
+  Emails: EmailCreateManyWithoutUserInput
+  Groups: GroupCreateManyWithoutUsersInput
   id: String
   isDisabled: Boolean
-  oAuthAccessToken: oAuthAccessTokenCreateManyWithoutUserInput
-  oAuthAuthorizationCode: oAuthAuthorizationCodeCreateManyWithoutUserInput
-  oAuthClient: oAuthClientCreateOneWithoutUsersInput
   password: String!
-  passwordResets: PasswordResetCreateManyWithoutUserInput
-  profile: ProfileCreateOneWithoutUserInput
-  role: SystemRole
+  PasswordResets: PasswordResetCreateManyWithoutUserInput
+  PrimaryEmail: EmailCreateOneWithoutPrimaryEmailOfInput
+  Profile: ProfileCreateOneWithoutUserInput
+  RefreshTokens: oAuthRefreshTokenCreateManyWithoutUserInput
+  Roles: RoleCreateManyWithoutUsersInput
   sub: String
   updatedAt: DateTime
   username: String!
+  UserPool: UserPoolCreateOneWithoutUsersInput!
+}
+
+input UserCreateWithoutEmailsInput {
+  AccessTokens: oAuthAccessTokenCreateManyWithoutUserInput
+  AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutUserInput
+  createdAt: DateTime
+  Devices: UserDeviceCreateManyWithoutUserInput
+  Groups: GroupCreateManyWithoutUsersInput
+  id: String
+  isDisabled: Boolean
+  password: String!
+  PasswordResets: PasswordResetCreateManyWithoutUserInput
+  PrimaryEmail: EmailCreateOneWithoutPrimaryEmailOfInput
+  Profile: ProfileCreateOneWithoutUserInput
+  RefreshTokens: oAuthRefreshTokenCreateManyWithoutUserInput
+  Roles: RoleCreateManyWithoutUsersInput
+  sub: String
+  updatedAt: DateTime
+  username: String!
+  UserPool: UserPoolCreateOneWithoutUsersInput!
+}
+
+input UserCreateWithoutGroupsInput {
+  AccessTokens: oAuthAccessTokenCreateManyWithoutUserInput
+  AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutUserInput
+  createdAt: DateTime
+  Devices: UserDeviceCreateManyWithoutUserInput
+  Emails: EmailCreateManyWithoutUserInput
+  id: String
+  isDisabled: Boolean
+  password: String!
+  PasswordResets: PasswordResetCreateManyWithoutUserInput
+  PrimaryEmail: EmailCreateOneWithoutPrimaryEmailOfInput
+  Profile: ProfileCreateOneWithoutUserInput
+  RefreshTokens: oAuthRefreshTokenCreateManyWithoutUserInput
+  Roles: RoleCreateManyWithoutUsersInput
+  sub: String
+  updatedAt: DateTime
+  username: String!
+  UserPool: UserPoolCreateOneWithoutUsersInput!
+}
+
+input UserCreateWithoutPrimaryEmailInput {
+  AccessTokens: oAuthAccessTokenCreateManyWithoutUserInput
+  AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutUserInput
+  createdAt: DateTime
+  Devices: UserDeviceCreateManyWithoutUserInput
+  Emails: EmailCreateManyWithoutUserInput
+  Groups: GroupCreateManyWithoutUsersInput
+  id: String
+  isDisabled: Boolean
+  password: String!
+  PasswordResets: PasswordResetCreateManyWithoutUserInput
+  Profile: ProfileCreateOneWithoutUserInput
+  RefreshTokens: oAuthRefreshTokenCreateManyWithoutUserInput
+  Roles: RoleCreateManyWithoutUsersInput
+  sub: String
+  updatedAt: DateTime
+  username: String!
+  UserPool: UserPoolCreateOneWithoutUsersInput!
 }
 
 input UserCreateWithoutProfileInput {
+  AccessTokens: oAuthAccessTokenCreateManyWithoutUserInput
+  AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutUserInput
   createdAt: DateTime
-  devices: UserDeviceCreateManyWithoutUserInput
-  email: String!
-  groups: GroupCreateManyWithoutUsersInput
+  Devices: UserDeviceCreateManyWithoutUserInput
+  Emails: EmailCreateManyWithoutUserInput
+  Groups: GroupCreateManyWithoutUsersInput
   id: String
   isDisabled: Boolean
-  oAuthAccessToken: oAuthAccessTokenCreateManyWithoutUserInput
-  oAuthAuthorizationCode: oAuthAuthorizationCodeCreateManyWithoutUserInput
-  oAuthClient: oAuthClientCreateOneWithoutUsersInput
-  oAuthRefreshToken: oAuthRefreshTokenCreateManyWithoutUserInput
   password: String!
-  passwordResets: PasswordResetCreateManyWithoutUserInput
-  role: SystemRole
+  PasswordResets: PasswordResetCreateManyWithoutUserInput
+  PrimaryEmail: EmailCreateOneWithoutPrimaryEmailOfInput
+  RefreshTokens: oAuthRefreshTokenCreateManyWithoutUserInput
+  Roles: RoleCreateManyWithoutUsersInput
+  sub: String
+  updatedAt: DateTime
+  username: String!
+  UserPool: UserPoolCreateOneWithoutUsersInput!
+}
+
+input UserCreateWithoutRefreshTokensInput {
+  AccessTokens: oAuthAccessTokenCreateManyWithoutUserInput
+  AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutUserInput
+  createdAt: DateTime
+  Devices: UserDeviceCreateManyWithoutUserInput
+  Emails: EmailCreateManyWithoutUserInput
+  Groups: GroupCreateManyWithoutUsersInput
+  id: String
+  isDisabled: Boolean
+  password: String!
+  PasswordResets: PasswordResetCreateManyWithoutUserInput
+  PrimaryEmail: EmailCreateOneWithoutPrimaryEmailOfInput
+  Profile: ProfileCreateOneWithoutUserInput
+  Roles: RoleCreateManyWithoutUsersInput
+  sub: String
+  updatedAt: DateTime
+  username: String!
+  UserPool: UserPoolCreateOneWithoutUsersInput!
+}
+
+input UserCreateWithoutRolesInput {
+  AccessTokens: oAuthAccessTokenCreateManyWithoutUserInput
+  AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutUserInput
+  createdAt: DateTime
+  Devices: UserDeviceCreateManyWithoutUserInput
+  Emails: EmailCreateManyWithoutUserInput
+  Groups: GroupCreateManyWithoutUsersInput
+  id: String
+  isDisabled: Boolean
+  password: String!
+  PasswordResets: PasswordResetCreateManyWithoutUserInput
+  PrimaryEmail: EmailCreateOneWithoutPrimaryEmailOfInput
+  Profile: ProfileCreateOneWithoutUserInput
+  RefreshTokens: oAuthRefreshTokenCreateManyWithoutUserInput
+  sub: String
+  updatedAt: DateTime
+  username: String!
+  UserPool: UserPoolCreateOneWithoutUsersInput!
+}
+
+input UserCreateWithoutUserPoolInput {
+  AccessTokens: oAuthAccessTokenCreateManyWithoutUserInput
+  AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutUserInput
+  createdAt: DateTime
+  Devices: UserDeviceCreateManyWithoutUserInput
+  Emails: EmailCreateManyWithoutUserInput
+  Groups: GroupCreateManyWithoutUsersInput
+  id: String
+  isDisabled: Boolean
+  password: String!
+  PasswordResets: PasswordResetCreateManyWithoutUserInput
+  PrimaryEmail: EmailCreateOneWithoutPrimaryEmailOfInput
+  Profile: ProfileCreateOneWithoutUserInput
+  RefreshTokens: oAuthRefreshTokenCreateManyWithoutUserInput
+  Roles: RoleCreateManyWithoutUsersInput
   sub: String
   updatedAt: DateTime
   username: String!
 }
 
 type UserDevice {
-  user: User!
+  User: User!
 }
 
 input UserDeviceCreateManyWithoutUserInput {
@@ -1130,6 +1633,119 @@ input UserDeviceWhereUniqueInput {
 input UserIdOAuthClientIdCompoundUniqueInput {
   oAuthClientId: String!
   userId: String!
+}
+
+type UserPool {
+  Clients(after: oAuthClientWhereUniqueInput, before: oAuthClientWhereUniqueInput, first: Int, last: Int): [oAuthClient!]!
+  Groups(after: GroupWhereUniqueInput, before: GroupWhereUniqueInput, first: Int, last: Int): [Group!]!
+  Organization: Organization!
+  ResourceServers(after: oAuthResourceServerWhereUniqueInput, before: oAuthResourceServerWhereUniqueInput, first: Int, last: Int): [oAuthResourceServer!]!
+  Roles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int): [Role!]!
+  Users(after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int): [User!]!
+}
+
+input UserPoolCreateOneWithoutClientsInput {
+  connect: UserPoolWhereUniqueInput
+  connectOrCreate: UserPoolCreateOrConnectWithoutoAuthClientInput
+  create: UserPoolCreateWithoutClientsInput
+}
+
+input UserPoolCreateOneWithoutGroupsInput {
+  connect: UserPoolWhereUniqueInput
+  connectOrCreate: UserPoolCreateOrConnectWithoutGroupInput
+  create: UserPoolCreateWithoutGroupsInput
+}
+
+input UserPoolCreateOneWithoutResourceServersInput {
+  connect: UserPoolWhereUniqueInput
+  connectOrCreate: UserPoolCreateOrConnectWithoutoAuthResourceServerInput
+  create: UserPoolCreateWithoutResourceServersInput
+}
+
+input UserPoolCreateOneWithoutRolesInput {
+  connect: UserPoolWhereUniqueInput
+  connectOrCreate: UserPoolCreateOrConnectWithoutRoleInput
+  create: UserPoolCreateWithoutRolesInput
+}
+
+input UserPoolCreateOneWithoutUsersInput {
+  connect: UserPoolWhereUniqueInput
+  connectOrCreate: UserPoolCreateOrConnectWithoutUserInput
+  create: UserPoolCreateWithoutUsersInput
+}
+
+input UserPoolCreateOrConnectWithoutGroupInput {
+  create: UserPoolCreateWithoutGroupsInput!
+  where: UserPoolWhereUniqueInput!
+}
+
+input UserPoolCreateOrConnectWithoutoAuthClientInput {
+  create: UserPoolCreateWithoutClientsInput!
+  where: UserPoolWhereUniqueInput!
+}
+
+input UserPoolCreateOrConnectWithoutoAuthResourceServerInput {
+  create: UserPoolCreateWithoutResourceServersInput!
+  where: UserPoolWhereUniqueInput!
+}
+
+input UserPoolCreateOrConnectWithoutRoleInput {
+  create: UserPoolCreateWithoutRolesInput!
+  where: UserPoolWhereUniqueInput!
+}
+
+input UserPoolCreateOrConnectWithoutUserInput {
+  create: UserPoolCreateWithoutUsersInput!
+  where: UserPoolWhereUniqueInput!
+}
+
+input UserPoolCreateWithoutClientsInput {
+  Groups: GroupCreateManyWithoutUserPoolInput
+  id: String
+  Organization: OrganizationCreateOneWithoutUserPoolsInput!
+  ResourceServers: oAuthResourceServerCreateManyWithoutUserPoolInput
+  Roles: RoleCreateManyWithoutUserPoolInput
+  Users: UserCreateManyWithoutUserPoolInput
+}
+
+input UserPoolCreateWithoutGroupsInput {
+  Clients: oAuthClientCreateManyWithoutUserPoolInput
+  id: String
+  Organization: OrganizationCreateOneWithoutUserPoolsInput!
+  ResourceServers: oAuthResourceServerCreateManyWithoutUserPoolInput
+  Roles: RoleCreateManyWithoutUserPoolInput
+  Users: UserCreateManyWithoutUserPoolInput
+}
+
+input UserPoolCreateWithoutResourceServersInput {
+  Clients: oAuthClientCreateManyWithoutUserPoolInput
+  Groups: GroupCreateManyWithoutUserPoolInput
+  id: String
+  Organization: OrganizationCreateOneWithoutUserPoolsInput!
+  Roles: RoleCreateManyWithoutUserPoolInput
+  Users: UserCreateManyWithoutUserPoolInput
+}
+
+input UserPoolCreateWithoutRolesInput {
+  Clients: oAuthClientCreateManyWithoutUserPoolInput
+  Groups: GroupCreateManyWithoutUserPoolInput
+  id: String
+  Organization: OrganizationCreateOneWithoutUserPoolsInput!
+  ResourceServers: oAuthResourceServerCreateManyWithoutUserPoolInput
+  Users: UserCreateManyWithoutUserPoolInput
+}
+
+input UserPoolCreateWithoutUsersInput {
+  Clients: oAuthClientCreateManyWithoutUserPoolInput
+  Groups: GroupCreateManyWithoutUserPoolInput
+  id: String
+  Organization: OrganizationCreateOneWithoutUserPoolsInput!
+  ResourceServers: oAuthResourceServerCreateManyWithoutUserPoolInput
+  Roles: RoleCreateManyWithoutUserPoolInput
+}
+
+input UserPoolWhereUniqueInput {
+  id: String
 }
 
 input UserWhereUniqueInput {

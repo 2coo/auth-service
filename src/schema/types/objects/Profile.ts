@@ -8,10 +8,10 @@ export const Profile = objectType({
     t.model.displayName()
     t.model.birthdate()
     t.model.gender()
-    t.model.currentProfileImage()
-    t.model.photos()
+    t.model.CurrentProfileImage()
+    t.model.Photos()
+    t.model.User()
     t.model.mobileNumber()
-    t.model.user()
     t.model.createdAt()
     t.model.updatedAt()
   },

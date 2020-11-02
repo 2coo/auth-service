@@ -99,8 +99,8 @@ function issueTokens(userId: string | null, clientId: string, done: any) {
                   })
                   .then((refreshToken) => {
                     return done(null, accessToken, refreshToken, {
-                      username: user?.username,
-                      email: user?.email,
+                      username: user.username,
+                      email: user.email,
                     })
                   })
               })

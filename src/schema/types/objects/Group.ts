@@ -5,7 +5,7 @@ export const Group = objectType({
   definition(t) {
     t.model.name()
     t.model.description()
-    t.model.users()
+    t.model.Users()
     t.model.createdAt()
     t.model.updatedAt()
   },
