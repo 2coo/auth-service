@@ -20,16 +20,15 @@ export const prisma = new PrismaClient({
 prisma.$use(async (params, next) => {
   console.log(params)
   const result = await next(params)
-  if (params.model === 'oAuthClient') {
-    await createGrantTypesAndConnect(prisma, result.id)
-  }
-  switch (params.model) {
-    case 'oAuthClient':
-      await createGrantTypesAndConnect(prisma, result.id)
-      break
-    case 'UserPool':
-      await createRolesAndConnect(prisma, result.id)
-      break
+  if (params.action === 'create') {
+    switch (params.model) {
+      case 'oAuthClient':
+        await createGrantTypesAndConnect(prisma, result.id)
+        break
+      case 'UserPool':
+        await createRolesAndConnect(prisma, result.id)
+        break
+    }
   }
   return result
 })

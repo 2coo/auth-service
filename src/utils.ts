@@ -101,12 +101,11 @@ export const createRolesAndConnect = async (
       },
     },
   }))
-  console.log('checkPlease')
-  console.log(userPoolRoles)
-  // const manyRoles = userPoolRoles.map((role) =>
-  //   prisma.role.create({
-  //     data: role,
-  //   }),
-  // )
-  // prisma.$transaction(manyRoles)
+
+  const manyRoles = userPoolRoles.map((role) =>
+    prisma.role.create({
+      data: role,
+    }),
+  )
+  prisma.$transaction(manyRoles)
 }
