@@ -16,5 +16,6 @@ export const permissions = shield(
   },
   {
     allowExternalErrors: true,
+    fallbackRule: rules.isAuthenticateUser,
   },
 )

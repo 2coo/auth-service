@@ -12,6 +12,15 @@ type AuthPayload {
   user: SystemUser
 }
 
+input BoolFieldUpdateOperationsInput {
+  set: Boolean
+}
+
+input BoolFilter {
+  equals: Boolean
+  not: NestedBoolFilter
+}
+
 input CodeOAuthClientIdCompoundUniqueInput {
   code: String!
   oAuthClientId: String!
@@ -19,37 +28,122 @@ input CodeOAuthClientIdCompoundUniqueInput {
 
 scalar DateTime
 
+input DateTimeFieldUpdateOperationsInput {
+  set: DateTime
+}
+
+input DateTimeFilter {
+  equals: DateTime
+  gt: DateTime
+  gte: DateTime
+  in: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  not: NestedDateTimeFilter
+  notIn: [DateTime!]
+}
+
 type Email {
   createdAt: DateTime!
   email: String!
   isVerified: Boolean!
-  Profile: Profile!
   updatedAt: DateTime!
+  User: User!
 }
 
-input EmailCreateManyWithoutProfileInput {
+input EmailCreateManyWithoutUserInput {
   connect: [EmailWhereUniqueInput!]
-  connectOrCreate: [EmailCreateOrConnectWithoutProfileInput!]
-  create: [EmailCreateWithoutProfileInput!]
+  connectOrCreate: [EmailCreateOrConnectWithoutUserInput!]
+  create: [EmailCreateWithoutUserInput!]
 }
 
-input EmailCreateOrConnectWithoutProfileInput {
-  create: EmailCreateWithoutProfileInput!
+input EmailCreateOrConnectWithoutUserInput {
+  create: EmailCreateWithoutUserInput!
   where: EmailWhereUniqueInput!
 }
 
-input EmailCreateWithoutProfileInput {
+input EmailCreateWithoutUserInput {
   createdAt: DateTime
   email: String!
   id: String
   isPrimary: Boolean
   isVerified: Boolean
   updatedAt: DateTime
-  userId: String!
+}
+
+input EmailScalarWhereInput {
+  AND: [EmailScalarWhereInput!]
+  createdAt: DateTimeFilter
+  email: StringFilter
+  id: StringFilter
+  isPrimary: BoolFilter
+  isVerified: BoolFilter
+  NOT: [EmailScalarWhereInput!]
+  OR: [EmailScalarWhereInput!]
+  updatedAt: DateTimeFilter
+  userId: StringFilter
+}
+
+input EmailUpdateManyDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  email: StringFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  isPrimary: BoolFieldUpdateOperationsInput
+  isVerified: BoolFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input EmailUpdateManyWithoutUserInput {
+  connect: [EmailWhereUniqueInput!]
+  connectOrCreate: [EmailCreateOrConnectWithoutUserInput!]
+  create: [EmailCreateWithoutUserInput!]
+  delete: [EmailWhereUniqueInput!]
+  deleteMany: [EmailScalarWhereInput!]
+  disconnect: [EmailWhereUniqueInput!]
+  set: [EmailWhereUniqueInput!]
+  update: [EmailUpdateWithWhereUniqueWithoutUserInput!]
+  updateMany: [EmailUpdateManyWithWhereNestedInput!]
+  upsert: [EmailUpsertWithWhereUniqueWithoutUserInput!]
+}
+
+input EmailUpdateManyWithWhereNestedInput {
+  data: EmailUpdateManyDataInput!
+  where: EmailScalarWhereInput!
+}
+
+input EmailUpdateWithoutUserDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  email: StringFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  isPrimary: BoolFieldUpdateOperationsInput
+  isVerified: BoolFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input EmailUpdateWithWhereUniqueWithoutUserInput {
+  data: EmailUpdateWithoutUserDataInput!
+  where: EmailWhereUniqueInput!
+}
+
+input EmailUpsertWithWhereUniqueWithoutUserInput {
+  create: EmailCreateWithoutUserInput!
+  update: EmailUpdateWithoutUserDataInput!
+  where: EmailWhereUniqueInput!
 }
 
 input EmailWhereUniqueInput {
   id: String
+}
+
+input EnumGrantTypeFieldUpdateOperationsInput {
+  set: GrantType
+}
+
+input EnumGrantTypeFilter {
+  equals: GrantType
+  in: [GrantType!]
+  not: NestedEnumGrantTypeFilter
+  notIn: [GrantType!]
 }
 
 """Gender of users"""
@@ -139,14 +233,381 @@ input GroupCreateWithoutUsersInput {
   UserPool: UserPoolCreateOneWithoutGroupsInput!
 }
 
+input GroupScalarWhereInput {
+  AND: [GroupScalarWhereInput!]
+  createdAt: DateTimeFilter
+  description: StringNullableFilter
+  id: StringFilter
+  name: StringFilter
+  NOT: [GroupScalarWhereInput!]
+  OR: [GroupScalarWhereInput!]
+  updatedAt: DateTimeFilter
+  userPoolId: StringFilter
+}
+
+input GroupUpdateManyDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  description: NullableStringFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input GroupUpdateManyWithoutRolesInput {
+  connect: [GroupWhereUniqueInput!]
+  connectOrCreate: [GroupCreateOrConnectWithoutRoleInput!]
+  create: [GroupCreateWithoutRolesInput!]
+  delete: [GroupWhereUniqueInput!]
+  deleteMany: [GroupScalarWhereInput!]
+  disconnect: [GroupWhereUniqueInput!]
+  set: [GroupWhereUniqueInput!]
+  update: [GroupUpdateWithWhereUniqueWithoutRolesInput!]
+  updateMany: [GroupUpdateManyWithWhereNestedInput!]
+  upsert: [GroupUpsertWithWhereUniqueWithoutRolesInput!]
+}
+
+input GroupUpdateManyWithoutUserPoolInput {
+  connect: [GroupWhereUniqueInput!]
+  connectOrCreate: [GroupCreateOrConnectWithoutUserPoolInput!]
+  create: [GroupCreateWithoutUserPoolInput!]
+  delete: [GroupWhereUniqueInput!]
+  deleteMany: [GroupScalarWhereInput!]
+  disconnect: [GroupWhereUniqueInput!]
+  set: [GroupWhereUniqueInput!]
+  update: [GroupUpdateWithWhereUniqueWithoutUserPoolInput!]
+  updateMany: [GroupUpdateManyWithWhereNestedInput!]
+  upsert: [GroupUpsertWithWhereUniqueWithoutUserPoolInput!]
+}
+
+input GroupUpdateManyWithoutUsersInput {
+  connect: [GroupWhereUniqueInput!]
+  connectOrCreate: [GroupCreateOrConnectWithoutUserInput!]
+  create: [GroupCreateWithoutUsersInput!]
+  delete: [GroupWhereUniqueInput!]
+  deleteMany: [GroupScalarWhereInput!]
+  disconnect: [GroupWhereUniqueInput!]
+  set: [GroupWhereUniqueInput!]
+  update: [GroupUpdateWithWhereUniqueWithoutUsersInput!]
+  updateMany: [GroupUpdateManyWithWhereNestedInput!]
+  upsert: [GroupUpsertWithWhereUniqueWithoutUsersInput!]
+}
+
+input GroupUpdateManyWithWhereNestedInput {
+  data: GroupUpdateManyDataInput!
+  where: GroupScalarWhereInput!
+}
+
+input GroupUpdateWithoutRolesDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  description: NullableStringFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  UserPool: UserPoolUpdateOneRequiredWithoutGroupsInput
+  Users: UserUpdateManyWithoutGroupsInput
+}
+
+input GroupUpdateWithoutUserPoolDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  description: NullableStringFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  Roles: RoleUpdateManyWithoutGroupsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  Users: UserUpdateManyWithoutGroupsInput
+}
+
+input GroupUpdateWithoutUsersDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  description: NullableStringFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  Roles: RoleUpdateManyWithoutGroupsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  UserPool: UserPoolUpdateOneRequiredWithoutGroupsInput
+}
+
+input GroupUpdateWithWhereUniqueWithoutRolesInput {
+  data: GroupUpdateWithoutRolesDataInput!
+  where: GroupWhereUniqueInput!
+}
+
+input GroupUpdateWithWhereUniqueWithoutUserPoolInput {
+  data: GroupUpdateWithoutUserPoolDataInput!
+  where: GroupWhereUniqueInput!
+}
+
+input GroupUpdateWithWhereUniqueWithoutUsersInput {
+  data: GroupUpdateWithoutUsersDataInput!
+  where: GroupWhereUniqueInput!
+}
+
+input GroupUpsertWithWhereUniqueWithoutRolesInput {
+  create: GroupCreateWithoutRolesInput!
+  update: GroupUpdateWithoutRolesDataInput!
+  where: GroupWhereUniqueInput!
+}
+
+input GroupUpsertWithWhereUniqueWithoutUserPoolInput {
+  create: GroupCreateWithoutUserPoolInput!
+  update: GroupUpdateWithoutUserPoolDataInput!
+  where: GroupWhereUniqueInput!
+}
+
+input GroupUpsertWithWhereUniqueWithoutUsersInput {
+  create: GroupCreateWithoutUsersInput!
+  update: GroupUpdateWithoutUsersDataInput!
+  where: GroupWhereUniqueInput!
+}
+
 input GroupWhereUniqueInput {
   id: String
 }
 
+input IntFieldUpdateOperationsInput {
+  decrement: Int
+  divide: Int
+  increment: Int
+  multiply: Int
+  set: Int
+}
+
+input IntFilter {
+  equals: Int
+  gt: Int
+  gte: Int
+  in: [Int!]
+  lt: Int
+  lte: Int
+  not: NestedIntFilter
+  notIn: [Int!]
+}
+
 type Mutation {
   createOneoAuthClient(data: oAuthClientCreateInput!): oAuthClient!
+  createOneOrganization(data: OrganizationCreateInput!): Organization!
   createOneUser(data: UserCreateInput!): User!
+  createOneUserPool(data: UserPoolCreateInput!): UserPool!
+  deleteOneUser(where: UserWhereUniqueInput!): User
   login(email: String!, password: String!): AuthPayload
+  updateOneUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
+}
+
+input NestedBoolFilter {
+  equals: Boolean
+  not: NestedBoolFilter
+}
+
+input NestedDateTimeFilter {
+  equals: DateTime
+  gt: DateTime
+  gte: DateTime
+  in: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  not: NestedDateTimeFilter
+  notIn: [DateTime!]
+}
+
+input NestedEnumGrantTypeFilter {
+  equals: GrantType
+  in: [GrantType!]
+  not: NestedEnumGrantTypeFilter
+  notIn: [GrantType!]
+}
+
+input NestedIntFilter {
+  equals: Int
+  gt: Int
+  gte: Int
+  in: [Int!]
+  lt: Int
+  lte: Int
+  not: NestedIntFilter
+  notIn: [Int!]
+}
+
+input NestedStringFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  not: NestedStringFilter
+  notIn: [String!]
+  startsWith: String
+}
+
+input NestedStringNullableFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  not: NestedStringNullableFilter
+  notIn: [String!]
+  startsWith: String
+}
+
+input NotificationCreateManyWithoutRecipentInput {
+  connect: [NotificationWhereUniqueInput!]
+  connectOrCreate: [NotificationCreateOrConnectWithoutUserInput!]
+  create: [NotificationCreateWithoutRecipentInput!]
+}
+
+input NotificationCreateManyWithoutSenderInput {
+  connect: [NotificationWhereUniqueInput!]
+  connectOrCreate: [NotificationCreateOrConnectWithoutUserInput!]
+  create: [NotificationCreateWithoutSenderInput!]
+}
+
+input NotificationCreateOrConnectWithoutUserInput {
+  create: NotificationCreateWithoutRecipentInput!
+  where: NotificationWhereUniqueInput!
+}
+
+input NotificationCreateWithoutRecipentInput {
+  createdAt: DateTime
+  id: String
+  isDeleted: Boolean!
+  isRead: Boolean!
+  Sender: UserCreateOneWithoutNotificationInput!
+  text: String!
+  updatedAt: DateTime
+  url: String!
+}
+
+input NotificationCreateWithoutSenderInput {
+  createdAt: DateTime
+  id: String
+  isDeleted: Boolean!
+  isRead: Boolean!
+  Recipent: UserCreateOneWithoutNotificationsInput!
+  text: String!
+  updatedAt: DateTime
+  url: String!
+}
+
+input NotificationScalarWhereInput {
+  AND: [NotificationScalarWhereInput!]
+  createdAt: DateTimeFilter
+  id: StringFilter
+  isDeleted: BoolFilter
+  isRead: BoolFilter
+  NOT: [NotificationScalarWhereInput!]
+  OR: [NotificationScalarWhereInput!]
+  recipentId: StringFilter
+  senderId: StringFilter
+  text: StringFilter
+  updatedAt: DateTimeFilter
+  url: StringFilter
+}
+
+input NotificationUpdateManyDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  isDeleted: BoolFieldUpdateOperationsInput
+  isRead: BoolFieldUpdateOperationsInput
+  text: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  url: StringFieldUpdateOperationsInput
+}
+
+input NotificationUpdateManyWithoutRecipentInput {
+  connect: [NotificationWhereUniqueInput!]
+  connectOrCreate: [NotificationCreateOrConnectWithoutUserInput!]
+  create: [NotificationCreateWithoutRecipentInput!]
+  delete: [NotificationWhereUniqueInput!]
+  deleteMany: [NotificationScalarWhereInput!]
+  disconnect: [NotificationWhereUniqueInput!]
+  set: [NotificationWhereUniqueInput!]
+  update: [NotificationUpdateWithWhereUniqueWithoutRecipentInput!]
+  updateMany: [NotificationUpdateManyWithWhereNestedInput!]
+  upsert: [NotificationUpsertWithWhereUniqueWithoutRecipentInput!]
+}
+
+input NotificationUpdateManyWithoutSenderInput {
+  connect: [NotificationWhereUniqueInput!]
+  connectOrCreate: [NotificationCreateOrConnectWithoutUserInput!]
+  create: [NotificationCreateWithoutSenderInput!]
+  delete: [NotificationWhereUniqueInput!]
+  deleteMany: [NotificationScalarWhereInput!]
+  disconnect: [NotificationWhereUniqueInput!]
+  set: [NotificationWhereUniqueInput!]
+  update: [NotificationUpdateWithWhereUniqueWithoutSenderInput!]
+  updateMany: [NotificationUpdateManyWithWhereNestedInput!]
+  upsert: [NotificationUpsertWithWhereUniqueWithoutSenderInput!]
+}
+
+input NotificationUpdateManyWithWhereNestedInput {
+  data: NotificationUpdateManyDataInput!
+  where: NotificationScalarWhereInput!
+}
+
+input NotificationUpdateWithoutRecipentDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  isDeleted: BoolFieldUpdateOperationsInput
+  isRead: BoolFieldUpdateOperationsInput
+  Sender: UserUpdateOneRequiredWithoutNotificationInput
+  text: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  url: StringFieldUpdateOperationsInput
+}
+
+input NotificationUpdateWithoutSenderDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  isDeleted: BoolFieldUpdateOperationsInput
+  isRead: BoolFieldUpdateOperationsInput
+  Recipent: UserUpdateOneRequiredWithoutNotificationsInput
+  text: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  url: StringFieldUpdateOperationsInput
+}
+
+input NotificationUpdateWithWhereUniqueWithoutRecipentInput {
+  data: NotificationUpdateWithoutRecipentDataInput!
+  where: NotificationWhereUniqueInput!
+}
+
+input NotificationUpdateWithWhereUniqueWithoutSenderInput {
+  data: NotificationUpdateWithoutSenderDataInput!
+  where: NotificationWhereUniqueInput!
+}
+
+input NotificationUpsertWithWhereUniqueWithoutRecipentInput {
+  create: NotificationCreateWithoutRecipentInput!
+  update: NotificationUpdateWithoutRecipentDataInput!
+  where: NotificationWhereUniqueInput!
+}
+
+input NotificationUpsertWithWhereUniqueWithoutSenderInput {
+  create: NotificationCreateWithoutSenderInput!
+  update: NotificationUpdateWithoutSenderDataInput!
+  where: NotificationWhereUniqueInput!
+}
+
+input NotificationWhereUniqueInput {
+  id: String
+}
+
+input NullableDateTimeFieldUpdateOperationsInput {
+  set: DateTime
+}
+
+input NullableEnumGenderFieldUpdateOperationsInput {
+  set: Gender
+}
+
+input NullableStringFieldUpdateOperationsInput {
+  set: String
 }
 
 type oAuthAccessToken {
@@ -219,6 +680,134 @@ input oAuthAccessTokenCreateWithoutUserInput {
   id: String
   Scopes: oAuthScopeCreateManyWithoutAccessTokensInput
   updatedAt: DateTime
+}
+
+input oAuthAccessTokenScalarWhereInput {
+  accessToken: StringFilter
+  AND: [oAuthAccessTokenScalarWhereInput!]
+  createdAt: DateTimeFilter
+  expirationDate: DateTimeFilter
+  id: StringFilter
+  NOT: [oAuthAccessTokenScalarWhereInput!]
+  oAuthClientId: StringFilter
+  OR: [oAuthAccessTokenScalarWhereInput!]
+  updatedAt: DateTimeFilter
+  userId: StringNullableFilter
+}
+
+input oAuthAccessTokenUpdateManyDataInput {
+  accessToken: StringFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  expirationDate: DateTimeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input oAuthAccessTokenUpdateManyWithoutClientInput {
+  connect: [oAuthAccessTokenWhereUniqueInput!]
+  connectOrCreate: [oAuthAccessTokenCreateOrConnectWithoutoAuthClientInput!]
+  create: [oAuthAccessTokenCreateWithoutClientInput!]
+  delete: [oAuthAccessTokenWhereUniqueInput!]
+  deleteMany: [oAuthAccessTokenScalarWhereInput!]
+  disconnect: [oAuthAccessTokenWhereUniqueInput!]
+  set: [oAuthAccessTokenWhereUniqueInput!]
+  update: [oAuthAccessTokenUpdateWithWhereUniqueWithoutClientInput!]
+  updateMany: [oAuthAccessTokenUpdateManyWithWhereNestedInput!]
+  upsert: [oAuthAccessTokenUpsertWithWhereUniqueWithoutClientInput!]
+}
+
+input oAuthAccessTokenUpdateManyWithoutScopesInput {
+  connect: [oAuthAccessTokenWhereUniqueInput!]
+  connectOrCreate: [oAuthAccessTokenCreateOrConnectWithoutoAuthScopeInput!]
+  create: [oAuthAccessTokenCreateWithoutScopesInput!]
+  delete: [oAuthAccessTokenWhereUniqueInput!]
+  deleteMany: [oAuthAccessTokenScalarWhereInput!]
+  disconnect: [oAuthAccessTokenWhereUniqueInput!]
+  set: [oAuthAccessTokenWhereUniqueInput!]
+  update: [oAuthAccessTokenUpdateWithWhereUniqueWithoutScopesInput!]
+  updateMany: [oAuthAccessTokenUpdateManyWithWhereNestedInput!]
+  upsert: [oAuthAccessTokenUpsertWithWhereUniqueWithoutScopesInput!]
+}
+
+input oAuthAccessTokenUpdateManyWithoutUserInput {
+  connect: [oAuthAccessTokenWhereUniqueInput!]
+  connectOrCreate: [oAuthAccessTokenCreateOrConnectWithoutUserInput!]
+  create: [oAuthAccessTokenCreateWithoutUserInput!]
+  delete: [oAuthAccessTokenWhereUniqueInput!]
+  deleteMany: [oAuthAccessTokenScalarWhereInput!]
+  disconnect: [oAuthAccessTokenWhereUniqueInput!]
+  set: [oAuthAccessTokenWhereUniqueInput!]
+  update: [oAuthAccessTokenUpdateWithWhereUniqueWithoutUserInput!]
+  updateMany: [oAuthAccessTokenUpdateManyWithWhereNestedInput!]
+  upsert: [oAuthAccessTokenUpsertWithWhereUniqueWithoutUserInput!]
+}
+
+input oAuthAccessTokenUpdateManyWithWhereNestedInput {
+  data: oAuthAccessTokenUpdateManyDataInput!
+  where: oAuthAccessTokenScalarWhereInput!
+}
+
+input oAuthAccessTokenUpdateWithoutClientDataInput {
+  accessToken: StringFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  expirationDate: DateTimeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  Scopes: oAuthScopeUpdateManyWithoutAccessTokensInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  User: UserUpdateOneWithoutAccessTokensInput
+}
+
+input oAuthAccessTokenUpdateWithoutScopesDataInput {
+  accessToken: StringFieldUpdateOperationsInput
+  Client: oAuthClientUpdateOneRequiredWithoutAccessTokensInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  expirationDate: DateTimeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  User: UserUpdateOneWithoutAccessTokensInput
+}
+
+input oAuthAccessTokenUpdateWithoutUserDataInput {
+  accessToken: StringFieldUpdateOperationsInput
+  Client: oAuthClientUpdateOneRequiredWithoutAccessTokensInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  expirationDate: DateTimeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  Scopes: oAuthScopeUpdateManyWithoutAccessTokensInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input oAuthAccessTokenUpdateWithWhereUniqueWithoutClientInput {
+  data: oAuthAccessTokenUpdateWithoutClientDataInput!
+  where: oAuthAccessTokenWhereUniqueInput!
+}
+
+input oAuthAccessTokenUpdateWithWhereUniqueWithoutScopesInput {
+  data: oAuthAccessTokenUpdateWithoutScopesDataInput!
+  where: oAuthAccessTokenWhereUniqueInput!
+}
+
+input oAuthAccessTokenUpdateWithWhereUniqueWithoutUserInput {
+  data: oAuthAccessTokenUpdateWithoutUserDataInput!
+  where: oAuthAccessTokenWhereUniqueInput!
+}
+
+input oAuthAccessTokenUpsertWithWhereUniqueWithoutClientInput {
+  create: oAuthAccessTokenCreateWithoutClientInput!
+  update: oAuthAccessTokenUpdateWithoutClientDataInput!
+  where: oAuthAccessTokenWhereUniqueInput!
+}
+
+input oAuthAccessTokenUpsertWithWhereUniqueWithoutScopesInput {
+  create: oAuthAccessTokenCreateWithoutScopesInput!
+  update: oAuthAccessTokenUpdateWithoutScopesDataInput!
+  where: oAuthAccessTokenWhereUniqueInput!
+}
+
+input oAuthAccessTokenUpsertWithWhereUniqueWithoutUserInput {
+  create: oAuthAccessTokenCreateWithoutUserInput!
+  update: oAuthAccessTokenUpdateWithoutUserDataInput!
+  where: oAuthAccessTokenWhereUniqueInput!
 }
 
 input oAuthAccessTokenWhereUniqueInput {
@@ -303,6 +892,139 @@ input oAuthAuthorizationCodeCreateWithoutUserInput {
   updatedAt: DateTime
 }
 
+input oAuthAuthorizationCodeScalarWhereInput {
+  AND: [oAuthAuthorizationCodeScalarWhereInput!]
+  code: StringFilter
+  createdAt: DateTimeFilter
+  expirationDate: DateTimeFilter
+  id: StringFilter
+  NOT: [oAuthAuthorizationCodeScalarWhereInput!]
+  oAuthClientId: StringFilter
+  OR: [oAuthAuthorizationCodeScalarWhereInput!]
+  redirectURI: StringFilter
+  updatedAt: DateTimeFilter
+  userId: StringFilter
+}
+
+input oAuthAuthorizationCodeUpdateManyDataInput {
+  code: StringFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  expirationDate: DateTimeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  redirectURI: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input oAuthAuthorizationCodeUpdateManyWithoutClientInput {
+  connect: [oAuthAuthorizationCodeWhereUniqueInput!]
+  connectOrCreate: [oAuthAuthorizationCodeCreateOrConnectWithoutoAuthClientInput!]
+  create: [oAuthAuthorizationCodeCreateWithoutClientInput!]
+  delete: [oAuthAuthorizationCodeWhereUniqueInput!]
+  deleteMany: [oAuthAuthorizationCodeScalarWhereInput!]
+  disconnect: [oAuthAuthorizationCodeWhereUniqueInput!]
+  set: [oAuthAuthorizationCodeWhereUniqueInput!]
+  update: [oAuthAuthorizationCodeUpdateWithWhereUniqueWithoutClientInput!]
+  updateMany: [oAuthAuthorizationCodeUpdateManyWithWhereNestedInput!]
+  upsert: [oAuthAuthorizationCodeUpsertWithWhereUniqueWithoutClientInput!]
+}
+
+input oAuthAuthorizationCodeUpdateManyWithoutScopesInput {
+  connect: [oAuthAuthorizationCodeWhereUniqueInput!]
+  connectOrCreate: [oAuthAuthorizationCodeCreateOrConnectWithoutoAuthScopeInput!]
+  create: [oAuthAuthorizationCodeCreateWithoutScopesInput!]
+  delete: [oAuthAuthorizationCodeWhereUniqueInput!]
+  deleteMany: [oAuthAuthorizationCodeScalarWhereInput!]
+  disconnect: [oAuthAuthorizationCodeWhereUniqueInput!]
+  set: [oAuthAuthorizationCodeWhereUniqueInput!]
+  update: [oAuthAuthorizationCodeUpdateWithWhereUniqueWithoutScopesInput!]
+  updateMany: [oAuthAuthorizationCodeUpdateManyWithWhereNestedInput!]
+  upsert: [oAuthAuthorizationCodeUpsertWithWhereUniqueWithoutScopesInput!]
+}
+
+input oAuthAuthorizationCodeUpdateManyWithoutUserInput {
+  connect: [oAuthAuthorizationCodeWhereUniqueInput!]
+  connectOrCreate: [oAuthAuthorizationCodeCreateOrConnectWithoutUserInput!]
+  create: [oAuthAuthorizationCodeCreateWithoutUserInput!]
+  delete: [oAuthAuthorizationCodeWhereUniqueInput!]
+  deleteMany: [oAuthAuthorizationCodeScalarWhereInput!]
+  disconnect: [oAuthAuthorizationCodeWhereUniqueInput!]
+  set: [oAuthAuthorizationCodeWhereUniqueInput!]
+  update: [oAuthAuthorizationCodeUpdateWithWhereUniqueWithoutUserInput!]
+  updateMany: [oAuthAuthorizationCodeUpdateManyWithWhereNestedInput!]
+  upsert: [oAuthAuthorizationCodeUpsertWithWhereUniqueWithoutUserInput!]
+}
+
+input oAuthAuthorizationCodeUpdateManyWithWhereNestedInput {
+  data: oAuthAuthorizationCodeUpdateManyDataInput!
+  where: oAuthAuthorizationCodeScalarWhereInput!
+}
+
+input oAuthAuthorizationCodeUpdateWithoutClientDataInput {
+  code: StringFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  expirationDate: DateTimeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  redirectURI: StringFieldUpdateOperationsInput
+  Scopes: oAuthScopeUpdateManyWithoutAuthorizationCodesInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  User: UserUpdateOneRequiredWithoutAuthorizationCodesInput
+}
+
+input oAuthAuthorizationCodeUpdateWithoutScopesDataInput {
+  Client: oAuthClientUpdateOneRequiredWithoutAuthorizationCodesInput
+  code: StringFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  expirationDate: DateTimeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  redirectURI: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  User: UserUpdateOneRequiredWithoutAuthorizationCodesInput
+}
+
+input oAuthAuthorizationCodeUpdateWithoutUserDataInput {
+  Client: oAuthClientUpdateOneRequiredWithoutAuthorizationCodesInput
+  code: StringFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  expirationDate: DateTimeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  redirectURI: StringFieldUpdateOperationsInput
+  Scopes: oAuthScopeUpdateManyWithoutAuthorizationCodesInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input oAuthAuthorizationCodeUpdateWithWhereUniqueWithoutClientInput {
+  data: oAuthAuthorizationCodeUpdateWithoutClientDataInput!
+  where: oAuthAuthorizationCodeWhereUniqueInput!
+}
+
+input oAuthAuthorizationCodeUpdateWithWhereUniqueWithoutScopesInput {
+  data: oAuthAuthorizationCodeUpdateWithoutScopesDataInput!
+  where: oAuthAuthorizationCodeWhereUniqueInput!
+}
+
+input oAuthAuthorizationCodeUpdateWithWhereUniqueWithoutUserInput {
+  data: oAuthAuthorizationCodeUpdateWithoutUserDataInput!
+  where: oAuthAuthorizationCodeWhereUniqueInput!
+}
+
+input oAuthAuthorizationCodeUpsertWithWhereUniqueWithoutClientInput {
+  create: oAuthAuthorizationCodeCreateWithoutClientInput!
+  update: oAuthAuthorizationCodeUpdateWithoutClientDataInput!
+  where: oAuthAuthorizationCodeWhereUniqueInput!
+}
+
+input oAuthAuthorizationCodeUpsertWithWhereUniqueWithoutScopesInput {
+  create: oAuthAuthorizationCodeCreateWithoutScopesInput!
+  update: oAuthAuthorizationCodeUpdateWithoutScopesDataInput!
+  where: oAuthAuthorizationCodeWhereUniqueInput!
+}
+
+input oAuthAuthorizationCodeUpsertWithWhereUniqueWithoutUserInput {
+  create: oAuthAuthorizationCodeCreateWithoutUserInput!
+  update: oAuthAuthorizationCodeUpdateWithoutUserDataInput!
+  where: oAuthAuthorizationCodeWhereUniqueInput!
+}
+
 input oAuthAuthorizationCodeWhereUniqueInput {
   code_oAuthClientId: CodeOAuthClientIdCompoundUniqueInput
   id: String
@@ -331,21 +1053,27 @@ input oAuthClientCreateInput {
   AccessTokens: oAuthAccessTokenCreateManyWithoutClientInput
   AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutClientInput
   createdAt: DateTime
+  CustomScopes: oAuthCustomScopeCreateManyWithoutClientsInput
   Grants: oAuthGrantCreateManyWithoutClientsInput
   id: String
   idTokenLifetime: Int
   isTrusted: Boolean
   JavascriptOrigins: oAuthJavascriptOriginCreateManyWithoutClientInput
-  logo: String!
+  logo: String
   name: String!
   RedirectUris: oAuthRedirectURICreateManyWithoutClientInput
   refreshTokenLifetime: Int
   RefreshTokens: oAuthRefreshTokenCreateManyWithoutClientInput
-  ResourceServers: oAuthResourceServerCreateManyWithoutClientInput
   Scopes: oAuthScopeCreateManyWithoutClientsInput
   secret: String
   updatedAt: DateTime
   UserPool: UserPoolCreateOneWithoutClientsInput!
+}
+
+input oAuthClientCreateManyWithoutCustomScopesInput {
+  connect: [oAuthClientWhereUniqueInput!]
+  connectOrCreate: [oAuthClientCreateOrConnectWithoutoAuthCustomScopeInput!]
+  create: [oAuthClientCreateWithoutCustomScopesInput!]
 }
 
 input oAuthClientCreateManyWithoutScopesInput {
@@ -378,12 +1106,6 @@ input oAuthClientCreateOneWithoutRefreshTokensInput {
   create: oAuthClientCreateWithoutRefreshTokensInput
 }
 
-input oAuthClientCreateOneWithoutResourceServersInput {
-  connect: oAuthClientWhereUniqueInput
-  connectOrCreate: oAuthClientCreateOrConnectWithoutoAuthResourceServerInput
-  create: oAuthClientCreateWithoutResourceServersInput
-}
-
 input oAuthClientCreateOrConnectWithoutoAuthAccessTokenInput {
   create: oAuthClientCreateWithoutAccessTokensInput!
   where: oAuthClientWhereUniqueInput!
@@ -394,13 +1116,13 @@ input oAuthClientCreateOrConnectWithoutoAuthAuthorizationCodeInput {
   where: oAuthClientWhereUniqueInput!
 }
 
-input oAuthClientCreateOrConnectWithoutoAuthRefreshTokenInput {
-  create: oAuthClientCreateWithoutRefreshTokensInput!
+input oAuthClientCreateOrConnectWithoutoAuthCustomScopeInput {
+  create: oAuthClientCreateWithoutCustomScopesInput!
   where: oAuthClientWhereUniqueInput!
 }
 
-input oAuthClientCreateOrConnectWithoutoAuthResourceServerInput {
-  create: oAuthClientCreateWithoutResourceServersInput!
+input oAuthClientCreateOrConnectWithoutoAuthRefreshTokenInput {
+  create: oAuthClientCreateWithoutRefreshTokensInput!
   where: oAuthClientWhereUniqueInput!
 }
 
@@ -418,17 +1140,17 @@ input oAuthClientCreateWithoutAccessTokensInput {
   accessTokenLifetime: Int
   AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutClientInput
   createdAt: DateTime
+  CustomScopes: oAuthCustomScopeCreateManyWithoutClientsInput
   Grants: oAuthGrantCreateManyWithoutClientsInput
   id: String
   idTokenLifetime: Int
   isTrusted: Boolean
   JavascriptOrigins: oAuthJavascriptOriginCreateManyWithoutClientInput
-  logo: String!
+  logo: String
   name: String!
   RedirectUris: oAuthRedirectURICreateManyWithoutClientInput
   refreshTokenLifetime: Int
   RefreshTokens: oAuthRefreshTokenCreateManyWithoutClientInput
-  ResourceServers: oAuthResourceServerCreateManyWithoutClientInput
   Scopes: oAuthScopeCreateManyWithoutClientsInput
   secret: String
   updatedAt: DateTime
@@ -439,17 +1161,38 @@ input oAuthClientCreateWithoutAuthorizationCodesInput {
   accessTokenLifetime: Int
   AccessTokens: oAuthAccessTokenCreateManyWithoutClientInput
   createdAt: DateTime
+  CustomScopes: oAuthCustomScopeCreateManyWithoutClientsInput
   Grants: oAuthGrantCreateManyWithoutClientsInput
   id: String
   idTokenLifetime: Int
   isTrusted: Boolean
   JavascriptOrigins: oAuthJavascriptOriginCreateManyWithoutClientInput
-  logo: String!
+  logo: String
   name: String!
   RedirectUris: oAuthRedirectURICreateManyWithoutClientInput
   refreshTokenLifetime: Int
   RefreshTokens: oAuthRefreshTokenCreateManyWithoutClientInput
-  ResourceServers: oAuthResourceServerCreateManyWithoutClientInput
+  Scopes: oAuthScopeCreateManyWithoutClientsInput
+  secret: String
+  updatedAt: DateTime
+  UserPool: UserPoolCreateOneWithoutClientsInput!
+}
+
+input oAuthClientCreateWithoutCustomScopesInput {
+  accessTokenLifetime: Int
+  AccessTokens: oAuthAccessTokenCreateManyWithoutClientInput
+  AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutClientInput
+  createdAt: DateTime
+  Grants: oAuthGrantCreateManyWithoutClientsInput
+  id: String
+  idTokenLifetime: Int
+  isTrusted: Boolean
+  JavascriptOrigins: oAuthJavascriptOriginCreateManyWithoutClientInput
+  logo: String
+  name: String!
+  RedirectUris: oAuthRedirectURICreateManyWithoutClientInput
+  refreshTokenLifetime: Int
+  RefreshTokens: oAuthRefreshTokenCreateManyWithoutClientInput
   Scopes: oAuthScopeCreateManyWithoutClientsInput
   secret: String
   updatedAt: DateTime
@@ -461,37 +1204,16 @@ input oAuthClientCreateWithoutRefreshTokensInput {
   AccessTokens: oAuthAccessTokenCreateManyWithoutClientInput
   AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutClientInput
   createdAt: DateTime
+  CustomScopes: oAuthCustomScopeCreateManyWithoutClientsInput
   Grants: oAuthGrantCreateManyWithoutClientsInput
   id: String
   idTokenLifetime: Int
   isTrusted: Boolean
   JavascriptOrigins: oAuthJavascriptOriginCreateManyWithoutClientInput
-  logo: String!
+  logo: String
   name: String!
   RedirectUris: oAuthRedirectURICreateManyWithoutClientInput
   refreshTokenLifetime: Int
-  ResourceServers: oAuthResourceServerCreateManyWithoutClientInput
-  Scopes: oAuthScopeCreateManyWithoutClientsInput
-  secret: String
-  updatedAt: DateTime
-  UserPool: UserPoolCreateOneWithoutClientsInput!
-}
-
-input oAuthClientCreateWithoutResourceServersInput {
-  accessTokenLifetime: Int
-  AccessTokens: oAuthAccessTokenCreateManyWithoutClientInput
-  AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutClientInput
-  createdAt: DateTime
-  Grants: oAuthGrantCreateManyWithoutClientsInput
-  id: String
-  idTokenLifetime: Int
-  isTrusted: Boolean
-  JavascriptOrigins: oAuthJavascriptOriginCreateManyWithoutClientInput
-  logo: String!
-  name: String!
-  RedirectUris: oAuthRedirectURICreateManyWithoutClientInput
-  refreshTokenLifetime: Int
-  RefreshTokens: oAuthRefreshTokenCreateManyWithoutClientInput
   Scopes: oAuthScopeCreateManyWithoutClientsInput
   secret: String
   updatedAt: DateTime
@@ -503,17 +1225,17 @@ input oAuthClientCreateWithoutScopesInput {
   AccessTokens: oAuthAccessTokenCreateManyWithoutClientInput
   AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutClientInput
   createdAt: DateTime
+  CustomScopes: oAuthCustomScopeCreateManyWithoutClientsInput
   Grants: oAuthGrantCreateManyWithoutClientsInput
   id: String
   idTokenLifetime: Int
   isTrusted: Boolean
   JavascriptOrigins: oAuthJavascriptOriginCreateManyWithoutClientInput
-  logo: String!
+  logo: String
   name: String!
   RedirectUris: oAuthRedirectURICreateManyWithoutClientInput
   refreshTokenLifetime: Int
   RefreshTokens: oAuthRefreshTokenCreateManyWithoutClientInput
-  ResourceServers: oAuthResourceServerCreateManyWithoutClientInput
   secret: String
   updatedAt: DateTime
   UserPool: UserPoolCreateOneWithoutClientsInput!
@@ -524,20 +1246,292 @@ input oAuthClientCreateWithoutUserPoolInput {
   AccessTokens: oAuthAccessTokenCreateManyWithoutClientInput
   AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutClientInput
   createdAt: DateTime
+  CustomScopes: oAuthCustomScopeCreateManyWithoutClientsInput
   Grants: oAuthGrantCreateManyWithoutClientsInput
   id: String
   idTokenLifetime: Int
   isTrusted: Boolean
   JavascriptOrigins: oAuthJavascriptOriginCreateManyWithoutClientInput
-  logo: String!
+  logo: String
   name: String!
   RedirectUris: oAuthRedirectURICreateManyWithoutClientInput
   refreshTokenLifetime: Int
   RefreshTokens: oAuthRefreshTokenCreateManyWithoutClientInput
-  ResourceServers: oAuthResourceServerCreateManyWithoutClientInput
   Scopes: oAuthScopeCreateManyWithoutClientsInput
   secret: String
   updatedAt: DateTime
+}
+
+input oAuthClientScalarWhereInput {
+  accessTokenLifetime: IntFilter
+  AND: [oAuthClientScalarWhereInput!]
+  createdAt: DateTimeFilter
+  id: StringFilter
+  idTokenLifetime: IntFilter
+  isTrusted: BoolFilter
+  logo: StringNullableFilter
+  name: StringFilter
+  NOT: [oAuthClientScalarWhereInput!]
+  OR: [oAuthClientScalarWhereInput!]
+  refreshTokenLifetime: IntFilter
+  secret: StringFilter
+  updatedAt: DateTimeFilter
+  userPoolId: StringFilter
+}
+
+input oAuthClientUpdateManyDataInput {
+  accessTokenLifetime: IntFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  idTokenLifetime: IntFieldUpdateOperationsInput
+  isTrusted: BoolFieldUpdateOperationsInput
+  logo: NullableStringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  refreshTokenLifetime: IntFieldUpdateOperationsInput
+  secret: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input oAuthClientUpdateManyWithoutCustomScopesInput {
+  connect: [oAuthClientWhereUniqueInput!]
+  connectOrCreate: [oAuthClientCreateOrConnectWithoutoAuthCustomScopeInput!]
+  create: [oAuthClientCreateWithoutCustomScopesInput!]
+  delete: [oAuthClientWhereUniqueInput!]
+  deleteMany: [oAuthClientScalarWhereInput!]
+  disconnect: [oAuthClientWhereUniqueInput!]
+  set: [oAuthClientWhereUniqueInput!]
+  update: [oAuthClientUpdateWithWhereUniqueWithoutCustomScopesInput!]
+  updateMany: [oAuthClientUpdateManyWithWhereNestedInput!]
+  upsert: [oAuthClientUpsertWithWhereUniqueWithoutCustomScopesInput!]
+}
+
+input oAuthClientUpdateManyWithoutScopesInput {
+  connect: [oAuthClientWhereUniqueInput!]
+  connectOrCreate: [oAuthClientCreateOrConnectWithoutoAuthScopeInput!]
+  create: [oAuthClientCreateWithoutScopesInput!]
+  delete: [oAuthClientWhereUniqueInput!]
+  deleteMany: [oAuthClientScalarWhereInput!]
+  disconnect: [oAuthClientWhereUniqueInput!]
+  set: [oAuthClientWhereUniqueInput!]
+  update: [oAuthClientUpdateWithWhereUniqueWithoutScopesInput!]
+  updateMany: [oAuthClientUpdateManyWithWhereNestedInput!]
+  upsert: [oAuthClientUpsertWithWhereUniqueWithoutScopesInput!]
+}
+
+input oAuthClientUpdateManyWithoutUserPoolInput {
+  connect: [oAuthClientWhereUniqueInput!]
+  connectOrCreate: [oAuthClientCreateOrConnectWithoutUserPoolInput!]
+  create: [oAuthClientCreateWithoutUserPoolInput!]
+  delete: [oAuthClientWhereUniqueInput!]
+  deleteMany: [oAuthClientScalarWhereInput!]
+  disconnect: [oAuthClientWhereUniqueInput!]
+  set: [oAuthClientWhereUniqueInput!]
+  update: [oAuthClientUpdateWithWhereUniqueWithoutUserPoolInput!]
+  updateMany: [oAuthClientUpdateManyWithWhereNestedInput!]
+  upsert: [oAuthClientUpsertWithWhereUniqueWithoutUserPoolInput!]
+}
+
+input oAuthClientUpdateManyWithWhereNestedInput {
+  data: oAuthClientUpdateManyDataInput!
+  where: oAuthClientScalarWhereInput!
+}
+
+input oAuthClientUpdateOneRequiredWithoutAccessTokensInput {
+  connect: oAuthClientWhereUniqueInput
+  connectOrCreate: oAuthClientCreateOrConnectWithoutoAuthAccessTokenInput
+  create: oAuthClientCreateWithoutAccessTokensInput
+  update: oAuthClientUpdateWithoutAccessTokensDataInput
+  upsert: oAuthClientUpsertWithoutAccessTokensInput
+}
+
+input oAuthClientUpdateOneRequiredWithoutAuthorizationCodesInput {
+  connect: oAuthClientWhereUniqueInput
+  connectOrCreate: oAuthClientCreateOrConnectWithoutoAuthAuthorizationCodeInput
+  create: oAuthClientCreateWithoutAuthorizationCodesInput
+  update: oAuthClientUpdateWithoutAuthorizationCodesDataInput
+  upsert: oAuthClientUpsertWithoutAuthorizationCodesInput
+}
+
+input oAuthClientUpdateOneRequiredWithoutRefreshTokensInput {
+  connect: oAuthClientWhereUniqueInput
+  connectOrCreate: oAuthClientCreateOrConnectWithoutoAuthRefreshTokenInput
+  create: oAuthClientCreateWithoutRefreshTokensInput
+  update: oAuthClientUpdateWithoutRefreshTokensDataInput
+  upsert: oAuthClientUpsertWithoutRefreshTokensInput
+}
+
+input oAuthClientUpdateWithoutAccessTokensDataInput {
+  accessTokenLifetime: IntFieldUpdateOperationsInput
+  AuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutClientInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  CustomScopes: oAuthCustomScopeUpdateManyWithoutClientsInput
+  Grants: oAuthGrantUpdateManyWithoutClientsInput
+  id: StringFieldUpdateOperationsInput
+  idTokenLifetime: IntFieldUpdateOperationsInput
+  isTrusted: BoolFieldUpdateOperationsInput
+  JavascriptOrigins: oAuthJavascriptOriginUpdateManyWithoutClientInput
+  logo: NullableStringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  RedirectUris: oAuthRedirectURIUpdateManyWithoutClientInput
+  refreshTokenLifetime: IntFieldUpdateOperationsInput
+  RefreshTokens: oAuthRefreshTokenUpdateManyWithoutClientInput
+  Scopes: oAuthScopeUpdateManyWithoutClientsInput
+  secret: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  UserPool: UserPoolUpdateOneRequiredWithoutClientsInput
+}
+
+input oAuthClientUpdateWithoutAuthorizationCodesDataInput {
+  accessTokenLifetime: IntFieldUpdateOperationsInput
+  AccessTokens: oAuthAccessTokenUpdateManyWithoutClientInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  CustomScopes: oAuthCustomScopeUpdateManyWithoutClientsInput
+  Grants: oAuthGrantUpdateManyWithoutClientsInput
+  id: StringFieldUpdateOperationsInput
+  idTokenLifetime: IntFieldUpdateOperationsInput
+  isTrusted: BoolFieldUpdateOperationsInput
+  JavascriptOrigins: oAuthJavascriptOriginUpdateManyWithoutClientInput
+  logo: NullableStringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  RedirectUris: oAuthRedirectURIUpdateManyWithoutClientInput
+  refreshTokenLifetime: IntFieldUpdateOperationsInput
+  RefreshTokens: oAuthRefreshTokenUpdateManyWithoutClientInput
+  Scopes: oAuthScopeUpdateManyWithoutClientsInput
+  secret: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  UserPool: UserPoolUpdateOneRequiredWithoutClientsInput
+}
+
+input oAuthClientUpdateWithoutCustomScopesDataInput {
+  accessTokenLifetime: IntFieldUpdateOperationsInput
+  AccessTokens: oAuthAccessTokenUpdateManyWithoutClientInput
+  AuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutClientInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  Grants: oAuthGrantUpdateManyWithoutClientsInput
+  id: StringFieldUpdateOperationsInput
+  idTokenLifetime: IntFieldUpdateOperationsInput
+  isTrusted: BoolFieldUpdateOperationsInput
+  JavascriptOrigins: oAuthJavascriptOriginUpdateManyWithoutClientInput
+  logo: NullableStringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  RedirectUris: oAuthRedirectURIUpdateManyWithoutClientInput
+  refreshTokenLifetime: IntFieldUpdateOperationsInput
+  RefreshTokens: oAuthRefreshTokenUpdateManyWithoutClientInput
+  Scopes: oAuthScopeUpdateManyWithoutClientsInput
+  secret: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  UserPool: UserPoolUpdateOneRequiredWithoutClientsInput
+}
+
+input oAuthClientUpdateWithoutRefreshTokensDataInput {
+  accessTokenLifetime: IntFieldUpdateOperationsInput
+  AccessTokens: oAuthAccessTokenUpdateManyWithoutClientInput
+  AuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutClientInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  CustomScopes: oAuthCustomScopeUpdateManyWithoutClientsInput
+  Grants: oAuthGrantUpdateManyWithoutClientsInput
+  id: StringFieldUpdateOperationsInput
+  idTokenLifetime: IntFieldUpdateOperationsInput
+  isTrusted: BoolFieldUpdateOperationsInput
+  JavascriptOrigins: oAuthJavascriptOriginUpdateManyWithoutClientInput
+  logo: NullableStringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  RedirectUris: oAuthRedirectURIUpdateManyWithoutClientInput
+  refreshTokenLifetime: IntFieldUpdateOperationsInput
+  Scopes: oAuthScopeUpdateManyWithoutClientsInput
+  secret: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  UserPool: UserPoolUpdateOneRequiredWithoutClientsInput
+}
+
+input oAuthClientUpdateWithoutScopesDataInput {
+  accessTokenLifetime: IntFieldUpdateOperationsInput
+  AccessTokens: oAuthAccessTokenUpdateManyWithoutClientInput
+  AuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutClientInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  CustomScopes: oAuthCustomScopeUpdateManyWithoutClientsInput
+  Grants: oAuthGrantUpdateManyWithoutClientsInput
+  id: StringFieldUpdateOperationsInput
+  idTokenLifetime: IntFieldUpdateOperationsInput
+  isTrusted: BoolFieldUpdateOperationsInput
+  JavascriptOrigins: oAuthJavascriptOriginUpdateManyWithoutClientInput
+  logo: NullableStringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  RedirectUris: oAuthRedirectURIUpdateManyWithoutClientInput
+  refreshTokenLifetime: IntFieldUpdateOperationsInput
+  RefreshTokens: oAuthRefreshTokenUpdateManyWithoutClientInput
+  secret: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  UserPool: UserPoolUpdateOneRequiredWithoutClientsInput
+}
+
+input oAuthClientUpdateWithoutUserPoolDataInput {
+  accessTokenLifetime: IntFieldUpdateOperationsInput
+  AccessTokens: oAuthAccessTokenUpdateManyWithoutClientInput
+  AuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutClientInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  CustomScopes: oAuthCustomScopeUpdateManyWithoutClientsInput
+  Grants: oAuthGrantUpdateManyWithoutClientsInput
+  id: StringFieldUpdateOperationsInput
+  idTokenLifetime: IntFieldUpdateOperationsInput
+  isTrusted: BoolFieldUpdateOperationsInput
+  JavascriptOrigins: oAuthJavascriptOriginUpdateManyWithoutClientInput
+  logo: NullableStringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  RedirectUris: oAuthRedirectURIUpdateManyWithoutClientInput
+  refreshTokenLifetime: IntFieldUpdateOperationsInput
+  RefreshTokens: oAuthRefreshTokenUpdateManyWithoutClientInput
+  Scopes: oAuthScopeUpdateManyWithoutClientsInput
+  secret: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input oAuthClientUpdateWithWhereUniqueWithoutCustomScopesInput {
+  data: oAuthClientUpdateWithoutCustomScopesDataInput!
+  where: oAuthClientWhereUniqueInput!
+}
+
+input oAuthClientUpdateWithWhereUniqueWithoutScopesInput {
+  data: oAuthClientUpdateWithoutScopesDataInput!
+  where: oAuthClientWhereUniqueInput!
+}
+
+input oAuthClientUpdateWithWhereUniqueWithoutUserPoolInput {
+  data: oAuthClientUpdateWithoutUserPoolDataInput!
+  where: oAuthClientWhereUniqueInput!
+}
+
+input oAuthClientUpsertWithoutAccessTokensInput {
+  create: oAuthClientCreateWithoutAccessTokensInput!
+  update: oAuthClientUpdateWithoutAccessTokensDataInput!
+}
+
+input oAuthClientUpsertWithoutAuthorizationCodesInput {
+  create: oAuthClientCreateWithoutAuthorizationCodesInput!
+  update: oAuthClientUpdateWithoutAuthorizationCodesDataInput!
+}
+
+input oAuthClientUpsertWithoutRefreshTokensInput {
+  create: oAuthClientCreateWithoutRefreshTokensInput!
+  update: oAuthClientUpdateWithoutRefreshTokensDataInput!
+}
+
+input oAuthClientUpsertWithWhereUniqueWithoutCustomScopesInput {
+  create: oAuthClientCreateWithoutCustomScopesInput!
+  update: oAuthClientUpdateWithoutCustomScopesDataInput!
+  where: oAuthClientWhereUniqueInput!
+}
+
+input oAuthClientUpsertWithWhereUniqueWithoutScopesInput {
+  create: oAuthClientCreateWithoutScopesInput!
+  update: oAuthClientUpdateWithoutScopesDataInput!
+  where: oAuthClientWhereUniqueInput!
+}
+
+input oAuthClientUpsertWithWhereUniqueWithoutUserPoolInput {
+  create: oAuthClientCreateWithoutUserPoolInput!
+  update: oAuthClientUpdateWithoutUserPoolDataInput!
+  where: oAuthClientWhereUniqueInput!
 }
 
 input oAuthClientWhereUniqueInput {
@@ -553,6 +1547,12 @@ type oAuthCustomScope {
   updatedAt: DateTime!
 }
 
+input oAuthCustomScopeCreateManyWithoutClientsInput {
+  connect: [oAuthCustomScopeWhereUniqueInput!]
+  connectOrCreate: [oAuthCustomScopeCreateOrConnectWithoutoAuthClientInput!]
+  create: [oAuthCustomScopeCreateWithoutClientsInput!]
+}
+
 input oAuthCustomScopeCreateManyWithoutResourceServerInput {
   connect: [oAuthCustomScopeWhereUniqueInput!]
   connectOrCreate: [oAuthCustomScopeCreateOrConnectWithoutoAuthResourceServerInput!]
@@ -565,6 +1565,11 @@ input oAuthCustomScopeCreateManyWithoutRolesInput {
   create: [oAuthCustomScopeCreateWithoutRolesInput!]
 }
 
+input oAuthCustomScopeCreateOrConnectWithoutoAuthClientInput {
+  create: oAuthCustomScopeCreateWithoutClientsInput!
+  where: oAuthCustomScopeWhereUniqueInput!
+}
+
 input oAuthCustomScopeCreateOrConnectWithoutoAuthResourceServerInput {
   create: oAuthCustomScopeCreateWithoutResourceServerInput!
   where: oAuthCustomScopeWhereUniqueInput!
@@ -575,22 +1580,169 @@ input oAuthCustomScopeCreateOrConnectWithoutRoleInput {
   where: oAuthCustomScopeWhereUniqueInput!
 }
 
-input oAuthCustomScopeCreateWithoutResourceServerInput {
+input oAuthCustomScopeCreateWithoutClientsInput {
   createdAt: DateTime
   description: String
   id: String
   name: String!
+  oAuthClientId: String!
+  ResourceServer: oAuthResourceServerCreateOneWithoutScopesInput!
+  Roles: RoleCreateManyWithoutCustomScopesInput
+  updatedAt: DateTime
+}
+
+input oAuthCustomScopeCreateWithoutResourceServerInput {
+  Clients: oAuthClientCreateManyWithoutCustomScopesInput
+  createdAt: DateTime
+  description: String
+  id: String
+  name: String!
+  oAuthClientId: String!
   Roles: RoleCreateManyWithoutCustomScopesInput
   updatedAt: DateTime
 }
 
 input oAuthCustomScopeCreateWithoutRolesInput {
+  Clients: oAuthClientCreateManyWithoutCustomScopesInput
   createdAt: DateTime
   description: String
   id: String
   name: String!
+  oAuthClientId: String!
   ResourceServer: oAuthResourceServerCreateOneWithoutScopesInput!
   updatedAt: DateTime
+}
+
+input oAuthCustomScopeScalarWhereInput {
+  AND: [oAuthCustomScopeScalarWhereInput!]
+  createdAt: DateTimeFilter
+  description: StringNullableFilter
+  id: StringFilter
+  name: StringFilter
+  NOT: [oAuthCustomScopeScalarWhereInput!]
+  oAuthClientId: StringFilter
+  oAuthResourceServerId: StringFilter
+  OR: [oAuthCustomScopeScalarWhereInput!]
+  updatedAt: DateTimeFilter
+}
+
+input oAuthCustomScopeUpdateManyDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  description: NullableStringFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  oAuthClientId: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input oAuthCustomScopeUpdateManyWithoutClientsInput {
+  connect: [oAuthCustomScopeWhereUniqueInput!]
+  connectOrCreate: [oAuthCustomScopeCreateOrConnectWithoutoAuthClientInput!]
+  create: [oAuthCustomScopeCreateWithoutClientsInput!]
+  delete: [oAuthCustomScopeWhereUniqueInput!]
+  deleteMany: [oAuthCustomScopeScalarWhereInput!]
+  disconnect: [oAuthCustomScopeWhereUniqueInput!]
+  set: [oAuthCustomScopeWhereUniqueInput!]
+  update: [oAuthCustomScopeUpdateWithWhereUniqueWithoutClientsInput!]
+  updateMany: [oAuthCustomScopeUpdateManyWithWhereNestedInput!]
+  upsert: [oAuthCustomScopeUpsertWithWhereUniqueWithoutClientsInput!]
+}
+
+input oAuthCustomScopeUpdateManyWithoutResourceServerInput {
+  connect: [oAuthCustomScopeWhereUniqueInput!]
+  connectOrCreate: [oAuthCustomScopeCreateOrConnectWithoutoAuthResourceServerInput!]
+  create: [oAuthCustomScopeCreateWithoutResourceServerInput!]
+  delete: [oAuthCustomScopeWhereUniqueInput!]
+  deleteMany: [oAuthCustomScopeScalarWhereInput!]
+  disconnect: [oAuthCustomScopeWhereUniqueInput!]
+  set: [oAuthCustomScopeWhereUniqueInput!]
+  update: [oAuthCustomScopeUpdateWithWhereUniqueWithoutResourceServerInput!]
+  updateMany: [oAuthCustomScopeUpdateManyWithWhereNestedInput!]
+  upsert: [oAuthCustomScopeUpsertWithWhereUniqueWithoutResourceServerInput!]
+}
+
+input oAuthCustomScopeUpdateManyWithoutRolesInput {
+  connect: [oAuthCustomScopeWhereUniqueInput!]
+  connectOrCreate: [oAuthCustomScopeCreateOrConnectWithoutRoleInput!]
+  create: [oAuthCustomScopeCreateWithoutRolesInput!]
+  delete: [oAuthCustomScopeWhereUniqueInput!]
+  deleteMany: [oAuthCustomScopeScalarWhereInput!]
+  disconnect: [oAuthCustomScopeWhereUniqueInput!]
+  set: [oAuthCustomScopeWhereUniqueInput!]
+  update: [oAuthCustomScopeUpdateWithWhereUniqueWithoutRolesInput!]
+  updateMany: [oAuthCustomScopeUpdateManyWithWhereNestedInput!]
+  upsert: [oAuthCustomScopeUpsertWithWhereUniqueWithoutRolesInput!]
+}
+
+input oAuthCustomScopeUpdateManyWithWhereNestedInput {
+  data: oAuthCustomScopeUpdateManyDataInput!
+  where: oAuthCustomScopeScalarWhereInput!
+}
+
+input oAuthCustomScopeUpdateWithoutClientsDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  description: NullableStringFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  oAuthClientId: StringFieldUpdateOperationsInput
+  ResourceServer: oAuthResourceServerUpdateOneRequiredWithoutScopesInput
+  Roles: RoleUpdateManyWithoutCustomScopesInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input oAuthCustomScopeUpdateWithoutResourceServerDataInput {
+  Clients: oAuthClientUpdateManyWithoutCustomScopesInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  description: NullableStringFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  oAuthClientId: StringFieldUpdateOperationsInput
+  Roles: RoleUpdateManyWithoutCustomScopesInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input oAuthCustomScopeUpdateWithoutRolesDataInput {
+  Clients: oAuthClientUpdateManyWithoutCustomScopesInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  description: NullableStringFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  oAuthClientId: StringFieldUpdateOperationsInput
+  ResourceServer: oAuthResourceServerUpdateOneRequiredWithoutScopesInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input oAuthCustomScopeUpdateWithWhereUniqueWithoutClientsInput {
+  data: oAuthCustomScopeUpdateWithoutClientsDataInput!
+  where: oAuthCustomScopeWhereUniqueInput!
+}
+
+input oAuthCustomScopeUpdateWithWhereUniqueWithoutResourceServerInput {
+  data: oAuthCustomScopeUpdateWithoutResourceServerDataInput!
+  where: oAuthCustomScopeWhereUniqueInput!
+}
+
+input oAuthCustomScopeUpdateWithWhereUniqueWithoutRolesInput {
+  data: oAuthCustomScopeUpdateWithoutRolesDataInput!
+  where: oAuthCustomScopeWhereUniqueInput!
+}
+
+input oAuthCustomScopeUpsertWithWhereUniqueWithoutClientsInput {
+  create: oAuthCustomScopeCreateWithoutClientsInput!
+  update: oAuthCustomScopeUpdateWithoutClientsDataInput!
+  where: oAuthCustomScopeWhereUniqueInput!
+}
+
+input oAuthCustomScopeUpsertWithWhereUniqueWithoutResourceServerInput {
+  create: oAuthCustomScopeCreateWithoutResourceServerInput!
+  update: oAuthCustomScopeUpdateWithoutResourceServerDataInput!
+  where: oAuthCustomScopeWhereUniqueInput!
+}
+
+input oAuthCustomScopeUpsertWithWhereUniqueWithoutRolesInput {
+  create: oAuthCustomScopeCreateWithoutRolesInput!
+  update: oAuthCustomScopeUpdateWithoutRolesDataInput!
+  where: oAuthCustomScopeWhereUniqueInput!
 }
 
 input oAuthCustomScopeWhereUniqueInput {
@@ -620,6 +1772,59 @@ input oAuthGrantCreateWithoutClientsInput {
   updatedAt: DateTime
 }
 
+input oAuthGrantScalarWhereInput {
+  AND: [oAuthGrantScalarWhereInput!]
+  createdAt: DateTimeFilter
+  grantType: EnumGrantTypeFilter
+  id: StringFilter
+  NOT: [oAuthGrantScalarWhereInput!]
+  OR: [oAuthGrantScalarWhereInput!]
+  updatedAt: DateTimeFilter
+}
+
+input oAuthGrantUpdateManyDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  grantType: EnumGrantTypeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input oAuthGrantUpdateManyWithoutClientsInput {
+  connect: [oAuthGrantWhereUniqueInput!]
+  connectOrCreate: [oAuthGrantCreateOrConnectWithoutoAuthClientInput!]
+  create: [oAuthGrantCreateWithoutClientsInput!]
+  delete: [oAuthGrantWhereUniqueInput!]
+  deleteMany: [oAuthGrantScalarWhereInput!]
+  disconnect: [oAuthGrantWhereUniqueInput!]
+  set: [oAuthGrantWhereUniqueInput!]
+  update: [oAuthGrantUpdateWithWhereUniqueWithoutClientsInput!]
+  updateMany: [oAuthGrantUpdateManyWithWhereNestedInput!]
+  upsert: [oAuthGrantUpsertWithWhereUniqueWithoutClientsInput!]
+}
+
+input oAuthGrantUpdateManyWithWhereNestedInput {
+  data: oAuthGrantUpdateManyDataInput!
+  where: oAuthGrantScalarWhereInput!
+}
+
+input oAuthGrantUpdateWithoutClientsDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  grantType: EnumGrantTypeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input oAuthGrantUpdateWithWhereUniqueWithoutClientsInput {
+  data: oAuthGrantUpdateWithoutClientsDataInput!
+  where: oAuthGrantWhereUniqueInput!
+}
+
+input oAuthGrantUpsertWithWhereUniqueWithoutClientsInput {
+  create: oAuthGrantCreateWithoutClientsInput!
+  update: oAuthGrantUpdateWithoutClientsDataInput!
+  where: oAuthGrantWhereUniqueInput!
+}
+
 input oAuthGrantWhereUniqueInput {
   id: String
 }
@@ -647,6 +1852,60 @@ input oAuthJavascriptOriginCreateWithoutClientInput {
   uri: String!
 }
 
+input oAuthJavascriptOriginScalarWhereInput {
+  AND: [oAuthJavascriptOriginScalarWhereInput!]
+  createdAt: DateTimeFilter
+  id: StringFilter
+  NOT: [oAuthJavascriptOriginScalarWhereInput!]
+  oAuthClientId: StringFilter
+  OR: [oAuthJavascriptOriginScalarWhereInput!]
+  updatedAt: DateTimeFilter
+  uri: StringFilter
+}
+
+input oAuthJavascriptOriginUpdateManyDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  uri: StringFieldUpdateOperationsInput
+}
+
+input oAuthJavascriptOriginUpdateManyWithoutClientInput {
+  connect: [oAuthJavascriptOriginWhereUniqueInput!]
+  connectOrCreate: [oAuthJavascriptOriginCreateOrConnectWithoutoAuthClientInput!]
+  create: [oAuthJavascriptOriginCreateWithoutClientInput!]
+  delete: [oAuthJavascriptOriginWhereUniqueInput!]
+  deleteMany: [oAuthJavascriptOriginScalarWhereInput!]
+  disconnect: [oAuthJavascriptOriginWhereUniqueInput!]
+  set: [oAuthJavascriptOriginWhereUniqueInput!]
+  update: [oAuthJavascriptOriginUpdateWithWhereUniqueWithoutClientInput!]
+  updateMany: [oAuthJavascriptOriginUpdateManyWithWhereNestedInput!]
+  upsert: [oAuthJavascriptOriginUpsertWithWhereUniqueWithoutClientInput!]
+}
+
+input oAuthJavascriptOriginUpdateManyWithWhereNestedInput {
+  data: oAuthJavascriptOriginUpdateManyDataInput!
+  where: oAuthJavascriptOriginScalarWhereInput!
+}
+
+input oAuthJavascriptOriginUpdateWithoutClientDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  uri: StringFieldUpdateOperationsInput
+}
+
+input oAuthJavascriptOriginUpdateWithWhereUniqueWithoutClientInput {
+  data: oAuthJavascriptOriginUpdateWithoutClientDataInput!
+  where: oAuthJavascriptOriginWhereUniqueInput!
+}
+
+input oAuthJavascriptOriginUpsertWithWhereUniqueWithoutClientInput {
+  create: oAuthJavascriptOriginCreateWithoutClientInput!
+  update: oAuthJavascriptOriginUpdateWithoutClientDataInput!
+  where: oAuthJavascriptOriginWhereUniqueInput!
+}
+
 input oAuthJavascriptOriginWhereUniqueInput {
   id: String
 }
@@ -672,6 +1931,60 @@ input oAuthRedirectURICreateWithoutClientInput {
   id: String
   updatedAt: DateTime
   url: String!
+}
+
+input oAuthRedirectURIScalarWhereInput {
+  AND: [oAuthRedirectURIScalarWhereInput!]
+  createdAt: DateTimeFilter
+  id: StringFilter
+  NOT: [oAuthRedirectURIScalarWhereInput!]
+  oAuthClientId: StringFilter
+  OR: [oAuthRedirectURIScalarWhereInput!]
+  updatedAt: DateTimeFilter
+  url: StringFilter
+}
+
+input oAuthRedirectURIUpdateManyDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  url: StringFieldUpdateOperationsInput
+}
+
+input oAuthRedirectURIUpdateManyWithoutClientInput {
+  connect: [oAuthRedirectURIWhereUniqueInput!]
+  connectOrCreate: [oAuthRedirectURICreateOrConnectWithoutoAuthClientInput!]
+  create: [oAuthRedirectURICreateWithoutClientInput!]
+  delete: [oAuthRedirectURIWhereUniqueInput!]
+  deleteMany: [oAuthRedirectURIScalarWhereInput!]
+  disconnect: [oAuthRedirectURIWhereUniqueInput!]
+  set: [oAuthRedirectURIWhereUniqueInput!]
+  update: [oAuthRedirectURIUpdateWithWhereUniqueWithoutClientInput!]
+  updateMany: [oAuthRedirectURIUpdateManyWithWhereNestedInput!]
+  upsert: [oAuthRedirectURIUpsertWithWhereUniqueWithoutClientInput!]
+}
+
+input oAuthRedirectURIUpdateManyWithWhereNestedInput {
+  data: oAuthRedirectURIUpdateManyDataInput!
+  where: oAuthRedirectURIScalarWhereInput!
+}
+
+input oAuthRedirectURIUpdateWithoutClientDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  url: StringFieldUpdateOperationsInput
+}
+
+input oAuthRedirectURIUpdateWithWhereUniqueWithoutClientInput {
+  data: oAuthRedirectURIUpdateWithoutClientDataInput!
+  where: oAuthRedirectURIWhereUniqueInput!
+}
+
+input oAuthRedirectURIUpsertWithWhereUniqueWithoutClientInput {
+  create: oAuthRedirectURICreateWithoutClientInput!
+  update: oAuthRedirectURIUpdateWithoutClientDataInput!
+  where: oAuthRedirectURIWhereUniqueInput!
 }
 
 input oAuthRedirectURIWhereUniqueInput {
@@ -747,6 +2060,134 @@ input oAuthRefreshTokenCreateWithoutUserInput {
   updatedAt: DateTime
 }
 
+input oAuthRefreshTokenScalarWhereInput {
+  AND: [oAuthRefreshTokenScalarWhereInput!]
+  createdAt: DateTimeFilter
+  expirationDate: DateTimeFilter
+  id: StringFilter
+  NOT: [oAuthRefreshTokenScalarWhereInput!]
+  oAuthClientId: StringFilter
+  OR: [oAuthRefreshTokenScalarWhereInput!]
+  refreshToken: StringFilter
+  updatedAt: DateTimeFilter
+  userId: StringNullableFilter
+}
+
+input oAuthRefreshTokenUpdateManyDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  expirationDate: DateTimeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  refreshToken: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input oAuthRefreshTokenUpdateManyWithoutClientInput {
+  connect: [oAuthRefreshTokenWhereUniqueInput!]
+  connectOrCreate: [oAuthRefreshTokenCreateOrConnectWithoutoAuthClientInput!]
+  create: [oAuthRefreshTokenCreateWithoutClientInput!]
+  delete: [oAuthRefreshTokenWhereUniqueInput!]
+  deleteMany: [oAuthRefreshTokenScalarWhereInput!]
+  disconnect: [oAuthRefreshTokenWhereUniqueInput!]
+  set: [oAuthRefreshTokenWhereUniqueInput!]
+  update: [oAuthRefreshTokenUpdateWithWhereUniqueWithoutClientInput!]
+  updateMany: [oAuthRefreshTokenUpdateManyWithWhereNestedInput!]
+  upsert: [oAuthRefreshTokenUpsertWithWhereUniqueWithoutClientInput!]
+}
+
+input oAuthRefreshTokenUpdateManyWithoutScopesInput {
+  connect: [oAuthRefreshTokenWhereUniqueInput!]
+  connectOrCreate: [oAuthRefreshTokenCreateOrConnectWithoutoAuthScopeInput!]
+  create: [oAuthRefreshTokenCreateWithoutScopesInput!]
+  delete: [oAuthRefreshTokenWhereUniqueInput!]
+  deleteMany: [oAuthRefreshTokenScalarWhereInput!]
+  disconnect: [oAuthRefreshTokenWhereUniqueInput!]
+  set: [oAuthRefreshTokenWhereUniqueInput!]
+  update: [oAuthRefreshTokenUpdateWithWhereUniqueWithoutScopesInput!]
+  updateMany: [oAuthRefreshTokenUpdateManyWithWhereNestedInput!]
+  upsert: [oAuthRefreshTokenUpsertWithWhereUniqueWithoutScopesInput!]
+}
+
+input oAuthRefreshTokenUpdateManyWithoutUserInput {
+  connect: [oAuthRefreshTokenWhereUniqueInput!]
+  connectOrCreate: [oAuthRefreshTokenCreateOrConnectWithoutUserInput!]
+  create: [oAuthRefreshTokenCreateWithoutUserInput!]
+  delete: [oAuthRefreshTokenWhereUniqueInput!]
+  deleteMany: [oAuthRefreshTokenScalarWhereInput!]
+  disconnect: [oAuthRefreshTokenWhereUniqueInput!]
+  set: [oAuthRefreshTokenWhereUniqueInput!]
+  update: [oAuthRefreshTokenUpdateWithWhereUniqueWithoutUserInput!]
+  updateMany: [oAuthRefreshTokenUpdateManyWithWhereNestedInput!]
+  upsert: [oAuthRefreshTokenUpsertWithWhereUniqueWithoutUserInput!]
+}
+
+input oAuthRefreshTokenUpdateManyWithWhereNestedInput {
+  data: oAuthRefreshTokenUpdateManyDataInput!
+  where: oAuthRefreshTokenScalarWhereInput!
+}
+
+input oAuthRefreshTokenUpdateWithoutClientDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  expirationDate: DateTimeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  refreshToken: StringFieldUpdateOperationsInput
+  Scopes: oAuthScopeUpdateManyWithoutRefreshTokenScopeInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  User: UserUpdateOneWithoutRefreshTokensInput
+}
+
+input oAuthRefreshTokenUpdateWithoutScopesDataInput {
+  Client: oAuthClientUpdateOneRequiredWithoutRefreshTokensInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  expirationDate: DateTimeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  refreshToken: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  User: UserUpdateOneWithoutRefreshTokensInput
+}
+
+input oAuthRefreshTokenUpdateWithoutUserDataInput {
+  Client: oAuthClientUpdateOneRequiredWithoutRefreshTokensInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  expirationDate: DateTimeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  refreshToken: StringFieldUpdateOperationsInput
+  Scopes: oAuthScopeUpdateManyWithoutRefreshTokenScopeInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input oAuthRefreshTokenUpdateWithWhereUniqueWithoutClientInput {
+  data: oAuthRefreshTokenUpdateWithoutClientDataInput!
+  where: oAuthRefreshTokenWhereUniqueInput!
+}
+
+input oAuthRefreshTokenUpdateWithWhereUniqueWithoutScopesInput {
+  data: oAuthRefreshTokenUpdateWithoutScopesDataInput!
+  where: oAuthRefreshTokenWhereUniqueInput!
+}
+
+input oAuthRefreshTokenUpdateWithWhereUniqueWithoutUserInput {
+  data: oAuthRefreshTokenUpdateWithoutUserDataInput!
+  where: oAuthRefreshTokenWhereUniqueInput!
+}
+
+input oAuthRefreshTokenUpsertWithWhereUniqueWithoutClientInput {
+  create: oAuthRefreshTokenCreateWithoutClientInput!
+  update: oAuthRefreshTokenUpdateWithoutClientDataInput!
+  where: oAuthRefreshTokenWhereUniqueInput!
+}
+
+input oAuthRefreshTokenUpsertWithWhereUniqueWithoutScopesInput {
+  create: oAuthRefreshTokenCreateWithoutScopesInput!
+  update: oAuthRefreshTokenUpdateWithoutScopesDataInput!
+  where: oAuthRefreshTokenWhereUniqueInput!
+}
+
+input oAuthRefreshTokenUpsertWithWhereUniqueWithoutUserInput {
+  create: oAuthRefreshTokenCreateWithoutUserInput!
+  update: oAuthRefreshTokenUpdateWithoutUserDataInput!
+  where: oAuthRefreshTokenWhereUniqueInput!
+}
+
 input oAuthRefreshTokenWhereUniqueInput {
   id: String
   refreshToken_oAuthClientId: RefreshTokenOAuthClientIdCompoundUniqueInput
@@ -758,12 +2199,6 @@ type oAuthResourceServer {
   identifier: String!
   name: String!
   Scopes(after: oAuthCustomScopeWhereUniqueInput, before: oAuthCustomScopeWhereUniqueInput, first: Int, last: Int): [oAuthCustomScope!]!
-}
-
-input oAuthResourceServerCreateManyWithoutClientInput {
-  connect: [oAuthResourceServerWhereUniqueInput!]
-  connectOrCreate: [oAuthResourceServerCreateOrConnectWithoutoAuthClientInput!]
-  create: [oAuthResourceServerCreateWithoutClientInput!]
 }
 
 input oAuthResourceServerCreateManyWithoutUserPoolInput {
@@ -778,11 +2213,6 @@ input oAuthResourceServerCreateOneWithoutScopesInput {
   create: oAuthResourceServerCreateWithoutScopesInput
 }
 
-input oAuthResourceServerCreateOrConnectWithoutoAuthClientInput {
-  create: oAuthResourceServerCreateWithoutClientInput!
-  where: oAuthResourceServerWhereUniqueInput!
-}
-
 input oAuthResourceServerCreateOrConnectWithoutoAuthCustomScopeInput {
   create: oAuthResourceServerCreateWithoutScopesInput!
   where: oAuthResourceServerWhereUniqueInput!
@@ -793,18 +2223,7 @@ input oAuthResourceServerCreateOrConnectWithoutUserPoolInput {
   where: oAuthResourceServerWhereUniqueInput!
 }
 
-input oAuthResourceServerCreateWithoutClientInput {
-  createdAt: DateTime
-  id: String
-  identifier: String!
-  name: String!
-  Scopes: oAuthCustomScopeCreateManyWithoutResourceServerInput
-  updatedAt: DateTime
-  UserPool: UserPoolCreateOneWithoutResourceServersInput!
-}
-
 input oAuthResourceServerCreateWithoutScopesInput {
-  Client: oAuthClientCreateOneWithoutResourceServersInput!
   createdAt: DateTime
   id: String
   identifier: String!
@@ -814,13 +2233,92 @@ input oAuthResourceServerCreateWithoutScopesInput {
 }
 
 input oAuthResourceServerCreateWithoutUserPoolInput {
-  Client: oAuthClientCreateOneWithoutResourceServersInput!
   createdAt: DateTime
   id: String
   identifier: String!
   name: String!
   Scopes: oAuthCustomScopeCreateManyWithoutResourceServerInput
   updatedAt: DateTime
+}
+
+input oAuthResourceServerScalarWhereInput {
+  AND: [oAuthResourceServerScalarWhereInput!]
+  createdAt: DateTimeFilter
+  id: StringFilter
+  identifier: StringFilter
+  name: StringFilter
+  NOT: [oAuthResourceServerScalarWhereInput!]
+  OR: [oAuthResourceServerScalarWhereInput!]
+  updatedAt: DateTimeFilter
+  userPoolId: StringFilter
+}
+
+input oAuthResourceServerUpdateManyDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  identifier: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input oAuthResourceServerUpdateManyWithoutUserPoolInput {
+  connect: [oAuthResourceServerWhereUniqueInput!]
+  connectOrCreate: [oAuthResourceServerCreateOrConnectWithoutUserPoolInput!]
+  create: [oAuthResourceServerCreateWithoutUserPoolInput!]
+  delete: [oAuthResourceServerWhereUniqueInput!]
+  deleteMany: [oAuthResourceServerScalarWhereInput!]
+  disconnect: [oAuthResourceServerWhereUniqueInput!]
+  set: [oAuthResourceServerWhereUniqueInput!]
+  update: [oAuthResourceServerUpdateWithWhereUniqueWithoutUserPoolInput!]
+  updateMany: [oAuthResourceServerUpdateManyWithWhereNestedInput!]
+  upsert: [oAuthResourceServerUpsertWithWhereUniqueWithoutUserPoolInput!]
+}
+
+input oAuthResourceServerUpdateManyWithWhereNestedInput {
+  data: oAuthResourceServerUpdateManyDataInput!
+  where: oAuthResourceServerScalarWhereInput!
+}
+
+input oAuthResourceServerUpdateOneRequiredWithoutScopesInput {
+  connect: oAuthResourceServerWhereUniqueInput
+  connectOrCreate: oAuthResourceServerCreateOrConnectWithoutoAuthCustomScopeInput
+  create: oAuthResourceServerCreateWithoutScopesInput
+  update: oAuthResourceServerUpdateWithoutScopesDataInput
+  upsert: oAuthResourceServerUpsertWithoutScopesInput
+}
+
+input oAuthResourceServerUpdateWithoutScopesDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  identifier: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  UserPool: UserPoolUpdateOneRequiredWithoutResourceServersInput
+}
+
+input oAuthResourceServerUpdateWithoutUserPoolDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  identifier: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  Scopes: oAuthCustomScopeUpdateManyWithoutResourceServerInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input oAuthResourceServerUpdateWithWhereUniqueWithoutUserPoolInput {
+  data: oAuthResourceServerUpdateWithoutUserPoolDataInput!
+  where: oAuthResourceServerWhereUniqueInput!
+}
+
+input oAuthResourceServerUpsertWithoutScopesInput {
+  create: oAuthResourceServerCreateWithoutScopesInput!
+  update: oAuthResourceServerUpdateWithoutScopesDataInput!
+}
+
+input oAuthResourceServerUpsertWithWhereUniqueWithoutUserPoolInput {
+  create: oAuthResourceServerCreateWithoutUserPoolInput!
+  update: oAuthResourceServerUpdateWithoutUserPoolDataInput!
+  where: oAuthResourceServerWhereUniqueInput!
 }
 
 input oAuthResourceServerWhereUniqueInput {
@@ -948,14 +2446,232 @@ input oAuthScopeCreateWithoutRolesInput {
   updatedAt: DateTime
 }
 
+input oAuthScopeScalarWhereInput {
+  AND: [oAuthScopeScalarWhereInput!]
+  createdAt: DateTimeFilter
+  description: StringNullableFilter
+  id: StringFilter
+  name: StringFilter
+  NOT: [oAuthScopeScalarWhereInput!]
+  OR: [oAuthScopeScalarWhereInput!]
+  updatedAt: DateTimeFilter
+}
+
+input oAuthScopeUpdateManyDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  description: NullableStringFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input oAuthScopeUpdateManyWithoutAccessTokensInput {
+  connect: [oAuthScopeWhereUniqueInput!]
+  connectOrCreate: [oAuthScopeCreateOrConnectWithoutoAuthAccessTokenInput!]
+  create: [oAuthScopeCreateWithoutAccessTokensInput!]
+  delete: [oAuthScopeWhereUniqueInput!]
+  deleteMany: [oAuthScopeScalarWhereInput!]
+  disconnect: [oAuthScopeWhereUniqueInput!]
+  set: [oAuthScopeWhereUniqueInput!]
+  update: [oAuthScopeUpdateWithWhereUniqueWithoutAccessTokensInput!]
+  updateMany: [oAuthScopeUpdateManyWithWhereNestedInput!]
+  upsert: [oAuthScopeUpsertWithWhereUniqueWithoutAccessTokensInput!]
+}
+
+input oAuthScopeUpdateManyWithoutAuthorizationCodesInput {
+  connect: [oAuthScopeWhereUniqueInput!]
+  connectOrCreate: [oAuthScopeCreateOrConnectWithoutoAuthAuthorizationCodeInput!]
+  create: [oAuthScopeCreateWithoutAuthorizationCodesInput!]
+  delete: [oAuthScopeWhereUniqueInput!]
+  deleteMany: [oAuthScopeScalarWhereInput!]
+  disconnect: [oAuthScopeWhereUniqueInput!]
+  set: [oAuthScopeWhereUniqueInput!]
+  update: [oAuthScopeUpdateWithWhereUniqueWithoutAuthorizationCodesInput!]
+  updateMany: [oAuthScopeUpdateManyWithWhereNestedInput!]
+  upsert: [oAuthScopeUpsertWithWhereUniqueWithoutAuthorizationCodesInput!]
+}
+
+input oAuthScopeUpdateManyWithoutClientsInput {
+  connect: [oAuthScopeWhereUniqueInput!]
+  connectOrCreate: [oAuthScopeCreateOrConnectWithoutoAuthClientInput!]
+  create: [oAuthScopeCreateWithoutClientsInput!]
+  delete: [oAuthScopeWhereUniqueInput!]
+  deleteMany: [oAuthScopeScalarWhereInput!]
+  disconnect: [oAuthScopeWhereUniqueInput!]
+  set: [oAuthScopeWhereUniqueInput!]
+  update: [oAuthScopeUpdateWithWhereUniqueWithoutClientsInput!]
+  updateMany: [oAuthScopeUpdateManyWithWhereNestedInput!]
+  upsert: [oAuthScopeUpsertWithWhereUniqueWithoutClientsInput!]
+}
+
+input oAuthScopeUpdateManyWithoutRefreshTokenScopeInput {
+  connect: [oAuthScopeWhereUniqueInput!]
+  connectOrCreate: [oAuthScopeCreateOrConnectWithoutoAuthRefreshTokenInput!]
+  create: [oAuthScopeCreateWithoutRefreshTokenScopeInput!]
+  delete: [oAuthScopeWhereUniqueInput!]
+  deleteMany: [oAuthScopeScalarWhereInput!]
+  disconnect: [oAuthScopeWhereUniqueInput!]
+  set: [oAuthScopeWhereUniqueInput!]
+  update: [oAuthScopeUpdateWithWhereUniqueWithoutRefreshTokenScopeInput!]
+  updateMany: [oAuthScopeUpdateManyWithWhereNestedInput!]
+  upsert: [oAuthScopeUpsertWithWhereUniqueWithoutRefreshTokenScopeInput!]
+}
+
+input oAuthScopeUpdateManyWithoutRolesInput {
+  connect: [oAuthScopeWhereUniqueInput!]
+  connectOrCreate: [oAuthScopeCreateOrConnectWithoutRoleInput!]
+  create: [oAuthScopeCreateWithoutRolesInput!]
+  delete: [oAuthScopeWhereUniqueInput!]
+  deleteMany: [oAuthScopeScalarWhereInput!]
+  disconnect: [oAuthScopeWhereUniqueInput!]
+  set: [oAuthScopeWhereUniqueInput!]
+  update: [oAuthScopeUpdateWithWhereUniqueWithoutRolesInput!]
+  updateMany: [oAuthScopeUpdateManyWithWhereNestedInput!]
+  upsert: [oAuthScopeUpsertWithWhereUniqueWithoutRolesInput!]
+}
+
+input oAuthScopeUpdateManyWithWhereNestedInput {
+  data: oAuthScopeUpdateManyDataInput!
+  where: oAuthScopeScalarWhereInput!
+}
+
+input oAuthScopeUpdateWithoutAccessTokensDataInput {
+  AuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutScopesInput
+  Clients: oAuthClientUpdateManyWithoutScopesInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  description: NullableStringFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  RefreshTokenScope: oAuthRefreshTokenUpdateManyWithoutScopesInput
+  Roles: RoleUpdateManyWithoutScopesInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input oAuthScopeUpdateWithoutAuthorizationCodesDataInput {
+  AccessTokens: oAuthAccessTokenUpdateManyWithoutScopesInput
+  Clients: oAuthClientUpdateManyWithoutScopesInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  description: NullableStringFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  RefreshTokenScope: oAuthRefreshTokenUpdateManyWithoutScopesInput
+  Roles: RoleUpdateManyWithoutScopesInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input oAuthScopeUpdateWithoutClientsDataInput {
+  AccessTokens: oAuthAccessTokenUpdateManyWithoutScopesInput
+  AuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutScopesInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  description: NullableStringFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  RefreshTokenScope: oAuthRefreshTokenUpdateManyWithoutScopesInput
+  Roles: RoleUpdateManyWithoutScopesInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input oAuthScopeUpdateWithoutRefreshTokenScopeDataInput {
+  AccessTokens: oAuthAccessTokenUpdateManyWithoutScopesInput
+  AuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutScopesInput
+  Clients: oAuthClientUpdateManyWithoutScopesInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  description: NullableStringFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  Roles: RoleUpdateManyWithoutScopesInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input oAuthScopeUpdateWithoutRolesDataInput {
+  AccessTokens: oAuthAccessTokenUpdateManyWithoutScopesInput
+  AuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutScopesInput
+  Clients: oAuthClientUpdateManyWithoutScopesInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  description: NullableStringFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  RefreshTokenScope: oAuthRefreshTokenUpdateManyWithoutScopesInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input oAuthScopeUpdateWithWhereUniqueWithoutAccessTokensInput {
+  data: oAuthScopeUpdateWithoutAccessTokensDataInput!
+  where: oAuthScopeWhereUniqueInput!
+}
+
+input oAuthScopeUpdateWithWhereUniqueWithoutAuthorizationCodesInput {
+  data: oAuthScopeUpdateWithoutAuthorizationCodesDataInput!
+  where: oAuthScopeWhereUniqueInput!
+}
+
+input oAuthScopeUpdateWithWhereUniqueWithoutClientsInput {
+  data: oAuthScopeUpdateWithoutClientsDataInput!
+  where: oAuthScopeWhereUniqueInput!
+}
+
+input oAuthScopeUpdateWithWhereUniqueWithoutRefreshTokenScopeInput {
+  data: oAuthScopeUpdateWithoutRefreshTokenScopeDataInput!
+  where: oAuthScopeWhereUniqueInput!
+}
+
+input oAuthScopeUpdateWithWhereUniqueWithoutRolesInput {
+  data: oAuthScopeUpdateWithoutRolesDataInput!
+  where: oAuthScopeWhereUniqueInput!
+}
+
+input oAuthScopeUpsertWithWhereUniqueWithoutAccessTokensInput {
+  create: oAuthScopeCreateWithoutAccessTokensInput!
+  update: oAuthScopeUpdateWithoutAccessTokensDataInput!
+  where: oAuthScopeWhereUniqueInput!
+}
+
+input oAuthScopeUpsertWithWhereUniqueWithoutAuthorizationCodesInput {
+  create: oAuthScopeCreateWithoutAuthorizationCodesInput!
+  update: oAuthScopeUpdateWithoutAuthorizationCodesDataInput!
+  where: oAuthScopeWhereUniqueInput!
+}
+
+input oAuthScopeUpsertWithWhereUniqueWithoutClientsInput {
+  create: oAuthScopeCreateWithoutClientsInput!
+  update: oAuthScopeUpdateWithoutClientsDataInput!
+  where: oAuthScopeWhereUniqueInput!
+}
+
+input oAuthScopeUpsertWithWhereUniqueWithoutRefreshTokenScopeInput {
+  create: oAuthScopeCreateWithoutRefreshTokenScopeInput!
+  update: oAuthScopeUpdateWithoutRefreshTokenScopeDataInput!
+  where: oAuthScopeWhereUniqueInput!
+}
+
+input oAuthScopeUpsertWithWhereUniqueWithoutRolesInput {
+  create: oAuthScopeCreateWithoutRolesInput!
+  update: oAuthScopeUpdateWithoutRolesDataInput!
+  where: oAuthScopeWhereUniqueInput!
+}
+
 input oAuthScopeWhereUniqueInput {
   id: String
 }
 
 type Organization {
   address: String
+  id: String!
   name: String!
+  phoneNumber: String
+  url: String
   UserPools(after: UserPoolWhereUniqueInput, before: UserPoolWhereUniqueInput, first: Int, last: Int): [UserPool!]!
+}
+
+input OrganizationCreateInput {
+  address: String
+  createdAt: DateTime
+  id: String
+  name: String!
+  phoneNumber: String
+  updatedAt: DateTime
+  url: String
+  UserPools: UserPoolCreateManyWithoutOrganizationInput
 }
 
 input OrganizationCreateOneWithoutUserPoolsInput {
@@ -979,6 +2695,29 @@ input OrganizationCreateWithoutUserPoolsInput {
   url: String
 }
 
+input OrganizationUpdateOneRequiredWithoutUserPoolsInput {
+  connect: OrganizationWhereUniqueInput
+  connectOrCreate: OrganizationCreateOrConnectWithoutUserPoolInput
+  create: OrganizationCreateWithoutUserPoolsInput
+  update: OrganizationUpdateWithoutUserPoolsDataInput
+  upsert: OrganizationUpsertWithoutUserPoolsInput
+}
+
+input OrganizationUpdateWithoutUserPoolsDataInput {
+  address: NullableStringFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  phoneNumber: NullableStringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  url: NullableStringFieldUpdateOperationsInput
+}
+
+input OrganizationUpsertWithoutUserPoolsInput {
+  create: OrganizationCreateWithoutUserPoolsInput!
+  update: OrganizationUpdateWithoutUserPoolsDataInput!
+}
+
 input OrganizationWhereUniqueInput {
   id: String
 }
@@ -1000,6 +2739,63 @@ input PasswordResetCreateWithoutUserInput {
   id: String
   token: String!
   updatedAt: DateTime
+}
+
+input PasswordResetScalarWhereInput {
+  AND: [PasswordResetScalarWhereInput!]
+  createdAt: DateTimeFilter
+  expirationDate: DateTimeFilter
+  id: StringFilter
+  NOT: [PasswordResetScalarWhereInput!]
+  OR: [PasswordResetScalarWhereInput!]
+  token: StringFilter
+  updatedAt: DateTimeFilter
+  userId: StringFilter
+}
+
+input PasswordResetUpdateManyDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  expirationDate: DateTimeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  token: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input PasswordResetUpdateManyWithoutUserInput {
+  connect: [PasswordResetWhereUniqueInput!]
+  connectOrCreate: [PasswordResetCreateOrConnectWithoutUserInput!]
+  create: [PasswordResetCreateWithoutUserInput!]
+  delete: [PasswordResetWhereUniqueInput!]
+  deleteMany: [PasswordResetScalarWhereInput!]
+  disconnect: [PasswordResetWhereUniqueInput!]
+  set: [PasswordResetWhereUniqueInput!]
+  update: [PasswordResetUpdateWithWhereUniqueWithoutUserInput!]
+  updateMany: [PasswordResetUpdateManyWithWhereNestedInput!]
+  upsert: [PasswordResetUpsertWithWhereUniqueWithoutUserInput!]
+}
+
+input PasswordResetUpdateManyWithWhereNestedInput {
+  data: PasswordResetUpdateManyDataInput!
+  where: PasswordResetScalarWhereInput!
+}
+
+input PasswordResetUpdateWithoutUserDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  expirationDate: DateTimeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  token: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input PasswordResetUpdateWithWhereUniqueWithoutUserInput {
+  data: PasswordResetUpdateWithoutUserDataInput!
+  where: PasswordResetWhereUniqueInput!
+}
+
+input PasswordResetUpsertWithWhereUniqueWithoutUserInput {
+  create: PasswordResetCreateWithoutUserInput!
+  update: PasswordResetUpdateWithoutUserDataInput!
+  where: PasswordResetWhereUniqueInput!
 }
 
 input PasswordResetWhereUniqueInput {
@@ -1027,6 +2823,63 @@ input PhotoCreateWithoutProfileInput {
   isCurrentProfileImage: Boolean!
   updatedAt: DateTime
   value: String!
+}
+
+input PhotoScalarWhereInput {
+  AND: [PhotoScalarWhereInput!]
+  createdAt: DateTimeFilter
+  id: StringFilter
+  isCurrentProfileImage: BoolFilter
+  NOT: [PhotoScalarWhereInput!]
+  OR: [PhotoScalarWhereInput!]
+  profileId: StringFilter
+  updatedAt: DateTimeFilter
+  value: StringFilter
+}
+
+input PhotoUpdateManyDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  isCurrentProfileImage: BoolFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  value: StringFieldUpdateOperationsInput
+}
+
+input PhotoUpdateManyWithoutProfileInput {
+  connect: [PhotoWhereUniqueInput!]
+  connectOrCreate: [PhotoCreateOrConnectWithoutProfileInput!]
+  create: [PhotoCreateWithoutProfileInput!]
+  delete: [PhotoWhereUniqueInput!]
+  deleteMany: [PhotoScalarWhereInput!]
+  disconnect: [PhotoWhereUniqueInput!]
+  set: [PhotoWhereUniqueInput!]
+  update: [PhotoUpdateWithWhereUniqueWithoutProfileInput!]
+  updateMany: [PhotoUpdateManyWithWhereNestedInput!]
+  upsert: [PhotoUpsertWithWhereUniqueWithoutProfileInput!]
+}
+
+input PhotoUpdateManyWithWhereNestedInput {
+  data: PhotoUpdateManyDataInput!
+  where: PhotoScalarWhereInput!
+}
+
+input PhotoUpdateWithoutProfileDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  isCurrentProfileImage: BoolFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  value: StringFieldUpdateOperationsInput
+}
+
+input PhotoUpdateWithWhereUniqueWithoutProfileInput {
+  data: PhotoUpdateWithoutProfileDataInput!
+  where: PhotoWhereUniqueInput!
+}
+
+input PhotoUpsertWithWhereUniqueWithoutProfileInput {
+  create: PhotoCreateWithoutProfileInput!
+  update: PhotoUpdateWithoutProfileDataInput!
+  where: PhotoWhereUniqueInput!
 }
 
 input PhotoWhereUniqueInput {
@@ -1061,7 +2914,6 @@ input ProfileCreateWithoutUserInput {
   birthdate: DateTime
   createdAt: DateTime
   displayName: String
-  Emails: EmailCreateManyWithoutProfileInput
   firstName: String
   gender: Gender
   id: String
@@ -1071,18 +2923,44 @@ input ProfileCreateWithoutUserInput {
   updatedAt: DateTime
 }
 
+input ProfileUpdateOneRequiredWithoutUserInput {
+  connect: ProfileWhereUniqueInput
+  connectOrCreate: ProfileCreateOrConnectWithoutUserInput
+  create: ProfileCreateWithoutUserInput
+  update: ProfileUpdateWithoutUserDataInput
+  upsert: ProfileUpsertWithoutUserInput
+}
+
+input ProfileUpdateWithoutUserDataInput {
+  birthdate: NullableDateTimeFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  displayName: NullableStringFieldUpdateOperationsInput
+  firstName: NullableStringFieldUpdateOperationsInput
+  gender: NullableEnumGenderFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  lastName: NullableStringFieldUpdateOperationsInput
+  mobileNumber: NullableStringFieldUpdateOperationsInput
+  Photos: PhotoUpdateManyWithoutProfileInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input ProfileUpsertWithoutUserInput {
+  create: ProfileCreateWithoutUserInput!
+  update: ProfileUpdateWithoutUserDataInput!
+}
+
 input ProfileWhereUniqueInput {
   id: String
 }
 
 type Query {
-  oAuthAccessToken(where: oAuthAccessTokenWhereUniqueInput!): oAuthAccessToken
-  oAuthAuthorizationCode(where: oAuthAuthorizationCodeWhereUniqueInput!): oAuthAuthorizationCode
+  group(where: GroupWhereUniqueInput!): Group
+  me: SystemUser
   oAuthClient(where: oAuthClientWhereUniqueInput!): oAuthClient
-  oAuthClients(after: oAuthClientWhereUniqueInput, before: oAuthClientWhereUniqueInput, first: Int, last: Int): [oAuthClient!]!
-  oAuthGrants(after: oAuthGrantWhereUniqueInput, before: oAuthGrantWhereUniqueInput, first: Int, last: Int): [oAuthGrant!]!
-  oAuthRefreshToken(where: oAuthRefreshTokenWhereUniqueInput!): oAuthRefreshToken
-  user(where: UserWhereUniqueInput!): User
+  organization(where: OrganizationWhereUniqueInput!): Organization
+  organizations(after: OrganizationWhereUniqueInput, before: OrganizationWhereUniqueInput, first: Int, last: Int): [Organization!]!
+  roles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int): [Role!]!
+  userPool(where: UserPoolWhereUniqueInput!): UserPool
   users(after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int): [User!]!
 }
 
@@ -1215,8 +3093,245 @@ input RoleCreateWithoutUsersInput {
   UserPool: UserPoolCreateOneWithoutRolesInput!
 }
 
+input RoleScalarWhereInput {
+  AND: [RoleScalarWhereInput!]
+  createdAt: DateTimeFilter
+  description: StringNullableFilter
+  id: StringFilter
+  name: StringFilter
+  NOT: [RoleScalarWhereInput!]
+  OR: [RoleScalarWhereInput!]
+  updatedAt: DateTimeFilter
+  userPoolId: StringFilter
+}
+
+input RoleUpdateManyDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  description: NullableStringFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input RoleUpdateManyWithoutCustomScopesInput {
+  connect: [RoleWhereUniqueInput!]
+  connectOrCreate: [RoleCreateOrConnectWithoutoAuthCustomScopeInput!]
+  create: [RoleCreateWithoutCustomScopesInput!]
+  delete: [RoleWhereUniqueInput!]
+  deleteMany: [RoleScalarWhereInput!]
+  disconnect: [RoleWhereUniqueInput!]
+  set: [RoleWhereUniqueInput!]
+  update: [RoleUpdateWithWhereUniqueWithoutCustomScopesInput!]
+  updateMany: [RoleUpdateManyWithWhereNestedInput!]
+  upsert: [RoleUpsertWithWhereUniqueWithoutCustomScopesInput!]
+}
+
+input RoleUpdateManyWithoutGroupsInput {
+  connect: [RoleWhereUniqueInput!]
+  connectOrCreate: [RoleCreateOrConnectWithoutGroupInput!]
+  create: [RoleCreateWithoutGroupsInput!]
+  delete: [RoleWhereUniqueInput!]
+  deleteMany: [RoleScalarWhereInput!]
+  disconnect: [RoleWhereUniqueInput!]
+  set: [RoleWhereUniqueInput!]
+  update: [RoleUpdateWithWhereUniqueWithoutGroupsInput!]
+  updateMany: [RoleUpdateManyWithWhereNestedInput!]
+  upsert: [RoleUpsertWithWhereUniqueWithoutGroupsInput!]
+}
+
+input RoleUpdateManyWithoutScopesInput {
+  connect: [RoleWhereUniqueInput!]
+  connectOrCreate: [RoleCreateOrConnectWithoutoAuthScopeInput!]
+  create: [RoleCreateWithoutScopesInput!]
+  delete: [RoleWhereUniqueInput!]
+  deleteMany: [RoleScalarWhereInput!]
+  disconnect: [RoleWhereUniqueInput!]
+  set: [RoleWhereUniqueInput!]
+  update: [RoleUpdateWithWhereUniqueWithoutScopesInput!]
+  updateMany: [RoleUpdateManyWithWhereNestedInput!]
+  upsert: [RoleUpsertWithWhereUniqueWithoutScopesInput!]
+}
+
+input RoleUpdateManyWithoutUserPoolInput {
+  connect: [RoleWhereUniqueInput!]
+  connectOrCreate: [RoleCreateOrConnectWithoutUserPoolInput!]
+  create: [RoleCreateWithoutUserPoolInput!]
+  delete: [RoleWhereUniqueInput!]
+  deleteMany: [RoleScalarWhereInput!]
+  disconnect: [RoleWhereUniqueInput!]
+  set: [RoleWhereUniqueInput!]
+  update: [RoleUpdateWithWhereUniqueWithoutUserPoolInput!]
+  updateMany: [RoleUpdateManyWithWhereNestedInput!]
+  upsert: [RoleUpsertWithWhereUniqueWithoutUserPoolInput!]
+}
+
+input RoleUpdateManyWithoutUsersInput {
+  connect: [RoleWhereUniqueInput!]
+  connectOrCreate: [RoleCreateOrConnectWithoutUserInput!]
+  create: [RoleCreateWithoutUsersInput!]
+  delete: [RoleWhereUniqueInput!]
+  deleteMany: [RoleScalarWhereInput!]
+  disconnect: [RoleWhereUniqueInput!]
+  set: [RoleWhereUniqueInput!]
+  update: [RoleUpdateWithWhereUniqueWithoutUsersInput!]
+  updateMany: [RoleUpdateManyWithWhereNestedInput!]
+  upsert: [RoleUpsertWithWhereUniqueWithoutUsersInput!]
+}
+
+input RoleUpdateManyWithWhereNestedInput {
+  data: RoleUpdateManyDataInput!
+  where: RoleScalarWhereInput!
+}
+
+input RoleUpdateWithoutCustomScopesDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  description: NullableStringFieldUpdateOperationsInput
+  Groups: GroupUpdateManyWithoutRolesInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  Scopes: oAuthScopeUpdateManyWithoutRolesInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  UserPool: UserPoolUpdateOneRequiredWithoutRolesInput
+  Users: UserUpdateManyWithoutRolesInput
+}
+
+input RoleUpdateWithoutGroupsDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  CustomScopes: oAuthCustomScopeUpdateManyWithoutRolesInput
+  description: NullableStringFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  Scopes: oAuthScopeUpdateManyWithoutRolesInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  UserPool: UserPoolUpdateOneRequiredWithoutRolesInput
+  Users: UserUpdateManyWithoutRolesInput
+}
+
+input RoleUpdateWithoutScopesDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  CustomScopes: oAuthCustomScopeUpdateManyWithoutRolesInput
+  description: NullableStringFieldUpdateOperationsInput
+  Groups: GroupUpdateManyWithoutRolesInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  UserPool: UserPoolUpdateOneRequiredWithoutRolesInput
+  Users: UserUpdateManyWithoutRolesInput
+}
+
+input RoleUpdateWithoutUserPoolDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  CustomScopes: oAuthCustomScopeUpdateManyWithoutRolesInput
+  description: NullableStringFieldUpdateOperationsInput
+  Groups: GroupUpdateManyWithoutRolesInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  Scopes: oAuthScopeUpdateManyWithoutRolesInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  Users: UserUpdateManyWithoutRolesInput
+}
+
+input RoleUpdateWithoutUsersDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  CustomScopes: oAuthCustomScopeUpdateManyWithoutRolesInput
+  description: NullableStringFieldUpdateOperationsInput
+  Groups: GroupUpdateManyWithoutRolesInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  Scopes: oAuthScopeUpdateManyWithoutRolesInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  UserPool: UserPoolUpdateOneRequiredWithoutRolesInput
+}
+
+input RoleUpdateWithWhereUniqueWithoutCustomScopesInput {
+  data: RoleUpdateWithoutCustomScopesDataInput!
+  where: RoleWhereUniqueInput!
+}
+
+input RoleUpdateWithWhereUniqueWithoutGroupsInput {
+  data: RoleUpdateWithoutGroupsDataInput!
+  where: RoleWhereUniqueInput!
+}
+
+input RoleUpdateWithWhereUniqueWithoutScopesInput {
+  data: RoleUpdateWithoutScopesDataInput!
+  where: RoleWhereUniqueInput!
+}
+
+input RoleUpdateWithWhereUniqueWithoutUserPoolInput {
+  data: RoleUpdateWithoutUserPoolDataInput!
+  where: RoleWhereUniqueInput!
+}
+
+input RoleUpdateWithWhereUniqueWithoutUsersInput {
+  data: RoleUpdateWithoutUsersDataInput!
+  where: RoleWhereUniqueInput!
+}
+
+input RoleUpsertWithWhereUniqueWithoutCustomScopesInput {
+  create: RoleCreateWithoutCustomScopesInput!
+  update: RoleUpdateWithoutCustomScopesDataInput!
+  where: RoleWhereUniqueInput!
+}
+
+input RoleUpsertWithWhereUniqueWithoutGroupsInput {
+  create: RoleCreateWithoutGroupsInput!
+  update: RoleUpdateWithoutGroupsDataInput!
+  where: RoleWhereUniqueInput!
+}
+
+input RoleUpsertWithWhereUniqueWithoutScopesInput {
+  create: RoleCreateWithoutScopesInput!
+  update: RoleUpdateWithoutScopesDataInput!
+  where: RoleWhereUniqueInput!
+}
+
+input RoleUpsertWithWhereUniqueWithoutUserPoolInput {
+  create: RoleCreateWithoutUserPoolInput!
+  update: RoleUpdateWithoutUserPoolDataInput!
+  where: RoleWhereUniqueInput!
+}
+
+input RoleUpsertWithWhereUniqueWithoutUsersInput {
+  create: RoleCreateWithoutUsersInput!
+  update: RoleUpdateWithoutUsersDataInput!
+  where: RoleWhereUniqueInput!
+}
+
 input RoleWhereUniqueInput {
   id: String
+}
+
+input StringFieldUpdateOperationsInput {
+  set: String
+}
+
+input StringFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  not: NestedStringFilter
+  notIn: [String!]
+  startsWith: String
+}
+
+input StringNullableFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  not: NestedStringNullableFilter
+  notIn: [String!]
+  startsWith: String
 }
 
 enum SystemRole {
@@ -1238,6 +3353,7 @@ type SystemUser {
 type User {
   createdAt: DateTime!
   Devices(after: UserDeviceWhereUniqueInput, before: UserDeviceWhereUniqueInput, first: Int, last: Int): [UserDevice!]!
+  Emails(after: EmailWhereUniqueInput, before: EmailWhereUniqueInput, first: Int, last: Int): [Email!]!
   Groups(after: GroupWhereUniqueInput, before: GroupWhereUniqueInput, first: Int, last: Int): [Group!]!
   primaryEmail: String!
   Profile: Profile!
@@ -1252,9 +3368,14 @@ input UserCreateInput {
   AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutUserInput
   createdAt: DateTime
   Devices: UserDeviceCreateManyWithoutUserInput
+  Emails: EmailCreateManyWithoutUserInput
+  FollowedBy: UserCreateManyWithoutFollowingInput
+  Following: UserCreateManyWithoutFollowedByInput
   Groups: GroupCreateManyWithoutUsersInput
   id: String
   isDisabled: Boolean
+  Notification: NotificationCreateManyWithoutSenderInput
+  Notifications: NotificationCreateManyWithoutRecipentInput
   password: String!
   PasswordResets: PasswordResetCreateManyWithoutUserInput
   primaryEmail: String!
@@ -1264,7 +3385,19 @@ input UserCreateInput {
   sub: String
   updatedAt: DateTime
   username: String!
-  UserPool: UserPoolCreateOneWithoutUsersInput
+  UserPool: UserPoolCreateOneWithoutUsersInput!
+}
+
+input UserCreateManyWithoutFollowedByInput {
+  connect: [UserWhereUniqueInput!]
+  connectOrCreate: [UserCreateOrConnectWithoutUserInput!]
+  create: [UserCreateWithoutFollowedByInput!]
+}
+
+input UserCreateManyWithoutFollowingInput {
+  connect: [UserWhereUniqueInput!]
+  connectOrCreate: [UserCreateOrConnectWithoutUserInput!]
+  create: [UserCreateWithoutFollowingInput!]
 }
 
 input UserCreateManyWithoutGroupsInput {
@@ -1297,6 +3430,18 @@ input UserCreateOneWithoutAuthorizationCodesInput {
   create: UserCreateWithoutAuthorizationCodesInput
 }
 
+input UserCreateOneWithoutNotificationInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutNotificationInput
+  create: UserCreateWithoutNotificationInput
+}
+
+input UserCreateOneWithoutNotificationsInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutNotificationInput
+  create: UserCreateWithoutNotificationsInput
+}
+
 input UserCreateOneWithoutRefreshTokensInput {
   connect: UserWhereUniqueInput
   connectOrCreate: UserCreateOrConnectWithoutoAuthRefreshTokenInput
@@ -1305,6 +3450,11 @@ input UserCreateOneWithoutRefreshTokensInput {
 
 input UserCreateOrConnectWithoutGroupInput {
   create: UserCreateWithoutGroupsInput!
+  where: UserWhereUniqueInput!
+}
+
+input UserCreateOrConnectWithoutNotificationInput {
+  create: UserCreateWithoutNotificationsInput!
   where: UserWhereUniqueInput!
 }
 
@@ -1328,6 +3478,11 @@ input UserCreateOrConnectWithoutRoleInput {
   where: UserWhereUniqueInput!
 }
 
+input UserCreateOrConnectWithoutUserInput {
+  create: UserCreateWithoutFollowingInput!
+  where: UserWhereUniqueInput!
+}
+
 input UserCreateOrConnectWithoutUserPoolInput {
   create: UserCreateWithoutUserPoolInput!
   where: UserWhereUniqueInput!
@@ -1337,9 +3492,14 @@ input UserCreateWithoutAccessTokensInput {
   AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutUserInput
   createdAt: DateTime
   Devices: UserDeviceCreateManyWithoutUserInput
+  Emails: EmailCreateManyWithoutUserInput
+  FollowedBy: UserCreateManyWithoutFollowingInput
+  Following: UserCreateManyWithoutFollowedByInput
   Groups: GroupCreateManyWithoutUsersInput
   id: String
   isDisabled: Boolean
+  Notification: NotificationCreateManyWithoutSenderInput
+  Notifications: NotificationCreateManyWithoutRecipentInput
   password: String!
   PasswordResets: PasswordResetCreateManyWithoutUserInput
   primaryEmail: String!
@@ -1349,16 +3509,21 @@ input UserCreateWithoutAccessTokensInput {
   sub: String
   updatedAt: DateTime
   username: String!
-  UserPool: UserPoolCreateOneWithoutUsersInput
+  UserPool: UserPoolCreateOneWithoutUsersInput!
 }
 
 input UserCreateWithoutAuthorizationCodesInput {
   AccessTokens: oAuthAccessTokenCreateManyWithoutUserInput
   createdAt: DateTime
   Devices: UserDeviceCreateManyWithoutUserInput
+  Emails: EmailCreateManyWithoutUserInput
+  FollowedBy: UserCreateManyWithoutFollowingInput
+  Following: UserCreateManyWithoutFollowedByInput
   Groups: GroupCreateManyWithoutUsersInput
   id: String
   isDisabled: Boolean
+  Notification: NotificationCreateManyWithoutSenderInput
+  Notifications: NotificationCreateManyWithoutRecipentInput
   password: String!
   PasswordResets: PasswordResetCreateManyWithoutUserInput
   primaryEmail: String!
@@ -1368,7 +3533,55 @@ input UserCreateWithoutAuthorizationCodesInput {
   sub: String
   updatedAt: DateTime
   username: String!
-  UserPool: UserPoolCreateOneWithoutUsersInput
+  UserPool: UserPoolCreateOneWithoutUsersInput!
+}
+
+input UserCreateWithoutFollowedByInput {
+  AccessTokens: oAuthAccessTokenCreateManyWithoutUserInput
+  AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutUserInput
+  createdAt: DateTime
+  Devices: UserDeviceCreateManyWithoutUserInput
+  Emails: EmailCreateManyWithoutUserInput
+  Following: UserCreateManyWithoutFollowedByInput
+  Groups: GroupCreateManyWithoutUsersInput
+  id: String
+  isDisabled: Boolean
+  Notification: NotificationCreateManyWithoutSenderInput
+  Notifications: NotificationCreateManyWithoutRecipentInput
+  password: String!
+  PasswordResets: PasswordResetCreateManyWithoutUserInput
+  primaryEmail: String!
+  Profile: ProfileCreateOneWithoutUserInput
+  RefreshTokens: oAuthRefreshTokenCreateManyWithoutUserInput
+  Roles: RoleCreateManyWithoutUsersInput
+  sub: String
+  updatedAt: DateTime
+  username: String!
+  UserPool: UserPoolCreateOneWithoutUsersInput!
+}
+
+input UserCreateWithoutFollowingInput {
+  AccessTokens: oAuthAccessTokenCreateManyWithoutUserInput
+  AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutUserInput
+  createdAt: DateTime
+  Devices: UserDeviceCreateManyWithoutUserInput
+  Emails: EmailCreateManyWithoutUserInput
+  FollowedBy: UserCreateManyWithoutFollowingInput
+  Groups: GroupCreateManyWithoutUsersInput
+  id: String
+  isDisabled: Boolean
+  Notification: NotificationCreateManyWithoutSenderInput
+  Notifications: NotificationCreateManyWithoutRecipentInput
+  password: String!
+  PasswordResets: PasswordResetCreateManyWithoutUserInput
+  primaryEmail: String!
+  Profile: ProfileCreateOneWithoutUserInput
+  RefreshTokens: oAuthRefreshTokenCreateManyWithoutUserInput
+  Roles: RoleCreateManyWithoutUsersInput
+  sub: String
+  updatedAt: DateTime
+  username: String!
+  UserPool: UserPoolCreateOneWithoutUsersInput!
 }
 
 input UserCreateWithoutGroupsInput {
@@ -1376,8 +3589,13 @@ input UserCreateWithoutGroupsInput {
   AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutUserInput
   createdAt: DateTime
   Devices: UserDeviceCreateManyWithoutUserInput
+  Emails: EmailCreateManyWithoutUserInput
+  FollowedBy: UserCreateManyWithoutFollowingInput
+  Following: UserCreateManyWithoutFollowedByInput
   id: String
   isDisabled: Boolean
+  Notification: NotificationCreateManyWithoutSenderInput
+  Notifications: NotificationCreateManyWithoutRecipentInput
   password: String!
   PasswordResets: PasswordResetCreateManyWithoutUserInput
   primaryEmail: String!
@@ -1387,7 +3605,55 @@ input UserCreateWithoutGroupsInput {
   sub: String
   updatedAt: DateTime
   username: String!
-  UserPool: UserPoolCreateOneWithoutUsersInput
+  UserPool: UserPoolCreateOneWithoutUsersInput!
+}
+
+input UserCreateWithoutNotificationInput {
+  AccessTokens: oAuthAccessTokenCreateManyWithoutUserInput
+  AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutUserInput
+  createdAt: DateTime
+  Devices: UserDeviceCreateManyWithoutUserInput
+  Emails: EmailCreateManyWithoutUserInput
+  FollowedBy: UserCreateManyWithoutFollowingInput
+  Following: UserCreateManyWithoutFollowedByInput
+  Groups: GroupCreateManyWithoutUsersInput
+  id: String
+  isDisabled: Boolean
+  Notifications: NotificationCreateManyWithoutRecipentInput
+  password: String!
+  PasswordResets: PasswordResetCreateManyWithoutUserInput
+  primaryEmail: String!
+  Profile: ProfileCreateOneWithoutUserInput
+  RefreshTokens: oAuthRefreshTokenCreateManyWithoutUserInput
+  Roles: RoleCreateManyWithoutUsersInput
+  sub: String
+  updatedAt: DateTime
+  username: String!
+  UserPool: UserPoolCreateOneWithoutUsersInput!
+}
+
+input UserCreateWithoutNotificationsInput {
+  AccessTokens: oAuthAccessTokenCreateManyWithoutUserInput
+  AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutUserInput
+  createdAt: DateTime
+  Devices: UserDeviceCreateManyWithoutUserInput
+  Emails: EmailCreateManyWithoutUserInput
+  FollowedBy: UserCreateManyWithoutFollowingInput
+  Following: UserCreateManyWithoutFollowedByInput
+  Groups: GroupCreateManyWithoutUsersInput
+  id: String
+  isDisabled: Boolean
+  Notification: NotificationCreateManyWithoutSenderInput
+  password: String!
+  PasswordResets: PasswordResetCreateManyWithoutUserInput
+  primaryEmail: String!
+  Profile: ProfileCreateOneWithoutUserInput
+  RefreshTokens: oAuthRefreshTokenCreateManyWithoutUserInput
+  Roles: RoleCreateManyWithoutUsersInput
+  sub: String
+  updatedAt: DateTime
+  username: String!
+  UserPool: UserPoolCreateOneWithoutUsersInput!
 }
 
 input UserCreateWithoutRefreshTokensInput {
@@ -1395,9 +3661,14 @@ input UserCreateWithoutRefreshTokensInput {
   AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutUserInput
   createdAt: DateTime
   Devices: UserDeviceCreateManyWithoutUserInput
+  Emails: EmailCreateManyWithoutUserInput
+  FollowedBy: UserCreateManyWithoutFollowingInput
+  Following: UserCreateManyWithoutFollowedByInput
   Groups: GroupCreateManyWithoutUsersInput
   id: String
   isDisabled: Boolean
+  Notification: NotificationCreateManyWithoutSenderInput
+  Notifications: NotificationCreateManyWithoutRecipentInput
   password: String!
   PasswordResets: PasswordResetCreateManyWithoutUserInput
   primaryEmail: String!
@@ -1406,7 +3677,7 @@ input UserCreateWithoutRefreshTokensInput {
   sub: String
   updatedAt: DateTime
   username: String!
-  UserPool: UserPoolCreateOneWithoutUsersInput
+  UserPool: UserPoolCreateOneWithoutUsersInput!
 }
 
 input UserCreateWithoutRolesInput {
@@ -1414,9 +3685,14 @@ input UserCreateWithoutRolesInput {
   AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutUserInput
   createdAt: DateTime
   Devices: UserDeviceCreateManyWithoutUserInput
+  Emails: EmailCreateManyWithoutUserInput
+  FollowedBy: UserCreateManyWithoutFollowingInput
+  Following: UserCreateManyWithoutFollowedByInput
   Groups: GroupCreateManyWithoutUsersInput
   id: String
   isDisabled: Boolean
+  Notification: NotificationCreateManyWithoutSenderInput
+  Notifications: NotificationCreateManyWithoutRecipentInput
   password: String!
   PasswordResets: PasswordResetCreateManyWithoutUserInput
   primaryEmail: String!
@@ -1425,7 +3701,7 @@ input UserCreateWithoutRolesInput {
   sub: String
   updatedAt: DateTime
   username: String!
-  UserPool: UserPoolCreateOneWithoutUsersInput
+  UserPool: UserPoolCreateOneWithoutUsersInput!
 }
 
 input UserCreateWithoutUserPoolInput {
@@ -1433,9 +3709,14 @@ input UserCreateWithoutUserPoolInput {
   AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutUserInput
   createdAt: DateTime
   Devices: UserDeviceCreateManyWithoutUserInput
+  Emails: EmailCreateManyWithoutUserInput
+  FollowedBy: UserCreateManyWithoutFollowingInput
+  Following: UserCreateManyWithoutFollowedByInput
   Groups: GroupCreateManyWithoutUsersInput
   id: String
   isDisabled: Boolean
+  Notification: NotificationCreateManyWithoutSenderInput
+  Notifications: NotificationCreateManyWithoutRecipentInput
   password: String!
   PasswordResets: PasswordResetCreateManyWithoutUserInput
   primaryEmail: String!
@@ -1474,6 +3755,75 @@ input UserDeviceCreateWithoutUserInput {
   updatedAt: DateTime
 }
 
+input UserDeviceScalarWhereInput {
+  AND: [UserDeviceScalarWhereInput!]
+  createdAt: DateTimeFilter
+  deviceKey: StringFilter
+  id: StringFilter
+  isRemembered: BoolFilter
+  lastIP: StringFilter
+  lastSeen: DateTimeFilter
+  name: StringNullableFilter
+  NOT: [UserDeviceScalarWhereInput!]
+  OR: [UserDeviceScalarWhereInput!]
+  SDK: StringNullableFilter
+  updatedAt: DateTimeFilter
+  userId: StringFilter
+}
+
+input UserDeviceUpdateManyDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  deviceKey: StringFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  isRemembered: BoolFieldUpdateOperationsInput
+  lastIP: StringFieldUpdateOperationsInput
+  lastSeen: DateTimeFieldUpdateOperationsInput
+  name: NullableStringFieldUpdateOperationsInput
+  SDK: NullableStringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input UserDeviceUpdateManyWithoutUserInput {
+  connect: [UserDeviceWhereUniqueInput!]
+  connectOrCreate: [UserDeviceCreateOrConnectWithoutUserInput!]
+  create: [UserDeviceCreateWithoutUserInput!]
+  delete: [UserDeviceWhereUniqueInput!]
+  deleteMany: [UserDeviceScalarWhereInput!]
+  disconnect: [UserDeviceWhereUniqueInput!]
+  set: [UserDeviceWhereUniqueInput!]
+  update: [UserDeviceUpdateWithWhereUniqueWithoutUserInput!]
+  updateMany: [UserDeviceUpdateManyWithWhereNestedInput!]
+  upsert: [UserDeviceUpsertWithWhereUniqueWithoutUserInput!]
+}
+
+input UserDeviceUpdateManyWithWhereNestedInput {
+  data: UserDeviceUpdateManyDataInput!
+  where: UserDeviceScalarWhereInput!
+}
+
+input UserDeviceUpdateWithoutUserDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  deviceKey: StringFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  isRemembered: BoolFieldUpdateOperationsInput
+  lastIP: StringFieldUpdateOperationsInput
+  lastSeen: DateTimeFieldUpdateOperationsInput
+  name: NullableStringFieldUpdateOperationsInput
+  SDK: NullableStringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input UserDeviceUpdateWithWhereUniqueWithoutUserInput {
+  data: UserDeviceUpdateWithoutUserDataInput!
+  where: UserDeviceWhereUniqueInput!
+}
+
+input UserDeviceUpsertWithWhereUniqueWithoutUserInput {
+  create: UserDeviceCreateWithoutUserInput!
+  update: UserDeviceUpdateWithoutUserDataInput!
+  where: UserDeviceWhereUniqueInput!
+}
+
 input UserDeviceWhereUniqueInput {
   id: String
 }
@@ -1486,10 +3836,29 @@ input UserIdOAuthClientIdCompoundUniqueInput {
 type UserPool {
   Clients(after: oAuthClientWhereUniqueInput, before: oAuthClientWhereUniqueInput, first: Int, last: Int): [oAuthClient!]!
   Groups(after: GroupWhereUniqueInput, before: GroupWhereUniqueInput, first: Int, last: Int): [Group!]!
+  id: String!
+  name: String!
   Organization: Organization!
   ResourceServers(after: oAuthResourceServerWhereUniqueInput, before: oAuthResourceServerWhereUniqueInput, first: Int, last: Int): [oAuthResourceServer!]!
   Roles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int): [Role!]!
   Users(after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int): [User!]!
+}
+
+input UserPoolCreateInput {
+  Clients: oAuthClientCreateManyWithoutUserPoolInput
+  Groups: GroupCreateManyWithoutUserPoolInput
+  id: String
+  name: String!
+  Organization: OrganizationCreateOneWithoutUserPoolsInput!
+  ResourceServers: oAuthResourceServerCreateManyWithoutUserPoolInput
+  Roles: RoleCreateManyWithoutUserPoolInput
+  Users: UserCreateManyWithoutUserPoolInput
+}
+
+input UserPoolCreateManyWithoutOrganizationInput {
+  connect: [UserPoolWhereUniqueInput!]
+  connectOrCreate: [UserPoolCreateOrConnectWithoutOrganizationInput!]
+  create: [UserPoolCreateWithoutOrganizationInput!]
 }
 
 input UserPoolCreateOneWithoutClientsInput {
@@ -1537,6 +3906,11 @@ input UserPoolCreateOrConnectWithoutoAuthResourceServerInput {
   where: UserPoolWhereUniqueInput!
 }
 
+input UserPoolCreateOrConnectWithoutOrganizationInput {
+  create: UserPoolCreateWithoutOrganizationInput!
+  where: UserPoolWhereUniqueInput!
+}
+
 input UserPoolCreateOrConnectWithoutRoleInput {
   create: UserPoolCreateWithoutRolesInput!
   where: UserPoolWhereUniqueInput!
@@ -1550,6 +3924,7 @@ input UserPoolCreateOrConnectWithoutUserInput {
 input UserPoolCreateWithoutClientsInput {
   Groups: GroupCreateManyWithoutUserPoolInput
   id: String
+  name: String!
   Organization: OrganizationCreateOneWithoutUserPoolsInput!
   ResourceServers: oAuthResourceServerCreateManyWithoutUserPoolInput
   Roles: RoleCreateManyWithoutUserPoolInput
@@ -1559,7 +3934,18 @@ input UserPoolCreateWithoutClientsInput {
 input UserPoolCreateWithoutGroupsInput {
   Clients: oAuthClientCreateManyWithoutUserPoolInput
   id: String
+  name: String!
   Organization: OrganizationCreateOneWithoutUserPoolsInput!
+  ResourceServers: oAuthResourceServerCreateManyWithoutUserPoolInput
+  Roles: RoleCreateManyWithoutUserPoolInput
+  Users: UserCreateManyWithoutUserPoolInput
+}
+
+input UserPoolCreateWithoutOrganizationInput {
+  Clients: oAuthClientCreateManyWithoutUserPoolInput
+  Groups: GroupCreateManyWithoutUserPoolInput
+  id: String
+  name: String!
   ResourceServers: oAuthResourceServerCreateManyWithoutUserPoolInput
   Roles: RoleCreateManyWithoutUserPoolInput
   Users: UserCreateManyWithoutUserPoolInput
@@ -1569,6 +3955,7 @@ input UserPoolCreateWithoutResourceServersInput {
   Clients: oAuthClientCreateManyWithoutUserPoolInput
   Groups: GroupCreateManyWithoutUserPoolInput
   id: String
+  name: String!
   Organization: OrganizationCreateOneWithoutUserPoolsInput!
   Roles: RoleCreateManyWithoutUserPoolInput
   Users: UserCreateManyWithoutUserPoolInput
@@ -1578,6 +3965,7 @@ input UserPoolCreateWithoutRolesInput {
   Clients: oAuthClientCreateManyWithoutUserPoolInput
   Groups: GroupCreateManyWithoutUserPoolInput
   id: String
+  name: String!
   Organization: OrganizationCreateOneWithoutUserPoolsInput!
   ResourceServers: oAuthResourceServerCreateManyWithoutUserPoolInput
   Users: UserCreateManyWithoutUserPoolInput
@@ -1587,13 +3975,615 @@ input UserPoolCreateWithoutUsersInput {
   Clients: oAuthClientCreateManyWithoutUserPoolInput
   Groups: GroupCreateManyWithoutUserPoolInput
   id: String
+  name: String!
   Organization: OrganizationCreateOneWithoutUserPoolsInput!
   ResourceServers: oAuthResourceServerCreateManyWithoutUserPoolInput
   Roles: RoleCreateManyWithoutUserPoolInput
 }
 
+input UserPoolUpdateOneRequiredWithoutClientsInput {
+  connect: UserPoolWhereUniqueInput
+  connectOrCreate: UserPoolCreateOrConnectWithoutoAuthClientInput
+  create: UserPoolCreateWithoutClientsInput
+  update: UserPoolUpdateWithoutClientsDataInput
+  upsert: UserPoolUpsertWithoutClientsInput
+}
+
+input UserPoolUpdateOneRequiredWithoutGroupsInput {
+  connect: UserPoolWhereUniqueInput
+  connectOrCreate: UserPoolCreateOrConnectWithoutGroupInput
+  create: UserPoolCreateWithoutGroupsInput
+  update: UserPoolUpdateWithoutGroupsDataInput
+  upsert: UserPoolUpsertWithoutGroupsInput
+}
+
+input UserPoolUpdateOneRequiredWithoutResourceServersInput {
+  connect: UserPoolWhereUniqueInput
+  connectOrCreate: UserPoolCreateOrConnectWithoutoAuthResourceServerInput
+  create: UserPoolCreateWithoutResourceServersInput
+  update: UserPoolUpdateWithoutResourceServersDataInput
+  upsert: UserPoolUpsertWithoutResourceServersInput
+}
+
+input UserPoolUpdateOneRequiredWithoutRolesInput {
+  connect: UserPoolWhereUniqueInput
+  connectOrCreate: UserPoolCreateOrConnectWithoutRoleInput
+  create: UserPoolCreateWithoutRolesInput
+  update: UserPoolUpdateWithoutRolesDataInput
+  upsert: UserPoolUpsertWithoutRolesInput
+}
+
+input UserPoolUpdateOneRequiredWithoutUsersInput {
+  connect: UserPoolWhereUniqueInput
+  connectOrCreate: UserPoolCreateOrConnectWithoutUserInput
+  create: UserPoolCreateWithoutUsersInput
+  update: UserPoolUpdateWithoutUsersDataInput
+  upsert: UserPoolUpsertWithoutUsersInput
+}
+
+input UserPoolUpdateWithoutClientsDataInput {
+  Groups: GroupUpdateManyWithoutUserPoolInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  Organization: OrganizationUpdateOneRequiredWithoutUserPoolsInput
+  ResourceServers: oAuthResourceServerUpdateManyWithoutUserPoolInput
+  Roles: RoleUpdateManyWithoutUserPoolInput
+  Users: UserUpdateManyWithoutUserPoolInput
+}
+
+input UserPoolUpdateWithoutGroupsDataInput {
+  Clients: oAuthClientUpdateManyWithoutUserPoolInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  Organization: OrganizationUpdateOneRequiredWithoutUserPoolsInput
+  ResourceServers: oAuthResourceServerUpdateManyWithoutUserPoolInput
+  Roles: RoleUpdateManyWithoutUserPoolInput
+  Users: UserUpdateManyWithoutUserPoolInput
+}
+
+input UserPoolUpdateWithoutResourceServersDataInput {
+  Clients: oAuthClientUpdateManyWithoutUserPoolInput
+  Groups: GroupUpdateManyWithoutUserPoolInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  Organization: OrganizationUpdateOneRequiredWithoutUserPoolsInput
+  Roles: RoleUpdateManyWithoutUserPoolInput
+  Users: UserUpdateManyWithoutUserPoolInput
+}
+
+input UserPoolUpdateWithoutRolesDataInput {
+  Clients: oAuthClientUpdateManyWithoutUserPoolInput
+  Groups: GroupUpdateManyWithoutUserPoolInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  Organization: OrganizationUpdateOneRequiredWithoutUserPoolsInput
+  ResourceServers: oAuthResourceServerUpdateManyWithoutUserPoolInput
+  Users: UserUpdateManyWithoutUserPoolInput
+}
+
+input UserPoolUpdateWithoutUsersDataInput {
+  Clients: oAuthClientUpdateManyWithoutUserPoolInput
+  Groups: GroupUpdateManyWithoutUserPoolInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  Organization: OrganizationUpdateOneRequiredWithoutUserPoolsInput
+  ResourceServers: oAuthResourceServerUpdateManyWithoutUserPoolInput
+  Roles: RoleUpdateManyWithoutUserPoolInput
+}
+
+input UserPoolUpsertWithoutClientsInput {
+  create: UserPoolCreateWithoutClientsInput!
+  update: UserPoolUpdateWithoutClientsDataInput!
+}
+
+input UserPoolUpsertWithoutGroupsInput {
+  create: UserPoolCreateWithoutGroupsInput!
+  update: UserPoolUpdateWithoutGroupsDataInput!
+}
+
+input UserPoolUpsertWithoutResourceServersInput {
+  create: UserPoolCreateWithoutResourceServersInput!
+  update: UserPoolUpdateWithoutResourceServersDataInput!
+}
+
+input UserPoolUpsertWithoutRolesInput {
+  create: UserPoolCreateWithoutRolesInput!
+  update: UserPoolUpdateWithoutRolesDataInput!
+}
+
+input UserPoolUpsertWithoutUsersInput {
+  create: UserPoolCreateWithoutUsersInput!
+  update: UserPoolUpdateWithoutUsersDataInput!
+}
+
 input UserPoolWhereUniqueInput {
   id: String
+  name: String
+}
+
+input UserScalarWhereInput {
+  AND: [UserScalarWhereInput!]
+  createdAt: DateTimeFilter
+  id: StringFilter
+  isDisabled: BoolFilter
+  NOT: [UserScalarWhereInput!]
+  OR: [UserScalarWhereInput!]
+  password: StringFilter
+  primaryEmail: StringFilter
+  sub: StringFilter
+  updatedAt: DateTimeFilter
+  username: StringFilter
+  userPoolId: StringFilter
+}
+
+input UserUpdateInput {
+  AccessTokens: oAuthAccessTokenUpdateManyWithoutUserInput
+  AuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutUserInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  Devices: UserDeviceUpdateManyWithoutUserInput
+  Emails: EmailUpdateManyWithoutUserInput
+  FollowedBy: UserUpdateManyWithoutFollowingInput
+  Following: UserUpdateManyWithoutFollowedByInput
+  Groups: GroupUpdateManyWithoutUsersInput
+  id: StringFieldUpdateOperationsInput
+  isDisabled: BoolFieldUpdateOperationsInput
+  Notification: NotificationUpdateManyWithoutSenderInput
+  Notifications: NotificationUpdateManyWithoutRecipentInput
+  password: StringFieldUpdateOperationsInput
+  PasswordResets: PasswordResetUpdateManyWithoutUserInput
+  primaryEmail: StringFieldUpdateOperationsInput
+  Profile: ProfileUpdateOneRequiredWithoutUserInput
+  RefreshTokens: oAuthRefreshTokenUpdateManyWithoutUserInput
+  Roles: RoleUpdateManyWithoutUsersInput
+  sub: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  username: StringFieldUpdateOperationsInput
+  UserPool: UserPoolUpdateOneRequiredWithoutUsersInput
+}
+
+input UserUpdateManyDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  isDisabled: BoolFieldUpdateOperationsInput
+  password: StringFieldUpdateOperationsInput
+  primaryEmail: StringFieldUpdateOperationsInput
+  sub: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  username: StringFieldUpdateOperationsInput
+}
+
+input UserUpdateManyWithoutFollowedByInput {
+  connect: [UserWhereUniqueInput!]
+  connectOrCreate: [UserCreateOrConnectWithoutUserInput!]
+  create: [UserCreateWithoutFollowedByInput!]
+  delete: [UserWhereUniqueInput!]
+  deleteMany: [UserScalarWhereInput!]
+  disconnect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
+  update: [UserUpdateWithWhereUniqueWithoutFollowedByInput!]
+  updateMany: [UserUpdateManyWithWhereNestedInput!]
+  upsert: [UserUpsertWithWhereUniqueWithoutFollowedByInput!]
+}
+
+input UserUpdateManyWithoutFollowingInput {
+  connect: [UserWhereUniqueInput!]
+  connectOrCreate: [UserCreateOrConnectWithoutUserInput!]
+  create: [UserCreateWithoutFollowingInput!]
+  delete: [UserWhereUniqueInput!]
+  deleteMany: [UserScalarWhereInput!]
+  disconnect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
+  update: [UserUpdateWithWhereUniqueWithoutFollowingInput!]
+  updateMany: [UserUpdateManyWithWhereNestedInput!]
+  upsert: [UserUpsertWithWhereUniqueWithoutFollowingInput!]
+}
+
+input UserUpdateManyWithoutGroupsInput {
+  connect: [UserWhereUniqueInput!]
+  connectOrCreate: [UserCreateOrConnectWithoutGroupInput!]
+  create: [UserCreateWithoutGroupsInput!]
+  delete: [UserWhereUniqueInput!]
+  deleteMany: [UserScalarWhereInput!]
+  disconnect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
+  update: [UserUpdateWithWhereUniqueWithoutGroupsInput!]
+  updateMany: [UserUpdateManyWithWhereNestedInput!]
+  upsert: [UserUpsertWithWhereUniqueWithoutGroupsInput!]
+}
+
+input UserUpdateManyWithoutRolesInput {
+  connect: [UserWhereUniqueInput!]
+  connectOrCreate: [UserCreateOrConnectWithoutRoleInput!]
+  create: [UserCreateWithoutRolesInput!]
+  delete: [UserWhereUniqueInput!]
+  deleteMany: [UserScalarWhereInput!]
+  disconnect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
+  update: [UserUpdateWithWhereUniqueWithoutRolesInput!]
+  updateMany: [UserUpdateManyWithWhereNestedInput!]
+  upsert: [UserUpsertWithWhereUniqueWithoutRolesInput!]
+}
+
+input UserUpdateManyWithoutUserPoolInput {
+  connect: [UserWhereUniqueInput!]
+  connectOrCreate: [UserCreateOrConnectWithoutUserPoolInput!]
+  create: [UserCreateWithoutUserPoolInput!]
+  delete: [UserWhereUniqueInput!]
+  deleteMany: [UserScalarWhereInput!]
+  disconnect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
+  update: [UserUpdateWithWhereUniqueWithoutUserPoolInput!]
+  updateMany: [UserUpdateManyWithWhereNestedInput!]
+  upsert: [UserUpsertWithWhereUniqueWithoutUserPoolInput!]
+}
+
+input UserUpdateManyWithWhereNestedInput {
+  data: UserUpdateManyDataInput!
+  where: UserScalarWhereInput!
+}
+
+input UserUpdateOneRequiredWithoutAuthorizationCodesInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutoAuthAuthorizationCodeInput
+  create: UserCreateWithoutAuthorizationCodesInput
+  update: UserUpdateWithoutAuthorizationCodesDataInput
+  upsert: UserUpsertWithoutAuthorizationCodesInput
+}
+
+input UserUpdateOneRequiredWithoutNotificationInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutNotificationInput
+  create: UserCreateWithoutNotificationInput
+  update: UserUpdateWithoutNotificationDataInput
+  upsert: UserUpsertWithoutNotificationInput
+}
+
+input UserUpdateOneRequiredWithoutNotificationsInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutNotificationInput
+  create: UserCreateWithoutNotificationsInput
+  update: UserUpdateWithoutNotificationsDataInput
+  upsert: UserUpsertWithoutNotificationsInput
+}
+
+input UserUpdateOneWithoutAccessTokensInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutoAuthAccessTokenInput
+  create: UserCreateWithoutAccessTokensInput
+  delete: Boolean
+  disconnect: Boolean
+  update: UserUpdateWithoutAccessTokensDataInput
+  upsert: UserUpsertWithoutAccessTokensInput
+}
+
+input UserUpdateOneWithoutRefreshTokensInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutoAuthRefreshTokenInput
+  create: UserCreateWithoutRefreshTokensInput
+  delete: Boolean
+  disconnect: Boolean
+  update: UserUpdateWithoutRefreshTokensDataInput
+  upsert: UserUpsertWithoutRefreshTokensInput
+}
+
+input UserUpdateWithoutAccessTokensDataInput {
+  AuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutUserInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  Devices: UserDeviceUpdateManyWithoutUserInput
+  Emails: EmailUpdateManyWithoutUserInput
+  FollowedBy: UserUpdateManyWithoutFollowingInput
+  Following: UserUpdateManyWithoutFollowedByInput
+  Groups: GroupUpdateManyWithoutUsersInput
+  id: StringFieldUpdateOperationsInput
+  isDisabled: BoolFieldUpdateOperationsInput
+  Notification: NotificationUpdateManyWithoutSenderInput
+  Notifications: NotificationUpdateManyWithoutRecipentInput
+  password: StringFieldUpdateOperationsInput
+  PasswordResets: PasswordResetUpdateManyWithoutUserInput
+  primaryEmail: StringFieldUpdateOperationsInput
+  Profile: ProfileUpdateOneRequiredWithoutUserInput
+  RefreshTokens: oAuthRefreshTokenUpdateManyWithoutUserInput
+  Roles: RoleUpdateManyWithoutUsersInput
+  sub: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  username: StringFieldUpdateOperationsInput
+  UserPool: UserPoolUpdateOneRequiredWithoutUsersInput
+}
+
+input UserUpdateWithoutAuthorizationCodesDataInput {
+  AccessTokens: oAuthAccessTokenUpdateManyWithoutUserInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  Devices: UserDeviceUpdateManyWithoutUserInput
+  Emails: EmailUpdateManyWithoutUserInput
+  FollowedBy: UserUpdateManyWithoutFollowingInput
+  Following: UserUpdateManyWithoutFollowedByInput
+  Groups: GroupUpdateManyWithoutUsersInput
+  id: StringFieldUpdateOperationsInput
+  isDisabled: BoolFieldUpdateOperationsInput
+  Notification: NotificationUpdateManyWithoutSenderInput
+  Notifications: NotificationUpdateManyWithoutRecipentInput
+  password: StringFieldUpdateOperationsInput
+  PasswordResets: PasswordResetUpdateManyWithoutUserInput
+  primaryEmail: StringFieldUpdateOperationsInput
+  Profile: ProfileUpdateOneRequiredWithoutUserInput
+  RefreshTokens: oAuthRefreshTokenUpdateManyWithoutUserInput
+  Roles: RoleUpdateManyWithoutUsersInput
+  sub: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  username: StringFieldUpdateOperationsInput
+  UserPool: UserPoolUpdateOneRequiredWithoutUsersInput
+}
+
+input UserUpdateWithoutFollowedByDataInput {
+  AccessTokens: oAuthAccessTokenUpdateManyWithoutUserInput
+  AuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutUserInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  Devices: UserDeviceUpdateManyWithoutUserInput
+  Emails: EmailUpdateManyWithoutUserInput
+  Following: UserUpdateManyWithoutFollowedByInput
+  Groups: GroupUpdateManyWithoutUsersInput
+  id: StringFieldUpdateOperationsInput
+  isDisabled: BoolFieldUpdateOperationsInput
+  Notification: NotificationUpdateManyWithoutSenderInput
+  Notifications: NotificationUpdateManyWithoutRecipentInput
+  password: StringFieldUpdateOperationsInput
+  PasswordResets: PasswordResetUpdateManyWithoutUserInput
+  primaryEmail: StringFieldUpdateOperationsInput
+  Profile: ProfileUpdateOneRequiredWithoutUserInput
+  RefreshTokens: oAuthRefreshTokenUpdateManyWithoutUserInput
+  Roles: RoleUpdateManyWithoutUsersInput
+  sub: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  username: StringFieldUpdateOperationsInput
+  UserPool: UserPoolUpdateOneRequiredWithoutUsersInput
+}
+
+input UserUpdateWithoutFollowingDataInput {
+  AccessTokens: oAuthAccessTokenUpdateManyWithoutUserInput
+  AuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutUserInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  Devices: UserDeviceUpdateManyWithoutUserInput
+  Emails: EmailUpdateManyWithoutUserInput
+  FollowedBy: UserUpdateManyWithoutFollowingInput
+  Groups: GroupUpdateManyWithoutUsersInput
+  id: StringFieldUpdateOperationsInput
+  isDisabled: BoolFieldUpdateOperationsInput
+  Notification: NotificationUpdateManyWithoutSenderInput
+  Notifications: NotificationUpdateManyWithoutRecipentInput
+  password: StringFieldUpdateOperationsInput
+  PasswordResets: PasswordResetUpdateManyWithoutUserInput
+  primaryEmail: StringFieldUpdateOperationsInput
+  Profile: ProfileUpdateOneRequiredWithoutUserInput
+  RefreshTokens: oAuthRefreshTokenUpdateManyWithoutUserInput
+  Roles: RoleUpdateManyWithoutUsersInput
+  sub: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  username: StringFieldUpdateOperationsInput
+  UserPool: UserPoolUpdateOneRequiredWithoutUsersInput
+}
+
+input UserUpdateWithoutGroupsDataInput {
+  AccessTokens: oAuthAccessTokenUpdateManyWithoutUserInput
+  AuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutUserInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  Devices: UserDeviceUpdateManyWithoutUserInput
+  Emails: EmailUpdateManyWithoutUserInput
+  FollowedBy: UserUpdateManyWithoutFollowingInput
+  Following: UserUpdateManyWithoutFollowedByInput
+  id: StringFieldUpdateOperationsInput
+  isDisabled: BoolFieldUpdateOperationsInput
+  Notification: NotificationUpdateManyWithoutSenderInput
+  Notifications: NotificationUpdateManyWithoutRecipentInput
+  password: StringFieldUpdateOperationsInput
+  PasswordResets: PasswordResetUpdateManyWithoutUserInput
+  primaryEmail: StringFieldUpdateOperationsInput
+  Profile: ProfileUpdateOneRequiredWithoutUserInput
+  RefreshTokens: oAuthRefreshTokenUpdateManyWithoutUserInput
+  Roles: RoleUpdateManyWithoutUsersInput
+  sub: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  username: StringFieldUpdateOperationsInput
+  UserPool: UserPoolUpdateOneRequiredWithoutUsersInput
+}
+
+input UserUpdateWithoutNotificationDataInput {
+  AccessTokens: oAuthAccessTokenUpdateManyWithoutUserInput
+  AuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutUserInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  Devices: UserDeviceUpdateManyWithoutUserInput
+  Emails: EmailUpdateManyWithoutUserInput
+  FollowedBy: UserUpdateManyWithoutFollowingInput
+  Following: UserUpdateManyWithoutFollowedByInput
+  Groups: GroupUpdateManyWithoutUsersInput
+  id: StringFieldUpdateOperationsInput
+  isDisabled: BoolFieldUpdateOperationsInput
+  Notifications: NotificationUpdateManyWithoutRecipentInput
+  password: StringFieldUpdateOperationsInput
+  PasswordResets: PasswordResetUpdateManyWithoutUserInput
+  primaryEmail: StringFieldUpdateOperationsInput
+  Profile: ProfileUpdateOneRequiredWithoutUserInput
+  RefreshTokens: oAuthRefreshTokenUpdateManyWithoutUserInput
+  Roles: RoleUpdateManyWithoutUsersInput
+  sub: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  username: StringFieldUpdateOperationsInput
+  UserPool: UserPoolUpdateOneRequiredWithoutUsersInput
+}
+
+input UserUpdateWithoutNotificationsDataInput {
+  AccessTokens: oAuthAccessTokenUpdateManyWithoutUserInput
+  AuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutUserInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  Devices: UserDeviceUpdateManyWithoutUserInput
+  Emails: EmailUpdateManyWithoutUserInput
+  FollowedBy: UserUpdateManyWithoutFollowingInput
+  Following: UserUpdateManyWithoutFollowedByInput
+  Groups: GroupUpdateManyWithoutUsersInput
+  id: StringFieldUpdateOperationsInput
+  isDisabled: BoolFieldUpdateOperationsInput
+  Notification: NotificationUpdateManyWithoutSenderInput
+  password: StringFieldUpdateOperationsInput
+  PasswordResets: PasswordResetUpdateManyWithoutUserInput
+  primaryEmail: StringFieldUpdateOperationsInput
+  Profile: ProfileUpdateOneRequiredWithoutUserInput
+  RefreshTokens: oAuthRefreshTokenUpdateManyWithoutUserInput
+  Roles: RoleUpdateManyWithoutUsersInput
+  sub: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  username: StringFieldUpdateOperationsInput
+  UserPool: UserPoolUpdateOneRequiredWithoutUsersInput
+}
+
+input UserUpdateWithoutRefreshTokensDataInput {
+  AccessTokens: oAuthAccessTokenUpdateManyWithoutUserInput
+  AuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutUserInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  Devices: UserDeviceUpdateManyWithoutUserInput
+  Emails: EmailUpdateManyWithoutUserInput
+  FollowedBy: UserUpdateManyWithoutFollowingInput
+  Following: UserUpdateManyWithoutFollowedByInput
+  Groups: GroupUpdateManyWithoutUsersInput
+  id: StringFieldUpdateOperationsInput
+  isDisabled: BoolFieldUpdateOperationsInput
+  Notification: NotificationUpdateManyWithoutSenderInput
+  Notifications: NotificationUpdateManyWithoutRecipentInput
+  password: StringFieldUpdateOperationsInput
+  PasswordResets: PasswordResetUpdateManyWithoutUserInput
+  primaryEmail: StringFieldUpdateOperationsInput
+  Profile: ProfileUpdateOneRequiredWithoutUserInput
+  Roles: RoleUpdateManyWithoutUsersInput
+  sub: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  username: StringFieldUpdateOperationsInput
+  UserPool: UserPoolUpdateOneRequiredWithoutUsersInput
+}
+
+input UserUpdateWithoutRolesDataInput {
+  AccessTokens: oAuthAccessTokenUpdateManyWithoutUserInput
+  AuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutUserInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  Devices: UserDeviceUpdateManyWithoutUserInput
+  Emails: EmailUpdateManyWithoutUserInput
+  FollowedBy: UserUpdateManyWithoutFollowingInput
+  Following: UserUpdateManyWithoutFollowedByInput
+  Groups: GroupUpdateManyWithoutUsersInput
+  id: StringFieldUpdateOperationsInput
+  isDisabled: BoolFieldUpdateOperationsInput
+  Notification: NotificationUpdateManyWithoutSenderInput
+  Notifications: NotificationUpdateManyWithoutRecipentInput
+  password: StringFieldUpdateOperationsInput
+  PasswordResets: PasswordResetUpdateManyWithoutUserInput
+  primaryEmail: StringFieldUpdateOperationsInput
+  Profile: ProfileUpdateOneRequiredWithoutUserInput
+  RefreshTokens: oAuthRefreshTokenUpdateManyWithoutUserInput
+  sub: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  username: StringFieldUpdateOperationsInput
+  UserPool: UserPoolUpdateOneRequiredWithoutUsersInput
+}
+
+input UserUpdateWithoutUserPoolDataInput {
+  AccessTokens: oAuthAccessTokenUpdateManyWithoutUserInput
+  AuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutUserInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  Devices: UserDeviceUpdateManyWithoutUserInput
+  Emails: EmailUpdateManyWithoutUserInput
+  FollowedBy: UserUpdateManyWithoutFollowingInput
+  Following: UserUpdateManyWithoutFollowedByInput
+  Groups: GroupUpdateManyWithoutUsersInput
+  id: StringFieldUpdateOperationsInput
+  isDisabled: BoolFieldUpdateOperationsInput
+  Notification: NotificationUpdateManyWithoutSenderInput
+  Notifications: NotificationUpdateManyWithoutRecipentInput
+  password: StringFieldUpdateOperationsInput
+  PasswordResets: PasswordResetUpdateManyWithoutUserInput
+  primaryEmail: StringFieldUpdateOperationsInput
+  Profile: ProfileUpdateOneRequiredWithoutUserInput
+  RefreshTokens: oAuthRefreshTokenUpdateManyWithoutUserInput
+  Roles: RoleUpdateManyWithoutUsersInput
+  sub: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  username: StringFieldUpdateOperationsInput
+}
+
+input UserUpdateWithWhereUniqueWithoutFollowedByInput {
+  data: UserUpdateWithoutFollowedByDataInput!
+  where: UserWhereUniqueInput!
+}
+
+input UserUpdateWithWhereUniqueWithoutFollowingInput {
+  data: UserUpdateWithoutFollowingDataInput!
+  where: UserWhereUniqueInput!
+}
+
+input UserUpdateWithWhereUniqueWithoutGroupsInput {
+  data: UserUpdateWithoutGroupsDataInput!
+  where: UserWhereUniqueInput!
+}
+
+input UserUpdateWithWhereUniqueWithoutRolesInput {
+  data: UserUpdateWithoutRolesDataInput!
+  where: UserWhereUniqueInput!
+}
+
+input UserUpdateWithWhereUniqueWithoutUserPoolInput {
+  data: UserUpdateWithoutUserPoolDataInput!
+  where: UserWhereUniqueInput!
+}
+
+input UserUpsertWithoutAccessTokensInput {
+  create: UserCreateWithoutAccessTokensInput!
+  update: UserUpdateWithoutAccessTokensDataInput!
+}
+
+input UserUpsertWithoutAuthorizationCodesInput {
+  create: UserCreateWithoutAuthorizationCodesInput!
+  update: UserUpdateWithoutAuthorizationCodesDataInput!
+}
+
+input UserUpsertWithoutNotificationInput {
+  create: UserCreateWithoutNotificationInput!
+  update: UserUpdateWithoutNotificationDataInput!
+}
+
+input UserUpsertWithoutNotificationsInput {
+  create: UserCreateWithoutNotificationsInput!
+  update: UserUpdateWithoutNotificationsDataInput!
+}
+
+input UserUpsertWithoutRefreshTokensInput {
+  create: UserCreateWithoutRefreshTokensInput!
+  update: UserUpdateWithoutRefreshTokensDataInput!
+}
+
+input UserUpsertWithWhereUniqueWithoutFollowedByInput {
+  create: UserCreateWithoutFollowedByInput!
+  update: UserUpdateWithoutFollowedByDataInput!
+  where: UserWhereUniqueInput!
+}
+
+input UserUpsertWithWhereUniqueWithoutFollowingInput {
+  create: UserCreateWithoutFollowingInput!
+  update: UserUpdateWithoutFollowingDataInput!
+  where: UserWhereUniqueInput!
+}
+
+input UserUpsertWithWhereUniqueWithoutGroupsInput {
+  create: UserCreateWithoutGroupsInput!
+  update: UserUpdateWithoutGroupsDataInput!
+  where: UserWhereUniqueInput!
+}
+
+input UserUpsertWithWhereUniqueWithoutRolesInput {
+  create: UserCreateWithoutRolesInput!
+  update: UserUpdateWithoutRolesDataInput!
+  where: UserWhereUniqueInput!
+}
+
+input UserUpsertWithWhereUniqueWithoutUserPoolInput {
+  create: UserCreateWithoutUserPoolInput!
+  update: UserUpdateWithoutUserPoolDataInput!
+  where: UserWhereUniqueInput!
 }
 
 input UserWhereUniqueInput {

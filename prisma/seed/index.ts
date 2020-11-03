@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import { seedGrantTypes } from './granttypes'
-import { seedSystemUser } from './organization'
+import { seedSystemUser } from './systemUser'
+
 const prisma = new PrismaClient()
 
 async function seed() {

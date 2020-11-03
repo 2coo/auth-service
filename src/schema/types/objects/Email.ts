@@ -4,7 +4,7 @@ export const Email = objectType({
   name: 'Email',
   definition(t) {
     t.model.email()
-    t.model.Profile()
+    t.model.User()
     t.model.isVerified()
     t.model.createdAt()
     t.model.updatedAt()

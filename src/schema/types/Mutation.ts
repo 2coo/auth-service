@@ -1,11 +1,16 @@
+import { SystemUser } from './objects/SystemUser'
 import { mutationType, stringArg } from '@nexus/schema'
 import { sign } from 'jsonwebtoken'
 import { compare } from 'bcryptjs'
 
 export const Mutation = mutationType({
   definition(t) {
+    t.crud.createOneOrganization(),
+    t.crud.createOneUserPool(),
     t.crud.createOneoAuthClient()
     t.crud.createOneUser(),
+    t.crud.updateOneUser(),
+    t.crud.deleteOneUser(),
       t.field('login', {
         type: 'AuthPayload',
         args: {
