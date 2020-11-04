@@ -5,7 +5,7 @@ import { seedSystemUser } from './systemUser'
 const prisma = new PrismaClient()
 
 async function seed() {
-  await seedGrantTypes(prisma)
+  // await seedGrantTypes(prisma)
   await seedSystemUser(prisma)
 }
 

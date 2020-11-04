@@ -5,8 +5,8 @@ export const User = objectType({
   definition(t) {
     t.model.sub()
     t.model.username()
-    t.model.primaryEmail()
-    t.model.Emails()
+    t.model.email()
+    t.model.isExternalProvider()
     t.model.Profile()
     t.model.Groups()
     t.model.Roles()

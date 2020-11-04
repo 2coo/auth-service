@@ -16,30 +16,35 @@ import { User } from '@prisma/client'
  * a user is logged in before asking them to approve the request.
  */
 passport.use(
-  new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
-    prisma.user
-      .findOne({
-        where: {
-          email,
-        },
-      })
-      .then(async (user) => {
-        if (!user) return done(null, false)
-        const passwordValid = await compare(password, user.password)
-        if (!passwordValid) return done(null, false)
-        return done(null, user)
-      })
-      .catch((error) => done(error))
-  }),
+  new LocalStrategy(
+    { usernameField: 'username' },
+    (username, password, done) => {
+      prisma.systemUser
+        .findOne({
+          where: {
+            username: username,
+          },
+        })
+        .then(async (user) => {
+          if (!user) return done(null, false)
+          const passwordValid = await compare(password, user.password)
+          if (!passwordValid) return done(null, false)
+          return done(null, user)
+        })
+        .catch((error) => done(error))
+    },
+  ),
 )
 
-passport.serializeUser((user: User, done) => done(null, user.email))
+passport.serializeUser((user: User, done) => {
+  return done(null, user.id)
+})
 
-passport.deserializeUser((email: string, done) => {
-  prisma.user
+passport.deserializeUser((id: string, done) => {
+  prisma.systemUser
     .findOne({
       where: {
-        email,
+        id,
       },
     })
     .then((user) => {
@@ -95,28 +100,22 @@ passport.use(
           accessToken,
         },
         include: {
-          user: true,
-          client: true,
-          scopes: {
-            include: {
-              scope: true,
-            },
-          },
+          User: true,
+          Client: true,
+          Scopes: true,
         },
       })
       .then((localAccessToken) => {
         if (!localAccessToken) return done(null, false)
-        if (localAccessToken.user) {
-          done(null, localAccessToken.user, {
-            scope: localAccessToken.scopes
-              .map((scope) => scope.scope.name)
-              .join(' '),
+        if (localAccessToken.User) {
+          done(null, localAccessToken.User, {
+            scope: localAccessToken.Scopes.map((scope) => scope.name).join(' '),
           })
         } else {
           prisma.oAuthClient
             .findOne({
               where: {
-                id: localAccessToken.client.id,
+                id: localAccessToken.Client.id,
               },
             })
             .then((client) => {

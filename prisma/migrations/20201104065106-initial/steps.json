@@ -32,6 +32,19 @@
       ]
     },
     {
+      "tag": "CreateEnum",
+      "enum": "AccountStatusType",
+      "values": [
+        "UNCONFIRMED",
+        "CONFIRMED",
+        "ARCHIVED",
+        "COMPROMISED",
+        "UNKNOWN",
+        "RESET_REQUIRED",
+        "FORCE_CHANGE_PASSWORD"
+      ]
+    },
+    {
       "tag": "CreateSource",
       "source": "db"
     },
@@ -178,6 +191,13 @@
     {
       "tag": "CreateField",
       "model": "SystemUser",
+      "field": "Organizations",
+      "type": "Organization",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "SystemUser",
       "field": "createdAt",
       "type": "DateTime",
       "arity": "Required"
@@ -306,6 +326,59 @@
       "field": "UserPools",
       "type": "UserPool",
       "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Organization",
+      "field": "CreatedBy",
+      "type": "SystemUser",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Organization",
+          "field": "CreatedBy"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Organization",
+          "field": "CreatedBy"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[systemUserId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Organization",
+          "field": "CreatedBy"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Organization",
+      "field": "systemUserId",
+      "type": "String",
+      "arity": "Optional"
     },
     {
       "tag": "CreateField",
@@ -857,6 +930,13 @@
       "model": "oAuthClient",
       "field": "Grants",
       "type": "oAuthGrant",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "oAuthClient",
+      "field": "Notifications",
+      "type": "Notification",
       "arity": "List"
     },
     {
@@ -3154,16 +3234,73 @@
     {
       "tag": "CreateField",
       "model": "User",
-      "field": "primaryEmail",
-      "type": "String",
+      "field": "accountStatusType",
+      "type": "AccountStatusType",
       "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "User",
+          "field": "accountStatusType"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "User",
+          "field": "accountStatusType"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "UNCONFIRMED"
     },
     {
       "tag": "CreateField",
       "model": "User",
-      "field": "Emails",
-      "type": "Email",
-      "arity": "List"
+      "field": "isExternalProvider",
+      "type": "Boolean",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "User",
+          "field": "isExternalProvider"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "User",
+          "field": "isExternalProvider"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "false"
+    },
+    {
+      "tag": "CreateField",
+      "model": "User",
+      "field": "email",
+      "type": "String",
+      "arity": "Required"
     },
     {
       "tag": "CreateField",
@@ -3209,7 +3346,7 @@
       "model": "User",
       "field": "Profile",
       "type": "Profile",
-      "arity": "Required"
+      "arity": "Optional"
     },
     {
       "tag": "CreateField",
@@ -3517,6 +3654,22 @@
           "field": "updatedAt"
         },
         "directive": "updatedAt"
+      }
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Model",
+          "model": "User",
+          "arguments": [
+            {
+              "name": "",
+              "value": "[email, isExternalProvider]"
+            }
+          ]
+        },
+        "directive": "unique"
       }
     },
     {
@@ -3849,6 +4002,59 @@
     {
       "tag": "CreateField",
       "model": "Notification",
+      "field": "Client",
+      "type": "oAuthClient",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Notification",
+          "field": "Client"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Notification",
+          "field": "Client"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[oAuthClientId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Notification",
+          "field": "Client"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Notification",
+      "field": "oAuthClientId",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Notification",
       "field": "createdAt",
       "type": "DateTime",
       "arity": "Required"
@@ -3999,6 +4205,13 @@
     {
       "tag": "CreateField",
       "model": "Profile",
+      "field": "Emails",
+      "type": "Email",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Profile",
       "field": "firstName",
       "type": "String",
       "arity": "Optional"
@@ -4098,6 +4311,13 @@
     {
       "tag": "CreateField",
       "model": "Profile",
+      "field": "UserCustomAttributes",
+      "type": "UserCustomAttribute",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Profile",
       "field": "createdAt",
       "type": "DateTime",
       "arity": "Required"
@@ -4144,6 +4364,100 @@
         },
         "directive": "updatedAt"
       }
+    },
+    {
+      "tag": "CreateModel",
+      "model": "UserCustomAttribute"
+    },
+    {
+      "tag": "CreateField",
+      "model": "UserCustomAttribute",
+      "field": "name",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "UserCustomAttribute",
+      "field": "value",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "UserCustomAttribute",
+      "field": "Profile",
+      "type": "Profile",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "UserCustomAttribute",
+          "field": "Profile"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "UserCustomAttribute",
+          "field": "Profile"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[profileId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "UserCustomAttribute",
+          "field": "Profile"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "UserCustomAttribute",
+      "field": "profileId",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Model",
+          "model": "UserCustomAttribute"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Model",
+          "model": "UserCustomAttribute"
+        },
+        "directive": "id"
+      },
+      "argument": "",
+      "value": "[name, profileId]"
     },
     {
       "tag": "CreateModel",
@@ -4266,8 +4580,8 @@
     {
       "tag": "CreateField",
       "model": "Email",
-      "field": "User",
-      "type": "User",
+      "field": "Profile",
+      "type": "Profile",
       "arity": "Required"
     },
     {
@@ -4276,7 +4590,7 @@
         "path": {
           "tag": "Field",
           "model": "Email",
-          "field": "User"
+          "field": "Profile"
         },
         "directive": "relation"
       }
@@ -4288,12 +4602,12 @@
         "path": {
           "tag": "Field",
           "model": "Email",
-          "field": "User"
+          "field": "Profile"
         },
         "directive": "relation"
       },
       "argument": "fields",
-      "value": "[userId]"
+      "value": "[profileId]"
     },
     {
       "tag": "CreateArgument",
@@ -4302,7 +4616,7 @@
         "path": {
           "tag": "Field",
           "model": "Email",
-          "field": "User"
+          "field": "Profile"
         },
         "directive": "relation"
       },
@@ -4312,7 +4626,7 @@
     {
       "tag": "CreateField",
       "model": "Email",
-      "field": "userId",
+      "field": "profileId",
       "type": "String",
       "arity": "Required"
     },

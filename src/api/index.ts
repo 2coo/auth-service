@@ -6,6 +6,7 @@ import routes from './controllers'
 import cookieParser from 'cookie-parser'
 import errorHandler from 'errorhandler'
 import * as path from 'path'
+import { ensureLoggedIn } from 'connect-ensure-login'
 
 module.exports = function (app: Express.Application) {
   app.set('view engine', 'ejs')
@@ -21,8 +22,8 @@ module.exports = function (app: Express.Application) {
   app.use(
     session({
       secret: 'Super Secret Sesion Key',
-      saveUninitialized: false,
-      resave: false,
+      saveUninitialized: true,
+      resave: true,
     }),
   )
   // Use the passport package in our application
@@ -35,7 +36,7 @@ module.exports = function (app: Express.Application) {
   const router = Express.Router()
   // site
 
-  router.get('/', routes.site.index)
+  router.get('/', [ensureLoggedIn(), routes.site.index])
   router.route('/login').get(routes.site.loginForm).post(routes.site.login)
   router.get('/logout', routes.site.logout)
   router.get('/account', routes.site.account)
@@ -47,5 +48,6 @@ module.exports = function (app: Express.Application) {
     .post(routes.oauth2.decision)
   // Create endpoint handlers for oauth2 token
   router.route('/oauth2/token').post(routes.oauth2.token)
-  app.use('/api', router)
+  app.use(router)
+  // app.use('/api', router)
 }

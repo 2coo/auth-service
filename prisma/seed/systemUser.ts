@@ -4,7 +4,7 @@ import { hash } from 'bcryptjs'
 export const seedSystemUser = async (
   prisma: PrismaClient,
 ): Promise<SystemUser[]> => {
-  const password = 'admin$cash'
+  const password = 'admin123'
   const saltRounds = 10
   const _password = await hash(password, saltRounds)
   const user = prisma.systemUser.create({

@@ -7,7 +7,7 @@ export const Mutation = mutationType({
   definition(t) {
     t.crud.createOneOrganization(),
     t.crud.createOneUserPool(),
-    t.crud.createOneoAuthClient()
+    t.crud.createOneoAuthClient(),
     t.crud.createOneUser(),
     t.crud.updateOneUser(),
     t.crud.deleteOneUser(),

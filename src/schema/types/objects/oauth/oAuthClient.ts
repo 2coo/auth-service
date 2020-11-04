@@ -4,8 +4,10 @@ export const oAuthClient = objectType({
   name: 'oAuthClient',
   definition(t) {
     t.model.id()
-    t.model.Scopes()
     t.model.name()
+    t.model.secret()
+    t.model.UserPool()
+    t.model.Scopes()
     t.model.Grants()
     t.model.isTrusted()
     t.model.idTokenLifetime()

@@ -59,12 +59,12 @@ function issueTokens(userId: string | null, clientId: string, done: any) {
             prisma.oAuthAccessToken
               .create({
                 data: {
-                  client: {
+                  Client: {
                     connect: {
                       id: client.id,
                     },
                   },
-                  user: {
+                  User: {
                     connect: {
                       id: user.id,
                     },
@@ -80,12 +80,12 @@ function issueTokens(userId: string | null, clientId: string, done: any) {
                 prisma.oAuthRefreshToken
                   .create({
                     data: {
-                      client: {
+                      Client: {
                         connect: {
                           id: client!.id,
                         },
                       },
-                      user: {
+                      User: {
                         connect: {
                           id: user!.id,
                         },
@@ -109,7 +109,7 @@ function issueTokens(userId: string | null, clientId: string, done: any) {
         prisma.oAuthAccessToken
           .create({
             data: {
-              client: {
+              Client: {
                 connect: {
                   id: client.id,
                 },
@@ -125,7 +125,7 @@ function issueTokens(userId: string | null, clientId: string, done: any) {
             prisma.oAuthRefreshToken
               .create({
                 data: {
-                  client: {
+                  Client: {
                     connect: {
                       id: client!.id,
                     },
@@ -167,7 +167,7 @@ server.grant(
     prisma.oAuthAuthorizationCode
       .create({
         data: {
-          client: {
+          Client: {
             connect: {
               id: client.id,
             },
@@ -178,7 +178,7 @@ server.grant(
             })
             .toISOString(),
           redirectURI: redirectUri,
-          user: {
+          User: {
             connect: {
               id: user.email,
             },
@@ -241,7 +241,7 @@ server.exchange(
 // application issues an access token on behalf of the user who authorized the code.
 
 server.exchange(
-  oauth2orize.exchange.password((client, email, password, scope, done) => {
+  oauth2orize.exchange.password((client, username, password, scope, done) => {
     // Validate the client
     // db.clients.findByClientId(client.clientId, (error, localClient) => {
     //   return done(error);
@@ -269,7 +269,7 @@ server.exchange(
         prisma.user
           .findOne({
             where: {
-              email,
+              username,
             },
           })
           .then(async (user) => {
@@ -330,22 +330,24 @@ server.exchange(
 // first, and rendering the `dialog` view.
 
 export const authorization = [
-  login.ensureLoggedIn(),
+  login.ensureLoggedIn('/login'),
   server.authorization(
     (clientId, redirectUri, done) => {
+      console.warn("EEEY")
+      console.log(clientId)
       prisma.oAuthClient
         .findOne({
           where: {
             id: clientId,
           },
           include: {
-            redirectUris: true,
+            RedirectUris: true,
           },
         })
         .then((client) => {
           if (!client) return done(null, false)
           if (
-            client.redirectUris.some(
+            client.RedirectUris.some(
               (localRedirectUri) => localRedirectUri.url === redirectUri,
             )
           ) {
@@ -397,7 +399,7 @@ export const authorization = [
 // client, the above grant middleware configured above will be invoked to send
 // a response.
 
-export const decision = [login.ensureLoggedIn(), server.decision()]
+export const decision = [login.ensureLoggedIn("/login"), server.decision()]
 
 // Token endpoint.
 //

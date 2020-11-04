@@ -8,6 +8,7 @@ import {
   Token,
 } from './utils'
 import { ExpressContext } from 'apollo-server-express/dist/ApolloServer'
+import { hash } from 'bcryptjs'
 
 export const prisma = new PrismaClient({
   datasources: {
@@ -18,15 +19,25 @@ export const prisma = new PrismaClient({
 })
 
 prisma.$use(async (params, next) => {
-  console.log(params)
+  console.log(params.model, ':', params.action)
+  if (params.action === 'create') {
+    switch (params.model) {
+      case 'User':
+        {
+          const saltRounds = 10
+          params.args.data.password = await hash(params.args.data.password, saltRounds)
+        }
+        break
+    }
+  }
   const result = await next(params)
   if (params.action === 'create') {
     switch (params.model) {
-      case 'oAuthClient':
-        await createGrantTypesAndConnect(prisma, result.id)
-        break
       case 'UserPool':
         await createRolesAndConnect(prisma, result.id)
+        break
+      case 'oAuthClient':
+        await createGrantTypesAndConnect(prisma, result.id)
         break
     }
   }

@@ -19,13 +19,14 @@ enum SystemRole {
 }
 
 model SystemUser {
-  id        String     @id @default(uuid())
-  username  String     @unique
-  email     String     @unique
-  password  String
-  role      SystemRole @default(USER)
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id            String         @id @default(uuid())
+  username      String         @unique
+  email         String         @unique
+  password      String
+  role          SystemRole     @default(USER)
+  Organizations Organization[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 }
 
 enum GrantType {
@@ -37,14 +38,16 @@ enum GrantType {
 }
 
 model Organization {
-  id          String     @id @default(uuid())
-  name        String
-  url         String?
-  address     String?
-  phoneNumber String?
-  UserPools   UserPool[]
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  id           String      @id @default(uuid())
+  name         String
+  url          String?
+  address      String?
+  phoneNumber  String?
+  UserPools    UserPool[]
+  CreatedBy    SystemUser? @relation(fields: [systemUserId], references: [id])
+  systemUserId String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
 }
 
 model UserPool {
@@ -80,6 +83,7 @@ model oAuthClient {
   UserPool             UserPool                 @relation(fields: [userPoolId], references: [id])
   userPoolId           String
   Grants               oAuthGrant[]
+  Notifications        Notification[]
   RedirectUris         oAuthRedirectURI[]
   JavascriptOrigins    oAuthJavascriptOrigin[]
   Scopes               oAuthScope[]
@@ -225,15 +229,26 @@ model Group {
   updatedAt   DateTime @updatedAt
 }
 
+enum AccountStatusType {
+  UNCONFIRMED
+  CONFIRMED
+  ARCHIVED
+  COMPROMISED
+  UNKNOWN
+  RESET_REQUIRED
+  FORCE_CHANGE_PASSWORD
+}
+
 model User {
   id                 String                   @id @default(uuid())
   sub                String                   @unique @default(uuid())
   username           String                   @unique
-  primaryEmail       String
-  Emails             Email[]
+  accountStatusType  AccountStatusType        @default(UNCONFIRMED)
+  isExternalProvider Boolean                  @default(false)
+  email              String
   password           String
   isDisabled         Boolean                  @default(false)
-  Profile            Profile
+  Profile            Profile?
   Groups             Group[]
   PasswordResets     PasswordReset[]
   Roles              Role[]
@@ -249,6 +264,8 @@ model User {
   Following          User[]                   @relation("UserFollows", references: [id])
   createdAt          DateTime                 @default(now())
   updatedAt          DateTime                 @updatedAt
+
+  @@unique([email, isExternalProvider])
 }
 
 model NotificationType {
@@ -261,32 +278,45 @@ model NotificationType {
 }
 
 model Notification {
-  id         String   @id @default(uuid())
-  text       String
-  isRead     Boolean
-  Recipent   User     @relation("NotificationRecipent", fields: [recipentId], references: [id])
-  recipentId String
-  Sender     User     @relation("NotificationSender", fields: [senderId], references: [id])
-  senderId   String
-  url        String
-  isDeleted  Boolean
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id            String       @id @default(uuid())
+  text          String
+  isRead        Boolean
+  Recipent      User         @relation("NotificationRecipent", fields: [recipentId], references: [id])
+  recipentId    String
+  Sender        User         @relation("NotificationSender", fields: [senderId], references: [id])
+  senderId      String
+  url           String
+  isDeleted     Boolean
+  Client        oAuthClient? @relation(fields: [oAuthClientId], references: [id])
+  oAuthClientId String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
 }
 
 model Profile {
-  id           String    @id @default(uuid())
-  User         User      @relation(fields: [userId], references: [id])
-  userId       String
-  firstName    String?   @default("")
-  lastName     String?   @default("")
-  displayName  String?
-  birthdate    DateTime?
-  gender       Gender?
-  mobileNumber String?
-  Photos       Photo[]
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id                   String                @id @default(uuid())
+  User                 User                  @relation(fields: [userId], references: [id])
+  userId               String
+  Emails               Email[]
+  firstName            String?               @default("")
+  lastName             String?               @default("")
+  displayName          String?
+  birthdate            DateTime?
+  gender               Gender?
+  mobileNumber         String?
+  Photos               Photo[]
+  UserCustomAttributes UserCustomAttribute[]
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+}
+
+model UserCustomAttribute {
+  name      String
+  value     String
+  Profile   Profile @relation(fields: [profileId], references: [id])
+  profileId String
+
+  @@id([name, profileId])
 }
 
 model Email {
@@ -294,8 +324,8 @@ model Email {
   email      String
   isVerified Boolean  @default(false)
   isPrimary  Boolean  @default(false)
-  User       User     @relation(fields: [userId], references: [id])
-  userId     String
+  Profile    Profile  @relation(fields: [profileId], references: [id])
+  profileId  String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
