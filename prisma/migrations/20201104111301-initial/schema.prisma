@@ -59,6 +59,8 @@ model UserPool {
   Groups          Group[]
   Roles           Role[]
   Clients         oAuthClient[]
+  Scopes          oAuthScope[]
+  CustomScopes    oAuthCustomScope[]
   ResourceServers oAuthResourceServer[]
 }
 
@@ -86,8 +88,8 @@ model oAuthClient {
   Notifications        Notification[]
   RedirectUris         oAuthRedirectURI[]
   JavascriptOrigins    oAuthJavascriptOrigin[]
-  Scopes               oAuthScope[]
-  CustomScopes         oAuthCustomScope[]
+  EnabledScopes        oAuthScope[]
+  EnabledCustomScopes  oAuthCustomScope[]
   AccessTokens         oAuthAccessToken[]
   AuthorizationCodes   oAuthAuthorizationCode[]
   RefreshTokens        oAuthRefreshToken[]
@@ -102,13 +104,14 @@ model oAuthClient {
 
 model oAuthScope {
   id                 String                   @id @default(uuid())
-  name               String
+  name               String                   @unique
   description        String?
   Clients            oAuthClient[]
   AccessTokens       oAuthAccessToken[]
   AuthorizationCodes oAuthAuthorizationCode[]
   RefreshTokenScope  oAuthRefreshToken[]
   Roles              Role[]
+  UserPools          UserPool[]
   createdAt          DateTime                 @default(now())
   updatedAt          DateTime                 @updatedAt
 }
@@ -159,6 +162,8 @@ model oAuthCustomScope {
   Clients               oAuthClient[]
   oAuthClientId         String
   Roles                 Role[]
+  UserPool              UserPool            @relation(fields: [userPoolId], references: [id])
+  userPoolId            String
   createdAt             DateTime            @default(now())
   updatedAt             DateTime            @updatedAt
 }

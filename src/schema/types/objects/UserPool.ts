@@ -5,6 +5,8 @@ export const UserPool = objectType({
   definition(t) {
     t.model.id()
     t.model.name()
+    t.model.Scopes()
+    t.model.CustomScopes()
     t.model.Organization()
     t.model.Clients()
     t.model.ResourceServers()

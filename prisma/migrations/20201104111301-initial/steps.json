@@ -579,6 +579,20 @@
     {
       "tag": "CreateField",
       "model": "UserPool",
+      "field": "Scopes",
+      "type": "oAuthScope",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "UserPool",
+      "field": "CustomScopes",
+      "type": "oAuthCustomScope",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "UserPool",
       "field": "ResourceServers",
       "type": "oAuthResourceServer",
       "arity": "List"
@@ -956,14 +970,14 @@
     {
       "tag": "CreateField",
       "model": "oAuthClient",
-      "field": "Scopes",
+      "field": "EnabledScopes",
       "type": "oAuthScope",
       "arity": "List"
     },
     {
       "tag": "CreateField",
       "model": "oAuthClient",
-      "field": "CustomScopes",
+      "field": "EnabledCustomScopes",
       "type": "oAuthCustomScope",
       "arity": "List"
     },
@@ -1228,6 +1242,17 @@
       "arity": "Required"
     },
     {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "oAuthScope",
+          "field": "name"
+        },
+        "directive": "unique"
+      }
+    },
+    {
       "tag": "CreateField",
       "model": "oAuthScope",
       "field": "description",
@@ -1267,6 +1292,13 @@
       "model": "oAuthScope",
       "field": "Roles",
       "type": "Role",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "oAuthScope",
+      "field": "UserPools",
+      "type": "UserPool",
       "arity": "List"
     },
     {
@@ -2060,6 +2092,59 @@
       "field": "Roles",
       "type": "Role",
       "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "oAuthCustomScope",
+      "field": "UserPool",
+      "type": "UserPool",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "oAuthCustomScope",
+          "field": "UserPool"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "oAuthCustomScope",
+          "field": "UserPool"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[userPoolId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "oAuthCustomScope",
+          "field": "UserPool"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "oAuthCustomScope",
+      "field": "userPoolId",
+      "type": "String",
+      "arity": "Required"
     },
     {
       "tag": "CreateField",

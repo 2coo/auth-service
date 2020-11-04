@@ -11,6 +11,8 @@ export const Mutation = mutationType({
     t.crud.createOneUser(),
     t.crud.updateOneUser(),
     t.crud.deleteOneUser(),
+    t.crud.createOneoAuthRedirectURI(),
+    t.crud.updateOneoAuthClient(),
       t.field('login', {
         type: 'AuthPayload',
         args: {

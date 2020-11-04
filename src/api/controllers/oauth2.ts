@@ -333,8 +333,6 @@ export const authorization = [
   login.ensureLoggedIn('/login'),
   server.authorization(
     (clientId, redirectUri, done) => {
-      console.warn("EEEY")
-      console.log(clientId)
       prisma.oAuthClient
         .findOne({
           where: {
@@ -383,7 +381,30 @@ export const authorization = [
         .catch((error) => done(error))
     },
   ),
-  (request: any, response: any) => {
+  async (request: any, response: any) => {
+    // prisma.oAuthScope.findMany({
+    //   where: {
+    //     name: {
+    //       in: request.query.scope.split(' '),
+    //     },
+    //   },
+    // }).then((scopes) => {
+    //   console.log(scopes)
+    // })
+    const scopes = await prisma.oAuthClient
+      .findOne({
+        where: {
+          id: request.query.client_id,
+        },
+      })
+      .EnabledScopes({
+        where: {
+          name: {
+            in: request.query.scope.split(' '),
+          },
+        },
+      })
+    console.log(scopes)
     response.render('dialog', {
       transactionId: request.oauth2.transactionID,
       user: request.user,
@@ -399,7 +420,7 @@ export const authorization = [
 // client, the above grant middleware configured above will be invoked to send
 // a response.
 
-export const decision = [login.ensureLoggedIn("/login"), server.decision()]
+export const decision = [login.ensureLoggedIn('/login'), server.decision()]
 
 // Token endpoint.
 //

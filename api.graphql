@@ -415,11 +415,13 @@ input IntFilter {
 
 type Mutation {
   createOneoAuthClient(data: oAuthClientCreateInput!): oAuthClient!
+  createOneoAuthRedirectURI(data: oAuthRedirectURICreateInput!): oAuthRedirectURI!
   createOneOrganization(data: OrganizationCreateInput!): Organization!
   createOneUser(data: UserCreateInput!): User!
   createOneUserPool(data: UserPoolCreateInput!): UserPool!
   deleteOneUser(where: UserWhereUniqueInput!): User
   login(email: String!, password: String!): AuthPayload
+  updateOneoAuthClient(data: oAuthClientUpdateInput!, where: oAuthClientWhereUniqueInput!): oAuthClient
   updateOneUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
 }
 
@@ -1141,6 +1143,7 @@ type oAuthClient {
   AccessTokens(after: oAuthAccessTokenWhereUniqueInput, before: oAuthAccessTokenWhereUniqueInput, first: Int, last: Int): [oAuthAccessToken!]!
   AuthorizationCodes(after: oAuthAuthorizationCodeWhereUniqueInput, before: oAuthAuthorizationCodeWhereUniqueInput, first: Int, last: Int): [oAuthAuthorizationCode!]!
   createdAt: DateTime!
+  EnabledScopes(after: oAuthScopeWhereUniqueInput, before: oAuthScopeWhereUniqueInput, first: Int, last: Int): [oAuthScope!]!
   Grants(after: oAuthGrantWhereUniqueInput, before: oAuthGrantWhereUniqueInput, first: Int, last: Int): [oAuthGrant!]!
   id: String!
   idTokenLifetime: Int!
@@ -1150,7 +1153,6 @@ type oAuthClient {
   RedirectUris(after: oAuthRedirectURIWhereUniqueInput, before: oAuthRedirectURIWhereUniqueInput, first: Int, last: Int): [oAuthRedirectURI!]!
   refreshTokenLifetime: Int!
   RefreshTokens(after: oAuthRefreshTokenWhereUniqueInput, before: oAuthRefreshTokenWhereUniqueInput, first: Int, last: Int): [oAuthRefreshToken!]!
-  Scopes(after: oAuthScopeWhereUniqueInput, before: oAuthScopeWhereUniqueInput, first: Int, last: Int): [oAuthScope!]!
   secret: String!
   updatedAt: DateTime!
   UserPool: UserPool!
@@ -1161,7 +1163,8 @@ input oAuthClientCreateInput {
   AccessTokens: oAuthAccessTokenCreateManyWithoutClientInput
   AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutClientInput
   createdAt: DateTime
-  CustomScopes: oAuthCustomScopeCreateManyWithoutClientsInput
+  EnabledCustomScopes: oAuthCustomScopeCreateManyWithoutClientsInput
+  EnabledScopes: oAuthScopeCreateManyWithoutClientsInput
   Grants: oAuthGrantCreateManyWithoutClientsInput
   id: String
   idTokenLifetime: Int
@@ -1173,22 +1176,21 @@ input oAuthClientCreateInput {
   RedirectUris: oAuthRedirectURICreateManyWithoutClientInput
   refreshTokenLifetime: Int
   RefreshTokens: oAuthRefreshTokenCreateManyWithoutClientInput
-  Scopes: oAuthScopeCreateManyWithoutClientsInput
   secret: String
   updatedAt: DateTime
   UserPool: UserPoolCreateOneWithoutClientsInput!
 }
 
-input oAuthClientCreateManyWithoutCustomScopesInput {
+input oAuthClientCreateManyWithoutEnabledCustomScopesInput {
   connect: [oAuthClientWhereUniqueInput!]
   connectOrCreate: [oAuthClientCreateOrConnectWithoutoAuthCustomScopeInput!]
-  create: [oAuthClientCreateWithoutCustomScopesInput!]
+  create: [oAuthClientCreateWithoutEnabledCustomScopesInput!]
 }
 
-input oAuthClientCreateManyWithoutScopesInput {
+input oAuthClientCreateManyWithoutEnabledScopesInput {
   connect: [oAuthClientWhereUniqueInput!]
   connectOrCreate: [oAuthClientCreateOrConnectWithoutoAuthScopeInput!]
-  create: [oAuthClientCreateWithoutScopesInput!]
+  create: [oAuthClientCreateWithoutEnabledScopesInput!]
 }
 
 input oAuthClientCreateManyWithoutUserPoolInput {
@@ -1215,6 +1217,12 @@ input oAuthClientCreateOneWithoutNotificationsInput {
   create: oAuthClientCreateWithoutNotificationsInput
 }
 
+input oAuthClientCreateOneWithoutRedirectUrisInput {
+  connect: oAuthClientWhereUniqueInput
+  connectOrCreate: oAuthClientCreateOrConnectWithoutoAuthRedirectURIInput
+  create: oAuthClientCreateWithoutRedirectUrisInput
+}
+
 input oAuthClientCreateOneWithoutRefreshTokensInput {
   connect: oAuthClientWhereUniqueInput
   connectOrCreate: oAuthClientCreateOrConnectWithoutoAuthRefreshTokenInput
@@ -1237,7 +1245,12 @@ input oAuthClientCreateOrConnectWithoutoAuthAuthorizationCodeInput {
 }
 
 input oAuthClientCreateOrConnectWithoutoAuthCustomScopeInput {
-  create: oAuthClientCreateWithoutCustomScopesInput!
+  create: oAuthClientCreateWithoutEnabledCustomScopesInput!
+  where: oAuthClientWhereUniqueInput!
+}
+
+input oAuthClientCreateOrConnectWithoutoAuthRedirectURIInput {
+  create: oAuthClientCreateWithoutRedirectUrisInput!
   where: oAuthClientWhereUniqueInput!
 }
 
@@ -1247,7 +1260,7 @@ input oAuthClientCreateOrConnectWithoutoAuthRefreshTokenInput {
 }
 
 input oAuthClientCreateOrConnectWithoutoAuthScopeInput {
-  create: oAuthClientCreateWithoutScopesInput!
+  create: oAuthClientCreateWithoutEnabledScopesInput!
   where: oAuthClientWhereUniqueInput!
 }
 
@@ -1260,7 +1273,8 @@ input oAuthClientCreateWithoutAccessTokensInput {
   accessTokenLifetime: Int
   AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutClientInput
   createdAt: DateTime
-  CustomScopes: oAuthCustomScopeCreateManyWithoutClientsInput
+  EnabledCustomScopes: oAuthCustomScopeCreateManyWithoutClientsInput
+  EnabledScopes: oAuthScopeCreateManyWithoutClientsInput
   Grants: oAuthGrantCreateManyWithoutClientsInput
   id: String
   idTokenLifetime: Int
@@ -1272,7 +1286,6 @@ input oAuthClientCreateWithoutAccessTokensInput {
   RedirectUris: oAuthRedirectURICreateManyWithoutClientInput
   refreshTokenLifetime: Int
   RefreshTokens: oAuthRefreshTokenCreateManyWithoutClientInput
-  Scopes: oAuthScopeCreateManyWithoutClientsInput
   secret: String
   updatedAt: DateTime
   UserPool: UserPoolCreateOneWithoutClientsInput!
@@ -1282,7 +1295,8 @@ input oAuthClientCreateWithoutAuthorizationCodesInput {
   accessTokenLifetime: Int
   AccessTokens: oAuthAccessTokenCreateManyWithoutClientInput
   createdAt: DateTime
-  CustomScopes: oAuthCustomScopeCreateManyWithoutClientsInput
+  EnabledCustomScopes: oAuthCustomScopeCreateManyWithoutClientsInput
+  EnabledScopes: oAuthScopeCreateManyWithoutClientsInput
   Grants: oAuthGrantCreateManyWithoutClientsInput
   id: String
   idTokenLifetime: Int
@@ -1294,17 +1308,17 @@ input oAuthClientCreateWithoutAuthorizationCodesInput {
   RedirectUris: oAuthRedirectURICreateManyWithoutClientInput
   refreshTokenLifetime: Int
   RefreshTokens: oAuthRefreshTokenCreateManyWithoutClientInput
-  Scopes: oAuthScopeCreateManyWithoutClientsInput
   secret: String
   updatedAt: DateTime
   UserPool: UserPoolCreateOneWithoutClientsInput!
 }
 
-input oAuthClientCreateWithoutCustomScopesInput {
+input oAuthClientCreateWithoutEnabledCustomScopesInput {
   accessTokenLifetime: Int
   AccessTokens: oAuthAccessTokenCreateManyWithoutClientInput
   AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutClientInput
   createdAt: DateTime
+  EnabledScopes: oAuthScopeCreateManyWithoutClientsInput
   Grants: oAuthGrantCreateManyWithoutClientsInput
   id: String
   idTokenLifetime: Int
@@ -1316,7 +1330,28 @@ input oAuthClientCreateWithoutCustomScopesInput {
   RedirectUris: oAuthRedirectURICreateManyWithoutClientInput
   refreshTokenLifetime: Int
   RefreshTokens: oAuthRefreshTokenCreateManyWithoutClientInput
-  Scopes: oAuthScopeCreateManyWithoutClientsInput
+  secret: String
+  updatedAt: DateTime
+  UserPool: UserPoolCreateOneWithoutClientsInput!
+}
+
+input oAuthClientCreateWithoutEnabledScopesInput {
+  accessTokenLifetime: Int
+  AccessTokens: oAuthAccessTokenCreateManyWithoutClientInput
+  AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutClientInput
+  createdAt: DateTime
+  EnabledCustomScopes: oAuthCustomScopeCreateManyWithoutClientsInput
+  Grants: oAuthGrantCreateManyWithoutClientsInput
+  id: String
+  idTokenLifetime: Int
+  isTrusted: Boolean
+  JavascriptOrigins: oAuthJavascriptOriginCreateManyWithoutClientInput
+  logo: String
+  name: String!
+  Notifications: NotificationCreateManyWithoutClientInput
+  RedirectUris: oAuthRedirectURICreateManyWithoutClientInput
+  refreshTokenLifetime: Int
+  RefreshTokens: oAuthRefreshTokenCreateManyWithoutClientInput
   secret: String
   updatedAt: DateTime
   UserPool: UserPoolCreateOneWithoutClientsInput!
@@ -1327,7 +1362,8 @@ input oAuthClientCreateWithoutNotificationsInput {
   AccessTokens: oAuthAccessTokenCreateManyWithoutClientInput
   AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutClientInput
   createdAt: DateTime
-  CustomScopes: oAuthCustomScopeCreateManyWithoutClientsInput
+  EnabledCustomScopes: oAuthCustomScopeCreateManyWithoutClientsInput
+  EnabledScopes: oAuthScopeCreateManyWithoutClientsInput
   Grants: oAuthGrantCreateManyWithoutClientsInput
   id: String
   idTokenLifetime: Int
@@ -1338,7 +1374,28 @@ input oAuthClientCreateWithoutNotificationsInput {
   RedirectUris: oAuthRedirectURICreateManyWithoutClientInput
   refreshTokenLifetime: Int
   RefreshTokens: oAuthRefreshTokenCreateManyWithoutClientInput
-  Scopes: oAuthScopeCreateManyWithoutClientsInput
+  secret: String
+  updatedAt: DateTime
+  UserPool: UserPoolCreateOneWithoutClientsInput!
+}
+
+input oAuthClientCreateWithoutRedirectUrisInput {
+  accessTokenLifetime: Int
+  AccessTokens: oAuthAccessTokenCreateManyWithoutClientInput
+  AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutClientInput
+  createdAt: DateTime
+  EnabledCustomScopes: oAuthCustomScopeCreateManyWithoutClientsInput
+  EnabledScopes: oAuthScopeCreateManyWithoutClientsInput
+  Grants: oAuthGrantCreateManyWithoutClientsInput
+  id: String
+  idTokenLifetime: Int
+  isTrusted: Boolean
+  JavascriptOrigins: oAuthJavascriptOriginCreateManyWithoutClientInput
+  logo: String
+  name: String!
+  Notifications: NotificationCreateManyWithoutClientInput
+  refreshTokenLifetime: Int
+  RefreshTokens: oAuthRefreshTokenCreateManyWithoutClientInput
   secret: String
   updatedAt: DateTime
   UserPool: UserPoolCreateOneWithoutClientsInput!
@@ -1349,7 +1406,8 @@ input oAuthClientCreateWithoutRefreshTokensInput {
   AccessTokens: oAuthAccessTokenCreateManyWithoutClientInput
   AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutClientInput
   createdAt: DateTime
-  CustomScopes: oAuthCustomScopeCreateManyWithoutClientsInput
+  EnabledCustomScopes: oAuthCustomScopeCreateManyWithoutClientsInput
+  EnabledScopes: oAuthScopeCreateManyWithoutClientsInput
   Grants: oAuthGrantCreateManyWithoutClientsInput
   id: String
   idTokenLifetime: Int
@@ -1360,29 +1418,6 @@ input oAuthClientCreateWithoutRefreshTokensInput {
   Notifications: NotificationCreateManyWithoutClientInput
   RedirectUris: oAuthRedirectURICreateManyWithoutClientInput
   refreshTokenLifetime: Int
-  Scopes: oAuthScopeCreateManyWithoutClientsInput
-  secret: String
-  updatedAt: DateTime
-  UserPool: UserPoolCreateOneWithoutClientsInput!
-}
-
-input oAuthClientCreateWithoutScopesInput {
-  accessTokenLifetime: Int
-  AccessTokens: oAuthAccessTokenCreateManyWithoutClientInput
-  AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutClientInput
-  createdAt: DateTime
-  CustomScopes: oAuthCustomScopeCreateManyWithoutClientsInput
-  Grants: oAuthGrantCreateManyWithoutClientsInput
-  id: String
-  idTokenLifetime: Int
-  isTrusted: Boolean
-  JavascriptOrigins: oAuthJavascriptOriginCreateManyWithoutClientInput
-  logo: String
-  name: String!
-  Notifications: NotificationCreateManyWithoutClientInput
-  RedirectUris: oAuthRedirectURICreateManyWithoutClientInput
-  refreshTokenLifetime: Int
-  RefreshTokens: oAuthRefreshTokenCreateManyWithoutClientInput
   secret: String
   updatedAt: DateTime
   UserPool: UserPoolCreateOneWithoutClientsInput!
@@ -1393,7 +1428,8 @@ input oAuthClientCreateWithoutUserPoolInput {
   AccessTokens: oAuthAccessTokenCreateManyWithoutClientInput
   AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutClientInput
   createdAt: DateTime
-  CustomScopes: oAuthCustomScopeCreateManyWithoutClientsInput
+  EnabledCustomScopes: oAuthCustomScopeCreateManyWithoutClientsInput
+  EnabledScopes: oAuthScopeCreateManyWithoutClientsInput
   Grants: oAuthGrantCreateManyWithoutClientsInput
   id: String
   idTokenLifetime: Int
@@ -1405,7 +1441,6 @@ input oAuthClientCreateWithoutUserPoolInput {
   RedirectUris: oAuthRedirectURICreateManyWithoutClientInput
   refreshTokenLifetime: Int
   RefreshTokens: oAuthRefreshTokenCreateManyWithoutClientInput
-  Scopes: oAuthScopeCreateManyWithoutClientsInput
   secret: String
   updatedAt: DateTime
 }
@@ -1427,6 +1462,29 @@ input oAuthClientScalarWhereInput {
   userPoolId: StringFilter
 }
 
+input oAuthClientUpdateInput {
+  accessTokenLifetime: IntFieldUpdateOperationsInput
+  AccessTokens: oAuthAccessTokenUpdateManyWithoutClientInput
+  AuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutClientInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  EnabledCustomScopes: oAuthCustomScopeUpdateManyWithoutClientsInput
+  EnabledScopes: oAuthScopeUpdateManyWithoutClientsInput
+  Grants: oAuthGrantUpdateManyWithoutClientsInput
+  id: StringFieldUpdateOperationsInput
+  idTokenLifetime: IntFieldUpdateOperationsInput
+  isTrusted: BoolFieldUpdateOperationsInput
+  JavascriptOrigins: oAuthJavascriptOriginUpdateManyWithoutClientInput
+  logo: NullableStringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  Notifications: NotificationUpdateManyWithoutClientInput
+  RedirectUris: oAuthRedirectURIUpdateManyWithoutClientInput
+  refreshTokenLifetime: IntFieldUpdateOperationsInput
+  RefreshTokens: oAuthRefreshTokenUpdateManyWithoutClientInput
+  secret: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  UserPool: UserPoolUpdateOneRequiredWithoutClientsInput
+}
+
 input oAuthClientUpdateManyDataInput {
   accessTokenLifetime: IntFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
@@ -1440,30 +1498,30 @@ input oAuthClientUpdateManyDataInput {
   updatedAt: DateTimeFieldUpdateOperationsInput
 }
 
-input oAuthClientUpdateManyWithoutCustomScopesInput {
+input oAuthClientUpdateManyWithoutEnabledCustomScopesInput {
   connect: [oAuthClientWhereUniqueInput!]
   connectOrCreate: [oAuthClientCreateOrConnectWithoutoAuthCustomScopeInput!]
-  create: [oAuthClientCreateWithoutCustomScopesInput!]
+  create: [oAuthClientCreateWithoutEnabledCustomScopesInput!]
   delete: [oAuthClientWhereUniqueInput!]
   deleteMany: [oAuthClientScalarWhereInput!]
   disconnect: [oAuthClientWhereUniqueInput!]
   set: [oAuthClientWhereUniqueInput!]
-  update: [oAuthClientUpdateWithWhereUniqueWithoutCustomScopesInput!]
+  update: [oAuthClientUpdateWithWhereUniqueWithoutEnabledCustomScopesInput!]
   updateMany: [oAuthClientUpdateManyWithWhereNestedInput!]
-  upsert: [oAuthClientUpsertWithWhereUniqueWithoutCustomScopesInput!]
+  upsert: [oAuthClientUpsertWithWhereUniqueWithoutEnabledCustomScopesInput!]
 }
 
-input oAuthClientUpdateManyWithoutScopesInput {
+input oAuthClientUpdateManyWithoutEnabledScopesInput {
   connect: [oAuthClientWhereUniqueInput!]
   connectOrCreate: [oAuthClientCreateOrConnectWithoutoAuthScopeInput!]
-  create: [oAuthClientCreateWithoutScopesInput!]
+  create: [oAuthClientCreateWithoutEnabledScopesInput!]
   delete: [oAuthClientWhereUniqueInput!]
   deleteMany: [oAuthClientScalarWhereInput!]
   disconnect: [oAuthClientWhereUniqueInput!]
   set: [oAuthClientWhereUniqueInput!]
-  update: [oAuthClientUpdateWithWhereUniqueWithoutScopesInput!]
+  update: [oAuthClientUpdateWithWhereUniqueWithoutEnabledScopesInput!]
   updateMany: [oAuthClientUpdateManyWithWhereNestedInput!]
-  upsert: [oAuthClientUpsertWithWhereUniqueWithoutScopesInput!]
+  upsert: [oAuthClientUpsertWithWhereUniqueWithoutEnabledScopesInput!]
 }
 
 input oAuthClientUpdateManyWithoutUserPoolInput {
@@ -1522,7 +1580,8 @@ input oAuthClientUpdateWithoutAccessTokensDataInput {
   accessTokenLifetime: IntFieldUpdateOperationsInput
   AuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutClientInput
   createdAt: DateTimeFieldUpdateOperationsInput
-  CustomScopes: oAuthCustomScopeUpdateManyWithoutClientsInput
+  EnabledCustomScopes: oAuthCustomScopeUpdateManyWithoutClientsInput
+  EnabledScopes: oAuthScopeUpdateManyWithoutClientsInput
   Grants: oAuthGrantUpdateManyWithoutClientsInput
   id: StringFieldUpdateOperationsInput
   idTokenLifetime: IntFieldUpdateOperationsInput
@@ -1534,7 +1593,6 @@ input oAuthClientUpdateWithoutAccessTokensDataInput {
   RedirectUris: oAuthRedirectURIUpdateManyWithoutClientInput
   refreshTokenLifetime: IntFieldUpdateOperationsInput
   RefreshTokens: oAuthRefreshTokenUpdateManyWithoutClientInput
-  Scopes: oAuthScopeUpdateManyWithoutClientsInput
   secret: StringFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
   UserPool: UserPoolUpdateOneRequiredWithoutClientsInput
@@ -1544,7 +1602,8 @@ input oAuthClientUpdateWithoutAuthorizationCodesDataInput {
   accessTokenLifetime: IntFieldUpdateOperationsInput
   AccessTokens: oAuthAccessTokenUpdateManyWithoutClientInput
   createdAt: DateTimeFieldUpdateOperationsInput
-  CustomScopes: oAuthCustomScopeUpdateManyWithoutClientsInput
+  EnabledCustomScopes: oAuthCustomScopeUpdateManyWithoutClientsInput
+  EnabledScopes: oAuthScopeUpdateManyWithoutClientsInput
   Grants: oAuthGrantUpdateManyWithoutClientsInput
   id: StringFieldUpdateOperationsInput
   idTokenLifetime: IntFieldUpdateOperationsInput
@@ -1556,17 +1615,17 @@ input oAuthClientUpdateWithoutAuthorizationCodesDataInput {
   RedirectUris: oAuthRedirectURIUpdateManyWithoutClientInput
   refreshTokenLifetime: IntFieldUpdateOperationsInput
   RefreshTokens: oAuthRefreshTokenUpdateManyWithoutClientInput
-  Scopes: oAuthScopeUpdateManyWithoutClientsInput
   secret: StringFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
   UserPool: UserPoolUpdateOneRequiredWithoutClientsInput
 }
 
-input oAuthClientUpdateWithoutCustomScopesDataInput {
+input oAuthClientUpdateWithoutEnabledCustomScopesDataInput {
   accessTokenLifetime: IntFieldUpdateOperationsInput
   AccessTokens: oAuthAccessTokenUpdateManyWithoutClientInput
   AuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutClientInput
   createdAt: DateTimeFieldUpdateOperationsInput
+  EnabledScopes: oAuthScopeUpdateManyWithoutClientsInput
   Grants: oAuthGrantUpdateManyWithoutClientsInput
   id: StringFieldUpdateOperationsInput
   idTokenLifetime: IntFieldUpdateOperationsInput
@@ -1578,7 +1637,28 @@ input oAuthClientUpdateWithoutCustomScopesDataInput {
   RedirectUris: oAuthRedirectURIUpdateManyWithoutClientInput
   refreshTokenLifetime: IntFieldUpdateOperationsInput
   RefreshTokens: oAuthRefreshTokenUpdateManyWithoutClientInput
-  Scopes: oAuthScopeUpdateManyWithoutClientsInput
+  secret: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  UserPool: UserPoolUpdateOneRequiredWithoutClientsInput
+}
+
+input oAuthClientUpdateWithoutEnabledScopesDataInput {
+  accessTokenLifetime: IntFieldUpdateOperationsInput
+  AccessTokens: oAuthAccessTokenUpdateManyWithoutClientInput
+  AuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutClientInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  EnabledCustomScopes: oAuthCustomScopeUpdateManyWithoutClientsInput
+  Grants: oAuthGrantUpdateManyWithoutClientsInput
+  id: StringFieldUpdateOperationsInput
+  idTokenLifetime: IntFieldUpdateOperationsInput
+  isTrusted: BoolFieldUpdateOperationsInput
+  JavascriptOrigins: oAuthJavascriptOriginUpdateManyWithoutClientInput
+  logo: NullableStringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  Notifications: NotificationUpdateManyWithoutClientInput
+  RedirectUris: oAuthRedirectURIUpdateManyWithoutClientInput
+  refreshTokenLifetime: IntFieldUpdateOperationsInput
+  RefreshTokens: oAuthRefreshTokenUpdateManyWithoutClientInput
   secret: StringFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
   UserPool: UserPoolUpdateOneRequiredWithoutClientsInput
@@ -1589,7 +1669,8 @@ input oAuthClientUpdateWithoutNotificationsDataInput {
   AccessTokens: oAuthAccessTokenUpdateManyWithoutClientInput
   AuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutClientInput
   createdAt: DateTimeFieldUpdateOperationsInput
-  CustomScopes: oAuthCustomScopeUpdateManyWithoutClientsInput
+  EnabledCustomScopes: oAuthCustomScopeUpdateManyWithoutClientsInput
+  EnabledScopes: oAuthScopeUpdateManyWithoutClientsInput
   Grants: oAuthGrantUpdateManyWithoutClientsInput
   id: StringFieldUpdateOperationsInput
   idTokenLifetime: IntFieldUpdateOperationsInput
@@ -1600,7 +1681,6 @@ input oAuthClientUpdateWithoutNotificationsDataInput {
   RedirectUris: oAuthRedirectURIUpdateManyWithoutClientInput
   refreshTokenLifetime: IntFieldUpdateOperationsInput
   RefreshTokens: oAuthRefreshTokenUpdateManyWithoutClientInput
-  Scopes: oAuthScopeUpdateManyWithoutClientsInput
   secret: StringFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
   UserPool: UserPoolUpdateOneRequiredWithoutClientsInput
@@ -1611,7 +1691,8 @@ input oAuthClientUpdateWithoutRefreshTokensDataInput {
   AccessTokens: oAuthAccessTokenUpdateManyWithoutClientInput
   AuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutClientInput
   createdAt: DateTimeFieldUpdateOperationsInput
-  CustomScopes: oAuthCustomScopeUpdateManyWithoutClientsInput
+  EnabledCustomScopes: oAuthCustomScopeUpdateManyWithoutClientsInput
+  EnabledScopes: oAuthScopeUpdateManyWithoutClientsInput
   Grants: oAuthGrantUpdateManyWithoutClientsInput
   id: StringFieldUpdateOperationsInput
   idTokenLifetime: IntFieldUpdateOperationsInput
@@ -1622,29 +1703,6 @@ input oAuthClientUpdateWithoutRefreshTokensDataInput {
   Notifications: NotificationUpdateManyWithoutClientInput
   RedirectUris: oAuthRedirectURIUpdateManyWithoutClientInput
   refreshTokenLifetime: IntFieldUpdateOperationsInput
-  Scopes: oAuthScopeUpdateManyWithoutClientsInput
-  secret: StringFieldUpdateOperationsInput
-  updatedAt: DateTimeFieldUpdateOperationsInput
-  UserPool: UserPoolUpdateOneRequiredWithoutClientsInput
-}
-
-input oAuthClientUpdateWithoutScopesDataInput {
-  accessTokenLifetime: IntFieldUpdateOperationsInput
-  AccessTokens: oAuthAccessTokenUpdateManyWithoutClientInput
-  AuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutClientInput
-  createdAt: DateTimeFieldUpdateOperationsInput
-  CustomScopes: oAuthCustomScopeUpdateManyWithoutClientsInput
-  Grants: oAuthGrantUpdateManyWithoutClientsInput
-  id: StringFieldUpdateOperationsInput
-  idTokenLifetime: IntFieldUpdateOperationsInput
-  isTrusted: BoolFieldUpdateOperationsInput
-  JavascriptOrigins: oAuthJavascriptOriginUpdateManyWithoutClientInput
-  logo: NullableStringFieldUpdateOperationsInput
-  name: StringFieldUpdateOperationsInput
-  Notifications: NotificationUpdateManyWithoutClientInput
-  RedirectUris: oAuthRedirectURIUpdateManyWithoutClientInput
-  refreshTokenLifetime: IntFieldUpdateOperationsInput
-  RefreshTokens: oAuthRefreshTokenUpdateManyWithoutClientInput
   secret: StringFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
   UserPool: UserPoolUpdateOneRequiredWithoutClientsInput
@@ -1655,7 +1713,8 @@ input oAuthClientUpdateWithoutUserPoolDataInput {
   AccessTokens: oAuthAccessTokenUpdateManyWithoutClientInput
   AuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutClientInput
   createdAt: DateTimeFieldUpdateOperationsInput
-  CustomScopes: oAuthCustomScopeUpdateManyWithoutClientsInput
+  EnabledCustomScopes: oAuthCustomScopeUpdateManyWithoutClientsInput
+  EnabledScopes: oAuthScopeUpdateManyWithoutClientsInput
   Grants: oAuthGrantUpdateManyWithoutClientsInput
   id: StringFieldUpdateOperationsInput
   idTokenLifetime: IntFieldUpdateOperationsInput
@@ -1667,18 +1726,17 @@ input oAuthClientUpdateWithoutUserPoolDataInput {
   RedirectUris: oAuthRedirectURIUpdateManyWithoutClientInput
   refreshTokenLifetime: IntFieldUpdateOperationsInput
   RefreshTokens: oAuthRefreshTokenUpdateManyWithoutClientInput
-  Scopes: oAuthScopeUpdateManyWithoutClientsInput
   secret: StringFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
 }
 
-input oAuthClientUpdateWithWhereUniqueWithoutCustomScopesInput {
-  data: oAuthClientUpdateWithoutCustomScopesDataInput!
+input oAuthClientUpdateWithWhereUniqueWithoutEnabledCustomScopesInput {
+  data: oAuthClientUpdateWithoutEnabledCustomScopesDataInput!
   where: oAuthClientWhereUniqueInput!
 }
 
-input oAuthClientUpdateWithWhereUniqueWithoutScopesInput {
-  data: oAuthClientUpdateWithoutScopesDataInput!
+input oAuthClientUpdateWithWhereUniqueWithoutEnabledScopesInput {
+  data: oAuthClientUpdateWithoutEnabledScopesDataInput!
   where: oAuthClientWhereUniqueInput!
 }
 
@@ -1707,15 +1765,15 @@ input oAuthClientUpsertWithoutRefreshTokensInput {
   update: oAuthClientUpdateWithoutRefreshTokensDataInput!
 }
 
-input oAuthClientUpsertWithWhereUniqueWithoutCustomScopesInput {
-  create: oAuthClientCreateWithoutCustomScopesInput!
-  update: oAuthClientUpdateWithoutCustomScopesDataInput!
+input oAuthClientUpsertWithWhereUniqueWithoutEnabledCustomScopesInput {
+  create: oAuthClientCreateWithoutEnabledCustomScopesInput!
+  update: oAuthClientUpdateWithoutEnabledCustomScopesDataInput!
   where: oAuthClientWhereUniqueInput!
 }
 
-input oAuthClientUpsertWithWhereUniqueWithoutScopesInput {
-  create: oAuthClientCreateWithoutScopesInput!
-  update: oAuthClientUpdateWithoutScopesDataInput!
+input oAuthClientUpsertWithWhereUniqueWithoutEnabledScopesInput {
+  create: oAuthClientCreateWithoutEnabledScopesInput!
+  update: oAuthClientUpdateWithoutEnabledScopesDataInput!
   where: oAuthClientWhereUniqueInput!
 }
 
@@ -1756,6 +1814,12 @@ input oAuthCustomScopeCreateManyWithoutRolesInput {
   create: [oAuthCustomScopeCreateWithoutRolesInput!]
 }
 
+input oAuthCustomScopeCreateManyWithoutUserPoolInput {
+  connect: [oAuthCustomScopeWhereUniqueInput!]
+  connectOrCreate: [oAuthCustomScopeCreateOrConnectWithoutUserPoolInput!]
+  create: [oAuthCustomScopeCreateWithoutUserPoolInput!]
+}
+
 input oAuthCustomScopeCreateOrConnectWithoutoAuthClientInput {
   create: oAuthCustomScopeCreateWithoutClientsInput!
   where: oAuthCustomScopeWhereUniqueInput!
@@ -1771,6 +1835,11 @@ input oAuthCustomScopeCreateOrConnectWithoutRoleInput {
   where: oAuthCustomScopeWhereUniqueInput!
 }
 
+input oAuthCustomScopeCreateOrConnectWithoutUserPoolInput {
+  create: oAuthCustomScopeCreateWithoutUserPoolInput!
+  where: oAuthCustomScopeWhereUniqueInput!
+}
+
 input oAuthCustomScopeCreateWithoutClientsInput {
   createdAt: DateTime
   description: String
@@ -1780,10 +1849,11 @@ input oAuthCustomScopeCreateWithoutClientsInput {
   ResourceServer: oAuthResourceServerCreateOneWithoutScopesInput!
   Roles: RoleCreateManyWithoutCustomScopesInput
   updatedAt: DateTime
+  UserPool: UserPoolCreateOneWithoutCustomScopesInput!
 }
 
 input oAuthCustomScopeCreateWithoutResourceServerInput {
-  Clients: oAuthClientCreateManyWithoutCustomScopesInput
+  Clients: oAuthClientCreateManyWithoutEnabledCustomScopesInput
   createdAt: DateTime
   description: String
   id: String
@@ -1791,16 +1861,30 @@ input oAuthCustomScopeCreateWithoutResourceServerInput {
   oAuthClientId: String!
   Roles: RoleCreateManyWithoutCustomScopesInput
   updatedAt: DateTime
+  UserPool: UserPoolCreateOneWithoutCustomScopesInput!
 }
 
 input oAuthCustomScopeCreateWithoutRolesInput {
-  Clients: oAuthClientCreateManyWithoutCustomScopesInput
+  Clients: oAuthClientCreateManyWithoutEnabledCustomScopesInput
   createdAt: DateTime
   description: String
   id: String
   name: String!
   oAuthClientId: String!
   ResourceServer: oAuthResourceServerCreateOneWithoutScopesInput!
+  updatedAt: DateTime
+  UserPool: UserPoolCreateOneWithoutCustomScopesInput!
+}
+
+input oAuthCustomScopeCreateWithoutUserPoolInput {
+  Clients: oAuthClientCreateManyWithoutEnabledCustomScopesInput
+  createdAt: DateTime
+  description: String
+  id: String
+  name: String!
+  oAuthClientId: String!
+  ResourceServer: oAuthResourceServerCreateOneWithoutScopesInput!
+  Roles: RoleCreateManyWithoutCustomScopesInput
   updatedAt: DateTime
 }
 
@@ -1815,6 +1899,7 @@ input oAuthCustomScopeScalarWhereInput {
   oAuthResourceServerId: StringFilter
   OR: [oAuthCustomScopeScalarWhereInput!]
   updatedAt: DateTimeFilter
+  userPoolId: StringFilter
 }
 
 input oAuthCustomScopeUpdateManyDataInput {
@@ -1865,6 +1950,19 @@ input oAuthCustomScopeUpdateManyWithoutRolesInput {
   upsert: [oAuthCustomScopeUpsertWithWhereUniqueWithoutRolesInput!]
 }
 
+input oAuthCustomScopeUpdateManyWithoutUserPoolInput {
+  connect: [oAuthCustomScopeWhereUniqueInput!]
+  connectOrCreate: [oAuthCustomScopeCreateOrConnectWithoutUserPoolInput!]
+  create: [oAuthCustomScopeCreateWithoutUserPoolInput!]
+  delete: [oAuthCustomScopeWhereUniqueInput!]
+  deleteMany: [oAuthCustomScopeScalarWhereInput!]
+  disconnect: [oAuthCustomScopeWhereUniqueInput!]
+  set: [oAuthCustomScopeWhereUniqueInput!]
+  update: [oAuthCustomScopeUpdateWithWhereUniqueWithoutUserPoolInput!]
+  updateMany: [oAuthCustomScopeUpdateManyWithWhereNestedInput!]
+  upsert: [oAuthCustomScopeUpsertWithWhereUniqueWithoutUserPoolInput!]
+}
+
 input oAuthCustomScopeUpdateManyWithWhereNestedInput {
   data: oAuthCustomScopeUpdateManyDataInput!
   where: oAuthCustomScopeScalarWhereInput!
@@ -1879,10 +1977,11 @@ input oAuthCustomScopeUpdateWithoutClientsDataInput {
   ResourceServer: oAuthResourceServerUpdateOneRequiredWithoutScopesInput
   Roles: RoleUpdateManyWithoutCustomScopesInput
   updatedAt: DateTimeFieldUpdateOperationsInput
+  UserPool: UserPoolUpdateOneRequiredWithoutCustomScopesInput
 }
 
 input oAuthCustomScopeUpdateWithoutResourceServerDataInput {
-  Clients: oAuthClientUpdateManyWithoutCustomScopesInput
+  Clients: oAuthClientUpdateManyWithoutEnabledCustomScopesInput
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
@@ -1890,16 +1989,30 @@ input oAuthCustomScopeUpdateWithoutResourceServerDataInput {
   oAuthClientId: StringFieldUpdateOperationsInput
   Roles: RoleUpdateManyWithoutCustomScopesInput
   updatedAt: DateTimeFieldUpdateOperationsInput
+  UserPool: UserPoolUpdateOneRequiredWithoutCustomScopesInput
 }
 
 input oAuthCustomScopeUpdateWithoutRolesDataInput {
-  Clients: oAuthClientUpdateManyWithoutCustomScopesInput
+  Clients: oAuthClientUpdateManyWithoutEnabledCustomScopesInput
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
   name: StringFieldUpdateOperationsInput
   oAuthClientId: StringFieldUpdateOperationsInput
   ResourceServer: oAuthResourceServerUpdateOneRequiredWithoutScopesInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  UserPool: UserPoolUpdateOneRequiredWithoutCustomScopesInput
+}
+
+input oAuthCustomScopeUpdateWithoutUserPoolDataInput {
+  Clients: oAuthClientUpdateManyWithoutEnabledCustomScopesInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  description: NullableStringFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  oAuthClientId: StringFieldUpdateOperationsInput
+  ResourceServer: oAuthResourceServerUpdateOneRequiredWithoutScopesInput
+  Roles: RoleUpdateManyWithoutCustomScopesInput
   updatedAt: DateTimeFieldUpdateOperationsInput
 }
 
@@ -1918,6 +2031,11 @@ input oAuthCustomScopeUpdateWithWhereUniqueWithoutRolesInput {
   where: oAuthCustomScopeWhereUniqueInput!
 }
 
+input oAuthCustomScopeUpdateWithWhereUniqueWithoutUserPoolInput {
+  data: oAuthCustomScopeUpdateWithoutUserPoolDataInput!
+  where: oAuthCustomScopeWhereUniqueInput!
+}
+
 input oAuthCustomScopeUpsertWithWhereUniqueWithoutClientsInput {
   create: oAuthCustomScopeCreateWithoutClientsInput!
   update: oAuthCustomScopeUpdateWithoutClientsDataInput!
@@ -1933,6 +2051,12 @@ input oAuthCustomScopeUpsertWithWhereUniqueWithoutResourceServerInput {
 input oAuthCustomScopeUpsertWithWhereUniqueWithoutRolesInput {
   create: oAuthCustomScopeCreateWithoutRolesInput!
   update: oAuthCustomScopeUpdateWithoutRolesDataInput!
+  where: oAuthCustomScopeWhereUniqueInput!
+}
+
+input oAuthCustomScopeUpsertWithWhereUniqueWithoutUserPoolInput {
+  create: oAuthCustomScopeCreateWithoutUserPoolInput!
+  update: oAuthCustomScopeUpdateWithoutUserPoolDataInput!
   where: oAuthCustomScopeWhereUniqueInput!
 }
 
@@ -2103,6 +2227,14 @@ input oAuthJavascriptOriginWhereUniqueInput {
 
 type oAuthRedirectURI {
   createdAt: DateTime!
+  url: String!
+}
+
+input oAuthRedirectURICreateInput {
+  Client: oAuthClientCreateOneWithoutRedirectUrisInput!
+  createdAt: DateTime
+  id: String
+  updatedAt: DateTime
   url: String!
 }
 
@@ -2552,6 +2684,12 @@ input oAuthScopeCreateManyWithoutRolesInput {
   create: [oAuthScopeCreateWithoutRolesInput!]
 }
 
+input oAuthScopeCreateManyWithoutUserPoolsInput {
+  connect: [oAuthScopeWhereUniqueInput!]
+  connectOrCreate: [oAuthScopeCreateOrConnectWithoutUserPoolInput!]
+  create: [oAuthScopeCreateWithoutUserPoolsInput!]
+}
+
 input oAuthScopeCreateOrConnectWithoutoAuthAccessTokenInput {
   create: oAuthScopeCreateWithoutAccessTokensInput!
   where: oAuthScopeWhereUniqueInput!
@@ -2577,9 +2715,14 @@ input oAuthScopeCreateOrConnectWithoutRoleInput {
   where: oAuthScopeWhereUniqueInput!
 }
 
+input oAuthScopeCreateOrConnectWithoutUserPoolInput {
+  create: oAuthScopeCreateWithoutUserPoolsInput!
+  where: oAuthScopeWhereUniqueInput!
+}
+
 input oAuthScopeCreateWithoutAccessTokensInput {
   AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutScopesInput
-  Clients: oAuthClientCreateManyWithoutScopesInput
+  Clients: oAuthClientCreateManyWithoutEnabledScopesInput
   createdAt: DateTime
   description: String
   id: String
@@ -2587,11 +2730,12 @@ input oAuthScopeCreateWithoutAccessTokensInput {
   RefreshTokenScope: oAuthRefreshTokenCreateManyWithoutScopesInput
   Roles: RoleCreateManyWithoutScopesInput
   updatedAt: DateTime
+  UserPools: UserPoolCreateManyWithoutScopesInput
 }
 
 input oAuthScopeCreateWithoutAuthorizationCodesInput {
   AccessTokens: oAuthAccessTokenCreateManyWithoutScopesInput
-  Clients: oAuthClientCreateManyWithoutScopesInput
+  Clients: oAuthClientCreateManyWithoutEnabledScopesInput
   createdAt: DateTime
   description: String
   id: String
@@ -2599,6 +2743,7 @@ input oAuthScopeCreateWithoutAuthorizationCodesInput {
   RefreshTokenScope: oAuthRefreshTokenCreateManyWithoutScopesInput
   Roles: RoleCreateManyWithoutScopesInput
   updatedAt: DateTime
+  UserPools: UserPoolCreateManyWithoutScopesInput
 }
 
 input oAuthScopeCreateWithoutClientsInput {
@@ -2611,29 +2756,45 @@ input oAuthScopeCreateWithoutClientsInput {
   RefreshTokenScope: oAuthRefreshTokenCreateManyWithoutScopesInput
   Roles: RoleCreateManyWithoutScopesInput
   updatedAt: DateTime
+  UserPools: UserPoolCreateManyWithoutScopesInput
 }
 
 input oAuthScopeCreateWithoutRefreshTokenScopeInput {
   AccessTokens: oAuthAccessTokenCreateManyWithoutScopesInput
   AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutScopesInput
-  Clients: oAuthClientCreateManyWithoutScopesInput
+  Clients: oAuthClientCreateManyWithoutEnabledScopesInput
   createdAt: DateTime
   description: String
   id: String
   name: String!
   Roles: RoleCreateManyWithoutScopesInput
   updatedAt: DateTime
+  UserPools: UserPoolCreateManyWithoutScopesInput
 }
 
 input oAuthScopeCreateWithoutRolesInput {
   AccessTokens: oAuthAccessTokenCreateManyWithoutScopesInput
   AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutScopesInput
-  Clients: oAuthClientCreateManyWithoutScopesInput
+  Clients: oAuthClientCreateManyWithoutEnabledScopesInput
   createdAt: DateTime
   description: String
   id: String
   name: String!
   RefreshTokenScope: oAuthRefreshTokenCreateManyWithoutScopesInput
+  updatedAt: DateTime
+  UserPools: UserPoolCreateManyWithoutScopesInput
+}
+
+input oAuthScopeCreateWithoutUserPoolsInput {
+  AccessTokens: oAuthAccessTokenCreateManyWithoutScopesInput
+  AuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutScopesInput
+  Clients: oAuthClientCreateManyWithoutEnabledScopesInput
+  createdAt: DateTime
+  description: String
+  id: String
+  name: String!
+  RefreshTokenScope: oAuthRefreshTokenCreateManyWithoutScopesInput
+  Roles: RoleCreateManyWithoutScopesInput
   updatedAt: DateTime
 }
 
@@ -2721,6 +2882,19 @@ input oAuthScopeUpdateManyWithoutRolesInput {
   upsert: [oAuthScopeUpsertWithWhereUniqueWithoutRolesInput!]
 }
 
+input oAuthScopeUpdateManyWithoutUserPoolsInput {
+  connect: [oAuthScopeWhereUniqueInput!]
+  connectOrCreate: [oAuthScopeCreateOrConnectWithoutUserPoolInput!]
+  create: [oAuthScopeCreateWithoutUserPoolsInput!]
+  delete: [oAuthScopeWhereUniqueInput!]
+  deleteMany: [oAuthScopeScalarWhereInput!]
+  disconnect: [oAuthScopeWhereUniqueInput!]
+  set: [oAuthScopeWhereUniqueInput!]
+  update: [oAuthScopeUpdateWithWhereUniqueWithoutUserPoolsInput!]
+  updateMany: [oAuthScopeUpdateManyWithWhereNestedInput!]
+  upsert: [oAuthScopeUpsertWithWhereUniqueWithoutUserPoolsInput!]
+}
+
 input oAuthScopeUpdateManyWithWhereNestedInput {
   data: oAuthScopeUpdateManyDataInput!
   where: oAuthScopeScalarWhereInput!
@@ -2728,7 +2902,7 @@ input oAuthScopeUpdateManyWithWhereNestedInput {
 
 input oAuthScopeUpdateWithoutAccessTokensDataInput {
   AuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutScopesInput
-  Clients: oAuthClientUpdateManyWithoutScopesInput
+  Clients: oAuthClientUpdateManyWithoutEnabledScopesInput
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
@@ -2736,11 +2910,12 @@ input oAuthScopeUpdateWithoutAccessTokensDataInput {
   RefreshTokenScope: oAuthRefreshTokenUpdateManyWithoutScopesInput
   Roles: RoleUpdateManyWithoutScopesInput
   updatedAt: DateTimeFieldUpdateOperationsInput
+  UserPools: UserPoolUpdateManyWithoutScopesInput
 }
 
 input oAuthScopeUpdateWithoutAuthorizationCodesDataInput {
   AccessTokens: oAuthAccessTokenUpdateManyWithoutScopesInput
-  Clients: oAuthClientUpdateManyWithoutScopesInput
+  Clients: oAuthClientUpdateManyWithoutEnabledScopesInput
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
@@ -2748,6 +2923,7 @@ input oAuthScopeUpdateWithoutAuthorizationCodesDataInput {
   RefreshTokenScope: oAuthRefreshTokenUpdateManyWithoutScopesInput
   Roles: RoleUpdateManyWithoutScopesInput
   updatedAt: DateTimeFieldUpdateOperationsInput
+  UserPools: UserPoolUpdateManyWithoutScopesInput
 }
 
 input oAuthScopeUpdateWithoutClientsDataInput {
@@ -2760,29 +2936,45 @@ input oAuthScopeUpdateWithoutClientsDataInput {
   RefreshTokenScope: oAuthRefreshTokenUpdateManyWithoutScopesInput
   Roles: RoleUpdateManyWithoutScopesInput
   updatedAt: DateTimeFieldUpdateOperationsInput
+  UserPools: UserPoolUpdateManyWithoutScopesInput
 }
 
 input oAuthScopeUpdateWithoutRefreshTokenScopeDataInput {
   AccessTokens: oAuthAccessTokenUpdateManyWithoutScopesInput
   AuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutScopesInput
-  Clients: oAuthClientUpdateManyWithoutScopesInput
+  Clients: oAuthClientUpdateManyWithoutEnabledScopesInput
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
   name: StringFieldUpdateOperationsInput
   Roles: RoleUpdateManyWithoutScopesInput
   updatedAt: DateTimeFieldUpdateOperationsInput
+  UserPools: UserPoolUpdateManyWithoutScopesInput
 }
 
 input oAuthScopeUpdateWithoutRolesDataInput {
   AccessTokens: oAuthAccessTokenUpdateManyWithoutScopesInput
   AuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutScopesInput
-  Clients: oAuthClientUpdateManyWithoutScopesInput
+  Clients: oAuthClientUpdateManyWithoutEnabledScopesInput
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
   name: StringFieldUpdateOperationsInput
   RefreshTokenScope: oAuthRefreshTokenUpdateManyWithoutScopesInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  UserPools: UserPoolUpdateManyWithoutScopesInput
+}
+
+input oAuthScopeUpdateWithoutUserPoolsDataInput {
+  AccessTokens: oAuthAccessTokenUpdateManyWithoutScopesInput
+  AuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutScopesInput
+  Clients: oAuthClientUpdateManyWithoutEnabledScopesInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  description: NullableStringFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  RefreshTokenScope: oAuthRefreshTokenUpdateManyWithoutScopesInput
+  Roles: RoleUpdateManyWithoutScopesInput
   updatedAt: DateTimeFieldUpdateOperationsInput
 }
 
@@ -2808,6 +3000,11 @@ input oAuthScopeUpdateWithWhereUniqueWithoutRefreshTokenScopeInput {
 
 input oAuthScopeUpdateWithWhereUniqueWithoutRolesInput {
   data: oAuthScopeUpdateWithoutRolesDataInput!
+  where: oAuthScopeWhereUniqueInput!
+}
+
+input oAuthScopeUpdateWithWhereUniqueWithoutUserPoolsInput {
+  data: oAuthScopeUpdateWithoutUserPoolsDataInput!
   where: oAuthScopeWhereUniqueInput!
 }
 
@@ -2841,8 +3038,15 @@ input oAuthScopeUpsertWithWhereUniqueWithoutRolesInput {
   where: oAuthScopeWhereUniqueInput!
 }
 
+input oAuthScopeUpsertWithWhereUniqueWithoutUserPoolsInput {
+  create: oAuthScopeCreateWithoutUserPoolsInput!
+  update: oAuthScopeUpdateWithoutUserPoolsDataInput!
+  where: oAuthScopeWhereUniqueInput!
+}
+
 input oAuthScopeWhereUniqueInput {
   id: String
+  name: String
 }
 
 type Organization {
@@ -4166,23 +4370,27 @@ input UserIdOAuthClientIdCompoundUniqueInput {
 
 type UserPool {
   Clients(after: oAuthClientWhereUniqueInput, before: oAuthClientWhereUniqueInput, first: Int, last: Int): [oAuthClient!]!
+  CustomScopes(after: oAuthCustomScopeWhereUniqueInput, before: oAuthCustomScopeWhereUniqueInput, first: Int, last: Int): [oAuthCustomScope!]!
   Groups(after: GroupWhereUniqueInput, before: GroupWhereUniqueInput, first: Int, last: Int): [Group!]!
   id: String!
   name: String!
   Organization: Organization!
   ResourceServers(after: oAuthResourceServerWhereUniqueInput, before: oAuthResourceServerWhereUniqueInput, first: Int, last: Int): [oAuthResourceServer!]!
   Roles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int): [Role!]!
+  Scopes(after: oAuthScopeWhereUniqueInput, before: oAuthScopeWhereUniqueInput, first: Int, last: Int): [oAuthScope!]!
   Users(after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int): [User!]!
 }
 
 input UserPoolCreateInput {
   Clients: oAuthClientCreateManyWithoutUserPoolInput
+  CustomScopes: oAuthCustomScopeCreateManyWithoutUserPoolInput
   Groups: GroupCreateManyWithoutUserPoolInput
   id: String
   name: String!
   Organization: OrganizationCreateOneWithoutUserPoolsInput!
   ResourceServers: oAuthResourceServerCreateManyWithoutUserPoolInput
   Roles: RoleCreateManyWithoutUserPoolInput
+  Scopes: oAuthScopeCreateManyWithoutUserPoolsInput
   Users: UserCreateManyWithoutUserPoolInput
 }
 
@@ -4192,10 +4400,22 @@ input UserPoolCreateManyWithoutOrganizationInput {
   create: [UserPoolCreateWithoutOrganizationInput!]
 }
 
+input UserPoolCreateManyWithoutScopesInput {
+  connect: [UserPoolWhereUniqueInput!]
+  connectOrCreate: [UserPoolCreateOrConnectWithoutoAuthScopeInput!]
+  create: [UserPoolCreateWithoutScopesInput!]
+}
+
 input UserPoolCreateOneWithoutClientsInput {
   connect: UserPoolWhereUniqueInput
   connectOrCreate: UserPoolCreateOrConnectWithoutoAuthClientInput
   create: UserPoolCreateWithoutClientsInput
+}
+
+input UserPoolCreateOneWithoutCustomScopesInput {
+  connect: UserPoolWhereUniqueInput
+  connectOrCreate: UserPoolCreateOrConnectWithoutoAuthCustomScopeInput
+  create: UserPoolCreateWithoutCustomScopesInput
 }
 
 input UserPoolCreateOneWithoutGroupsInput {
@@ -4232,8 +4452,18 @@ input UserPoolCreateOrConnectWithoutoAuthClientInput {
   where: UserPoolWhereUniqueInput!
 }
 
+input UserPoolCreateOrConnectWithoutoAuthCustomScopeInput {
+  create: UserPoolCreateWithoutCustomScopesInput!
+  where: UserPoolWhereUniqueInput!
+}
+
 input UserPoolCreateOrConnectWithoutoAuthResourceServerInput {
   create: UserPoolCreateWithoutResourceServersInput!
+  where: UserPoolWhereUniqueInput!
+}
+
+input UserPoolCreateOrConnectWithoutoAuthScopeInput {
+  create: UserPoolCreateWithoutScopesInput!
   where: UserPoolWhereUniqueInput!
 }
 
@@ -4253,63 +4483,131 @@ input UserPoolCreateOrConnectWithoutUserInput {
 }
 
 input UserPoolCreateWithoutClientsInput {
+  CustomScopes: oAuthCustomScopeCreateManyWithoutUserPoolInput
   Groups: GroupCreateManyWithoutUserPoolInput
   id: String
   name: String!
   Organization: OrganizationCreateOneWithoutUserPoolsInput!
   ResourceServers: oAuthResourceServerCreateManyWithoutUserPoolInput
   Roles: RoleCreateManyWithoutUserPoolInput
+  Scopes: oAuthScopeCreateManyWithoutUserPoolsInput
+  Users: UserCreateManyWithoutUserPoolInput
+}
+
+input UserPoolCreateWithoutCustomScopesInput {
+  Clients: oAuthClientCreateManyWithoutUserPoolInput
+  Groups: GroupCreateManyWithoutUserPoolInput
+  id: String
+  name: String!
+  Organization: OrganizationCreateOneWithoutUserPoolsInput!
+  ResourceServers: oAuthResourceServerCreateManyWithoutUserPoolInput
+  Roles: RoleCreateManyWithoutUserPoolInput
+  Scopes: oAuthScopeCreateManyWithoutUserPoolsInput
   Users: UserCreateManyWithoutUserPoolInput
 }
 
 input UserPoolCreateWithoutGroupsInput {
   Clients: oAuthClientCreateManyWithoutUserPoolInput
+  CustomScopes: oAuthCustomScopeCreateManyWithoutUserPoolInput
   id: String
   name: String!
   Organization: OrganizationCreateOneWithoutUserPoolsInput!
   ResourceServers: oAuthResourceServerCreateManyWithoutUserPoolInput
   Roles: RoleCreateManyWithoutUserPoolInput
+  Scopes: oAuthScopeCreateManyWithoutUserPoolsInput
   Users: UserCreateManyWithoutUserPoolInput
 }
 
 input UserPoolCreateWithoutOrganizationInput {
   Clients: oAuthClientCreateManyWithoutUserPoolInput
+  CustomScopes: oAuthCustomScopeCreateManyWithoutUserPoolInput
   Groups: GroupCreateManyWithoutUserPoolInput
   id: String
   name: String!
   ResourceServers: oAuthResourceServerCreateManyWithoutUserPoolInput
   Roles: RoleCreateManyWithoutUserPoolInput
+  Scopes: oAuthScopeCreateManyWithoutUserPoolsInput
   Users: UserCreateManyWithoutUserPoolInput
 }
 
 input UserPoolCreateWithoutResourceServersInput {
   Clients: oAuthClientCreateManyWithoutUserPoolInput
+  CustomScopes: oAuthCustomScopeCreateManyWithoutUserPoolInput
   Groups: GroupCreateManyWithoutUserPoolInput
   id: String
   name: String!
   Organization: OrganizationCreateOneWithoutUserPoolsInput!
   Roles: RoleCreateManyWithoutUserPoolInput
+  Scopes: oAuthScopeCreateManyWithoutUserPoolsInput
   Users: UserCreateManyWithoutUserPoolInput
 }
 
 input UserPoolCreateWithoutRolesInput {
   Clients: oAuthClientCreateManyWithoutUserPoolInput
+  CustomScopes: oAuthCustomScopeCreateManyWithoutUserPoolInput
   Groups: GroupCreateManyWithoutUserPoolInput
   id: String
   name: String!
   Organization: OrganizationCreateOneWithoutUserPoolsInput!
   ResourceServers: oAuthResourceServerCreateManyWithoutUserPoolInput
+  Scopes: oAuthScopeCreateManyWithoutUserPoolsInput
   Users: UserCreateManyWithoutUserPoolInput
 }
 
-input UserPoolCreateWithoutUsersInput {
+input UserPoolCreateWithoutScopesInput {
   Clients: oAuthClientCreateManyWithoutUserPoolInput
+  CustomScopes: oAuthCustomScopeCreateManyWithoutUserPoolInput
   Groups: GroupCreateManyWithoutUserPoolInput
   id: String
   name: String!
   Organization: OrganizationCreateOneWithoutUserPoolsInput!
   ResourceServers: oAuthResourceServerCreateManyWithoutUserPoolInput
   Roles: RoleCreateManyWithoutUserPoolInput
+  Users: UserCreateManyWithoutUserPoolInput
+}
+
+input UserPoolCreateWithoutUsersInput {
+  Clients: oAuthClientCreateManyWithoutUserPoolInput
+  CustomScopes: oAuthCustomScopeCreateManyWithoutUserPoolInput
+  Groups: GroupCreateManyWithoutUserPoolInput
+  id: String
+  name: String!
+  Organization: OrganizationCreateOneWithoutUserPoolsInput!
+  ResourceServers: oAuthResourceServerCreateManyWithoutUserPoolInput
+  Roles: RoleCreateManyWithoutUserPoolInput
+  Scopes: oAuthScopeCreateManyWithoutUserPoolsInput
+}
+
+input UserPoolScalarWhereInput {
+  AND: [UserPoolScalarWhereInput!]
+  id: StringFilter
+  name: StringFilter
+  NOT: [UserPoolScalarWhereInput!]
+  OR: [UserPoolScalarWhereInput!]
+  organizationId: StringFilter
+}
+
+input UserPoolUpdateManyDataInput {
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+}
+
+input UserPoolUpdateManyWithoutScopesInput {
+  connect: [UserPoolWhereUniqueInput!]
+  connectOrCreate: [UserPoolCreateOrConnectWithoutoAuthScopeInput!]
+  create: [UserPoolCreateWithoutScopesInput!]
+  delete: [UserPoolWhereUniqueInput!]
+  deleteMany: [UserPoolScalarWhereInput!]
+  disconnect: [UserPoolWhereUniqueInput!]
+  set: [UserPoolWhereUniqueInput!]
+  update: [UserPoolUpdateWithWhereUniqueWithoutScopesInput!]
+  updateMany: [UserPoolUpdateManyWithWhereNestedInput!]
+  upsert: [UserPoolUpsertWithWhereUniqueWithoutScopesInput!]
+}
+
+input UserPoolUpdateManyWithWhereNestedInput {
+  data: UserPoolUpdateManyDataInput!
+  where: UserPoolScalarWhereInput!
 }
 
 input UserPoolUpdateOneRequiredWithoutClientsInput {
@@ -4318,6 +4616,14 @@ input UserPoolUpdateOneRequiredWithoutClientsInput {
   create: UserPoolCreateWithoutClientsInput
   update: UserPoolUpdateWithoutClientsDataInput
   upsert: UserPoolUpsertWithoutClientsInput
+}
+
+input UserPoolUpdateOneRequiredWithoutCustomScopesInput {
+  connect: UserPoolWhereUniqueInput
+  connectOrCreate: UserPoolCreateOrConnectWithoutoAuthCustomScopeInput
+  create: UserPoolCreateWithoutCustomScopesInput
+  update: UserPoolUpdateWithoutCustomScopesDataInput
+  upsert: UserPoolUpsertWithoutCustomScopesInput
 }
 
 input UserPoolUpdateOneRequiredWithoutGroupsInput {
@@ -4353,58 +4659,102 @@ input UserPoolUpdateOneRequiredWithoutUsersInput {
 }
 
 input UserPoolUpdateWithoutClientsDataInput {
+  CustomScopes: oAuthCustomScopeUpdateManyWithoutUserPoolInput
   Groups: GroupUpdateManyWithoutUserPoolInput
   id: StringFieldUpdateOperationsInput
   name: StringFieldUpdateOperationsInput
   Organization: OrganizationUpdateOneRequiredWithoutUserPoolsInput
   ResourceServers: oAuthResourceServerUpdateManyWithoutUserPoolInput
   Roles: RoleUpdateManyWithoutUserPoolInput
+  Scopes: oAuthScopeUpdateManyWithoutUserPoolsInput
+  Users: UserUpdateManyWithoutUserPoolInput
+}
+
+input UserPoolUpdateWithoutCustomScopesDataInput {
+  Clients: oAuthClientUpdateManyWithoutUserPoolInput
+  Groups: GroupUpdateManyWithoutUserPoolInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  Organization: OrganizationUpdateOneRequiredWithoutUserPoolsInput
+  ResourceServers: oAuthResourceServerUpdateManyWithoutUserPoolInput
+  Roles: RoleUpdateManyWithoutUserPoolInput
+  Scopes: oAuthScopeUpdateManyWithoutUserPoolsInput
   Users: UserUpdateManyWithoutUserPoolInput
 }
 
 input UserPoolUpdateWithoutGroupsDataInput {
   Clients: oAuthClientUpdateManyWithoutUserPoolInput
+  CustomScopes: oAuthCustomScopeUpdateManyWithoutUserPoolInput
   id: StringFieldUpdateOperationsInput
   name: StringFieldUpdateOperationsInput
   Organization: OrganizationUpdateOneRequiredWithoutUserPoolsInput
   ResourceServers: oAuthResourceServerUpdateManyWithoutUserPoolInput
   Roles: RoleUpdateManyWithoutUserPoolInput
+  Scopes: oAuthScopeUpdateManyWithoutUserPoolsInput
   Users: UserUpdateManyWithoutUserPoolInput
 }
 
 input UserPoolUpdateWithoutResourceServersDataInput {
   Clients: oAuthClientUpdateManyWithoutUserPoolInput
+  CustomScopes: oAuthCustomScopeUpdateManyWithoutUserPoolInput
   Groups: GroupUpdateManyWithoutUserPoolInput
   id: StringFieldUpdateOperationsInput
   name: StringFieldUpdateOperationsInput
   Organization: OrganizationUpdateOneRequiredWithoutUserPoolsInput
   Roles: RoleUpdateManyWithoutUserPoolInput
+  Scopes: oAuthScopeUpdateManyWithoutUserPoolsInput
   Users: UserUpdateManyWithoutUserPoolInput
 }
 
 input UserPoolUpdateWithoutRolesDataInput {
   Clients: oAuthClientUpdateManyWithoutUserPoolInput
+  CustomScopes: oAuthCustomScopeUpdateManyWithoutUserPoolInput
   Groups: GroupUpdateManyWithoutUserPoolInput
   id: StringFieldUpdateOperationsInput
   name: StringFieldUpdateOperationsInput
   Organization: OrganizationUpdateOneRequiredWithoutUserPoolsInput
   ResourceServers: oAuthResourceServerUpdateManyWithoutUserPoolInput
+  Scopes: oAuthScopeUpdateManyWithoutUserPoolsInput
   Users: UserUpdateManyWithoutUserPoolInput
 }
 
-input UserPoolUpdateWithoutUsersDataInput {
+input UserPoolUpdateWithoutScopesDataInput {
   Clients: oAuthClientUpdateManyWithoutUserPoolInput
+  CustomScopes: oAuthCustomScopeUpdateManyWithoutUserPoolInput
   Groups: GroupUpdateManyWithoutUserPoolInput
   id: StringFieldUpdateOperationsInput
   name: StringFieldUpdateOperationsInput
   Organization: OrganizationUpdateOneRequiredWithoutUserPoolsInput
   ResourceServers: oAuthResourceServerUpdateManyWithoutUserPoolInput
   Roles: RoleUpdateManyWithoutUserPoolInput
+  Users: UserUpdateManyWithoutUserPoolInput
+}
+
+input UserPoolUpdateWithoutUsersDataInput {
+  Clients: oAuthClientUpdateManyWithoutUserPoolInput
+  CustomScopes: oAuthCustomScopeUpdateManyWithoutUserPoolInput
+  Groups: GroupUpdateManyWithoutUserPoolInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  Organization: OrganizationUpdateOneRequiredWithoutUserPoolsInput
+  ResourceServers: oAuthResourceServerUpdateManyWithoutUserPoolInput
+  Roles: RoleUpdateManyWithoutUserPoolInput
+  Scopes: oAuthScopeUpdateManyWithoutUserPoolsInput
+}
+
+input UserPoolUpdateWithWhereUniqueWithoutScopesInput {
+  data: UserPoolUpdateWithoutScopesDataInput!
+  where: UserPoolWhereUniqueInput!
 }
 
 input UserPoolUpsertWithoutClientsInput {
   create: UserPoolCreateWithoutClientsInput!
   update: UserPoolUpdateWithoutClientsDataInput!
+}
+
+input UserPoolUpsertWithoutCustomScopesInput {
+  create: UserPoolCreateWithoutCustomScopesInput!
+  update: UserPoolUpdateWithoutCustomScopesDataInput!
 }
 
 input UserPoolUpsertWithoutGroupsInput {
@@ -4425,6 +4775,12 @@ input UserPoolUpsertWithoutRolesInput {
 input UserPoolUpsertWithoutUsersInput {
   create: UserPoolCreateWithoutUsersInput!
   update: UserPoolUpdateWithoutUsersDataInput!
+}
+
+input UserPoolUpsertWithWhereUniqueWithoutScopesInput {
+  create: UserPoolCreateWithoutScopesInput!
+  update: UserPoolUpdateWithoutScopesDataInput!
+  where: UserPoolWhereUniqueInput!
 }
 
 input UserPoolWhereUniqueInput {
