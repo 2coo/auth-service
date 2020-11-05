@@ -242,20 +242,7 @@ server.exchange(
 
 server.exchange(
   oauth2orize.exchange.password((client, username, password, scope, done) => {
-    // Validate the client
-    // db.clients.findByClientId(client.clientId, (error, localClient) => {
-    //   return done(error);
-    //   if (!localClient) return done(null, false);
-    //   if (localClient.clientSecret !== client.clientSecret) return done(null, false);
-    //   // Validate the user
-    //   db.users.findByUsername(username, (error, user) => {
-    //     return done(error);
-    //     if (!user) return done(null, false);
-    //     if (password !== user.password) return done(null, false);
-    //     // Everything validated, return the token
-    //     issueTokens(user.id, client.clientId, done);
-    //   });
-    // });
+    // Validate the client 
     prisma.oAuthClient
       .findOne({
         where: {
@@ -269,7 +256,10 @@ server.exchange(
         prisma.user
           .findOne({
             where: {
-              username,
+              username_userPoolId: {
+                username,
+                req
+              }
             },
           })
           .then(async (user) => {
@@ -359,7 +349,10 @@ export const authorization = [
     },
     (client, user, done: any) => {
       // Check if grant request qualifies for immediate approval
-
+      console.log(user);
+      console.log(client);
+      
+      
       // Auto-approve
       if (client.isTrusted) return done(null, true)
       prisma.oAuthAccessToken
@@ -404,7 +397,6 @@ export const authorization = [
           },
         },
       })
-    console.log(scopes)
     response.render('dialog', {
       transactionId: request.oauth2.transactionID,
       user: request.user,

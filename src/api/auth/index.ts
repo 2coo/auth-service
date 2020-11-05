@@ -17,16 +17,43 @@ import { User } from '@prisma/client'
  */
 passport.use(
   new LocalStrategy(
-    { usernameField: 'username' },
-    (username, password, done) => {
-      prisma.systemUser
+    { usernameField: 'username', passReqToCallback: true },
+    async (req, username, password, done) => {
+      // prisma.userPool
+      //   .findOne({
+      //     where: {
+      //       identifier: req.params.userPoolIdentifier,
+      //     },
+      //   })
+      //   .Users({
+      //     where: {
+      //       username,
+      //     },
+      //   })
+      const userPool = await prisma.userPool.findOne({
+        where: {
+          identifier: req.params.userPoolIdentifier,
+        },
+      })
+      if (!userPool) return done(null, false)
+      prisma.user
         .findOne({
           where: {
-            username: username,
+            username_userPoolId: {
+              username,
+              userPoolId: userPool.id,
+            },
+          },
+          include: {
+            Roles: {
+              include: {
+                Scopes: true,
+              },
+            },
           },
         })
         .then(async (user) => {
-          if (!user) return done(null, false)
+          if (!user || (user && user.isDisabled)) return done(null, false)
           const passwordValid = await compare(password, user.password)
           if (!passwordValid) return done(null, false)
           return done(null, user)
@@ -41,14 +68,21 @@ passport.serializeUser((user: User, done) => {
 })
 
 passport.deserializeUser((id: string, done) => {
-  prisma.systemUser
+  prisma.user
     .findOne({
       where: {
         id,
       },
+      include: {
+        Roles: {
+          include: {
+            Scopes: true,
+          },
+        },
+      },
     })
     .then((user) => {
-      if (!user) return done(null, false)
+      if (!user || (user && user.isDisabled)) return done(null, false)
       return done(null, user)
     })
     .catch((error) => done(error))

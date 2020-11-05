@@ -109,3 +109,33 @@ export const createRolesAndConnect = async (
   )
   prisma.$transaction(manyRoles)
 }
+
+export const connectDefaultUserScopes = async (
+  prisma: PrismaClient,
+  id: string,
+) => {
+  const scopes = prisma.oAuthClient.update({
+    where: {
+      id,
+    },
+    data: {
+      EnabledScopes: {
+        connect: [
+          {
+            name: 'user',
+          },
+          {
+            name: 'read:user',
+          },
+          {
+            name: 'user:email',
+          },
+          {
+            name: 'user:follow',
+          },
+        ],
+      },
+    },
+  })
+  prisma.$transaction([scopes])
+}

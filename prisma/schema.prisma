@@ -52,7 +52,8 @@ model Organization {
 
 model UserPool {
   id              String                @id @default(uuid())
-  name            String                @unique
+  name            String
+  identifier      String                @unique
   Organization    Organization          @relation(fields: [organizationId], references: [id])
   organizationId  String
   Users           User[]
@@ -62,6 +63,8 @@ model UserPool {
   Scopes          oAuthScope[]
   CustomScopes    oAuthCustomScope[]
   ResourceServers oAuthResourceServer[]
+
+  @@unique([name, organizationId])
 }
 
 model Role {
@@ -76,11 +79,13 @@ model Role {
   CustomScopes oAuthCustomScope[]
   createdAt    DateTime           @default(now())
   updatedAt    DateTime           @updatedAt
+
+  @@unique([name, userPoolId])
 }
 
 model oAuthClient {
   id                   String                   @id @default(uuid())
-  name                 String                   @unique
+  name                 String
   secret               String                   @default(cuid())
   UserPool             UserPool                 @relation(fields: [userPoolId], references: [id])
   userPoolId           String
@@ -100,6 +105,8 @@ model oAuthClient {
   isTrusted            Boolean                  @default(false)
   createdAt            DateTime                 @default(now())
   updatedAt            DateTime                 @updatedAt
+
+  @@unique([name, userPoolId])
 }
 
 model oAuthScope {
@@ -145,12 +152,14 @@ model oAuthJavascriptOrigin {
 model oAuthResourceServer {
   id         String             @id @default(uuid())
   name       String
-  identifier String             @unique
+  identifier String
   UserPool   UserPool           @relation(fields: [userPoolId], references: [id])
   userPoolId String
   Scopes     oAuthCustomScope[]
   createdAt  DateTime           @default(now())
   updatedAt  DateTime           @updatedAt
+
+  @@unique([name, userPoolId])
 }
 
 model oAuthCustomScope {
@@ -247,7 +256,7 @@ enum AccountStatusType {
 model User {
   id                 String                   @id @default(uuid())
   sub                String                   @unique @default(uuid())
-  username           String                   @unique
+  username           String
   accountStatusType  AccountStatusType        @default(UNCONFIRMED)
   isExternalProvider Boolean                  @default(false)
   email              String
@@ -271,6 +280,7 @@ model User {
   updatedAt          DateTime                 @updatedAt
 
   @@unique([email, isExternalProvider])
+  @@unique([username, userPoolId])
 }
 
 model NotificationType {

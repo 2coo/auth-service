@@ -425,9 +425,19 @@ type Mutation {
   updateOneUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
 }
 
+input NameOrganizationIdCompoundUniqueInput {
+  name: String!
+  organizationId: String!
+}
+
 input NameProfileIdCompoundUniqueInput {
   name: String!
   profileId: String!
+}
+
+input NameUserPoolIdCompoundUniqueInput {
+  name: String!
+  userPoolId: String!
 }
 
 input NestedBoolFilter {
@@ -1785,7 +1795,7 @@ input oAuthClientUpsertWithWhereUniqueWithoutUserPoolInput {
 
 input oAuthClientWhereUniqueInput {
   id: String
-  name: String
+  name_userPoolId: NameUserPoolIdCompoundUniqueInput
 }
 
 type oAuthCustomScope {
@@ -2646,7 +2656,7 @@ input oAuthResourceServerUpsertWithWhereUniqueWithoutUserPoolInput {
 
 input oAuthResourceServerWhereUniqueInput {
   id: String
-  identifier: String
+  name_userPoolId: NameUserPoolIdCompoundUniqueInput
 }
 
 type oAuthScope {
@@ -3704,6 +3714,7 @@ input RoleUpsertWithWhereUniqueWithoutUsersInput {
 
 input RoleWhereUniqueInput {
   id: String
+  name_userPoolId: NameUserPoolIdCompoundUniqueInput
 }
 
 input StringFieldUpdateOperationsInput {
@@ -4368,6 +4379,11 @@ input UserIdOAuthClientIdCompoundUniqueInput {
   userId: String!
 }
 
+input UsernameUserPoolIdCompoundUniqueInput {
+  username: String!
+  userPoolId: String!
+}
+
 type UserPool {
   Clients(after: oAuthClientWhereUniqueInput, before: oAuthClientWhereUniqueInput, first: Int, last: Int): [oAuthClient!]!
   CustomScopes(after: oAuthCustomScopeWhereUniqueInput, before: oAuthCustomScopeWhereUniqueInput, first: Int, last: Int): [oAuthCustomScope!]!
@@ -4386,6 +4402,7 @@ input UserPoolCreateInput {
   CustomScopes: oAuthCustomScopeCreateManyWithoutUserPoolInput
   Groups: GroupCreateManyWithoutUserPoolInput
   id: String
+  identifier: String!
   name: String!
   Organization: OrganizationCreateOneWithoutUserPoolsInput!
   ResourceServers: oAuthResourceServerCreateManyWithoutUserPoolInput
@@ -4486,6 +4503,7 @@ input UserPoolCreateWithoutClientsInput {
   CustomScopes: oAuthCustomScopeCreateManyWithoutUserPoolInput
   Groups: GroupCreateManyWithoutUserPoolInput
   id: String
+  identifier: String!
   name: String!
   Organization: OrganizationCreateOneWithoutUserPoolsInput!
   ResourceServers: oAuthResourceServerCreateManyWithoutUserPoolInput
@@ -4498,6 +4516,7 @@ input UserPoolCreateWithoutCustomScopesInput {
   Clients: oAuthClientCreateManyWithoutUserPoolInput
   Groups: GroupCreateManyWithoutUserPoolInput
   id: String
+  identifier: String!
   name: String!
   Organization: OrganizationCreateOneWithoutUserPoolsInput!
   ResourceServers: oAuthResourceServerCreateManyWithoutUserPoolInput
@@ -4510,6 +4529,7 @@ input UserPoolCreateWithoutGroupsInput {
   Clients: oAuthClientCreateManyWithoutUserPoolInput
   CustomScopes: oAuthCustomScopeCreateManyWithoutUserPoolInput
   id: String
+  identifier: String!
   name: String!
   Organization: OrganizationCreateOneWithoutUserPoolsInput!
   ResourceServers: oAuthResourceServerCreateManyWithoutUserPoolInput
@@ -4523,6 +4543,7 @@ input UserPoolCreateWithoutOrganizationInput {
   CustomScopes: oAuthCustomScopeCreateManyWithoutUserPoolInput
   Groups: GroupCreateManyWithoutUserPoolInput
   id: String
+  identifier: String!
   name: String!
   ResourceServers: oAuthResourceServerCreateManyWithoutUserPoolInput
   Roles: RoleCreateManyWithoutUserPoolInput
@@ -4535,6 +4556,7 @@ input UserPoolCreateWithoutResourceServersInput {
   CustomScopes: oAuthCustomScopeCreateManyWithoutUserPoolInput
   Groups: GroupCreateManyWithoutUserPoolInput
   id: String
+  identifier: String!
   name: String!
   Organization: OrganizationCreateOneWithoutUserPoolsInput!
   Roles: RoleCreateManyWithoutUserPoolInput
@@ -4547,6 +4569,7 @@ input UserPoolCreateWithoutRolesInput {
   CustomScopes: oAuthCustomScopeCreateManyWithoutUserPoolInput
   Groups: GroupCreateManyWithoutUserPoolInput
   id: String
+  identifier: String!
   name: String!
   Organization: OrganizationCreateOneWithoutUserPoolsInput!
   ResourceServers: oAuthResourceServerCreateManyWithoutUserPoolInput
@@ -4559,6 +4582,7 @@ input UserPoolCreateWithoutScopesInput {
   CustomScopes: oAuthCustomScopeCreateManyWithoutUserPoolInput
   Groups: GroupCreateManyWithoutUserPoolInput
   id: String
+  identifier: String!
   name: String!
   Organization: OrganizationCreateOneWithoutUserPoolsInput!
   ResourceServers: oAuthResourceServerCreateManyWithoutUserPoolInput
@@ -4571,6 +4595,7 @@ input UserPoolCreateWithoutUsersInput {
   CustomScopes: oAuthCustomScopeCreateManyWithoutUserPoolInput
   Groups: GroupCreateManyWithoutUserPoolInput
   id: String
+  identifier: String!
   name: String!
   Organization: OrganizationCreateOneWithoutUserPoolsInput!
   ResourceServers: oAuthResourceServerCreateManyWithoutUserPoolInput
@@ -4581,6 +4606,7 @@ input UserPoolCreateWithoutUsersInput {
 input UserPoolScalarWhereInput {
   AND: [UserPoolScalarWhereInput!]
   id: StringFilter
+  identifier: StringFilter
   name: StringFilter
   NOT: [UserPoolScalarWhereInput!]
   OR: [UserPoolScalarWhereInput!]
@@ -4589,6 +4615,7 @@ input UserPoolScalarWhereInput {
 
 input UserPoolUpdateManyDataInput {
   id: StringFieldUpdateOperationsInput
+  identifier: StringFieldUpdateOperationsInput
   name: StringFieldUpdateOperationsInput
 }
 
@@ -4662,6 +4689,7 @@ input UserPoolUpdateWithoutClientsDataInput {
   CustomScopes: oAuthCustomScopeUpdateManyWithoutUserPoolInput
   Groups: GroupUpdateManyWithoutUserPoolInput
   id: StringFieldUpdateOperationsInput
+  identifier: StringFieldUpdateOperationsInput
   name: StringFieldUpdateOperationsInput
   Organization: OrganizationUpdateOneRequiredWithoutUserPoolsInput
   ResourceServers: oAuthResourceServerUpdateManyWithoutUserPoolInput
@@ -4674,6 +4702,7 @@ input UserPoolUpdateWithoutCustomScopesDataInput {
   Clients: oAuthClientUpdateManyWithoutUserPoolInput
   Groups: GroupUpdateManyWithoutUserPoolInput
   id: StringFieldUpdateOperationsInput
+  identifier: StringFieldUpdateOperationsInput
   name: StringFieldUpdateOperationsInput
   Organization: OrganizationUpdateOneRequiredWithoutUserPoolsInput
   ResourceServers: oAuthResourceServerUpdateManyWithoutUserPoolInput
@@ -4686,6 +4715,7 @@ input UserPoolUpdateWithoutGroupsDataInput {
   Clients: oAuthClientUpdateManyWithoutUserPoolInput
   CustomScopes: oAuthCustomScopeUpdateManyWithoutUserPoolInput
   id: StringFieldUpdateOperationsInput
+  identifier: StringFieldUpdateOperationsInput
   name: StringFieldUpdateOperationsInput
   Organization: OrganizationUpdateOneRequiredWithoutUserPoolsInput
   ResourceServers: oAuthResourceServerUpdateManyWithoutUserPoolInput
@@ -4699,6 +4729,7 @@ input UserPoolUpdateWithoutResourceServersDataInput {
   CustomScopes: oAuthCustomScopeUpdateManyWithoutUserPoolInput
   Groups: GroupUpdateManyWithoutUserPoolInput
   id: StringFieldUpdateOperationsInput
+  identifier: StringFieldUpdateOperationsInput
   name: StringFieldUpdateOperationsInput
   Organization: OrganizationUpdateOneRequiredWithoutUserPoolsInput
   Roles: RoleUpdateManyWithoutUserPoolInput
@@ -4711,6 +4742,7 @@ input UserPoolUpdateWithoutRolesDataInput {
   CustomScopes: oAuthCustomScopeUpdateManyWithoutUserPoolInput
   Groups: GroupUpdateManyWithoutUserPoolInput
   id: StringFieldUpdateOperationsInput
+  identifier: StringFieldUpdateOperationsInput
   name: StringFieldUpdateOperationsInput
   Organization: OrganizationUpdateOneRequiredWithoutUserPoolsInput
   ResourceServers: oAuthResourceServerUpdateManyWithoutUserPoolInput
@@ -4723,6 +4755,7 @@ input UserPoolUpdateWithoutScopesDataInput {
   CustomScopes: oAuthCustomScopeUpdateManyWithoutUserPoolInput
   Groups: GroupUpdateManyWithoutUserPoolInput
   id: StringFieldUpdateOperationsInput
+  identifier: StringFieldUpdateOperationsInput
   name: StringFieldUpdateOperationsInput
   Organization: OrganizationUpdateOneRequiredWithoutUserPoolsInput
   ResourceServers: oAuthResourceServerUpdateManyWithoutUserPoolInput
@@ -4735,6 +4768,7 @@ input UserPoolUpdateWithoutUsersDataInput {
   CustomScopes: oAuthCustomScopeUpdateManyWithoutUserPoolInput
   Groups: GroupUpdateManyWithoutUserPoolInput
   id: StringFieldUpdateOperationsInput
+  identifier: StringFieldUpdateOperationsInput
   name: StringFieldUpdateOperationsInput
   Organization: OrganizationUpdateOneRequiredWithoutUserPoolsInput
   ResourceServers: oAuthResourceServerUpdateManyWithoutUserPoolInput
@@ -4785,7 +4819,8 @@ input UserPoolUpsertWithWhereUniqueWithoutScopesInput {
 
 input UserPoolWhereUniqueInput {
   id: String
-  name: String
+  identifier: String
+  name_organizationId: NameOrganizationIdCompoundUniqueInput
 }
 
 input UserScalarWhereInput {
@@ -5292,5 +5327,5 @@ input UserWhereUniqueInput {
   email_isExternalProvider: EmailIsExternalProviderCompoundUniqueInput
   id: String
   sub: String
-  username: String
+  username_userPoolId: UsernameUserPoolIdCompoundUniqueInput
 }

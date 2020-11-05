@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser'
 import errorHandler from 'errorhandler'
 import * as path from 'path'
 import { ensureLoggedIn } from 'connect-ensure-login'
+import { prisma } from '../context'
 
 module.exports = function (app: Express.Application) {
   app.set('view engine', 'ejs')
@@ -33,6 +34,22 @@ module.exports = function (app: Express.Application) {
   // Passport configuration
   require('./auth')
 
+  const checkUserPoolExists = async (
+    req: Express.Request,
+    res: Express.Response,
+    next: Express.NextFunction,
+  ) => {
+    const userPool = await prisma.userPool.findOne({
+      where: {
+        identifier: req.params.userPoolIdentifier,
+      },
+    })
+    if (!userPool) {
+      res.send('UserPool not found!')
+    }
+    next()
+  }
+
   const router = Express.Router()
   // site
 
@@ -48,6 +65,5 @@ module.exports = function (app: Express.Application) {
     .post(routes.oauth2.decision)
   // Create endpoint handlers for oauth2 token
   router.route('/oauth2/token').post(routes.oauth2.token)
-  app.use(router)
-  // app.use('/api', router)
+  app.use('/:userPoolIdentifier', checkUserPoolExists, router)
 }

@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client'
 import { Request, Response } from 'express'
 import { PubSub } from 'apollo-server-express'
 import {
+  connectDefaultUserScopes,
   createGrantTypesAndConnect,
   createRolesAndConnect,
   getUserId,
@@ -25,22 +26,33 @@ prisma.$use(async (params, next) => {
       case 'User':
         {
           const saltRounds = 10
-          params.args.data.password = await hash(params.args.data.password, saltRounds)
+          params.args.data.password = await hash(
+            params.args.data.password,
+            saltRounds,
+          )
         }
         break
     }
   }
   const result = await next(params)
-  if (params.action === 'create') {
-    switch (params.model) {
-      case 'UserPool':
-        await createRolesAndConnect(prisma, result.id)
-        break
-      case 'oAuthClient':
-        await createGrantTypesAndConnect(prisma, result.id)
-        break
-    }
+  switch (params.action) {
+    case 'create':
+      switch (params.model) {
+        case 'UserPool':
+          await createRolesAndConnect(prisma, result.id)
+          break
+        case 'oAuthClient':
+          {
+            await createGrantTypesAndConnect(prisma, result.id)
+            await connectDefaultUserScopes(prisma, result.id)
+          }
+          break
+      }
+      break
+    case 'update':
+      break
   }
+
   return result
 })
 
