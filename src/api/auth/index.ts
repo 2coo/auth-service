@@ -19,17 +19,6 @@ passport.use(
   new LocalStrategy(
     { usernameField: 'username', passReqToCallback: true },
     async (req, username, password, done) => {
-      // prisma.userPool
-      //   .findOne({
-      //     where: {
-      //       identifier: req.params.userPoolIdentifier,
-      //     },
-      //   })
-      //   .Users({
-      //     where: {
-      //       username,
-      //     },
-      //   })
       const userPool = await prisma.userPool.findOne({
         where: {
           identifier: req.params.userPoolIdentifier,

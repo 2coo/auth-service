@@ -15,10 +15,10 @@ const graphqlServer = new ApolloServer({
 const app = express()
 const http = HTTP.createServer(app)
 
-require('./api/')(app)
-
 graphqlServer.applyMiddleware({ app })
 graphqlServer.installSubscriptionHandlers(http)
+
+require('./api/')(app)
 
 http.listen(process.env.PORT, () => {
   console.log(

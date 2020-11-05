@@ -4,6 +4,7 @@ import moment from 'moment-timezone'
 import oauth2orize from 'oauth2orize'
 import passport from 'passport'
 import { prisma } from '../../context'
+import { ensureLoginWithPoolIdentifier } from '../utils'
 
 // Create OAuth 2.0 server
 const server = oauth2orize.createServer()
@@ -215,6 +216,8 @@ server.grant(
 
 server.exchange(
   oauth2orize.exchange.code((client, code, redirectUri, done) => {
+    console.log('#hey')
+    console.log(client)
     prisma.oAuthAuthorizationCode
       .findOne({
         where: {
@@ -242,37 +245,36 @@ server.exchange(
 
 server.exchange(
   oauth2orize.exchange.password((client, username, password, scope, done) => {
-    // Validate the client 
-    prisma.oAuthClient
-      .findOne({
-        where: {
-          id: client.id,
-        },
-      })
-      .then((localClient) => {
-        if (!localClient) return done(null, false)
-        if (localClient.secret !== client.secret) return done(null, false)
-        // validate the user
-        prisma.user
-          .findOne({
-            where: {
-              username_userPoolId: {
-                username,
-                req
-              }
-            },
-          })
-          .then(async (user) => {
-            if (!user) return done(null, false)
-            const passwordValid = await compare(password, user.password)
-            if (!passwordValid) return done(null, false)
-            // Everything validated, return the token
-            issueTokens(user.id, client.id, done)
-          })
-      })
-      .catch((error) => {
-        return done(error)
-      })
+    // Validate the client
+    // prisma.oAuthClient
+    //   .findOne({
+    //     where: {
+    //       id: client.id,
+    //     },
+    //   })
+    //   .then((localClient) => {
+    //     if (!localClient) return done(null, false)
+    //     if (localClient.secret !== client.secret) return done(null, false)
+    //     // validate the user
+    //     prisma.user
+    //       .findOne({
+    //         where: {
+    //           username_userPoolId: {
+    //             username,
+    //           }
+    //         },
+    //       })
+    //       .then(async (user) => {
+    //         if (!user) return done(null, false)
+    //         const passwordValid = await compare(password, user.password)
+    //         if (!passwordValid) return done(null, false)
+    //         // Everything validated, return the token
+    //         issueTokens(user.id, client.id, done)
+    //       })
+    //   })
+    //   .catch((error) => {
+    //     return done(error)
+    //   })
   }),
 )
 
@@ -320,7 +322,7 @@ server.exchange(
 // first, and rendering the `dialog` view.
 
 export const authorization = [
-  login.ensureLoggedIn('/login'),
+  ensureLoginWithPoolIdentifier,
   server.authorization(
     (clientId, redirectUri, done) => {
       prisma.oAuthClient
@@ -349,10 +351,9 @@ export const authorization = [
     },
     (client, user, done: any) => {
       // Check if grant request qualifies for immediate approval
-      console.log(user);
-      console.log(client);
-      
-      
+      console.log(user)
+      console.log(client)
+
       // Auto-approve
       if (client.isTrusted) return done(null, true)
       prisma.oAuthAccessToken
@@ -375,15 +376,6 @@ export const authorization = [
     },
   ),
   async (request: any, response: any) => {
-    // prisma.oAuthScope.findMany({
-    //   where: {
-    //     name: {
-    //       in: request.query.scope.split(' '),
-    //     },
-    //   },
-    // }).then((scopes) => {
-    //   console.log(scopes)
-    // })
     const scopes = await prisma.oAuthClient
       .findOne({
         where: {

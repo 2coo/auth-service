@@ -1,0 +1,380 @@
+// This is your Prisma schema file,
+// learn more about it in the docs https//pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "mysql"
+  url = "***"
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["transactionApi", "connectOrCreate"]
+}
+
+enum SystemRole {
+  SUPER_ADMIN
+  ADMIN
+  DEVELOPER
+  USER
+}
+
+model SystemUser {
+  id            String         @id @default(uuid())
+  username      String         @unique
+  email         String         @unique
+  password      String
+  role          SystemRole     @default(USER)
+  Organizations Organization[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+enum GrantType {
+  AUTHORIZATION_CODE
+  PASSWORD
+  REFRESH_TOKEN
+  CLIENT_CREDENTIALS
+  EXTENSION
+}
+
+model Organization {
+  id           String      @id @default(uuid())
+  name         String
+  url          String?
+  address      String?
+  phoneNumber  String?
+  UserPools    UserPool[]
+  CreatedBy    SystemUser? @relation(fields: [systemUserId], references: [id])
+  systemUserId String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+model UserPool {
+  id              String                @id @default(uuid())
+  name            String
+  identifier      String                @unique
+  Organization    Organization          @relation(fields: [organizationId], references: [id])
+  organizationId  String
+  Users           User[]
+  Groups          Group[]
+  Roles           Role[]
+  Clients         oAuthClient[]
+  Scopes          oAuthScope[]
+  CustomScopes    oAuthCustomScope[]
+  ResourceServers oAuthResourceServer[]
+
+  @@unique([name, organizationId])
+}
+
+model Role {
+  id           String             @id @default(uuid())
+  name         String
+  description  String?
+  UserPool     UserPool           @relation(fields: [userPoolId], references: [id])
+  userPoolId   String
+  Users        User[]
+  Groups       Group[]
+  Scopes       oAuthScope[]
+  CustomScopes oAuthCustomScope[]
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+
+  @@unique([name, userPoolId])
+}
+
+model oAuthClient {
+  id                   String                   @id @default(uuid())
+  name                 String
+  secret               String                   @default(cuid())
+  UserPool             UserPool                 @relation(fields: [userPoolId], references: [id])
+  userPoolId           String
+  Grants               oAuthGrant[]
+  Notifications        Notification[]
+  RedirectUris         oAuthRedirectURI[]
+  JavascriptOrigins    oAuthJavascriptOrigin[]
+  EnabledScopes        oAuthScope[]
+  EnabledCustomScopes  oAuthCustomScope[]
+  AccessTokens         oAuthAccessToken[]
+  AuthorizationCodes   oAuthAuthorizationCode[]
+  RefreshTokens        oAuthRefreshToken[]
+  refreshTokenLifetime Int                      @default(43200)
+  accessTokenLifetime  Int                      @default(60)
+  idTokenLifetime      Int                      @default(5)
+  logo                 String?
+  isTrusted            Boolean                  @default(false)
+  createdAt            DateTime                 @default(now())
+  updatedAt            DateTime                 @updatedAt
+
+  @@unique([name, userPoolId])
+}
+
+model oAuthScope {
+  id                 String                   @id @default(uuid())
+  name               String                   @unique
+  description        String?
+  Clients            oAuthClient[]
+  AccessTokens       oAuthAccessToken[]
+  AuthorizationCodes oAuthAuthorizationCode[]
+  RefreshTokenScope  oAuthRefreshToken[]
+  Roles              Role[]
+  UserPools          UserPool[]
+  createdAt          DateTime                 @default(now())
+  updatedAt          DateTime                 @updatedAt
+}
+
+model oAuthGrant {
+  id        String        @id @default(uuid())
+  grantType GrantType
+  Clients   oAuthClient[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
+
+model oAuthRedirectURI {
+  id            String      @id @default(uuid())
+  Client        oAuthClient @relation(fields: [oAuthClientId], references: [id])
+  oAuthClientId String
+  url           String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model oAuthJavascriptOrigin {
+  id            String      @id @default(uuid())
+  Client        oAuthClient @relation(fields: [oAuthClientId], references: [id])
+  oAuthClientId String
+  uri           String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model oAuthResourceServer {
+  id         String             @id @default(uuid())
+  name       String
+  identifier String
+  UserPool   UserPool           @relation(fields: [userPoolId], references: [id])
+  userPoolId String
+  Scopes     oAuthCustomScope[]
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
+
+  @@unique([name, userPoolId])
+}
+
+model oAuthCustomScope {
+  id                    String              @id @default(uuid())
+  name                  String
+  description           String?
+  ResourceServer        oAuthResourceServer @relation(fields: [oAuthResourceServerId], references: [id])
+  oAuthResourceServerId String
+  Clients               oAuthClient[]
+  oAuthClientId         String
+  Roles                 Role[]
+  UserPool              UserPool            @relation(fields: [userPoolId], references: [id])
+  userPoolId            String
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+}
+
+model oAuthAccessToken {
+  id             String       @id @default(uuid())
+  accessToken    String       @default(uuid())
+  expirationDate DateTime
+  Scopes         oAuthScope[]
+  User           User?        @relation(fields: [userId], references: [id])
+  userId         String?
+  Client         oAuthClient  @relation(fields: [oAuthClientId], references: [id])
+  oAuthClientId  String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@unique([accessToken, oAuthClientId])
+  @@unique([userId, oAuthClientId])
+}
+
+model oAuthRefreshToken {
+  id             String       @id @default(uuid())
+  refreshToken   String       @default(uuid())
+  expirationDate DateTime
+  Scopes         oAuthScope[]
+  User           User?        @relation(fields: [userId], references: [id])
+  userId         String?
+  Client         oAuthClient  @relation(fields: [oAuthClientId], references: [id])
+  oAuthClientId  String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@unique([refreshToken, oAuthClientId])
+  @@unique([userId, oAuthClientId])
+}
+
+model oAuthAuthorizationCode {
+  id             String       @id @default(uuid())
+  code           String       @default(uuid(16))
+  expirationDate DateTime
+  redirectURI    String
+  Scopes         oAuthScope[]
+  User           User         @relation(fields: [userId], references: [id])
+  userId         String
+  Client         oAuthClient  @relation(fields: [oAuthClientId], references: [id])
+  oAuthClientId  String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@unique([code, oAuthClientId])
+}
+
+enum Gender {
+  FEMALE
+  MALE
+  OTHER
+}
+
+model Group {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  UserPool    UserPool @relation(fields: [userPoolId], references: [id])
+  userPoolId  String
+  Users       User[]
+  Roles       Role[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum AccountStatusType {
+  UNCONFIRMED
+  CONFIRMED
+  ARCHIVED
+  COMPROMISED
+  UNKNOWN
+  RESET_REQUIRED
+  FORCE_CHANGE_PASSWORD
+}
+
+model User {
+  id                 String                   @id @default(uuid())
+  sub                String                   @unique @default(uuid())
+  username           String
+  accountStatusType  AccountStatusType        @default(UNCONFIRMED)
+  isExternalProvider Boolean                  @default(false)
+  email              String
+  password           String
+  isDisabled         Boolean                  @default(false)
+  Profile            Profile?
+  Groups             Group[]
+  PasswordResets     PasswordReset[]
+  Roles              Role[]
+  Devices            UserDevice[]
+  AccessTokens       oAuthAccessToken[]
+  AuthorizationCodes oAuthAuthorizationCode[]
+  RefreshTokens      oAuthRefreshToken[]
+  Notifications      Notification[]           @relation("NotificationRecipent")
+  Notification       Notification[]           @relation("NotificationSender")
+  UserPool           UserPool                 @relation(fields: [userPoolId], references: [id])
+  userPoolId         String
+  FollowedBy         User[]                   @relation("UserFollows", references: [id])
+  Following          User[]                   @relation("UserFollows", references: [id])
+  createdAt          DateTime                 @default(now())
+  updatedAt          DateTime                 @updatedAt
+
+  @@unique([email, isExternalProvider])
+  @@unique([username, userPoolId])
+}
+
+model NotificationType {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  template    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Notification {
+  id            String       @id @default(uuid())
+  text          String
+  isRead        Boolean
+  Recipent      User         @relation("NotificationRecipent", fields: [recipentId], references: [id])
+  recipentId    String
+  Sender        User         @relation("NotificationSender", fields: [senderId], references: [id])
+  senderId      String
+  url           String
+  isDeleted     Boolean
+  Client        oAuthClient? @relation(fields: [oAuthClientId], references: [id])
+  oAuthClientId String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+}
+
+model Profile {
+  id                   String                @id @default(uuid())
+  User                 User                  @relation(fields: [userId], references: [id])
+  userId               String
+  Emails               Email[]
+  firstName            String?               @default("")
+  lastName             String?               @default("")
+  displayName          String?
+  birthdate            DateTime?
+  gender               Gender?
+  mobileNumber         String?
+  Photos               Photo[]
+  UserCustomAttributes UserCustomAttribute[]
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+}
+
+model UserCustomAttribute {
+  name      String
+  value     String
+  Profile   Profile @relation(fields: [profileId], references: [id])
+  profileId String
+
+  @@id([name, profileId])
+}
+
+model Email {
+  id         String   @id @default(uuid())
+  email      String
+  isVerified Boolean  @default(false)
+  isPrimary  Boolean  @default(false)
+  Profile    Profile  @relation(fields: [profileId], references: [id])
+  profileId  String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Photo {
+  id                    String   @id @default(uuid())
+  value                 String
+  isCurrentProfileImage Boolean
+  Profile               Profile  @relation(fields: [profileId], references: [id])
+  profileId             String
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+model PasswordReset {
+  id             String   @id @default(uuid())
+  User           User     @relation(fields: [userId], references: [id])
+  userId         String
+  token          String
+  expirationDate DateTime
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model UserDevice {
+  id           String   @id @default(uuid())
+  User         User     @relation(fields: [userId], references: [id])
+  userId       String
+  deviceKey    String
+  name         String?
+  lastIP       String
+  isRemembered Boolean  @default(false)
+  SDK          String?
+  lastSeen     DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}

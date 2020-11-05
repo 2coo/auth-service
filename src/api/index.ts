@@ -6,8 +6,8 @@ import routes from './controllers'
 import cookieParser from 'cookie-parser'
 import errorHandler from 'errorhandler'
 import * as path from 'path'
-import { ensureLoggedIn } from 'connect-ensure-login'
 import { prisma } from '../context'
+import { ensureLoginWithPoolIdentifier } from './utils'
 
 module.exports = function (app: Express.Application) {
   app.set('view engine', 'ejs')
@@ -50,10 +50,13 @@ module.exports = function (app: Express.Application) {
     next()
   }
 
-  const router = Express.Router()
+  const router = Express.Router({ mergeParams: true })
   // site
 
-  router.get('/', [ensureLoggedIn(), routes.site.index])
+  router.get('/', [
+    ensureLoginWithPoolIdentifier,
+    routes.site.index,
+  ])
   router.route('/login').get(routes.site.loginForm).post(routes.site.login)
   router.get('/logout', routes.site.logout)
   router.get('/account', routes.site.account)
