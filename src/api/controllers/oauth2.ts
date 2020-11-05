@@ -165,6 +165,8 @@ function issueTokens(userId: string | null, clientId: string, done: any) {
 
 server.grant(
   oauth2orize.grant.code((client, redirectUri, user, ares, done) => {
+    console.log(client)
+
     prisma.oAuthAuthorizationCode
       .create({
         data: {
@@ -181,7 +183,7 @@ server.grant(
           redirectURI: redirectUri,
           User: {
             connect: {
-              id: user.email,
+              id: user.id,
             },
           },
         },
@@ -351,8 +353,6 @@ export const authorization = [
     },
     (client, user, done: any) => {
       // Check if grant request qualifies for immediate approval
-      console.log(user)
-      console.log(client)
 
       // Auto-approve
       if (client.isTrusted) return done(null, true)
@@ -404,7 +404,7 @@ export const authorization = [
 // client, the above grant middleware configured above will be invoked to send
 // a response.
 
-export const decision = [login.ensureLoggedIn('/login'), server.decision()]
+export const decision = [ensureLoginWithPoolIdentifier, server.decision()]
 
 // Token endpoint.
 //
