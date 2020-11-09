@@ -37,6 +37,25 @@ passport.use(
             Roles: {
               include: {
                 Scopes: true,
+                CustomScopes: {
+                  include: {
+                    ResourceServer: true,
+                  },
+                },
+              },
+            },
+            Groups: {
+              include: {
+                Roles: {
+                  include: {
+                    Scopes: true,
+                    CustomScopes: {
+                      include: {
+                        ResourceServer: true,
+                      },
+                    },
+                  },
+                },
               },
             },
           },
@@ -66,6 +85,25 @@ passport.deserializeUser((id: string, done) => {
         Roles: {
           include: {
             Scopes: true,
+            CustomScopes: {
+              include: {
+                ResourceServer: true,
+              },
+            },
+          },
+        },
+        Groups: {
+          include: {
+            Roles: {
+              include: {
+                Scopes: true,
+                CustomScopes: {
+                  include: {
+                    ResourceServer: true,
+                  },
+                },
+              },
+            },
           },
         },
       },

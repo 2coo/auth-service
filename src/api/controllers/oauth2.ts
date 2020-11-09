@@ -1,4 +1,11 @@
-import { oAuthCustomScope, oAuthScope, User } from '@prisma/client'
+import {
+  Group,
+  oAuthCustomScope,
+  oAuthResourceServer,
+  oAuthScope,
+  Role,
+  User,
+} from '@prisma/client'
 import moment from 'moment-timezone'
 import oauth2orize from 'oauth2orize'
 import passport from 'passport'
@@ -406,25 +413,46 @@ export const authorization = [
         message: `Invalid scopes: [${errorScopes.join(', ')}]`,
       })
     }
-    const user = await prisma.user.findOne({
-      where: {
-        id: (request!.user as User).id,
-      },
-      include: {
-        Roles: {
-          include: {
-            Scopes: true,
-          },
-        },
-      },
+    const user: any = request.user
+
+    const userScopes = _.flatMap(user!.Roles, ({ Scopes, CustomScopes }) => {
+      return _.concat(
+        Scopes.map((scope: oAuthScope) => scope.name),
+        CustomScopes.map(
+          (customScope: {
+            name: string
+            ResourceServer: oAuthResourceServer
+          }) => `${customScope.ResourceServer!.identifier}/${customScope.name}`,
+        ),
+      )
     })
 
-    const userScopes = _.flatMap(user?.Roles, ({ Scopes }) => {
-      return Scopes.map((scope) => scope.name)
-    })
+    const userGroupScopes = _.flatMap(user.Groups, (group: any) =>
+      _.flatMap(group.Roles, ({ Scopes, CustomScopes }) => {
+        return _.concat(
+          Scopes.map((scope: oAuthScope) => scope.name),
+          CustomScopes.map(
+            (customScope: {
+              name: string
+              ResourceServer: oAuthResourceServer
+            }) =>
+              `${customScope.ResourceServer!.identifier}/${customScope.name}`,
+          ),
+        )
+      }),
+    )
 
-    console.log(userScopes)
+    const allScopesOfUser = _.uniq(_.concat(userScopes, userGroupScopes))
 
+    if (
+      !(request.query.scope as string)
+        .split(' ')
+        .every((scope) => allScopesOfUser.indexOf(scope) > -1)
+    ) {
+      return response.json({
+        message: `Permission denied: There are some scopes that are not granted for you!`,
+      })
+    }
     response.render('dialog', {
       transactionId: request!.oauth2!.transactionID,
       user: request.user,
@@ -450,7 +478,7 @@ export const decision = [ensureLoginWithPoolIdentifier(), server.decision()]
 // authenticate when making requests to this endpoint.
 
 export const token = [
-  passport.authenticate(['oauth2-client-password'], {
+  passport.authenticate(['basic', 'oauth2-client-password'], {
     session: false,
   }),
   server.token(),

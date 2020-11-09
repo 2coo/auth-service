@@ -32,6 +32,15 @@ prisma.$use(async (params, next) => {
           )
         }
         break
+      case 'SystemUser':
+        {
+          const saltRounds = 10
+          params.args.data.password = await hash(
+            params.args.data.password,
+            saltRounds,
+          )
+        }
+        break
     }
   }
   const result = await next(params)

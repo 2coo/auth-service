@@ -11,6 +11,7 @@
     "prebuild": "yarn run clean && yarn run generate",
     "build": "tsc",
     "seed": "dotenv -e .env.development.local -- ts-node prisma/seed",
+    "seed:dev": "cross-env NODE_ENV=development dotenv -e .env.development.local -- ts-node prisma/seed",
     "clean": "rimraf dist",
     "generate": "yarn -s generate:prisma && yarn -s generate:nexus",
     "generate:prisma": "prisma generate",
