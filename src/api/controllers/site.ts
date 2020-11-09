@@ -6,12 +6,17 @@ import { Request, Response, NextFunction } from 'express'
 import { SystemUser } from '@prisma/client'
 import { ensureLoginWithPoolIdentifier } from '../utils'
 
-export const index = (req: Request, res: Response) =>
-  res.send('OAuth 2.0 Server <br/> <a href="account/">Account</a>')
+export const index = (req: Request, res: Response) => {
+  if (!req.query.code) {
+    res.send('OAuth 2.0 Server <br/> <a href="account">Account</a>')
+  } else {
+    res.render('index-with-code')
+  }
+}
 
 export const loginForm = (req: Request, res: Response) => {
   if (req.isAuthenticated()) {
-    res.redirect(`${req.baseUrl}/account`)
+    res.redirect(`/${req.params.userPoolIdentifier}/account`)
   }
   return res.render('login')
 }
@@ -31,7 +36,7 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
         return next(err)
       }
       if (req.session?.returnTo === '/' || !req.session!.returnTo)
-        return res.redirect(`${req.baseUrl}/account`)
+        return res.redirect(`/${req.params.userPoolIdentifier}/account`)
       else {
         return res.redirect(req.session!.returnTo)
       }
@@ -41,10 +46,10 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
 
 export const logout = (req: Request, res: Response) => {
   req.logout()
-  res.redirect(`${req.baseUrl}`)
+  res.redirect(`/${req.params.userPoolIdentifier}/`)
 }
 
 export const account = [
-  ensureLoginWithPoolIdentifier,
+  ensureLoginWithPoolIdentifier(),
   (req: Request, res: Response) => res.render('account', { user: req.user }),
 ]

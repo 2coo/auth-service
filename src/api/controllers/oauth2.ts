@@ -1,11 +1,11 @@
-import { compare } from 'bcryptjs'
-import login from 'connect-ensure-login'
+import { oAuthCustomScope, oAuthScope, User } from '@prisma/client'
 import moment from 'moment-timezone'
 import oauth2orize from 'oauth2orize'
 import passport from 'passport'
 import { prisma } from '../../context'
 import { ensureLoginWithPoolIdentifier } from '../utils'
-
+import { Request, Response, NextFunction } from 'express'
+import _ from 'lodash'
 // Create OAuth 2.0 server
 const server = oauth2orize.createServer()
 
@@ -29,6 +29,10 @@ server.deserializeClient((id, done) => {
     .findOne({
       where: {
         id,
+      },
+      include: {
+        EnabledScopes: true,
+        EnabledCustomScopes: true,
       },
     })
     .then((client) => {
@@ -139,7 +143,11 @@ function issueTokens(userId: string | null, clientId: string, done: any) {
                 },
               })
               .then((refreshToken) => {
-                return done(null, accessToken, refreshToken)
+                return done(
+                  null,
+                  accessToken.accessToken,
+                  refreshToken.refreshToken,
+                )
               })
           })
       }
@@ -165,8 +173,6 @@ function issueTokens(userId: string | null, clientId: string, done: any) {
 
 server.grant(
   oauth2orize.grant.code((client, redirectUri, user, ares, done) => {
-    console.log(client)
-
     prisma.oAuthAuthorizationCode
       .create({
         data: {
@@ -218,8 +224,6 @@ server.grant(
 
 server.exchange(
   oauth2orize.exchange.code((client, code, redirectUri, done) => {
-    console.log('#hey')
-    console.log(client)
     prisma.oAuthAuthorizationCode
       .findOne({
         where: {
@@ -231,6 +235,7 @@ server.exchange(
       })
       .then((authCode) => {
         if (!authCode) return done(null, false)
+        console.log(redirectUri, authCode.redirectURI)
         if (redirectUri !== authCode.redirectURI) return done(null, false)
         issueTokens(authCode.userId, client.id, done)
       })
@@ -324,7 +329,7 @@ server.exchange(
 // first, and rendering the `dialog` view.
 
 export const authorization = [
-  ensureLoginWithPoolIdentifier,
+  ensureLoginWithPoolIdentifier(),
   server.authorization(
     (clientId, redirectUri, done) => {
       prisma.oAuthClient
@@ -334,6 +339,8 @@ export const authorization = [
           },
           include: {
             RedirectUris: true,
+            EnabledScopes: true,
+            EnabledCustomScopes: true,
           },
         })
         .then((client) => {
@@ -345,7 +352,11 @@ export const authorization = [
           ) {
             return done(null, client, redirectUri)
           }
-          return done(null, false)
+          return done(
+            new Error(
+              'Redirect uri does not match the registered Redirect Uri for this app.',
+            ),
+          )
         })
         .catch((error) => {
           return done(error)
@@ -353,7 +364,6 @@ export const authorization = [
     },
     (client, user, done: any) => {
       // Check if grant request qualifies for immediate approval
-
       // Auto-approve
       if (client.isTrusted) return done(null, true)
       prisma.oAuthAccessToken
@@ -375,24 +385,50 @@ export const authorization = [
         .catch((error) => done(error))
     },
   ),
-  async (request: any, response: any) => {
-    const scopes = await prisma.oAuthClient
-      .findOne({
-        where: {
-          id: request.query.client_id,
-        },
+  async (request: Request, response: Response, next: NextFunction) => {
+    const allClientScopes = [
+      ...request!.oauth2!.client.EnabledScopes.map(
+        (scope: oAuthScope) => scope.name,
+      ),
+      ...request!.oauth2!.client.EnabledCustomScopes.map(
+        (scope: oAuthCustomScope) => scope.name,
+      ),
+    ]
+    const errorScopes = (request.query!.scope as string)
+      .split(' ')
+      .map((scope: string) =>
+        allClientScopes.indexOf(scope) > -1 ? false : scope,
+      )
+      .filter((scope: Boolean | string) => scope)
+
+    if (errorScopes.some((scope: Boolean | string) => scope)) {
+      return response.json({
+        message: `Invalid scopes: [${errorScopes.join(', ')}]`,
       })
-      .EnabledScopes({
-        where: {
-          name: {
-            in: request.query.scope.split(' '),
+    }
+    const user = await prisma.user.findOne({
+      where: {
+        id: (request!.user as User).id,
+      },
+      include: {
+        Roles: {
+          include: {
+            Scopes: true,
           },
         },
-      })
+      },
+    })
+
+    const userScopes = _.flatMap(user?.Roles, ({ Scopes }) => {
+      return Scopes.map((scope) => scope.name)
+    })
+
+    console.log(userScopes)
+
     response.render('dialog', {
-      transactionId: request.oauth2.transactionID,
+      transactionId: request!.oauth2!.transactionID,
       user: request.user,
-      client: request.oauth2.client,
+      client: request!.oauth2!.client,
     })
   },
 ]
@@ -404,7 +440,7 @@ export const authorization = [
 // client, the above grant middleware configured above will be invoked to send
 // a response.
 
-export const decision = [ensureLoginWithPoolIdentifier, server.decision()]
+export const decision = [ensureLoginWithPoolIdentifier(), server.decision()]
 
 // Token endpoint.
 //
@@ -414,7 +450,7 @@ export const decision = [ensureLoginWithPoolIdentifier, server.decision()]
 // authenticate when making requests to this endpoint.
 
 export const token = [
-  passport.authenticate(['basic', 'oauth2-client-password'], {
+  passport.authenticate(['oauth2-client-password'], {
     session: false,
   }),
   server.token(),

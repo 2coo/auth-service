@@ -54,22 +54,18 @@ export const createRolesAndConnect = async (
       name: 'USER',
       description: 'User role',
       Scopes: {
-        create: [
+        connect: [
           {
             name: 'user',
-            description: 'Grants read/write access to own profile info only',
           },
           {
             name: 'read:user',
-            description: "Grants access to read a user's profile data.",
           },
           {
             name: 'user:email',
-            description: "Grants read access to a user's email addresses.",
           },
           {
             name: 'user:follow',
-            description: 'Grants access to follow or unfollow other users.',
           },
         ],
       },
@@ -138,4 +134,53 @@ export const connectDefaultUserScopes = async (
     },
   })
   prisma.$transaction([scopes])
+}
+
+export const createOrConnectRole = async (
+  prisma: PrismaClient,
+  id: string,
+  userPoolId: string,
+) => {
+  prisma.user.update({
+    where: {
+      id,
+    },
+    data: {
+      Roles: {
+        connectOrCreate: {
+          where: {
+            name_userPoolId: {
+              name: 'Role',
+              userPoolId,
+            },
+          },
+          create: {
+            name: 'USER',
+            description: 'User role',
+            UserPool: {
+              connect: {
+                id: userPoolId,
+              },
+            },
+            Scopes: {
+              connect: [
+                {
+                  name: 'user',
+                },
+                {
+                  name: 'read:user',
+                },
+                {
+                  name: 'user:email',
+                },
+                {
+                  name: 'user:follow',
+                },
+              ],
+            },
+          },
+        },
+      },
+    },
+  })
 }

@@ -97,7 +97,7 @@ function verifyClient(clientId: string, clientSecret: string, done: any) {
     })
     .then((client) => {
       if (!client) return done(null, false)
-      if (client.secret === clientSecret) return done(null, false)
+      if (client.secret === clientSecret) return done(null, client)
       return done(null, client)
     })
     .catch((error) => done(error))

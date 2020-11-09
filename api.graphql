@@ -196,6 +196,7 @@ type Group {
   createdAt: DateTime!
   description: String
   name: String!
+  Roles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int): [Role!]!
   updatedAt: DateTime!
   Users(after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int): [User!]!
 }

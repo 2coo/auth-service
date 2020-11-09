@@ -30,6 +30,14 @@ module.exports = function (app: Express.Application) {
   // Use the passport package in our application
   app.use(passport.initialize())
   app.use(passport.session())
+  app.use((req, res, next) => {
+    if (req.originalUrl.includes('favicon.ico')) {
+      return res.status(204).end()
+    }
+    next()
+  })
+
+  app.use(Express.static(path.join(__dirname, './public')))
 
   // Passport configuration
   require('./auth')
@@ -50,13 +58,13 @@ module.exports = function (app: Express.Application) {
     next()
   }
 
+  
+
   const router = Express.Router({ mergeParams: true })
   // site
 
-  router.get('/', [
-    ensureLoginWithPoolIdentifier,
-    routes.site.index,
-  ])
+  router.get('/', [ensureLoginWithPoolIdentifier(), routes.site.index])
+  // static resources for stylesheets, images, javascript files
   router.route('/login').get(routes.site.loginForm).post(routes.site.login)
   router.get('/logout', routes.site.logout)
   router.get('/account', routes.site.account)
@@ -69,4 +77,7 @@ module.exports = function (app: Express.Application) {
   // Create endpoint handlers for oauth2 token
   router.route('/oauth2/token').post(routes.oauth2.token)
   app.use('/:userPoolIdentifier', checkUserPoolExists, router)
+
+  app.get('/api/userinfo', routes.user.info)
+  app.get('/api/clientinfo', routes.client.info)
 }
