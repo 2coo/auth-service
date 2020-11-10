@@ -84,9 +84,9 @@ model Role {
 }
 
 model oAuthClient {
-  id                   String                   @id @default(uuid())
+  id                   String                   @id @default(cuid())
   name                 String
-  secret               String                   @default(cuid())
+  secret               String                   @default(uuid())
   UserPool             UserPool                 @relation(fields: [userPoolId], references: [id])
   userPoolId           String
   Grants               oAuthGrant[]
@@ -190,7 +190,6 @@ model oAuthAccessToken {
   updatedAt      DateTime     @updatedAt
 
   @@unique([accessToken, oAuthClientId])
-  @@unique([userId, oAuthClientId])
 }
 
 model oAuthRefreshToken {
@@ -206,12 +205,11 @@ model oAuthRefreshToken {
   updatedAt      DateTime     @updatedAt
 
   @@unique([refreshToken, oAuthClientId])
-  @@unique([userId, oAuthClientId])
 }
 
 model oAuthAuthorizationCode {
   id             String       @id @default(uuid())
-  code           String       @default(uuid(16))
+  code           String       @default(cuid(16))
   expirationDate DateTime
   redirectURI    String
   Scopes         oAuthScope[]

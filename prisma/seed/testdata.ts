@@ -6,6 +6,7 @@ export const seedTestData = (prisma: PrismaClient) => {
       name: 'Tomujin',
       UserPools: {
         create: {
+          id: '11c9e539-5abd-40c1-bba6-a1c3f915acf5',
           identifier: 'tashuman',
           name: 'Tomujin & Human',
           Scopes: {
@@ -49,6 +50,11 @@ export const seedTestData = (prisma: PrismaClient) => {
             create: {
               id: 'eb41edd4-75d9-47d3-a02c-46cbcf47f46f',
               name: 'TASS - Tomujin Alternative School Solution',
+              RedirectUris: {
+                create: {
+                  url: 'http://localhost:3000/auth/example/callback',
+                },
+              },
             },
           },
         },

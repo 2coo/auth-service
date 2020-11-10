@@ -58,8 +58,6 @@ module.exports = function (app: Express.Application) {
     next()
   }
 
-  
-
   const router = Express.Router({ mergeParams: true })
   // site
 
@@ -76,8 +74,10 @@ module.exports = function (app: Express.Application) {
     .post(routes.oauth2.decision)
   // Create endpoint handlers for oauth2 token
   router.route('/oauth2/token').post(routes.oauth2.token)
+  router.get('/api/profile', routes.user.info)
+  router.get('/api/clientinfo', routes.client.info)
+  
+  router.get('/api/revoke', routes.client.info)
+  router.get('/api/tokeninfo', routes.client.info)
   app.use('/:userPoolIdentifier', checkUserPoolExists, router)
-
-  app.get('/api/userinfo', routes.user.info)
-  app.get('/api/clientinfo', routes.client.info)
 }

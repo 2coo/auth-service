@@ -1,18 +1,16 @@
 import {
-  Group,
   oAuthCustomScope,
   oAuthResourceServer,
   oAuthScope,
-  Role,
-  User,
 } from '@prisma/client'
+import { NextFunction, Request, Response } from 'express'
+import _ from 'lodash'
 import moment from 'moment-timezone'
 import oauth2orize from 'oauth2orize'
 import passport from 'passport'
 import { prisma } from '../../context'
 import { ensureLoginWithPoolIdentifier } from '../utils'
-import { Request, Response, NextFunction } from 'express'
-import _ from 'lodash'
+import { compare } from 'bcryptjs'
 // Create OAuth 2.0 server
 const server = oauth2orize.createServer()
 
@@ -40,6 +38,7 @@ server.deserializeClient((id, done) => {
       include: {
         EnabledScopes: true,
         EnabledCustomScopes: true,
+        UserPool: true,
       },
     })
     .then((client) => {
@@ -110,10 +109,14 @@ function issueTokens(userId: string | null, clientId: string, done: any) {
                     },
                   })
                   .then((refreshToken) => {
-                    return done(null, accessToken, refreshToken, {
-                      username: user.username,
-                      email: user.email,
-                    })
+                    return done(
+                      null,
+                      accessToken.accessToken,
+                      refreshToken.refreshToken,
+                      {
+                        expires_in: client.accessTokenLifetime * 60,
+                      },
+                    )
                   })
               })
           })
@@ -234,15 +237,16 @@ server.exchange(
     prisma.oAuthAuthorizationCode
       .findOne({
         where: {
-          code_oAuthClientId: {
-            code: code,
-            oAuthClientId: client.id,
-          },
+          code,
         },
       })
-      .then((authCode) => {
+      .then(async (authCode) => {
         if (!authCode) return done(null, false)
-        console.log(redirectUri, authCode.redirectURI)
+        await prisma.oAuthAuthorizationCode.delete({
+          where: {
+            id: authCode.id,
+          },
+        })
         if (redirectUri !== authCode.redirectURI) return done(null, false)
         issueTokens(authCode.userId, client.id, done)
       })
@@ -259,36 +263,39 @@ server.exchange(
 
 server.exchange(
   oauth2orize.exchange.password((client, username, password, scope, done) => {
+    console.log(client, username, password, scope)
+
     // Validate the client
-    // prisma.oAuthClient
-    //   .findOne({
-    //     where: {
-    //       id: client.id,
-    //     },
-    //   })
-    //   .then((localClient) => {
-    //     if (!localClient) return done(null, false)
-    //     if (localClient.secret !== client.secret) return done(null, false)
-    //     // validate the user
-    //     prisma.user
-    //       .findOne({
-    //         where: {
-    //           username_userPoolId: {
-    //             username,
-    //           }
-    //         },
-    //       })
-    //       .then(async (user) => {
-    //         if (!user) return done(null, false)
-    //         const passwordValid = await compare(password, user.password)
-    //         if (!passwordValid) return done(null, false)
-    //         // Everything validated, return the token
-    //         issueTokens(user.id, client.id, done)
-    //       })
-    //   })
-    //   .catch((error) => {
-    //     return done(error)
-    //   })
+    prisma.oAuthClient
+      .findOne({
+        where: {
+          id: client.id,
+        },
+      })
+      .then((localClient) => {
+        if (!localClient) return done(null, false)
+        if (localClient.secret !== client.secret) return done(null, false)
+        // validate the user
+        prisma.user
+          .findOne({
+            where: {
+              username_userPoolId: {
+                username,
+                userPoolId: client.UserPool.id,
+              },
+            },
+          })
+          .then(async (user) => {
+            if (!user) return done(null, false)
+            const passwordValid = await compare(password, user.password)
+            if (!passwordValid) return done(null, false)
+            // Everything validated, return the token
+            issueTokens(user.id, client.id, done)
+          })
+      })
+      .catch((error) => {
+        return done(error)
+      })
   }),
 )
 
@@ -348,6 +355,7 @@ export const authorization = [
             RedirectUris: true,
             EnabledScopes: true,
             EnabledCustomScopes: true,
+            UserPool: true,
           },
         })
         .then((client) => {
@@ -372,24 +380,25 @@ export const authorization = [
     (client, user, done: any) => {
       // Check if grant request qualifies for immediate approval
       // Auto-approve
-      if (client.isTrusted) return done(null, true)
-      prisma.oAuthAccessToken
-        .findOne({
-          where: {
-            userId_oAuthClientId: {
-              userId: user.id,
-              oAuthClientId: client.id,
-            },
-          },
-        })
-        .then((accessToken) => {
-          // Auto-approve
-          if (accessToken) return done(null, true)
+      // if (client.isTrusted) return done(null, true)
+      // prisma.oAuthAccessToken
+      //   .findOne({
+      //     where: {
+      //       userId_oAuthClientId: {
+      //         userId: user.id,
+      //         oAuthClientId: client.id,
+      //       },
+      //     },
+      //   })
+      //   .then((accessToken) => {
+      //     // Auto-approve
+      //     if (accessToken) return done(null, true)
 
-          // Otherwise ask user
-          return done(null, false)
-        })
-        .catch((error) => done(error))
+      //     // Otherwise ask user
+      //     return done(null, false)
+      //   })
+      //   .catch((error) => done(error))
+      return done(null, false)
     },
   ),
   async (request: Request, response: Response, next: NextFunction) => {
@@ -478,9 +487,12 @@ export const decision = [ensureLoginWithPoolIdentifier(), server.decision()]
 // authenticate when making requests to this endpoint.
 
 export const token = [
-  passport.authenticate(['basic', 'oauth2-client-password'], {
+  passport.authenticate(['basic', 'clientPassword'], {
     session: false,
+    passReqToCallback: true,
   }),
-  server.token(),
+  server.token({
+    passReqToCallback: true,
+  }),
   server.errorHandler(),
 ]

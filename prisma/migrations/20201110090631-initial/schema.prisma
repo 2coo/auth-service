@@ -179,7 +179,7 @@ model oAuthCustomScope {
 
 model oAuthAccessToken {
   id             String       @id @default(uuid())
-  accessToken    String       @default(uuid())
+  accessToken    String       @unique
   expirationDate DateTime
   Scopes         oAuthScope[]
   User           User?        @relation(fields: [userId], references: [id])
@@ -188,14 +188,11 @@ model oAuthAccessToken {
   oAuthClientId  String
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
-
-  @@unique([accessToken, oAuthClientId])
-  @@unique([userId, oAuthClientId])
 }
 
 model oAuthRefreshToken {
   id             String       @id @default(uuid())
-  refreshToken   String       @default(uuid())
+  refreshToken   String       @unique
   expirationDate DateTime
   Scopes         oAuthScope[]
   User           User?        @relation(fields: [userId], references: [id])
@@ -204,14 +201,11 @@ model oAuthRefreshToken {
   oAuthClientId  String
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
-
-  @@unique([refreshToken, oAuthClientId])
-  @@unique([userId, oAuthClientId])
 }
 
 model oAuthAuthorizationCode {
   id             String       @id @default(uuid())
-  code           String       @default(uuid(16))
+  code           String       @unique @default(cuid(16))
   expirationDate DateTime
   redirectURI    String
   Scopes         oAuthScope[]
@@ -221,8 +215,6 @@ model oAuthAuthorizationCode {
   oAuthClientId  String
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
-
-  @@unique([code, oAuthClientId])
 }
 
 enum Gender {

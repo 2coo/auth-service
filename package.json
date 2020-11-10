@@ -17,7 +17,8 @@
     "generate:prisma": "prisma generate",
     "generate:nexus": "cross-env NODE_ENV=development ts-node --transpile-only ./src/schema",
     "start": "cross-env NODE_ENV=production node dist/index.js",
-    "studio": "dotenv -e .env.development.local -- prisma studio"
+    "studio": "dotenv -e .env.development.local -- prisma studio",
+    "testa": "ts-node --transpile-only test.ts"
   },
   "repository": {
     "type": "git",

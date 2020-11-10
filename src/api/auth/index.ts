@@ -132,6 +132,11 @@ function verifyClient(clientId: string, clientSecret: string, done: any) {
       where: {
         id: clientId,
       },
+      include: {
+        EnabledScopes: true,
+        EnabledCustomScopes: true,
+        UserPool: true,
+      },
     })
     .then((client) => {
       if (!client) return done(null, false)
@@ -143,7 +148,7 @@ function verifyClient(clientId: string, clientSecret: string, done: any) {
 
 passport.use(new BasicStrategy(verifyClient))
 
-passport.use(new ClientPasswordStrategy(verifyClient))
+passport.use('clientPassword', new ClientPasswordStrategy(verifyClient))
 
 /**
  * BearerStrategy

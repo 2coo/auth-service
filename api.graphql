@@ -2,11 +2,6 @@
 ### Do not make changes to this file directly
 
 
-input AccessTokenOAuthClientIdCompoundUniqueInput {
-  accessToken: String!
-  oAuthClientId: String!
-}
-
 enum AccountStatusType {
   ARCHIVED
   COMPROMISED
@@ -29,11 +24,6 @@ input BoolFieldUpdateOperationsInput {
 input BoolFilter {
   equals: Boolean
   not: NestedBoolFilter
-}
-
-input CodeOAuthClientIdCompoundUniqueInput {
-  code: String!
-  oAuthClientId: String!
 }
 
 scalar DateTime
@@ -772,7 +762,7 @@ input oAuthAccessTokenCreateOrConnectWithoutUserInput {
 }
 
 input oAuthAccessTokenCreateWithoutClientInput {
-  accessToken: String
+  accessToken: String!
   createdAt: DateTime
   expirationDate: DateTime!
   id: String
@@ -782,7 +772,7 @@ input oAuthAccessTokenCreateWithoutClientInput {
 }
 
 input oAuthAccessTokenCreateWithoutScopesInput {
-  accessToken: String
+  accessToken: String!
   Client: oAuthClientCreateOneWithoutAccessTokensInput!
   createdAt: DateTime
   expirationDate: DateTime!
@@ -792,7 +782,7 @@ input oAuthAccessTokenCreateWithoutScopesInput {
 }
 
 input oAuthAccessTokenCreateWithoutUserInput {
-  accessToken: String
+  accessToken: String!
   Client: oAuthClientCreateOneWithoutAccessTokensInput!
   createdAt: DateTime
   expirationDate: DateTime!
@@ -930,9 +920,8 @@ input oAuthAccessTokenUpsertWithWhereUniqueWithoutUserInput {
 }
 
 input oAuthAccessTokenWhereUniqueInput {
-  accessToken_oAuthClientId: AccessTokenOAuthClientIdCompoundUniqueInput
+  accessToken: String
   id: String
-  userId_oAuthClientId: UserIdOAuthClientIdCompoundUniqueInput
 }
 
 type oAuthAuthorizationCode {
@@ -1145,7 +1134,7 @@ input oAuthAuthorizationCodeUpsertWithWhereUniqueWithoutUserInput {
 }
 
 input oAuthAuthorizationCodeWhereUniqueInput {
-  code_oAuthClientId: CodeOAuthClientIdCompoundUniqueInput
+  code: String
   id: String
 }
 
@@ -2368,7 +2357,7 @@ input oAuthRefreshTokenCreateWithoutClientInput {
   createdAt: DateTime
   expirationDate: DateTime!
   id: String
-  refreshToken: String
+  refreshToken: String!
   Scopes: oAuthScopeCreateManyWithoutRefreshTokenScopeInput
   updatedAt: DateTime
   User: UserCreateOneWithoutRefreshTokensInput
@@ -2379,7 +2368,7 @@ input oAuthRefreshTokenCreateWithoutScopesInput {
   createdAt: DateTime
   expirationDate: DateTime!
   id: String
-  refreshToken: String
+  refreshToken: String!
   updatedAt: DateTime
   User: UserCreateOneWithoutRefreshTokensInput
 }
@@ -2389,7 +2378,7 @@ input oAuthRefreshTokenCreateWithoutUserInput {
   createdAt: DateTime
   expirationDate: DateTime!
   id: String
-  refreshToken: String
+  refreshToken: String!
   Scopes: oAuthScopeCreateManyWithoutRefreshTokenScopeInput
   updatedAt: DateTime
 }
@@ -2524,8 +2513,7 @@ input oAuthRefreshTokenUpsertWithWhereUniqueWithoutUserInput {
 
 input oAuthRefreshTokenWhereUniqueInput {
   id: String
-  refreshToken_oAuthClientId: RefreshTokenOAuthClientIdCompoundUniqueInput
-  userId_oAuthClientId: UserIdOAuthClientIdCompoundUniqueInput
+  refreshToken: String
 }
 
 type oAuthResourceServer {
@@ -3377,11 +3365,6 @@ type Query {
   roles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int): [Role!]!
   userPool(where: UserPoolWhereUniqueInput!): UserPool
   users(after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int): [User!]!
-}
-
-input RefreshTokenOAuthClientIdCompoundUniqueInput {
-  oAuthClientId: String!
-  refreshToken: String!
 }
 
 type Role {
@@ -4373,11 +4356,6 @@ input UserDeviceUpsertWithWhereUniqueWithoutUserInput {
 
 input UserDeviceWhereUniqueInput {
   id: String
-}
-
-input UserIdOAuthClientIdCompoundUniqueInput {
-  oAuthClientId: String!
-  userId: String!
 }
 
 input UsernameUserPoolIdCompoundUniqueInput {

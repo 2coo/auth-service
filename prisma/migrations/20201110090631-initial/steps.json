@@ -2307,22 +2307,8 @@
           "model": "oAuthAccessToken",
           "field": "accessToken"
         },
-        "directive": "default"
+        "directive": "unique"
       }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "oAuthAccessToken",
-          "field": "accessToken"
-        },
-        "directive": "default"
-      },
-      "argument": "",
-      "value": "uuid()"
     },
     {
       "tag": "CreateField",
@@ -2492,38 +2478,6 @@
           "field": "updatedAt"
         },
         "directive": "updatedAt"
-      }
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Model",
-          "model": "oAuthAccessToken",
-          "arguments": [
-            {
-              "name": "",
-              "value": "[accessToken, oAuthClientId]"
-            }
-          ]
-        },
-        "directive": "unique"
-      }
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Model",
-          "model": "oAuthAccessToken",
-          "arguments": [
-            {
-              "name": "",
-              "value": "[userId, oAuthClientId]"
-            }
-          ]
-        },
-        "directive": "unique"
       }
     },
     {
@@ -2588,22 +2542,8 @@
           "model": "oAuthRefreshToken",
           "field": "refreshToken"
         },
-        "directive": "default"
+        "directive": "unique"
       }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "oAuthRefreshToken",
-          "field": "refreshToken"
-        },
-        "directive": "default"
-      },
-      "argument": "",
-      "value": "uuid()"
     },
     {
       "tag": "CreateField",
@@ -2776,38 +2716,6 @@
       }
     },
     {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Model",
-          "model": "oAuthRefreshToken",
-          "arguments": [
-            {
-              "name": "",
-              "value": "[refreshToken, oAuthClientId]"
-            }
-          ]
-        },
-        "directive": "unique"
-      }
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Model",
-          "model": "oAuthRefreshToken",
-          "arguments": [
-            {
-              "name": "",
-              "value": "[userId, oAuthClientId]"
-            }
-          ]
-        },
-        "directive": "unique"
-      }
-    },
-    {
       "tag": "CreateModel",
       "model": "oAuthAuthorizationCode"
     },
@@ -2869,6 +2777,17 @@
           "model": "oAuthAuthorizationCode",
           "field": "code"
         },
+        "directive": "unique"
+      }
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "oAuthAuthorizationCode",
+          "field": "code"
+        },
         "directive": "default"
       }
     },
@@ -2884,7 +2803,7 @@
         "directive": "default"
       },
       "argument": "",
-      "value": "uuid(16)"
+      "value": "cuid(16)"
     },
     {
       "tag": "CreateField",
@@ -3061,22 +2980,6 @@
           "field": "updatedAt"
         },
         "directive": "updatedAt"
-      }
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Model",
-          "model": "oAuthAuthorizationCode",
-          "arguments": [
-            {
-              "name": "",
-              "value": "[code, oAuthClientId]"
-            }
-          ]
-        },
-        "directive": "unique"
       }
     },
     {
