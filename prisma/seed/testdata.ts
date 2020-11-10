@@ -55,6 +55,14 @@ export const seedTestData = (prisma: PrismaClient) => {
                   url: 'http://localhost:3000/auth/example/callback',
                 },
               },
+              EnabledScopes: {
+                connect: [
+                  { name: 'user' },
+                  { name: 'read:user' },
+                  { name: 'user:email' },
+                  { name: 'user:follow' },
+                ],
+              },
             },
           },
         },
