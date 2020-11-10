@@ -237,7 +237,7 @@ server.exchange(
     prisma.oAuthAuthorizationCode
       .findOne({
         where: {
-          code,
+          code: code,
         },
       })
       .then(async (authCode) => {

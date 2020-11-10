@@ -762,7 +762,7 @@ input oAuthAccessTokenCreateOrConnectWithoutUserInput {
 }
 
 input oAuthAccessTokenCreateWithoutClientInput {
-  accessToken: String!
+  accessToken: String
   createdAt: DateTime
   expirationDate: DateTime!
   id: String
@@ -772,7 +772,7 @@ input oAuthAccessTokenCreateWithoutClientInput {
 }
 
 input oAuthAccessTokenCreateWithoutScopesInput {
-  accessToken: String!
+  accessToken: String
   Client: oAuthClientCreateOneWithoutAccessTokensInput!
   createdAt: DateTime
   expirationDate: DateTime!
@@ -782,7 +782,7 @@ input oAuthAccessTokenCreateWithoutScopesInput {
 }
 
 input oAuthAccessTokenCreateWithoutUserInput {
-  accessToken: String!
+  accessToken: String
   Client: oAuthClientCreateOneWithoutAccessTokensInput!
   createdAt: DateTime
   expirationDate: DateTime!
@@ -2357,7 +2357,7 @@ input oAuthRefreshTokenCreateWithoutClientInput {
   createdAt: DateTime
   expirationDate: DateTime!
   id: String
-  refreshToken: String!
+  refreshToken: String
   Scopes: oAuthScopeCreateManyWithoutRefreshTokenScopeInput
   updatedAt: DateTime
   User: UserCreateOneWithoutRefreshTokensInput
@@ -2368,7 +2368,7 @@ input oAuthRefreshTokenCreateWithoutScopesInput {
   createdAt: DateTime
   expirationDate: DateTime!
   id: String
-  refreshToken: String!
+  refreshToken: String
   updatedAt: DateTime
   User: UserCreateOneWithoutRefreshTokensInput
 }
@@ -2378,7 +2378,7 @@ input oAuthRefreshTokenCreateWithoutUserInput {
   createdAt: DateTime
   expirationDate: DateTime!
   id: String
-  refreshToken: String!
+  refreshToken: String
   Scopes: oAuthScopeCreateManyWithoutRefreshTokenScopeInput
   updatedAt: DateTime
 }

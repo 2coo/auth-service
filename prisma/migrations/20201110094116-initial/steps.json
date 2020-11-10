@@ -873,7 +873,7 @@
         "directive": "default"
       },
       "argument": "",
-      "value": "uuid()"
+      "value": "cuid()"
     },
     {
       "tag": "CreateField",
@@ -912,7 +912,7 @@
         "directive": "default"
       },
       "argument": "",
-      "value": "cuid()"
+      "value": "uuid()"
     },
     {
       "tag": "CreateField",
@@ -2311,6 +2311,31 @@
       }
     },
     {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "oAuthAccessToken",
+          "field": "accessToken"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "oAuthAccessToken",
+          "field": "accessToken"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "uuid()"
+    },
+    {
       "tag": "CreateField",
       "model": "oAuthAccessToken",
       "field": "expirationDate",
@@ -2544,6 +2569,31 @@
         },
         "directive": "unique"
       }
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "oAuthRefreshToken",
+          "field": "refreshToken"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "oAuthRefreshToken",
+          "field": "refreshToken"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "uuid()"
     },
     {
       "tag": "CreateField",

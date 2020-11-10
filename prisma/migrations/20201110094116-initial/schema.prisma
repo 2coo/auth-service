@@ -84,9 +84,9 @@ model Role {
 }
 
 model oAuthClient {
-  id                   String                   @id @default(uuid())
+  id                   String                   @id @default(cuid())
   name                 String
-  secret               String                   @default(cuid())
+  secret               String                   @default(uuid())
   UserPool             UserPool                 @relation(fields: [userPoolId], references: [id])
   userPoolId           String
   Grants               oAuthGrant[]
@@ -179,7 +179,7 @@ model oAuthCustomScope {
 
 model oAuthAccessToken {
   id             String       @id @default(uuid())
-  accessToken    String       @unique
+  accessToken    String       @unique @default(uuid())
   expirationDate DateTime
   Scopes         oAuthScope[]
   User           User?        @relation(fields: [userId], references: [id])
@@ -192,7 +192,7 @@ model oAuthAccessToken {
 
 model oAuthRefreshToken {
   id             String       @id @default(uuid())
-  refreshToken   String       @unique
+  refreshToken   String       @unique @default(uuid())
   expirationDate DateTime
   Scopes         oAuthScope[]
   User           User?        @relation(fields: [userId], references: [id])

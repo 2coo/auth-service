@@ -3,6 +3,7 @@ import moment from 'moment-timezone'
 
 export const validateTokenExpiration = async (
   access_token: string,
+  userPoolIdentifier: string,
 ) => {
   const now = moment()
   const accessToken = await prisma.oAuthAccessToken.findOne({
