@@ -1,11 +1,11 @@
 import moment from 'moment-timezone'
 import { Request, Response } from 'express'
-import { validateTokenExpiration } from './../validate'
+import { validateAccessTokenExpiration } from './../validate'
 import { prisma } from '../../context'
 
 export const info = async (req: Request, res: Response, next: Function) => {
   try {
-    const accessToken = await validateTokenExpiration(
+    const accessToken = await validateAccessTokenExpiration(
       req.params!.access_token,
       req.params.userPoolIdentifier,
     )

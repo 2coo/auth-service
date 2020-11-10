@@ -11,6 +11,7 @@ import passport from 'passport'
 import { prisma } from '../../context'
 import { ensureLoginWithPoolIdentifier } from '../utils'
 import { compare } from 'bcryptjs'
+import { validateAuthCodeExpiration } from '../validate'
 // Create OAuth 2.0 server
 const server = oauth2orize.createServer()
 
@@ -248,6 +249,7 @@ server.exchange(
           },
         })
         if (redirectUri !== authCode.redirectURI) return done(null, false)
+        const _authCode = validateAuthCodeExpiration(code, client.UserPool.identifier)
         issueTokens(authCode.userId, client.id, done)
       })
       .catch((error) => {
@@ -263,8 +265,6 @@ server.exchange(
 
 server.exchange(
   oauth2orize.exchange.password((client, username, password, scope, done) => {
-    console.log(client, username, password, scope)
-
     // Validate the client
     prisma.oAuthClient
       .findOne({
