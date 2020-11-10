@@ -76,8 +76,8 @@ module.exports = function (app: Express.Application) {
   router.route('/oauth2/token').post(routes.oauth2.token)
   router.get('/api/profile', routes.user.info)
   router.get('/api/clientinfo', routes.client.info)
-  
-  router.get('/api/revoke', routes.client.info)
-  router.get('/api/tokeninfo', routes.client.info)
+
+  router.get('/api/revoke', routes.token.revoke)
+  router.get('/api/tokeninfo', routes.token.info)
   app.use('/:userPoolIdentifier', checkUserPoolExists, router)
 }
