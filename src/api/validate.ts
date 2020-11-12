@@ -16,6 +16,7 @@ export const validateAccessTokenExpiration = async (
           UserPool: true,
         },
       },
+      Scopes: true,
     },
   })
   if (!accessToken) throw new Error('invalid_token')

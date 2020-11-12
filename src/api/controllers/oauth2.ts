@@ -424,7 +424,7 @@ export const authorization = [
       .filter((scope: Boolean | string) => scope)
 
     if (errorScopes.some((scope: Boolean | string) => scope)) {
-      return response.json({
+      return response.status(500).json({
         message: `Invalid scopes: [${errorScopes.join(', ')}]`,
       })
     }
@@ -464,7 +464,7 @@ export const authorization = [
         .split(' ')
         .every((scope) => allScopesOfUser.indexOf(scope) > -1)
     ) {
-      return response.json({
+      return response.status(403).json({
         message: `Permission denied: There are some scopes that are not granted for you!`,
       })
     }
@@ -483,7 +483,14 @@ export const authorization = [
 // client, the above grant middleware configured above will be invoked to send
 // a response.
 
-export const decision = [ensureLoginWithPoolIdentifier(), server.decision()]
+export const decision = [
+  ensureLoginWithPoolIdentifier(),
+  server.decision((req, done) => {
+    return done(null, {
+      scope: ['hey'],
+    })
+  }),
+]
 
 // Token endpoint.
 //
