@@ -19,7 +19,7 @@ export const info = async (req: Request, res: Response, next: Function) => {
     })
   } catch (err) {
     res.status(400).json({
-      error: err,
+      message: err,
     })
   }
 }
@@ -36,7 +36,7 @@ export const revoke = async (req: Request, res: Response, next: Function) => {
     })
   } catch (err) {
     return res.json({
-      error: err,
+      message: err,
     })
   }
 }

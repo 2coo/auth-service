@@ -102,7 +102,7 @@ model oAuthClient {
   accessTokenLifetime  Int                      @default(60)
   idTokenLifetime      Int                      @default(5)
   logo                 String?
-  isTrusted            Boolean                  @default(false)
+  trustedClient        Boolean                  @default(false)
   createdAt            DateTime                 @default(now())
   updatedAt            DateTime                 @updatedAt
 

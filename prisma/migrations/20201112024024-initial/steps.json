@@ -1136,7 +1136,7 @@
     {
       "tag": "CreateField",
       "model": "oAuthClient",
-      "field": "isTrusted",
+      "field": "trustedClient",
       "type": "Boolean",
       "arity": "Required"
     },
@@ -1146,7 +1146,7 @@
         "path": {
           "tag": "Field",
           "model": "oAuthClient",
-          "field": "isTrusted"
+          "field": "trustedClient"
         },
         "directive": "default"
       }
@@ -1158,7 +1158,7 @@
         "path": {
           "tag": "Field",
           "model": "oAuthClient",
-          "field": "isTrusted"
+          "field": "trustedClient"
         },
         "directive": "default"
       },

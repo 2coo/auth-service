@@ -164,7 +164,7 @@ function issueTokens(userId: string | null, clientId: string, done: any) {
       }
     })
     .catch((error) => {
-      return done(error)
+      return done(new Error(error))
     })
 }
 
@@ -242,6 +242,8 @@ server.exchange(
         },
       })
       .then(async (authCode) => {
+        console.log('#hey', authCode)
+
         if (!authCode) return done(null, false)
         await prisma.oAuthAuthorizationCode.delete({
           where: {
@@ -249,7 +251,10 @@ server.exchange(
           },
         })
         if (redirectUri !== authCode.redirectURI) return done(null, false)
-        const _authCode = validateAuthCodeExpiration(code, client.UserPool.identifier)
+        const _authCode = validateAuthCodeExpiration(
+          code,
+          client.UserPool.identifier,
+        )
         issueTokens(authCode.userId, client.id, done)
       })
       .catch((error) => {
@@ -381,23 +386,23 @@ export const authorization = [
       // Check if grant request qualifies for immediate approval
       // Auto-approve
       // if (client.isTrusted) return done(null, true)
-      // prisma.oAuthAccessToken
-      //   .findOne({
-      //     where: {
-      //       userId_oAuthClientId: {
-      //         userId: user.id,
-      //         oAuthClientId: client.id,
-      //       },
-      //     },
-      //   })
-      //   .then((accessToken) => {
-      //     // Auto-approve
-      //     if (accessToken) return done(null, true)
+      if (client != null && client.trus && client.isTrusted === true)
+        return done(null, true)
+      prisma.oAuthAccessToken
+        .findFirst({
+          where: {
+            oAuthClientId: client.id,
+            userId: user.id,
+          },
+        })
+        .then((accessToken) => {
+          // Auto-approve
+          if (accessToken) return done(null, true)
 
-      //     // Otherwise ask user
-      //     return done(null, false)
-      //   })
-      //   .catch((error) => done(error))
+          // Otherwise ask user
+          return done(null, false)
+        })
+        .catch((error) => done(error))
       return done(null, false)
     },
   ),

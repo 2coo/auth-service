@@ -10,6 +10,8 @@ import { prisma } from '../context'
 import { ensureLoginWithPoolIdentifier } from './utils'
 
 module.exports = function (app: Express.Application) {
+  const MemoryStore = session.MemoryStore
+
   app.set('view engine', 'ejs')
   app.set('views', path.join(__dirname, './views'))
   app.use(Express.json())
@@ -22,9 +24,13 @@ module.exports = function (app: Express.Application) {
   app.use(cookieParser())
   app.use(
     session({
-      secret: 'Super Secret Sesion Key',
+      name: "AUTHORIZATION_SERVER",
       saveUninitialized: true,
       resave: true,
+      secret: process.env.SESSION_SECRET as string,
+      store: new MemoryStore(),
+      // key: 'authorization.sid',
+      cookie: { maxAge: Number(process.env.SESSION_MAX_AGE) },
     }),
   )
   // Use the passport package in our application
@@ -38,6 +44,11 @@ module.exports = function (app: Express.Application) {
   })
 
   app.use(Express.static(path.join(__dirname, './public')))
+
+  app.use((req, res, next) => {
+    console.log(req.baseUrl || req.url)
+    next()
+  })
 
   // Passport configuration
   require('./auth')
@@ -78,6 +89,6 @@ module.exports = function (app: Express.Application) {
   router.get('/api/clientinfo', routes.client.info)
 
   router.get('/api/revoke', routes.token.revoke)
-  router.get('/api/tokeninfo', routes.token.info)
+  router.get('/api/tokeninfo/:access_token', routes.token.info)
   app.use('/:userPoolIdentifier', checkUserPoolExists, router)
 }

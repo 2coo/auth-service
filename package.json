@@ -55,7 +55,8 @@
     "passport-http": "^0.3.0",
     "passport-http-bearer": "^1.0.1",
     "passport-local": "^1.0.0",
-    "passport-oauth2-client-password": "^0.1.2"
+    "passport-oauth2-client-password": "^0.1.2",
+    "query-string": "^6.13.7"
   },
   "devDependencies": {
     "@prisma/cli": "2.10.1",
