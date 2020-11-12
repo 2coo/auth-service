@@ -5,7 +5,7 @@ import passport from 'passport'
 import routes from './controllers'
 import cookieParser from 'cookie-parser'
 import errorHandler from 'errorhandler'
-import * as path from 'path'
+import path from 'path'
 import { prisma } from '../context'
 import { ensureLoginWithPoolIdentifier } from './utils'
 
@@ -24,7 +24,7 @@ module.exports = function (app: Express.Application) {
   app.use(cookieParser())
   app.use(
     session({
-      name: "AUTHORIZATION_SERVER",
+      name: 'AUTHORIZATION_SERVER',
       saveUninitialized: true,
       resave: true,
       secret: process.env.SESSION_SECRET as string,

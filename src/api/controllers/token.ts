@@ -4,6 +4,8 @@ import { validateAccessTokenExpiration } from './../validate'
 import { prisma } from '../../context'
 
 export const info = async (req: Request, res: Response, next: Function) => {
+  console.log("#infotoken");
+  
   try {
     const accessToken = await validateAccessTokenExpiration(
       req.params!.access_token,
@@ -17,9 +19,9 @@ export const info = async (req: Request, res: Response, next: Function) => {
       audience: accessToken.Client.id,
       expires_in: diff * 60,
     })
-  } catch (err) {
+  } catch (err) {    
     res.status(400).json({
-      message: err,
+      message: String(err),
     })
   }
 }

@@ -242,8 +242,6 @@ server.exchange(
         },
       })
       .then(async (authCode) => {
-        console.log('#hey', authCode)
-
         if (!authCode) return done(null, false)
         await prisma.oAuthAuthorizationCode.delete({
           where: {
