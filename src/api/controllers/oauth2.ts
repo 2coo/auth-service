@@ -385,24 +385,27 @@ export const authorization = [
     (client, user, done: any) => {
       // Check if grant request qualifies for immediate approval
       // Auto-approve
-      // if (client.isTrusted) return done(null, true)
-      if (client != null && client.trus && client.isTrusted === true)
+      if (
+        client != null &&
+        client.trustedClient &&
+        client.trustedClient === true
+      )
         return done(null, true)
-      prisma.oAuthAccessToken
-        .findFirst({
-          where: {
-            oAuthClientId: client.id,
-            userId: user.id,
-          },
-        })
-        .then((accessToken) => {
-          // Auto-approve
-          if (accessToken) return done(null, true)
+      // prisma.oAuthAccessToken
+      //   .findFirst({
+      //     where: {
+      //       oAuthClientId: client.id,
+      //       userId: user.id,
+      //     },
+      //   })
+      //   .then((accessToken) => {
+      //     // Auto-approve
+      //     if (accessToken) return done(null, true)
 
-          // Otherwise ask user
-          return done(null, false)
-        })
-        .catch((error) => done(error))
+      //     // Otherwise ask user
+      //     return done(null, false)
+      //   })
+      //   .catch((error) => done(error))
       return done(null, false)
     },
   ),
