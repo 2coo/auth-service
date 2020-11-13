@@ -734,6 +734,12 @@ input oAuthAccessTokenCreateManyWithoutClientInput {
   create: [oAuthAccessTokenCreateWithoutClientInput!]
 }
 
+input oAuthAccessTokenCreateManyWithoutCustomScopesInput {
+  connect: [oAuthAccessTokenWhereUniqueInput!]
+  connectOrCreate: [oAuthAccessTokenCreateOrConnectWithoutoAuthCustomScopeInput!]
+  create: [oAuthAccessTokenCreateWithoutCustomScopesInput!]
+}
+
 input oAuthAccessTokenCreateManyWithoutScopesInput {
   connect: [oAuthAccessTokenWhereUniqueInput!]
   connectOrCreate: [oAuthAccessTokenCreateOrConnectWithoutoAuthScopeInput!]
@@ -751,6 +757,11 @@ input oAuthAccessTokenCreateOrConnectWithoutoAuthClientInput {
   where: oAuthAccessTokenWhereUniqueInput!
 }
 
+input oAuthAccessTokenCreateOrConnectWithoutoAuthCustomScopeInput {
+  create: oAuthAccessTokenCreateWithoutCustomScopesInput!
+  where: oAuthAccessTokenWhereUniqueInput!
+}
+
 input oAuthAccessTokenCreateOrConnectWithoutoAuthScopeInput {
   create: oAuthAccessTokenCreateWithoutScopesInput!
   where: oAuthAccessTokenWhereUniqueInput!
@@ -764,6 +775,18 @@ input oAuthAccessTokenCreateOrConnectWithoutUserInput {
 input oAuthAccessTokenCreateWithoutClientInput {
   accessToken: String
   createdAt: DateTime
+  CustomScopes: oAuthCustomScopeCreateManyWithoutOAuthAccessTokensInput
+  expirationDate: DateTime!
+  id: String
+  Scopes: oAuthScopeCreateManyWithoutAccessTokensInput
+  updatedAt: DateTime
+  User: UserCreateOneWithoutAccessTokensInput
+}
+
+input oAuthAccessTokenCreateWithoutCustomScopesInput {
+  accessToken: String
+  Client: oAuthClientCreateOneWithoutAccessTokensInput!
+  createdAt: DateTime
   expirationDate: DateTime!
   id: String
   Scopes: oAuthScopeCreateManyWithoutAccessTokensInput
@@ -775,6 +798,7 @@ input oAuthAccessTokenCreateWithoutScopesInput {
   accessToken: String
   Client: oAuthClientCreateOneWithoutAccessTokensInput!
   createdAt: DateTime
+  CustomScopes: oAuthCustomScopeCreateManyWithoutOAuthAccessTokensInput
   expirationDate: DateTime!
   id: String
   updatedAt: DateTime
@@ -785,6 +809,7 @@ input oAuthAccessTokenCreateWithoutUserInput {
   accessToken: String
   Client: oAuthClientCreateOneWithoutAccessTokensInput!
   createdAt: DateTime
+  CustomScopes: oAuthCustomScopeCreateManyWithoutOAuthAccessTokensInput
   expirationDate: DateTime!
   id: String
   Scopes: oAuthScopeCreateManyWithoutAccessTokensInput
@@ -825,6 +850,19 @@ input oAuthAccessTokenUpdateManyWithoutClientInput {
   upsert: [oAuthAccessTokenUpsertWithWhereUniqueWithoutClientInput!]
 }
 
+input oAuthAccessTokenUpdateManyWithoutCustomScopesInput {
+  connect: [oAuthAccessTokenWhereUniqueInput!]
+  connectOrCreate: [oAuthAccessTokenCreateOrConnectWithoutoAuthCustomScopeInput!]
+  create: [oAuthAccessTokenCreateWithoutCustomScopesInput!]
+  delete: [oAuthAccessTokenWhereUniqueInput!]
+  deleteMany: [oAuthAccessTokenScalarWhereInput!]
+  disconnect: [oAuthAccessTokenWhereUniqueInput!]
+  set: [oAuthAccessTokenWhereUniqueInput!]
+  update: [oAuthAccessTokenUpdateWithWhereUniqueWithoutCustomScopesInput!]
+  updateMany: [oAuthAccessTokenUpdateManyWithWhereNestedInput!]
+  upsert: [oAuthAccessTokenUpsertWithWhereUniqueWithoutCustomScopesInput!]
+}
+
 input oAuthAccessTokenUpdateManyWithoutScopesInput {
   connect: [oAuthAccessTokenWhereUniqueInput!]
   connectOrCreate: [oAuthAccessTokenCreateOrConnectWithoutoAuthScopeInput!]
@@ -859,6 +897,18 @@ input oAuthAccessTokenUpdateManyWithWhereNestedInput {
 input oAuthAccessTokenUpdateWithoutClientDataInput {
   accessToken: StringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
+  CustomScopes: oAuthCustomScopeUpdateManyWithoutOAuthAccessTokensInput
+  expirationDate: DateTimeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  Scopes: oAuthScopeUpdateManyWithoutAccessTokensInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  User: UserUpdateOneWithoutAccessTokensInput
+}
+
+input oAuthAccessTokenUpdateWithoutCustomScopesDataInput {
+  accessToken: StringFieldUpdateOperationsInput
+  Client: oAuthClientUpdateOneRequiredWithoutAccessTokensInput
+  createdAt: DateTimeFieldUpdateOperationsInput
   expirationDate: DateTimeFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
   Scopes: oAuthScopeUpdateManyWithoutAccessTokensInput
@@ -870,6 +920,7 @@ input oAuthAccessTokenUpdateWithoutScopesDataInput {
   accessToken: StringFieldUpdateOperationsInput
   Client: oAuthClientUpdateOneRequiredWithoutAccessTokensInput
   createdAt: DateTimeFieldUpdateOperationsInput
+  CustomScopes: oAuthCustomScopeUpdateManyWithoutOAuthAccessTokensInput
   expirationDate: DateTimeFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
@@ -880,6 +931,7 @@ input oAuthAccessTokenUpdateWithoutUserDataInput {
   accessToken: StringFieldUpdateOperationsInput
   Client: oAuthClientUpdateOneRequiredWithoutAccessTokensInput
   createdAt: DateTimeFieldUpdateOperationsInput
+  CustomScopes: oAuthCustomScopeUpdateManyWithoutOAuthAccessTokensInput
   expirationDate: DateTimeFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
   Scopes: oAuthScopeUpdateManyWithoutAccessTokensInput
@@ -888,6 +940,11 @@ input oAuthAccessTokenUpdateWithoutUserDataInput {
 
 input oAuthAccessTokenUpdateWithWhereUniqueWithoutClientInput {
   data: oAuthAccessTokenUpdateWithoutClientDataInput!
+  where: oAuthAccessTokenWhereUniqueInput!
+}
+
+input oAuthAccessTokenUpdateWithWhereUniqueWithoutCustomScopesInput {
+  data: oAuthAccessTokenUpdateWithoutCustomScopesDataInput!
   where: oAuthAccessTokenWhereUniqueInput!
 }
 
@@ -904,6 +961,12 @@ input oAuthAccessTokenUpdateWithWhereUniqueWithoutUserInput {
 input oAuthAccessTokenUpsertWithWhereUniqueWithoutClientInput {
   create: oAuthAccessTokenCreateWithoutClientInput!
   update: oAuthAccessTokenUpdateWithoutClientDataInput!
+  where: oAuthAccessTokenWhereUniqueInput!
+}
+
+input oAuthAccessTokenUpsertWithWhereUniqueWithoutCustomScopesInput {
+  create: oAuthAccessTokenCreateWithoutCustomScopesInput!
+  update: oAuthAccessTokenUpdateWithoutCustomScopesDataInput!
   where: oAuthAccessTokenWhereUniqueInput!
 }
 
@@ -940,6 +1003,12 @@ input oAuthAuthorizationCodeCreateManyWithoutClientInput {
   create: [oAuthAuthorizationCodeCreateWithoutClientInput!]
 }
 
+input oAuthAuthorizationCodeCreateManyWithoutCustomScopesInput {
+  connect: [oAuthAuthorizationCodeWhereUniqueInput!]
+  connectOrCreate: [oAuthAuthorizationCodeCreateOrConnectWithoutoAuthCustomScopeInput!]
+  create: [oAuthAuthorizationCodeCreateWithoutCustomScopesInput!]
+}
+
 input oAuthAuthorizationCodeCreateManyWithoutScopesInput {
   connect: [oAuthAuthorizationCodeWhereUniqueInput!]
   connectOrCreate: [oAuthAuthorizationCodeCreateOrConnectWithoutoAuthScopeInput!]
@@ -957,6 +1026,11 @@ input oAuthAuthorizationCodeCreateOrConnectWithoutoAuthClientInput {
   where: oAuthAuthorizationCodeWhereUniqueInput!
 }
 
+input oAuthAuthorizationCodeCreateOrConnectWithoutoAuthCustomScopeInput {
+  create: oAuthAuthorizationCodeCreateWithoutCustomScopesInput!
+  where: oAuthAuthorizationCodeWhereUniqueInput!
+}
+
 input oAuthAuthorizationCodeCreateOrConnectWithoutoAuthScopeInput {
   create: oAuthAuthorizationCodeCreateWithoutScopesInput!
   where: oAuthAuthorizationCodeWhereUniqueInput!
@@ -968,6 +1042,19 @@ input oAuthAuthorizationCodeCreateOrConnectWithoutUserInput {
 }
 
 input oAuthAuthorizationCodeCreateWithoutClientInput {
+  code: String
+  createdAt: DateTime
+  CustomScopes: oAuthCustomScopeCreateManyWithoutOAuthAuthorizationCodesInput
+  expirationDate: DateTime!
+  id: String
+  redirectURI: String!
+  Scopes: oAuthScopeCreateManyWithoutAuthorizationCodesInput
+  updatedAt: DateTime
+  User: UserCreateOneWithoutAuthorizationCodesInput!
+}
+
+input oAuthAuthorizationCodeCreateWithoutCustomScopesInput {
+  Client: oAuthClientCreateOneWithoutAuthorizationCodesInput!
   code: String
   createdAt: DateTime
   expirationDate: DateTime!
@@ -982,6 +1069,7 @@ input oAuthAuthorizationCodeCreateWithoutScopesInput {
   Client: oAuthClientCreateOneWithoutAuthorizationCodesInput!
   code: String
   createdAt: DateTime
+  CustomScopes: oAuthCustomScopeCreateManyWithoutOAuthAuthorizationCodesInput
   expirationDate: DateTime!
   id: String
   redirectURI: String!
@@ -993,6 +1081,7 @@ input oAuthAuthorizationCodeCreateWithoutUserInput {
   Client: oAuthClientCreateOneWithoutAuthorizationCodesInput!
   code: String
   createdAt: DateTime
+  CustomScopes: oAuthCustomScopeCreateManyWithoutOAuthAuthorizationCodesInput
   expirationDate: DateTime!
   id: String
   redirectURI: String!
@@ -1036,6 +1125,19 @@ input oAuthAuthorizationCodeUpdateManyWithoutClientInput {
   upsert: [oAuthAuthorizationCodeUpsertWithWhereUniqueWithoutClientInput!]
 }
 
+input oAuthAuthorizationCodeUpdateManyWithoutCustomScopesInput {
+  connect: [oAuthAuthorizationCodeWhereUniqueInput!]
+  connectOrCreate: [oAuthAuthorizationCodeCreateOrConnectWithoutoAuthCustomScopeInput!]
+  create: [oAuthAuthorizationCodeCreateWithoutCustomScopesInput!]
+  delete: [oAuthAuthorizationCodeWhereUniqueInput!]
+  deleteMany: [oAuthAuthorizationCodeScalarWhereInput!]
+  disconnect: [oAuthAuthorizationCodeWhereUniqueInput!]
+  set: [oAuthAuthorizationCodeWhereUniqueInput!]
+  update: [oAuthAuthorizationCodeUpdateWithWhereUniqueWithoutCustomScopesInput!]
+  updateMany: [oAuthAuthorizationCodeUpdateManyWithWhereNestedInput!]
+  upsert: [oAuthAuthorizationCodeUpsertWithWhereUniqueWithoutCustomScopesInput!]
+}
+
 input oAuthAuthorizationCodeUpdateManyWithoutScopesInput {
   connect: [oAuthAuthorizationCodeWhereUniqueInput!]
   connectOrCreate: [oAuthAuthorizationCodeCreateOrConnectWithoutoAuthScopeInput!]
@@ -1070,6 +1172,19 @@ input oAuthAuthorizationCodeUpdateManyWithWhereNestedInput {
 input oAuthAuthorizationCodeUpdateWithoutClientDataInput {
   code: StringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
+  CustomScopes: oAuthCustomScopeUpdateManyWithoutOAuthAuthorizationCodesInput
+  expirationDate: DateTimeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  redirectURI: StringFieldUpdateOperationsInput
+  Scopes: oAuthScopeUpdateManyWithoutAuthorizationCodesInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  User: UserUpdateOneRequiredWithoutAuthorizationCodesInput
+}
+
+input oAuthAuthorizationCodeUpdateWithoutCustomScopesDataInput {
+  Client: oAuthClientUpdateOneRequiredWithoutAuthorizationCodesInput
+  code: StringFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
   expirationDate: DateTimeFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
   redirectURI: StringFieldUpdateOperationsInput
@@ -1082,6 +1197,7 @@ input oAuthAuthorizationCodeUpdateWithoutScopesDataInput {
   Client: oAuthClientUpdateOneRequiredWithoutAuthorizationCodesInput
   code: StringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
+  CustomScopes: oAuthCustomScopeUpdateManyWithoutOAuthAuthorizationCodesInput
   expirationDate: DateTimeFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
   redirectURI: StringFieldUpdateOperationsInput
@@ -1093,6 +1209,7 @@ input oAuthAuthorizationCodeUpdateWithoutUserDataInput {
   Client: oAuthClientUpdateOneRequiredWithoutAuthorizationCodesInput
   code: StringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
+  CustomScopes: oAuthCustomScopeUpdateManyWithoutOAuthAuthorizationCodesInput
   expirationDate: DateTimeFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
   redirectURI: StringFieldUpdateOperationsInput
@@ -1102,6 +1219,11 @@ input oAuthAuthorizationCodeUpdateWithoutUserDataInput {
 
 input oAuthAuthorizationCodeUpdateWithWhereUniqueWithoutClientInput {
   data: oAuthAuthorizationCodeUpdateWithoutClientDataInput!
+  where: oAuthAuthorizationCodeWhereUniqueInput!
+}
+
+input oAuthAuthorizationCodeUpdateWithWhereUniqueWithoutCustomScopesInput {
+  data: oAuthAuthorizationCodeUpdateWithoutCustomScopesDataInput!
   where: oAuthAuthorizationCodeWhereUniqueInput!
 }
 
@@ -1118,6 +1240,12 @@ input oAuthAuthorizationCodeUpdateWithWhereUniqueWithoutUserInput {
 input oAuthAuthorizationCodeUpsertWithWhereUniqueWithoutClientInput {
   create: oAuthAuthorizationCodeCreateWithoutClientInput!
   update: oAuthAuthorizationCodeUpdateWithoutClientDataInput!
+  where: oAuthAuthorizationCodeWhereUniqueInput!
+}
+
+input oAuthAuthorizationCodeUpsertWithWhereUniqueWithoutCustomScopesInput {
+  create: oAuthAuthorizationCodeCreateWithoutCustomScopesInput!
+  update: oAuthAuthorizationCodeUpdateWithoutCustomScopesDataInput!
   where: oAuthAuthorizationCodeWhereUniqueInput!
 }
 
@@ -1802,6 +1930,24 @@ input oAuthCustomScopeCreateManyWithoutClientsInput {
   create: [oAuthCustomScopeCreateWithoutClientsInput!]
 }
 
+input oAuthCustomScopeCreateManyWithoutOAuthAccessTokensInput {
+  connect: [oAuthCustomScopeWhereUniqueInput!]
+  connectOrCreate: [oAuthCustomScopeCreateOrConnectWithoutoAuthAccessTokenInput!]
+  create: [oAuthCustomScopeCreateWithoutOAuthAccessTokensInput!]
+}
+
+input oAuthCustomScopeCreateManyWithoutOAuthAuthorizationCodesInput {
+  connect: [oAuthCustomScopeWhereUniqueInput!]
+  connectOrCreate: [oAuthCustomScopeCreateOrConnectWithoutoAuthAuthorizationCodeInput!]
+  create: [oAuthCustomScopeCreateWithoutOAuthAuthorizationCodesInput!]
+}
+
+input oAuthCustomScopeCreateManyWithoutOAuthRefreshTokensInput {
+  connect: [oAuthCustomScopeWhereUniqueInput!]
+  connectOrCreate: [oAuthCustomScopeCreateOrConnectWithoutoAuthRefreshTokenInput!]
+  create: [oAuthCustomScopeCreateWithoutOAuthRefreshTokensInput!]
+}
+
 input oAuthCustomScopeCreateManyWithoutResourceServerInput {
   connect: [oAuthCustomScopeWhereUniqueInput!]
   connectOrCreate: [oAuthCustomScopeCreateOrConnectWithoutoAuthResourceServerInput!]
@@ -1820,8 +1966,23 @@ input oAuthCustomScopeCreateManyWithoutUserPoolInput {
   create: [oAuthCustomScopeCreateWithoutUserPoolInput!]
 }
 
+input oAuthCustomScopeCreateOrConnectWithoutoAuthAccessTokenInput {
+  create: oAuthCustomScopeCreateWithoutOAuthAccessTokensInput!
+  where: oAuthCustomScopeWhereUniqueInput!
+}
+
+input oAuthCustomScopeCreateOrConnectWithoutoAuthAuthorizationCodeInput {
+  create: oAuthCustomScopeCreateWithoutOAuthAuthorizationCodesInput!
+  where: oAuthCustomScopeWhereUniqueInput!
+}
+
 input oAuthCustomScopeCreateOrConnectWithoutoAuthClientInput {
   create: oAuthCustomScopeCreateWithoutClientsInput!
+  where: oAuthCustomScopeWhereUniqueInput!
+}
+
+input oAuthCustomScopeCreateOrConnectWithoutoAuthRefreshTokenInput {
+  create: oAuthCustomScopeCreateWithoutOAuthRefreshTokensInput!
   where: oAuthCustomScopeWhereUniqueInput!
 }
 
@@ -1845,6 +2006,54 @@ input oAuthCustomScopeCreateWithoutClientsInput {
   description: String
   id: String
   name: String!
+  oAuthAccessTokens: oAuthAccessTokenCreateManyWithoutCustomScopesInput
+  oAuthAuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutCustomScopesInput
+  oAuthClientId: String!
+  oAuthRefreshTokens: oAuthRefreshTokenCreateManyWithoutCustomScopesInput
+  ResourceServer: oAuthResourceServerCreateOneWithoutScopesInput!
+  Roles: RoleCreateManyWithoutCustomScopesInput
+  updatedAt: DateTime
+  UserPool: UserPoolCreateOneWithoutCustomScopesInput!
+}
+
+input oAuthCustomScopeCreateWithoutOAuthAccessTokensInput {
+  Clients: oAuthClientCreateManyWithoutEnabledCustomScopesInput
+  createdAt: DateTime
+  description: String
+  id: String
+  name: String!
+  oAuthAuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutCustomScopesInput
+  oAuthClientId: String!
+  oAuthRefreshTokens: oAuthRefreshTokenCreateManyWithoutCustomScopesInput
+  ResourceServer: oAuthResourceServerCreateOneWithoutScopesInput!
+  Roles: RoleCreateManyWithoutCustomScopesInput
+  updatedAt: DateTime
+  UserPool: UserPoolCreateOneWithoutCustomScopesInput!
+}
+
+input oAuthCustomScopeCreateWithoutOAuthAuthorizationCodesInput {
+  Clients: oAuthClientCreateManyWithoutEnabledCustomScopesInput
+  createdAt: DateTime
+  description: String
+  id: String
+  name: String!
+  oAuthAccessTokens: oAuthAccessTokenCreateManyWithoutCustomScopesInput
+  oAuthClientId: String!
+  oAuthRefreshTokens: oAuthRefreshTokenCreateManyWithoutCustomScopesInput
+  ResourceServer: oAuthResourceServerCreateOneWithoutScopesInput!
+  Roles: RoleCreateManyWithoutCustomScopesInput
+  updatedAt: DateTime
+  UserPool: UserPoolCreateOneWithoutCustomScopesInput!
+}
+
+input oAuthCustomScopeCreateWithoutOAuthRefreshTokensInput {
+  Clients: oAuthClientCreateManyWithoutEnabledCustomScopesInput
+  createdAt: DateTime
+  description: String
+  id: String
+  name: String!
+  oAuthAccessTokens: oAuthAccessTokenCreateManyWithoutCustomScopesInput
+  oAuthAuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutCustomScopesInput
   oAuthClientId: String!
   ResourceServer: oAuthResourceServerCreateOneWithoutScopesInput!
   Roles: RoleCreateManyWithoutCustomScopesInput
@@ -1858,7 +2067,10 @@ input oAuthCustomScopeCreateWithoutResourceServerInput {
   description: String
   id: String
   name: String!
+  oAuthAccessTokens: oAuthAccessTokenCreateManyWithoutCustomScopesInput
+  oAuthAuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutCustomScopesInput
   oAuthClientId: String!
+  oAuthRefreshTokens: oAuthRefreshTokenCreateManyWithoutCustomScopesInput
   Roles: RoleCreateManyWithoutCustomScopesInput
   updatedAt: DateTime
   UserPool: UserPoolCreateOneWithoutCustomScopesInput!
@@ -1870,7 +2082,10 @@ input oAuthCustomScopeCreateWithoutRolesInput {
   description: String
   id: String
   name: String!
+  oAuthAccessTokens: oAuthAccessTokenCreateManyWithoutCustomScopesInput
+  oAuthAuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutCustomScopesInput
   oAuthClientId: String!
+  oAuthRefreshTokens: oAuthRefreshTokenCreateManyWithoutCustomScopesInput
   ResourceServer: oAuthResourceServerCreateOneWithoutScopesInput!
   updatedAt: DateTime
   UserPool: UserPoolCreateOneWithoutCustomScopesInput!
@@ -1882,7 +2097,10 @@ input oAuthCustomScopeCreateWithoutUserPoolInput {
   description: String
   id: String
   name: String!
+  oAuthAccessTokens: oAuthAccessTokenCreateManyWithoutCustomScopesInput
+  oAuthAuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutCustomScopesInput
   oAuthClientId: String!
+  oAuthRefreshTokens: oAuthRefreshTokenCreateManyWithoutCustomScopesInput
   ResourceServer: oAuthResourceServerCreateOneWithoutScopesInput!
   Roles: RoleCreateManyWithoutCustomScopesInput
   updatedAt: DateTime
@@ -1922,6 +2140,45 @@ input oAuthCustomScopeUpdateManyWithoutClientsInput {
   update: [oAuthCustomScopeUpdateWithWhereUniqueWithoutClientsInput!]
   updateMany: [oAuthCustomScopeUpdateManyWithWhereNestedInput!]
   upsert: [oAuthCustomScopeUpsertWithWhereUniqueWithoutClientsInput!]
+}
+
+input oAuthCustomScopeUpdateManyWithoutOAuthAccessTokensInput {
+  connect: [oAuthCustomScopeWhereUniqueInput!]
+  connectOrCreate: [oAuthCustomScopeCreateOrConnectWithoutoAuthAccessTokenInput!]
+  create: [oAuthCustomScopeCreateWithoutOAuthAccessTokensInput!]
+  delete: [oAuthCustomScopeWhereUniqueInput!]
+  deleteMany: [oAuthCustomScopeScalarWhereInput!]
+  disconnect: [oAuthCustomScopeWhereUniqueInput!]
+  set: [oAuthCustomScopeWhereUniqueInput!]
+  update: [oAuthCustomScopeUpdateWithWhereUniqueWithoutOAuthAccessTokensInput!]
+  updateMany: [oAuthCustomScopeUpdateManyWithWhereNestedInput!]
+  upsert: [oAuthCustomScopeUpsertWithWhereUniqueWithoutOAuthAccessTokensInput!]
+}
+
+input oAuthCustomScopeUpdateManyWithoutOAuthAuthorizationCodesInput {
+  connect: [oAuthCustomScopeWhereUniqueInput!]
+  connectOrCreate: [oAuthCustomScopeCreateOrConnectWithoutoAuthAuthorizationCodeInput!]
+  create: [oAuthCustomScopeCreateWithoutOAuthAuthorizationCodesInput!]
+  delete: [oAuthCustomScopeWhereUniqueInput!]
+  deleteMany: [oAuthCustomScopeScalarWhereInput!]
+  disconnect: [oAuthCustomScopeWhereUniqueInput!]
+  set: [oAuthCustomScopeWhereUniqueInput!]
+  update: [oAuthCustomScopeUpdateWithWhereUniqueWithoutOAuthAuthorizationCodesInput!]
+  updateMany: [oAuthCustomScopeUpdateManyWithWhereNestedInput!]
+  upsert: [oAuthCustomScopeUpsertWithWhereUniqueWithoutOAuthAuthorizationCodesInput!]
+}
+
+input oAuthCustomScopeUpdateManyWithoutOAuthRefreshTokensInput {
+  connect: [oAuthCustomScopeWhereUniqueInput!]
+  connectOrCreate: [oAuthCustomScopeCreateOrConnectWithoutoAuthRefreshTokenInput!]
+  create: [oAuthCustomScopeCreateWithoutOAuthRefreshTokensInput!]
+  delete: [oAuthCustomScopeWhereUniqueInput!]
+  deleteMany: [oAuthCustomScopeScalarWhereInput!]
+  disconnect: [oAuthCustomScopeWhereUniqueInput!]
+  set: [oAuthCustomScopeWhereUniqueInput!]
+  update: [oAuthCustomScopeUpdateWithWhereUniqueWithoutOAuthRefreshTokensInput!]
+  updateMany: [oAuthCustomScopeUpdateManyWithWhereNestedInput!]
+  upsert: [oAuthCustomScopeUpsertWithWhereUniqueWithoutOAuthRefreshTokensInput!]
 }
 
 input oAuthCustomScopeUpdateManyWithoutResourceServerInput {
@@ -1973,6 +2230,54 @@ input oAuthCustomScopeUpdateWithoutClientsDataInput {
   description: NullableStringFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
   name: StringFieldUpdateOperationsInput
+  oAuthAccessTokens: oAuthAccessTokenUpdateManyWithoutCustomScopesInput
+  oAuthAuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutCustomScopesInput
+  oAuthClientId: StringFieldUpdateOperationsInput
+  oAuthRefreshTokens: oAuthRefreshTokenUpdateManyWithoutCustomScopesInput
+  ResourceServer: oAuthResourceServerUpdateOneRequiredWithoutScopesInput
+  Roles: RoleUpdateManyWithoutCustomScopesInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  UserPool: UserPoolUpdateOneRequiredWithoutCustomScopesInput
+}
+
+input oAuthCustomScopeUpdateWithoutOAuthAccessTokensDataInput {
+  Clients: oAuthClientUpdateManyWithoutEnabledCustomScopesInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  description: NullableStringFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  oAuthAuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutCustomScopesInput
+  oAuthClientId: StringFieldUpdateOperationsInput
+  oAuthRefreshTokens: oAuthRefreshTokenUpdateManyWithoutCustomScopesInput
+  ResourceServer: oAuthResourceServerUpdateOneRequiredWithoutScopesInput
+  Roles: RoleUpdateManyWithoutCustomScopesInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  UserPool: UserPoolUpdateOneRequiredWithoutCustomScopesInput
+}
+
+input oAuthCustomScopeUpdateWithoutOAuthAuthorizationCodesDataInput {
+  Clients: oAuthClientUpdateManyWithoutEnabledCustomScopesInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  description: NullableStringFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  oAuthAccessTokens: oAuthAccessTokenUpdateManyWithoutCustomScopesInput
+  oAuthClientId: StringFieldUpdateOperationsInput
+  oAuthRefreshTokens: oAuthRefreshTokenUpdateManyWithoutCustomScopesInput
+  ResourceServer: oAuthResourceServerUpdateOneRequiredWithoutScopesInput
+  Roles: RoleUpdateManyWithoutCustomScopesInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  UserPool: UserPoolUpdateOneRequiredWithoutCustomScopesInput
+}
+
+input oAuthCustomScopeUpdateWithoutOAuthRefreshTokensDataInput {
+  Clients: oAuthClientUpdateManyWithoutEnabledCustomScopesInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  description: NullableStringFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  oAuthAccessTokens: oAuthAccessTokenUpdateManyWithoutCustomScopesInput
+  oAuthAuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutCustomScopesInput
   oAuthClientId: StringFieldUpdateOperationsInput
   ResourceServer: oAuthResourceServerUpdateOneRequiredWithoutScopesInput
   Roles: RoleUpdateManyWithoutCustomScopesInput
@@ -1986,7 +2291,10 @@ input oAuthCustomScopeUpdateWithoutResourceServerDataInput {
   description: NullableStringFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
   name: StringFieldUpdateOperationsInput
+  oAuthAccessTokens: oAuthAccessTokenUpdateManyWithoutCustomScopesInput
+  oAuthAuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutCustomScopesInput
   oAuthClientId: StringFieldUpdateOperationsInput
+  oAuthRefreshTokens: oAuthRefreshTokenUpdateManyWithoutCustomScopesInput
   Roles: RoleUpdateManyWithoutCustomScopesInput
   updatedAt: DateTimeFieldUpdateOperationsInput
   UserPool: UserPoolUpdateOneRequiredWithoutCustomScopesInput
@@ -1998,7 +2306,10 @@ input oAuthCustomScopeUpdateWithoutRolesDataInput {
   description: NullableStringFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
   name: StringFieldUpdateOperationsInput
+  oAuthAccessTokens: oAuthAccessTokenUpdateManyWithoutCustomScopesInput
+  oAuthAuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutCustomScopesInput
   oAuthClientId: StringFieldUpdateOperationsInput
+  oAuthRefreshTokens: oAuthRefreshTokenUpdateManyWithoutCustomScopesInput
   ResourceServer: oAuthResourceServerUpdateOneRequiredWithoutScopesInput
   updatedAt: DateTimeFieldUpdateOperationsInput
   UserPool: UserPoolUpdateOneRequiredWithoutCustomScopesInput
@@ -2010,7 +2321,10 @@ input oAuthCustomScopeUpdateWithoutUserPoolDataInput {
   description: NullableStringFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
   name: StringFieldUpdateOperationsInput
+  oAuthAccessTokens: oAuthAccessTokenUpdateManyWithoutCustomScopesInput
+  oAuthAuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutCustomScopesInput
   oAuthClientId: StringFieldUpdateOperationsInput
+  oAuthRefreshTokens: oAuthRefreshTokenUpdateManyWithoutCustomScopesInput
   ResourceServer: oAuthResourceServerUpdateOneRequiredWithoutScopesInput
   Roles: RoleUpdateManyWithoutCustomScopesInput
   updatedAt: DateTimeFieldUpdateOperationsInput
@@ -2018,6 +2332,21 @@ input oAuthCustomScopeUpdateWithoutUserPoolDataInput {
 
 input oAuthCustomScopeUpdateWithWhereUniqueWithoutClientsInput {
   data: oAuthCustomScopeUpdateWithoutClientsDataInput!
+  where: oAuthCustomScopeWhereUniqueInput!
+}
+
+input oAuthCustomScopeUpdateWithWhereUniqueWithoutOAuthAccessTokensInput {
+  data: oAuthCustomScopeUpdateWithoutOAuthAccessTokensDataInput!
+  where: oAuthCustomScopeWhereUniqueInput!
+}
+
+input oAuthCustomScopeUpdateWithWhereUniqueWithoutOAuthAuthorizationCodesInput {
+  data: oAuthCustomScopeUpdateWithoutOAuthAuthorizationCodesDataInput!
+  where: oAuthCustomScopeWhereUniqueInput!
+}
+
+input oAuthCustomScopeUpdateWithWhereUniqueWithoutOAuthRefreshTokensInput {
+  data: oAuthCustomScopeUpdateWithoutOAuthRefreshTokensDataInput!
   where: oAuthCustomScopeWhereUniqueInput!
 }
 
@@ -2039,6 +2368,24 @@ input oAuthCustomScopeUpdateWithWhereUniqueWithoutUserPoolInput {
 input oAuthCustomScopeUpsertWithWhereUniqueWithoutClientsInput {
   create: oAuthCustomScopeCreateWithoutClientsInput!
   update: oAuthCustomScopeUpdateWithoutClientsDataInput!
+  where: oAuthCustomScopeWhereUniqueInput!
+}
+
+input oAuthCustomScopeUpsertWithWhereUniqueWithoutOAuthAccessTokensInput {
+  create: oAuthCustomScopeCreateWithoutOAuthAccessTokensInput!
+  update: oAuthCustomScopeUpdateWithoutOAuthAccessTokensDataInput!
+  where: oAuthCustomScopeWhereUniqueInput!
+}
+
+input oAuthCustomScopeUpsertWithWhereUniqueWithoutOAuthAuthorizationCodesInput {
+  create: oAuthCustomScopeCreateWithoutOAuthAuthorizationCodesInput!
+  update: oAuthCustomScopeUpdateWithoutOAuthAuthorizationCodesDataInput!
+  where: oAuthCustomScopeWhereUniqueInput!
+}
+
+input oAuthCustomScopeUpsertWithWhereUniqueWithoutOAuthRefreshTokensInput {
+  create: oAuthCustomScopeCreateWithoutOAuthRefreshTokensInput!
+  update: oAuthCustomScopeUpdateWithoutOAuthRefreshTokensDataInput!
   where: oAuthCustomScopeWhereUniqueInput!
 }
 
@@ -2326,6 +2673,12 @@ input oAuthRefreshTokenCreateManyWithoutClientInput {
   create: [oAuthRefreshTokenCreateWithoutClientInput!]
 }
 
+input oAuthRefreshTokenCreateManyWithoutCustomScopesInput {
+  connect: [oAuthRefreshTokenWhereUniqueInput!]
+  connectOrCreate: [oAuthRefreshTokenCreateOrConnectWithoutoAuthCustomScopeInput!]
+  create: [oAuthRefreshTokenCreateWithoutCustomScopesInput!]
+}
+
 input oAuthRefreshTokenCreateManyWithoutScopesInput {
   connect: [oAuthRefreshTokenWhereUniqueInput!]
   connectOrCreate: [oAuthRefreshTokenCreateOrConnectWithoutoAuthScopeInput!]
@@ -2343,6 +2696,11 @@ input oAuthRefreshTokenCreateOrConnectWithoutoAuthClientInput {
   where: oAuthRefreshTokenWhereUniqueInput!
 }
 
+input oAuthRefreshTokenCreateOrConnectWithoutoAuthCustomScopeInput {
+  create: oAuthRefreshTokenCreateWithoutCustomScopesInput!
+  where: oAuthRefreshTokenWhereUniqueInput!
+}
+
 input oAuthRefreshTokenCreateOrConnectWithoutoAuthScopeInput {
   create: oAuthRefreshTokenCreateWithoutScopesInput!
   where: oAuthRefreshTokenWhereUniqueInput!
@@ -2355,6 +2713,18 @@ input oAuthRefreshTokenCreateOrConnectWithoutUserInput {
 
 input oAuthRefreshTokenCreateWithoutClientInput {
   createdAt: DateTime
+  CustomScopes: oAuthCustomScopeCreateManyWithoutOAuthRefreshTokensInput
+  expirationDate: DateTime!
+  id: String
+  refreshToken: String
+  Scopes: oAuthScopeCreateManyWithoutRefreshTokenScopeInput
+  updatedAt: DateTime
+  User: UserCreateOneWithoutRefreshTokensInput
+}
+
+input oAuthRefreshTokenCreateWithoutCustomScopesInput {
+  Client: oAuthClientCreateOneWithoutRefreshTokensInput!
+  createdAt: DateTime
   expirationDate: DateTime!
   id: String
   refreshToken: String
@@ -2366,6 +2736,7 @@ input oAuthRefreshTokenCreateWithoutClientInput {
 input oAuthRefreshTokenCreateWithoutScopesInput {
   Client: oAuthClientCreateOneWithoutRefreshTokensInput!
   createdAt: DateTime
+  CustomScopes: oAuthCustomScopeCreateManyWithoutOAuthRefreshTokensInput
   expirationDate: DateTime!
   id: String
   refreshToken: String
@@ -2376,6 +2747,7 @@ input oAuthRefreshTokenCreateWithoutScopesInput {
 input oAuthRefreshTokenCreateWithoutUserInput {
   Client: oAuthClientCreateOneWithoutRefreshTokensInput!
   createdAt: DateTime
+  CustomScopes: oAuthCustomScopeCreateManyWithoutOAuthRefreshTokensInput
   expirationDate: DateTime!
   id: String
   refreshToken: String
@@ -2417,6 +2789,19 @@ input oAuthRefreshTokenUpdateManyWithoutClientInput {
   upsert: [oAuthRefreshTokenUpsertWithWhereUniqueWithoutClientInput!]
 }
 
+input oAuthRefreshTokenUpdateManyWithoutCustomScopesInput {
+  connect: [oAuthRefreshTokenWhereUniqueInput!]
+  connectOrCreate: [oAuthRefreshTokenCreateOrConnectWithoutoAuthCustomScopeInput!]
+  create: [oAuthRefreshTokenCreateWithoutCustomScopesInput!]
+  delete: [oAuthRefreshTokenWhereUniqueInput!]
+  deleteMany: [oAuthRefreshTokenScalarWhereInput!]
+  disconnect: [oAuthRefreshTokenWhereUniqueInput!]
+  set: [oAuthRefreshTokenWhereUniqueInput!]
+  update: [oAuthRefreshTokenUpdateWithWhereUniqueWithoutCustomScopesInput!]
+  updateMany: [oAuthRefreshTokenUpdateManyWithWhereNestedInput!]
+  upsert: [oAuthRefreshTokenUpsertWithWhereUniqueWithoutCustomScopesInput!]
+}
+
 input oAuthRefreshTokenUpdateManyWithoutScopesInput {
   connect: [oAuthRefreshTokenWhereUniqueInput!]
   connectOrCreate: [oAuthRefreshTokenCreateOrConnectWithoutoAuthScopeInput!]
@@ -2450,6 +2835,18 @@ input oAuthRefreshTokenUpdateManyWithWhereNestedInput {
 
 input oAuthRefreshTokenUpdateWithoutClientDataInput {
   createdAt: DateTimeFieldUpdateOperationsInput
+  CustomScopes: oAuthCustomScopeUpdateManyWithoutOAuthRefreshTokensInput
+  expirationDate: DateTimeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  refreshToken: StringFieldUpdateOperationsInput
+  Scopes: oAuthScopeUpdateManyWithoutRefreshTokenScopeInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  User: UserUpdateOneWithoutRefreshTokensInput
+}
+
+input oAuthRefreshTokenUpdateWithoutCustomScopesDataInput {
+  Client: oAuthClientUpdateOneRequiredWithoutRefreshTokensInput
+  createdAt: DateTimeFieldUpdateOperationsInput
   expirationDate: DateTimeFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
   refreshToken: StringFieldUpdateOperationsInput
@@ -2461,6 +2858,7 @@ input oAuthRefreshTokenUpdateWithoutClientDataInput {
 input oAuthRefreshTokenUpdateWithoutScopesDataInput {
   Client: oAuthClientUpdateOneRequiredWithoutRefreshTokensInput
   createdAt: DateTimeFieldUpdateOperationsInput
+  CustomScopes: oAuthCustomScopeUpdateManyWithoutOAuthRefreshTokensInput
   expirationDate: DateTimeFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
   refreshToken: StringFieldUpdateOperationsInput
@@ -2471,6 +2869,7 @@ input oAuthRefreshTokenUpdateWithoutScopesDataInput {
 input oAuthRefreshTokenUpdateWithoutUserDataInput {
   Client: oAuthClientUpdateOneRequiredWithoutRefreshTokensInput
   createdAt: DateTimeFieldUpdateOperationsInput
+  CustomScopes: oAuthCustomScopeUpdateManyWithoutOAuthRefreshTokensInput
   expirationDate: DateTimeFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
   refreshToken: StringFieldUpdateOperationsInput
@@ -2480,6 +2879,11 @@ input oAuthRefreshTokenUpdateWithoutUserDataInput {
 
 input oAuthRefreshTokenUpdateWithWhereUniqueWithoutClientInput {
   data: oAuthRefreshTokenUpdateWithoutClientDataInput!
+  where: oAuthRefreshTokenWhereUniqueInput!
+}
+
+input oAuthRefreshTokenUpdateWithWhereUniqueWithoutCustomScopesInput {
+  data: oAuthRefreshTokenUpdateWithoutCustomScopesDataInput!
   where: oAuthRefreshTokenWhereUniqueInput!
 }
 
@@ -2496,6 +2900,12 @@ input oAuthRefreshTokenUpdateWithWhereUniqueWithoutUserInput {
 input oAuthRefreshTokenUpsertWithWhereUniqueWithoutClientInput {
   create: oAuthRefreshTokenCreateWithoutClientInput!
   update: oAuthRefreshTokenUpdateWithoutClientDataInput!
+  where: oAuthRefreshTokenWhereUniqueInput!
+}
+
+input oAuthRefreshTokenUpsertWithWhereUniqueWithoutCustomScopesInput {
+  create: oAuthRefreshTokenCreateWithoutCustomScopesInput!
+  update: oAuthRefreshTokenUpdateWithoutCustomScopesDataInput!
   where: oAuthRefreshTokenWhereUniqueInput!
 }
 

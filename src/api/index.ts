@@ -46,7 +46,7 @@ module.exports = function (app: Express.Application) {
   app.use(Express.static(path.join(__dirname, './public')))
 
   app.use((req, res, next) => {
-    console.log(req.baseUrl || req.url)
+    console.log("# Request recieved on: ", req.url)
     next()
   })
 

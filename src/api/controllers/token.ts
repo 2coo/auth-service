@@ -4,8 +4,6 @@ import { validateAccessTokenExpiration } from './../validate'
 import { prisma } from '../../context'
 
 export const info = async (req: Request, res: Response, next: Function) => {
-  console.log('#infotoken')
-
   try {
     const accessToken = await validateAccessTokenExpiration(
       req.params!.access_token,

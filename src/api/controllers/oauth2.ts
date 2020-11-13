@@ -12,8 +12,12 @@ import { prisma } from '../../context'
 import { ensureLoginWithPoolIdentifier } from '../utils'
 import { compare } from 'bcryptjs'
 import { validateAuthCodeExpiration } from '../validate'
+import { store } from '../../redisclient'
 // Create OAuth 2.0 server
-const server = oauth2orize.createServer()
+const server = oauth2orize.createServer({
+  store,
+  loadTransaction: false
+})
 
 // Register serialization and deserialization functions.
 //
@@ -50,7 +54,19 @@ server.deserializeClient((id, done) => {
     })
 })
 
-function issueTokens(userId: string | null, clientId: string, done: any) {
+function issueTokens(
+  userId: string | null,
+  clientId: string,
+  scope: Array<string>,
+  done: any,
+) {
+  const scopes = scope.filter((scope: string) => scope.split('/').length === 1)
+  console.log('#scopes', scopes)
+
+  const customScopes = scope
+    .filter((scope: string) => scope.split('/').length > 1)
+    .map((scope: string) => scope.split('/')[1])
+  console.log('#custom scopes', customScopes)
   prisma.oAuthClient
     .findOne({
       where: {
@@ -80,6 +96,12 @@ function issueTokens(userId: string | null, clientId: string, done: any) {
                     connect: {
                       id: user.id,
                     },
+                  },
+                  Scopes: {
+                    connect: [...scopes.map((x: string) => ({ name: x }))],
+                  },
+                  CustomScopes: {
+                    connect: [{}],
                   },
                   expirationDate: moment()
                     .add({
@@ -184,6 +206,16 @@ function issueTokens(userId: string | null, clientId: string, done: any) {
 
 server.grant(
   oauth2orize.grant.code((client, redirectUri, user, ares, done) => {
+    const scopes = ares.scope.filter(
+      (scope: string) => scope.split('/').length === 1,
+    )
+    console.log('#scopes', scopes)
+
+    const customScopes = ares.scope
+      .filter((scope: string) => scope.split('/').length > 1)
+      .map((scope: string) => scope.split('/')[1])
+    console.log('#custom scopes', customScopes)
+
     prisma.oAuthAuthorizationCode
       .create({
         data: {
@@ -202,6 +234,12 @@ server.grant(
             connect: {
               id: user.id,
             },
+          },
+          Scopes: {
+            connect: [scopes.map((scope: string) => ({ name: scope }))],
+          },
+          CustomScopes: {
+            connect: [customScopes.map((scope: string) => ({ name: scope }))],
           },
         },
       })
@@ -222,7 +260,7 @@ server.grant(
 
 server.grant(
   oauth2orize.grant.token((client, user, ares, done) => {
-    issueTokens(user.id, client.id, done)
+    issueTokens(user.id, client.id, ares.scope, done)
   }),
 )
 
@@ -240,20 +278,36 @@ server.exchange(
         where: {
           code: code,
         },
+        include: {
+          Scopes: true,
+          CustomScopes: {
+            include: {
+              ResourceServer: true,
+            },
+          },
+        },
       })
       .then(async (authCode) => {
         if (!authCode) return done(null, false)
-        await prisma.oAuthAuthorizationCode.delete({
-          where: {
-            id: authCode.id,
-          },
-        })
         if (redirectUri !== authCode.redirectURI) return done(null, false)
-        const _authCode = validateAuthCodeExpiration(
+
+        const _authCode = await validateAuthCodeExpiration(
           code,
           client.UserPool.identifier,
         )
-        issueTokens(authCode.userId, client.id, done)
+        if (_authCode)
+          await prisma.oAuthAuthorizationCode.delete({
+            where: {
+              id: authCode.id,
+            },
+          })
+        const scopes = _.concat(
+          authCode.Scopes.map((scope) => scope.name),
+          authCode.CustomScopes.map(
+            (scope) => `${scope.ResourceServer.identifier}/${scope.name}`,
+          ),
+        )
+        issueTokens(authCode.userId, client.id, scopes, done)
       })
       .catch((error) => {
         return done(error)
@@ -293,7 +347,7 @@ server.exchange(
             const passwordValid = await compare(password, user.password)
             if (!passwordValid) return done(null, false)
             // Everything validated, return the token
-            issueTokens(user.id, client.id, done)
+            issueTokens(user.id, client.id, scope, done)
           })
       })
       .catch((error) => {
@@ -321,7 +375,7 @@ server.exchange(
         if (localClient.secret !== client.secret) return done(null, false)
         // Everything validated, return the token
         // Pass in a null for user id since there is no user with this grant type
-        issueTokens(null, client.clientId, done)
+        issueTokens(null, client.clientId, scope, done)
       })
       .catch((error) => {
         return done(error)
@@ -428,7 +482,26 @@ export const authorization = [
         message: `Invalid scopes: [${errorScopes.join(', ')}]`,
       })
     }
-    const user: any = request.user
+    response.render('dialog', {
+      transactionId: request!.oauth2!.transactionID,
+      user: request.user,
+      client: request!.oauth2!.client,
+    })
+  },
+]
+
+// User decision endpoint.
+//
+// `decision` middleware processes a user's decision to allow or deny access
+// requested by a client application. Based on the grant type requested by the
+// client, the above grant middleware configured above will be invoked to send
+// a response.
+
+export const decision = [
+  ensureLoginWithPoolIdentifier(),
+  server.decision((req: any, done) => {
+    // remove all scopes user does not have
+    const user: any = req.user
 
     const userScopes = _.flatMap(user!.Roles, ({ Scopes, CustomScopes }) => {
       return _.concat(
@@ -437,7 +510,7 @@ export const authorization = [
           (customScope: {
             name: string
             ResourceServer: oAuthResourceServer
-          }) => `${customScope.ResourceServer!.identifier}/${customScope.name}`,
+          }) => `${customScope.ResourceServer.identifier}/${customScope.name}`,
         ),
       )
     })
@@ -459,35 +532,10 @@ export const authorization = [
 
     const allScopesOfUser = _.uniq(_.concat(userScopes, userGroupScopes))
 
-    if (
-      !(request.query.scope as string)
-        .split(' ')
-        .every((scope) => allScopesOfUser.indexOf(scope) > -1)
-    ) {
-      return response.status(403).json({
-        message: `Permission denied: There are some scopes that are not granted for you!`,
-      })
-    }
-    response.render('dialog', {
-      transactionId: request!.oauth2!.transactionID,
-      user: request.user,
-      client: request!.oauth2!.client,
-    })
-  },
-]
-
-// User decision endpoint.
-//
-// `decision` middleware processes a user's decision to allow or deny access
-// requested by a client application. Based on the grant type requested by the
-// client, the above grant middleware configured above will be invoked to send
-// a response.
-
-export const decision = [
-  ensureLoginWithPoolIdentifier(),
-  server.decision((req, done) => {
     return done(null, {
-      scope: ['hey'],
+      scope: (req.oauth2?.req.scope as Array<string>).filter(
+        (scope) => allScopesOfUser.indexOf(scope) > -1,
+      ),
     })
   }),
 ]
