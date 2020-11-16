@@ -18,9 +18,6 @@ export const ensureLoginWithPoolIdentifier = (
     next: Express.NextFunction,
   ) {
     let newUrl = url
-    if (req.params.userPoolIdentifier) {
-      newUrl = `/${req.params.userPoolIdentifier}${url}`
-    }
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       if (setReturnTo && req.session) {
         req.session.returnTo = req.originalUrl || req.url

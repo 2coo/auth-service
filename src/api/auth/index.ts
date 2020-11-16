@@ -21,7 +21,7 @@ passport.use(
     async (req, username, password, done) => {
       const userPool = await prisma.userPool.findOne({
         where: {
-          identifier: req.params.userPoolIdentifier,
+          identifier: req.vhost[0],
         },
       })
       if (!userPool) return done(null, false)

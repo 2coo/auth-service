@@ -17,7 +17,7 @@ export const index = (req: Request, res: Response) => {
 
 export const loginForm = (req: Request, res: Response) => {
   if (req.isAuthenticated()) {
-    res.redirect(`/${req.params.userPoolIdentifier}/account`)
+    res.redirect(`/account`)
   }
   return res.render('login')
 }
@@ -44,7 +44,7 @@ export const login = [
           return next(err)
         }        
         if (req.session?.returnTo === '/' || !req.session!.returnTo) {
-          return res.redirect(`/${req.params.userPoolIdentifier}/account`)
+          return res.redirect(`/account`)
         } else {
           return res.redirect(req.session!.returnTo)
         }
@@ -55,7 +55,7 @@ export const login = [
 
 export const logout = (req: Request, res: Response) => {
   req.logout()
-  res.redirect(`/${req.params.userPoolIdentifier}/`)
+  res.redirect(`/`)
 }
 
 export const account = [

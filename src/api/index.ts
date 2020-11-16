@@ -10,6 +10,8 @@ import { prisma } from '../context'
 import { ensureLoginWithPoolIdentifier } from './utils'
 import redis from 'redis'
 import connectRedis from 'connect-redis'
+import vhost from 'vhost'
+import { ensureLoggedIn } from 'connect-ensure-login'
 const RedisStore = connectRedis(expressSession)
 
 const redisClient = redis.createClient(
@@ -73,22 +75,23 @@ module.exports = function (app: Express.Application) {
     req: Express.Request,
     res: Express.Response,
     next: Express.NextFunction,
-  ) => {
+  ) => {    
     const userPool = await prisma.userPool.findOne({
       where: {
-        identifier: req.params.userPoolIdentifier,
+        identifier: req.vhost[0],
       },
     })
     if (!userPool) {
-      res.send('UserPool not found!')
+      return res.send('UserPool not found!')
     }
-    next()
+    return next()
   }
 
-  const router = Express.Router({ mergeParams: true })
+  const router = Express.Router()
   // site
+  router.use(checkUserPoolExists)
 
-  router.get('/', [ensureLoginWithPoolIdentifier(), routes.site.index])
+  router.get('/', [ensureLoggedIn(), routes.site.index])
   // static resources for stylesheets, images, javascript files
   router.route('/login').get(routes.site.loginForm).post(routes.site.login)
   router.get('/logout', routes.site.logout)
@@ -106,9 +109,6 @@ module.exports = function (app: Express.Application) {
 
   router.get('/api/revoke', routes.token.revoke)
   router.get('/api/tokeninfo/:access_token', routes.token.info)
-  app.use(
-    '/:userPoolIdentifier',
-    checkUserPoolExists,
-    router,
-  )
+  // app.use('/:userPoolIdentifier', checkUserPoolExists, router)
+  app.use(vhost('*.auth.test', router))
 }
