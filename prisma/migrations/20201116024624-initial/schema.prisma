@@ -15,7 +15,6 @@ enum SystemRole {
   SUPER_ADMIN
   ADMIN
   DEVELOPER
-  USER
 }
 
 model SystemUser {
@@ -23,7 +22,7 @@ model SystemUser {
   username      String         @unique
   email         String         @unique
   password      String
-  role          SystemRole     @default(USER)
+  role          SystemRole     @default(DEVELOPER)
   Organizations Organization[]
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
@@ -163,58 +162,63 @@ model oAuthResourceServer {
 }
 
 model oAuthCustomScope {
-  id                    String              @id @default(uuid())
-  name                  String
-  description           String?
-  ResourceServer        oAuthResourceServer @relation(fields: [oAuthResourceServerId], references: [id])
-  oAuthResourceServerId String
-  Clients               oAuthClient[]
-  oAuthClientId         String
-  Roles                 Role[]
-  UserPool              UserPool            @relation(fields: [userPoolId], references: [id])
-  userPoolId            String
-  createdAt             DateTime            @default(now())
-  updatedAt             DateTime            @updatedAt
+  id                      String                   @id @default(uuid())
+  name                    String
+  description             String?
+  ResourceServer          oAuthResourceServer      @relation(fields: [oAuthResourceServerId], references: [id])
+  oAuthResourceServerId   String
+  Clients                 oAuthClient[]
+  Roles                   Role[]
+  UserPool                UserPool                 @relation(fields: [userPoolId], references: [id])
+  userPoolId              String
+  oAuthAccessTokens       oAuthAccessToken[]
+  oAuthRefreshTokens      oAuthRefreshToken[]
+  oAuthAuthorizationCodes oAuthAuthorizationCode[]
+  createdAt               DateTime                 @default(now())
+  updatedAt               DateTime                 @updatedAt
 }
 
 model oAuthAccessToken {
-  id             String       @id @default(uuid())
-  accessToken    String       @unique @default(uuid())
+  id             String             @id @default(uuid())
+  accessToken    String             @unique @default(uuid())
   expirationDate DateTime
   Scopes         oAuthScope[]
-  User           User?        @relation(fields: [userId], references: [id])
+  CustomScopes   oAuthCustomScope[]
+  User           User?              @relation(fields: [userId], references: [id])
   userId         String?
-  Client         oAuthClient  @relation(fields: [oAuthClientId], references: [id])
+  Client         oAuthClient        @relation(fields: [oAuthClientId], references: [id])
   oAuthClientId  String
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
 }
 
 model oAuthRefreshToken {
-  id             String       @id @default(uuid())
-  refreshToken   String       @unique @default(uuid())
+  id             String             @id @default(uuid())
+  refreshToken   String             @unique @default(uuid())
   expirationDate DateTime
   Scopes         oAuthScope[]
-  User           User?        @relation(fields: [userId], references: [id])
+  CustomScopes   oAuthCustomScope[]
+  User           User?              @relation(fields: [userId], references: [id])
   userId         String?
-  Client         oAuthClient  @relation(fields: [oAuthClientId], references: [id])
+  Client         oAuthClient        @relation(fields: [oAuthClientId], references: [id])
   oAuthClientId  String
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
 }
 
 model oAuthAuthorizationCode {
-  id             String       @id @default(uuid())
-  code           String       @unique @default(cuid(16))
+  id             String             @id @default(uuid())
+  code           String             @unique @default(cuid(16))
   expirationDate DateTime
   redirectURI    String
   Scopes         oAuthScope[]
-  User           User         @relation(fields: [userId], references: [id])
+  CustomScopes   oAuthCustomScope[]
+  User           User               @relation(fields: [userId], references: [id])
   userId         String
-  Client         oAuthClient  @relation(fields: [oAuthClientId], references: [id])
+  Client         oAuthClient        @relation(fields: [oAuthClientId], references: [id])
   oAuthClientId  String
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
 }
 
 enum Gender {

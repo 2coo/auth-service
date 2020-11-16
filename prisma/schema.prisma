@@ -15,7 +15,6 @@ enum SystemRole {
   SUPER_ADMIN
   ADMIN
   DEVELOPER
-  USER
 }
 
 model SystemUser {
@@ -23,7 +22,7 @@ model SystemUser {
   username      String         @unique
   email         String         @unique
   password      String
-  role          SystemRole     @default(USER)
+  role          SystemRole     @default(DEVELOPER)
   Organizations Organization[]
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
@@ -169,7 +168,6 @@ model oAuthCustomScope {
   ResourceServer          oAuthResourceServer      @relation(fields: [oAuthResourceServerId], references: [id])
   oAuthResourceServerId   String
   Clients                 oAuthClient[]
-  oAuthClientId           String
   Roles                   Role[]
   UserPool                UserPool                 @relation(fields: [userPoolId], references: [id])
   userPoolId              String

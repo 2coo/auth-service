@@ -1,5 +1,5 @@
 import Express from 'express'
-import session from 'express-session'
+import expressSession from 'express-session'
 import _ from 'lodash'
 import passport from 'passport'
 import routes from './controllers'
@@ -8,29 +8,45 @@ import errorHandler from 'errorhandler'
 import path from 'path'
 import { prisma } from '../context'
 import { ensureLoginWithPoolIdentifier } from './utils'
+import redis from 'redis'
+import connectRedis from 'connect-redis'
+const RedisStore = connectRedis(expressSession)
+
+const redisClient = redis.createClient(
+  Number(process.env.REDIS_PORT),
+  process.env.REDIS_HOST,
+  {
+    no_ready_check: true,
+  },
+)
+
+const store = new RedisStore({ client: redisClient })
 
 module.exports = function (app: Express.Application) {
-  const MemoryStore = session.MemoryStore
-
   app.set('view engine', 'ejs')
   app.set('views', path.join(__dirname, './views'))
   app.use(Express.json())
   app.use(
     Express.urlencoded({
-      extended: true,
+      extended: false,
     }),
   )
   app.use(errorHandler())
   app.use(cookieParser())
   app.use(
-    session({
+    expressSession({
       name: 'AUTHORIZATION_SERVER',
       saveUninitialized: true,
-      resave: true,
+      resave: false,
       secret: process.env.SESSION_SECRET as string,
-      store: new MemoryStore(),
+      store: store,
       // key: 'authorization.sid',
-      cookie: { maxAge: Number(process.env.SESSION_MAX_AGE) },
+      cookie: {
+        sameSite: true,
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true,
+        maxAge: Number(process.env.SESSION_MAX_AGE),
+      },
     }),
   )
   // Use the passport package in our application
@@ -46,7 +62,7 @@ module.exports = function (app: Express.Application) {
   app.use(Express.static(path.join(__dirname, './public')))
 
   app.use((req, res, next) => {
-    console.log("# Request recieved on: ", req.url)
+    console.log('# Request recieved on: ', req.url)
     next()
   })
 
@@ -90,5 +106,9 @@ module.exports = function (app: Express.Application) {
 
   router.get('/api/revoke', routes.token.revoke)
   router.get('/api/tokeninfo/:access_token', routes.token.info)
-  app.use('/:userPoolIdentifier', checkUserPoolExists, router)
+  app.use(
+    '/:userPoolIdentifier',
+    checkUserPoolExists,
+    router,
+  )
 }

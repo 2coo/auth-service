@@ -42,10 +42,10 @@ export const login = [
       req.logIn(user, function (err) {
         if (err) {
           return next(err)
-        }
-        if (req.session?.returnTo === '/' || !req.session!.returnTo)
+        }        
+        if (req.session?.returnTo === '/' || !req.session!.returnTo) {
           return res.redirect(`/${req.params.userPoolIdentifier}/account`)
-        else {
+        } else {
           return res.redirect(req.session!.returnTo)
         }
       })

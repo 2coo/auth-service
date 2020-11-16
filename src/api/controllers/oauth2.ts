@@ -16,7 +16,7 @@ import { store } from '../../redisclient'
 // Create OAuth 2.0 server
 const server = oauth2orize.createServer({
   store,
-  loadTransaction: false
+  loadTransaction: true,
 })
 
 // Register serialization and deserialization functions.
@@ -63,18 +63,28 @@ function issueTokens(
   const scopes = scope.filter((scope: string) => scope.split('/').length === 1)
   console.log('#scopes', scopes)
 
-  const customScopes = scope
-    .filter((scope: string) => scope.split('/').length > 1)
-    .map((scope: string) => scope.split('/')[1])
+  const customScopes = scope.filter(
+    (scope: string) => scope.split('/').length > 1,
+  )
   console.log('#custom scopes', customScopes)
   prisma.oAuthClient
     .findOne({
       where: {
         id: clientId,
       },
+      include: {
+        UserPool: true,
+        EnabledCustomScopes: {
+          include: {
+            ResourceServer: true,
+          },
+        },
+        EnabledScopes: true,
+      },
     })
     .then((client) => {
       if (!client) throw new Error('The client not found!')
+
       if (userId) {
         prisma.user
           .findOne({
@@ -101,7 +111,16 @@ function issueTokens(
                     connect: [...scopes.map((x: string) => ({ name: x }))],
                   },
                   CustomScopes: {
-                    connect: [{}],
+                    connect: [
+                      ...client.EnabledCustomScopes.map((customScope) => ({
+                        id: customScope.id,
+                        name: `${customScope.ResourceServer.identifier}/${customScope.name}`,
+                      }))
+                        .filter(
+                          (scope) => customScopes.indexOf(scope.name) > -1,
+                        )
+                        .map((scope) => ({ id: scope.id })),
+                    ],
                   },
                   expirationDate: moment()
                     .add({
@@ -211,10 +230,19 @@ server.grant(
     )
     console.log('#scopes', scopes)
 
-    const customScopes = ares.scope
-      .filter((scope: string) => scope.split('/').length > 1)
-      .map((scope: string) => scope.split('/')[1])
+    const customScopes = ares.scope.filter(
+      (scope: string) => scope.split('/').length > 1,
+    )
     console.log('#custom scopes', customScopes)
+
+    console.log(
+      client.EnabledCustomScopes.map((customScope: any) => ({
+        id: customScope.id,
+        name: `${customScope.ResourceServer.identifier}/${customScope.name}`,
+      }))
+        .filter((scope: any) => customScopes.indexOf(scope.name) > -1)
+        .map((scope: any) => ({ id: scope.id })),
+    )
 
     prisma.oAuthAuthorizationCode
       .create({
@@ -236,10 +264,17 @@ server.grant(
             },
           },
           Scopes: {
-            connect: [scopes.map((scope: string) => ({ name: scope }))],
+            connect: [...scopes.map((scope: string) => ({ name: scope }))],
           },
           CustomScopes: {
-            connect: [customScopes.map((scope: string) => ({ name: scope }))],
+            connect: [
+              ...client.EnabledCustomScopes.map((customScope: any) => ({
+                id: customScope.id,
+                name: `${customScope.ResourceServer.identifier}/${customScope.name}`,
+              }))
+                .filter((scope: any) => customScopes.indexOf(scope.name) > -1)
+                .map((scope: any) => ({ id: scope.id })),
+            ],
           },
         },
       })
@@ -532,9 +567,21 @@ export const decision = [
 
     const allScopesOfUser = _.uniq(_.concat(userScopes, userGroupScopes))
 
+    const client = req.oauth2.client
+
+    const clientScopes = _.concat(
+      client.EnabledScopes.map((scope: oAuthScope) => scope.name),
+      client.EnabledCustomScopes.map(
+        (customScope: { name: string; ResourceServer: oAuthResourceServer }) =>
+          `${customScope.ResourceServer.identifier}/${customScope.name}`,
+      ),
+    )
+
     return done(null, {
       scope: (req.oauth2?.req.scope as Array<string>).filter(
-        (scope) => allScopesOfUser.indexOf(scope) > -1,
+        (scope) =>
+          allScopesOfUser.indexOf(scope) > -1 &&
+          clientScopes.indexOf(scope) > -1,
       ),
     })
   }),
@@ -553,6 +600,7 @@ export const token = [
     passReqToCallback: true,
   }),
   server.token({
+    session: false,
     passReqToCallback: true,
   }),
   server.errorHandler(),

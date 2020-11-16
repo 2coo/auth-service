@@ -2008,7 +2008,6 @@ input oAuthCustomScopeCreateWithoutClientsInput {
   name: String!
   oAuthAccessTokens: oAuthAccessTokenCreateManyWithoutCustomScopesInput
   oAuthAuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutCustomScopesInput
-  oAuthClientId: String!
   oAuthRefreshTokens: oAuthRefreshTokenCreateManyWithoutCustomScopesInput
   ResourceServer: oAuthResourceServerCreateOneWithoutScopesInput!
   Roles: RoleCreateManyWithoutCustomScopesInput
@@ -2023,7 +2022,6 @@ input oAuthCustomScopeCreateWithoutOAuthAccessTokensInput {
   id: String
   name: String!
   oAuthAuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutCustomScopesInput
-  oAuthClientId: String!
   oAuthRefreshTokens: oAuthRefreshTokenCreateManyWithoutCustomScopesInput
   ResourceServer: oAuthResourceServerCreateOneWithoutScopesInput!
   Roles: RoleCreateManyWithoutCustomScopesInput
@@ -2038,7 +2036,6 @@ input oAuthCustomScopeCreateWithoutOAuthAuthorizationCodesInput {
   id: String
   name: String!
   oAuthAccessTokens: oAuthAccessTokenCreateManyWithoutCustomScopesInput
-  oAuthClientId: String!
   oAuthRefreshTokens: oAuthRefreshTokenCreateManyWithoutCustomScopesInput
   ResourceServer: oAuthResourceServerCreateOneWithoutScopesInput!
   Roles: RoleCreateManyWithoutCustomScopesInput
@@ -2054,7 +2051,6 @@ input oAuthCustomScopeCreateWithoutOAuthRefreshTokensInput {
   name: String!
   oAuthAccessTokens: oAuthAccessTokenCreateManyWithoutCustomScopesInput
   oAuthAuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutCustomScopesInput
-  oAuthClientId: String!
   ResourceServer: oAuthResourceServerCreateOneWithoutScopesInput!
   Roles: RoleCreateManyWithoutCustomScopesInput
   updatedAt: DateTime
@@ -2069,7 +2065,6 @@ input oAuthCustomScopeCreateWithoutResourceServerInput {
   name: String!
   oAuthAccessTokens: oAuthAccessTokenCreateManyWithoutCustomScopesInput
   oAuthAuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutCustomScopesInput
-  oAuthClientId: String!
   oAuthRefreshTokens: oAuthRefreshTokenCreateManyWithoutCustomScopesInput
   Roles: RoleCreateManyWithoutCustomScopesInput
   updatedAt: DateTime
@@ -2084,7 +2079,6 @@ input oAuthCustomScopeCreateWithoutRolesInput {
   name: String!
   oAuthAccessTokens: oAuthAccessTokenCreateManyWithoutCustomScopesInput
   oAuthAuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutCustomScopesInput
-  oAuthClientId: String!
   oAuthRefreshTokens: oAuthRefreshTokenCreateManyWithoutCustomScopesInput
   ResourceServer: oAuthResourceServerCreateOneWithoutScopesInput!
   updatedAt: DateTime
@@ -2099,7 +2093,6 @@ input oAuthCustomScopeCreateWithoutUserPoolInput {
   name: String!
   oAuthAccessTokens: oAuthAccessTokenCreateManyWithoutCustomScopesInput
   oAuthAuthorizationCodes: oAuthAuthorizationCodeCreateManyWithoutCustomScopesInput
-  oAuthClientId: String!
   oAuthRefreshTokens: oAuthRefreshTokenCreateManyWithoutCustomScopesInput
   ResourceServer: oAuthResourceServerCreateOneWithoutScopesInput!
   Roles: RoleCreateManyWithoutCustomScopesInput
@@ -2113,7 +2106,6 @@ input oAuthCustomScopeScalarWhereInput {
   id: StringFilter
   name: StringFilter
   NOT: [oAuthCustomScopeScalarWhereInput!]
-  oAuthClientId: StringFilter
   oAuthResourceServerId: StringFilter
   OR: [oAuthCustomScopeScalarWhereInput!]
   updatedAt: DateTimeFilter
@@ -2125,7 +2117,6 @@ input oAuthCustomScopeUpdateManyDataInput {
   description: NullableStringFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
   name: StringFieldUpdateOperationsInput
-  oAuthClientId: StringFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
 }
 
@@ -2232,7 +2223,6 @@ input oAuthCustomScopeUpdateWithoutClientsDataInput {
   name: StringFieldUpdateOperationsInput
   oAuthAccessTokens: oAuthAccessTokenUpdateManyWithoutCustomScopesInput
   oAuthAuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutCustomScopesInput
-  oAuthClientId: StringFieldUpdateOperationsInput
   oAuthRefreshTokens: oAuthRefreshTokenUpdateManyWithoutCustomScopesInput
   ResourceServer: oAuthResourceServerUpdateOneRequiredWithoutScopesInput
   Roles: RoleUpdateManyWithoutCustomScopesInput
@@ -2247,7 +2237,6 @@ input oAuthCustomScopeUpdateWithoutOAuthAccessTokensDataInput {
   id: StringFieldUpdateOperationsInput
   name: StringFieldUpdateOperationsInput
   oAuthAuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutCustomScopesInput
-  oAuthClientId: StringFieldUpdateOperationsInput
   oAuthRefreshTokens: oAuthRefreshTokenUpdateManyWithoutCustomScopesInput
   ResourceServer: oAuthResourceServerUpdateOneRequiredWithoutScopesInput
   Roles: RoleUpdateManyWithoutCustomScopesInput
@@ -2262,7 +2251,6 @@ input oAuthCustomScopeUpdateWithoutOAuthAuthorizationCodesDataInput {
   id: StringFieldUpdateOperationsInput
   name: StringFieldUpdateOperationsInput
   oAuthAccessTokens: oAuthAccessTokenUpdateManyWithoutCustomScopesInput
-  oAuthClientId: StringFieldUpdateOperationsInput
   oAuthRefreshTokens: oAuthRefreshTokenUpdateManyWithoutCustomScopesInput
   ResourceServer: oAuthResourceServerUpdateOneRequiredWithoutScopesInput
   Roles: RoleUpdateManyWithoutCustomScopesInput
@@ -2278,7 +2266,6 @@ input oAuthCustomScopeUpdateWithoutOAuthRefreshTokensDataInput {
   name: StringFieldUpdateOperationsInput
   oAuthAccessTokens: oAuthAccessTokenUpdateManyWithoutCustomScopesInput
   oAuthAuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutCustomScopesInput
-  oAuthClientId: StringFieldUpdateOperationsInput
   ResourceServer: oAuthResourceServerUpdateOneRequiredWithoutScopesInput
   Roles: RoleUpdateManyWithoutCustomScopesInput
   updatedAt: DateTimeFieldUpdateOperationsInput
@@ -2293,7 +2280,6 @@ input oAuthCustomScopeUpdateWithoutResourceServerDataInput {
   name: StringFieldUpdateOperationsInput
   oAuthAccessTokens: oAuthAccessTokenUpdateManyWithoutCustomScopesInput
   oAuthAuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutCustomScopesInput
-  oAuthClientId: StringFieldUpdateOperationsInput
   oAuthRefreshTokens: oAuthRefreshTokenUpdateManyWithoutCustomScopesInput
   Roles: RoleUpdateManyWithoutCustomScopesInput
   updatedAt: DateTimeFieldUpdateOperationsInput
@@ -2308,7 +2294,6 @@ input oAuthCustomScopeUpdateWithoutRolesDataInput {
   name: StringFieldUpdateOperationsInput
   oAuthAccessTokens: oAuthAccessTokenUpdateManyWithoutCustomScopesInput
   oAuthAuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutCustomScopesInput
-  oAuthClientId: StringFieldUpdateOperationsInput
   oAuthRefreshTokens: oAuthRefreshTokenUpdateManyWithoutCustomScopesInput
   ResourceServer: oAuthResourceServerUpdateOneRequiredWithoutScopesInput
   updatedAt: DateTimeFieldUpdateOperationsInput
@@ -2323,7 +2308,6 @@ input oAuthCustomScopeUpdateWithoutUserPoolDataInput {
   name: StringFieldUpdateOperationsInput
   oAuthAccessTokens: oAuthAccessTokenUpdateManyWithoutCustomScopesInput
   oAuthAuthorizationCodes: oAuthAuthorizationCodeUpdateManyWithoutCustomScopesInput
-  oAuthClientId: StringFieldUpdateOperationsInput
   oAuthRefreshTokens: oAuthRefreshTokenUpdateManyWithoutCustomScopesInput
   ResourceServer: oAuthResourceServerUpdateOneRequiredWithoutScopesInput
   Roles: RoleUpdateManyWithoutCustomScopesInput

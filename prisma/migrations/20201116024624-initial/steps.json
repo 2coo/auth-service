@@ -7,8 +7,7 @@
       "values": [
         "SUPER_ADMIN",
         "ADMIN",
-        "DEVELOPER",
-        "USER"
+        "DEVELOPER"
       ]
     },
     {
@@ -186,7 +185,7 @@
         "directive": "default"
       },
       "argument": "",
-      "value": "USER"
+      "value": "DEVELOPER"
     },
     {
       "tag": "CreateField",
@@ -2131,13 +2130,6 @@
     {
       "tag": "CreateField",
       "model": "oAuthCustomScope",
-      "field": "oAuthClientId",
-      "type": "String",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateField",
-      "model": "oAuthCustomScope",
       "field": "Roles",
       "type": "Role",
       "arity": "List"
@@ -2194,6 +2186,27 @@
       "field": "userPoolId",
       "type": "String",
       "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "oAuthCustomScope",
+      "field": "oAuthAccessTokens",
+      "type": "oAuthAccessToken",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "oAuthCustomScope",
+      "field": "oAuthRefreshTokens",
+      "type": "oAuthRefreshToken",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "oAuthCustomScope",
+      "field": "oAuthAuthorizationCodes",
+      "type": "oAuthAuthorizationCode",
+      "arity": "List"
     },
     {
       "tag": "CreateField",
@@ -2347,6 +2360,13 @@
       "model": "oAuthAccessToken",
       "field": "Scopes",
       "type": "oAuthScope",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "oAuthAccessToken",
+      "field": "CustomScopes",
+      "type": "oAuthCustomScope",
       "arity": "List"
     },
     {
@@ -2607,6 +2627,13 @@
       "model": "oAuthRefreshToken",
       "field": "Scopes",
       "type": "oAuthScope",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "oAuthRefreshToken",
+      "field": "CustomScopes",
+      "type": "oAuthCustomScope",
       "arity": "List"
     },
     {
@@ -2874,6 +2901,13 @@
       "model": "oAuthAuthorizationCode",
       "field": "Scopes",
       "type": "oAuthScope",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "oAuthAuthorizationCode",
+      "field": "CustomScopes",
+      "type": "oAuthCustomScope",
       "arity": "List"
     },
     {

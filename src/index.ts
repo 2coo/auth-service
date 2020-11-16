@@ -20,7 +20,7 @@ graphqlServer.installSubscriptionHandlers(http)
 
 require('./api/')(app)
 
-http.listen(process.env.PORT, () => {
+http.listen(Number(process.env.PORT), '127.0.0.1', () => {
   console.log(
     `🚀 GraphQL service ready at http://localhost:${process.env.PORT}/graphql`,
   )
