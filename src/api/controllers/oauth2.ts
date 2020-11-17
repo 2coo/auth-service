@@ -1,3 +1,4 @@
+import { ensureLoggedIn } from 'connect-ensure-login';
 import {
   oAuthCustomScope,
   oAuthResourceServer,
@@ -9,7 +10,6 @@ import moment from 'moment-timezone'
 import oauth2orize from 'oauth2orize'
 import passport from 'passport'
 import { prisma } from '../../context'
-import { ensureLoginWithPoolIdentifier } from '../utils'
 import { compare } from 'bcryptjs'
 import { validateAuthCodeExpiration } from '../validate'
 import { store } from '../../redisclient'
@@ -435,9 +435,11 @@ server.exchange(
 // first, and rendering the `dialog` view.
 
 export const authorization = [
-  ensureLoginWithPoolIdentifier(),
+  ensureLoggedIn(),
   server.authorization(
     (clientId, redirectUri, done) => {
+      console.log("#eey");
+      
       prisma.oAuthClient
         .findOne({
           where: {
@@ -533,7 +535,7 @@ export const authorization = [
 // a response.
 
 export const decision = [
-  ensureLoginWithPoolIdentifier(),
+  ensureLoggedIn(),
   server.decision((req: any, done) => {
     // remove all scopes user does not have
     const user: any = req.user

@@ -20,7 +20,7 @@ export const prisma = new PrismaClient({
 })
 
 prisma.$use(async (params, next) => {
-  console.log(params.model, ':', params.action)
+  // console.log(params.model, ':', params.action)
   if (params.action === 'create') {
     switch (params.model) {
       case 'User':

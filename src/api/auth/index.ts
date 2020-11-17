@@ -19,32 +19,22 @@ passport.use(
   new LocalStrategy(
     { usernameField: 'username', passReqToCallback: true },
     async (req, username, password, done) => {
-      const userPool = await prisma.userPool.findOne({
-        where: {
-          identifier: req.vhost[0],
-        },
-      })
-      if (!userPool) return done(null, false)
-      prisma.user
+      prisma.userPool
         .findOne({
           where: {
-            username_userPoolId: {
-              username,
-              userPoolId: userPool.id,
-            },
+            identifier: req.vhost[0],
           },
-          include: {
-            Roles: {
-              include: {
-                Scopes: true,
-                CustomScopes: {
-                  include: {
-                    ResourceServer: true,
-                  },
+        })
+        .then((userPool) => {
+          if (!userPool) return done(null, false)
+          prisma.user
+            .findOne({
+              where: {
+                username_userPoolId: {
+                  username,
+                  userPoolId: userPool.id,
                 },
               },
-            },
-            Groups: {
               include: {
                 Roles: {
                   include: {
@@ -56,15 +46,32 @@ passport.use(
                     },
                   },
                 },
+                Groups: {
+                  include: {
+                    Roles: {
+                      include: {
+                        Scopes: true,
+                        CustomScopes: {
+                          include: {
+                            ResourceServer: true,
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
               },
-            },
-          },
-        })
-        .then(async (user) => {
-          if (!user || (user && user.isDisabled)) return done(null, false)
-          const passwordValid = await compare(password, user.password)
-          if (!passwordValid) return done(null, false)
-          return done(null, user)
+            })
+            .then(async (user) => {
+              if (!user || (user && user.isDisabled)) {
+                return done(null, false)
+              }
+              const passwordValid = await compare(password, user.password)
+              if (!passwordValid) {
+                return done(null, false)
+              }
+              return done(null, user)
+            })
         })
         .catch((error) => done(error))
     },

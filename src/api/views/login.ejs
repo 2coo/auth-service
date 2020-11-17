@@ -1,13 +1,47 @@
-<form action="login" method="post">
-	<div>
-  	<label>Username:</label>
-  	<input type="text" name="username" /><br/>
-	</div>
-	<div>
-  	<label>Password:</label>
-  	<input type="password" name="password" />
-	</div>
-	<div>
-	  <input type="submit" value="Submit" />
-	</div>
-</form>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>OAuth2Orize Recipes</title>
+  <!-- Needed for mobile sites to work -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Style sheets -->
+  <link rel="stylesheet" type="text/css" href="../stylesheets/pure-min.css">
+  <link rel="stylesheet" type="text/css" href="../stylesheets/base.css">
+  <link rel="stylesheet" type="text/css" href="../stylesheets/index-modules.css">
+  <script type="text/javascript" src="../javascripts/jquery.min.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function () {
+		$("#formABC").submit(function (e) {
+		console.log('#hey')
+
+		//stop submitting the form to see the disabled button effect
+		// e.preventDefault();
+
+		//disable the submit button
+		$("#btnSubmit").attr("disabled", true);
+
+		//disable a normal button
+		$("#btnTest").attr("disabled", true);
+
+		return true;
+
+		});
+	})
+	</script>
+<body>
+	<form  id="formABC" action="/login" method="post">
+		<div>
+		  <label>Username:</label>
+		  <input type="text" name="username" /><br/>
+		</div>
+		<div>
+		  <label>Password:</label>
+		  <input type="password" name="password" />
+		</div>
+		<div>
+		  <input id="btnSubmit" type="submit" value="Submit" />
+		</div>
+	</form>
+</body>
+</html>

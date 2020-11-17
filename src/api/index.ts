@@ -7,7 +7,6 @@ import cookieParser from 'cookie-parser'
 import errorHandler from 'errorhandler'
 import path from 'path'
 import { prisma } from '../context'
-import { ensureLoginWithPoolIdentifier } from './utils'
 import redis from 'redis'
 import connectRedis from 'connect-redis'
 import vhost from 'vhost'
@@ -21,8 +20,6 @@ const redisClient = redis.createClient(
     no_ready_check: true,
   },
 )
-
-const store = new RedisStore({ client: redisClient })
 
 module.exports = function (app: Express.Application) {
   app.set('view engine', 'ejs')
@@ -39,9 +36,9 @@ module.exports = function (app: Express.Application) {
     expressSession({
       name: 'AUTHORIZATION_SERVER',
       saveUninitialized: true,
-      resave: false,
+      resave: true,
       secret: process.env.SESSION_SECRET as string,
-      store: store,
+      store: new RedisStore({ client: redisClient }),
       // key: 'authorization.sid',
       cookie: {
         sameSite: true,
@@ -75,7 +72,7 @@ module.exports = function (app: Express.Application) {
     req: Express.Request,
     res: Express.Response,
     next: Express.NextFunction,
-  ) => {    
+  ) => {
     const userPool = await prisma.userPool.findOne({
       where: {
         identifier: req.vhost[0],
