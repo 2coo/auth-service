@@ -22,7 +22,7 @@ passport.use(
       prisma.userPool
         .findOne({
           where: {
-            identifier: req.vhost[0],
+            identifier: String(req.vhost[0]),
           },
         })
         .then((userPool) => {

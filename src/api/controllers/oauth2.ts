@@ -61,12 +61,12 @@ function issueTokens(
   done: any,
 ) {
   const scopes = scope.filter((scope: string) => scope.split('/').length === 1)
-  console.log('#scopes', scopes)
+  console.log('# scopes', scopes)
 
   const customScopes = scope.filter(
     (scope: string) => scope.split('/').length > 1,
   )
-  console.log('#custom scopes', customScopes)
+  console.log('# custom scopes', customScopes)
   prisma.oAuthClient
     .findOne({
       where: {
@@ -438,8 +438,6 @@ export const authorization = [
   ensureLoggedIn(),
   server.authorization(
     (clientId, redirectUri, done) => {
-      console.log("#eey");
-      
       prisma.oAuthClient
         .findOne({
           where: {

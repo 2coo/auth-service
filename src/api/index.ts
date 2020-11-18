@@ -9,7 +9,7 @@ import path from 'path'
 import { prisma } from '../context'
 import redis from 'redis'
 import connectRedis from 'connect-redis'
-import vhost from 'vhost'
+import vhost from 'vhost-ts'
 import { ensureLoggedIn } from 'connect-ensure-login'
 const RedisStore = connectRedis(expressSession)
 
@@ -61,7 +61,7 @@ module.exports = function (app: Express.Application) {
   app.use(Express.static(path.join(__dirname, './public')))
 
   app.use((req, res, next) => {
-    console.log('# Request recieved on: ', req.url)
+    console.log('# Request recieved on: ', `[${req.method}]`, req.url)
     next()
   })
 
@@ -75,7 +75,7 @@ module.exports = function (app: Express.Application) {
   ) => {
     const userPool = await prisma.userPool.findOne({
       where: {
-        identifier: req.vhost[0],
+        identifier: String(req.vhost[0]),
       },
     })
     if (!userPool) {

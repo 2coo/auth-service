@@ -23,10 +23,7 @@ export const loginForm = (req: Request, res: Response) => {
 }
 
 export const login = [
-  passport.authenticate('local', { failureRedirect: '/login' }),
-  function (req: Request, res: Response, next: NextFunction) {
-    res.redirect(req.session.returnTo)
-  },
+  passport.authenticate('local', { successReturnToOrRedirect: '/account', failureRedirect: '/login' }),
 ]
 
 export const logout = (req: Request, res: Response) => {

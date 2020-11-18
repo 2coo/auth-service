@@ -37,6 +37,7 @@
     "@types/connect-redis": "^0.0.15",
     "@types/redis": "^2.8.28",
     "@types/vhost": "^3.0.1",
+    "apollo-errors": "^1.9.0",
     "apollo-server-express": "^2.18.2",
     "bcryptjs": "^2.4.3",
     "connect-ensure-login": "^0.1.1",
@@ -62,7 +63,8 @@
     "passport-oauth2-client-password": "^0.1.2",
     "query-string": "^6.13.7",
     "redis": "^3.0.2",
-    "vhost": "^3.0.2"
+    "vhost": "^3.0.2",
+    "vhost-ts": "^4.0.0"
   },
   "devDependencies": {
     "@prisma/cli": "2.10.1",

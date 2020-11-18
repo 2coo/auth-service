@@ -7,7 +7,7 @@ export const info = async (req: Request, res: Response, next: Function) => {
   try {
     const accessToken = await validateAccessTokenExpiration(
       req.params!.access_token,
-      req.vhost[0],
+      String(req.vhost[0]),
     )
     const now = moment()
     const diff = moment
