@@ -5,7 +5,7 @@ export const Role = objectType({
   definition(t) {
     t.model.name()
     t.model.Users()
-    t.model.Scopes()
+    t.model.CustomScopes()
     t.model.Groups()
     t.model.createdAt()
     t.model.updatedAt()

@@ -6,7 +6,7 @@ export const SystemUser = objectType({
     t.model.id()
     t.model.username()
     t.model.email()
-    t.model.role()
+    t.model.SystemRole()
     t.model.createdAt()
     t.model.updatedAt()
   },

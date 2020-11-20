@@ -1,10 +1,9 @@
-import { SystemUser } from './objects/SystemUser'
 import { queryType } from '@nexus/schema'
 import moment = require('moment-timezone')
 export const Query = queryType({
   definition(t) {
     t.field('me', {
-      type: SystemUser,
+      type: 'SystemUser',
       nullable: true,
       resolve: async (_parent, args, ctx) => {
         if (ctx.auth.userId) {
@@ -18,9 +17,6 @@ export const Query = queryType({
         return null
       },
     }),
-      t.crud.organization(),
-      t.crud.organizations(),
-      t.crud.userPool(),
       t.crud.oAuthClient(),
       t.crud.users(),
       t.crud.roles(),

@@ -1,16 +1,14 @@
-import Express from 'express'
-import expressSession from 'express-session'
-import _ from 'lodash'
-import passport from 'passport'
-import routes from './controllers'
+import { ensureLoggedIn } from 'connect-ensure-login'
+import connectRedis from 'connect-redis'
 import cookieParser from 'cookie-parser'
 import errorHandler from 'errorhandler'
+import Express from 'express'
+import expressSession from 'express-session'
+import passport from 'passport'
 import path from 'path'
-import { prisma } from '../context'
 import redis from 'redis'
-import connectRedis from 'connect-redis'
-import vhost from 'vhost-ts'
-import { ensureLoggedIn } from 'connect-ensure-login'
+import { prisma } from '../context'
+import routes from './controllers'
 const RedisStore = connectRedis(expressSession)
 
 const redisClient = redis.createClient(
@@ -39,7 +37,6 @@ module.exports = function (app: Express.Application) {
       resave: true,
       secret: process.env.SESSION_SECRET as string,
       store: new RedisStore({ client: redisClient }),
-      // key: 'authorization.sid',
       cookie: {
         sameSite: true,
         secure: process.env.NODE_ENV === 'production',
@@ -68,26 +65,8 @@ module.exports = function (app: Express.Application) {
   // Passport configuration
   require('./auth')
 
-  const checkUserPoolExists = async (
-    req: Express.Request,
-    res: Express.Response,
-    next: Express.NextFunction,
-  ) => {
-    const userPool = await prisma.userPool.findOne({
-      where: {
-        identifier: String(req.vhost[0]),
-      },
-    })
-    if (!userPool) {
-      return res.send('UserPool not found!')
-    }
-    return next()
-  }
-
   const router = Express.Router()
   // site
-  router.use(checkUserPoolExists)
-
   router.get('/', [ensureLoggedIn(), routes.site.index])
   // static resources for stylesheets, images, javascript files
   router.route('/login').get(routes.site.loginForm).post(routes.site.login)
@@ -106,6 +85,6 @@ module.exports = function (app: Express.Application) {
 
   router.get('/api/revoke', routes.token.revoke)
   router.get('/api/tokeninfo/:access_token', routes.token.info)
-  // app.use('/:userPoolIdentifier', checkUserPoolExists, router)
-  app.use(vhost('*.auth.test', router))
+
+  app.use(router)
 }

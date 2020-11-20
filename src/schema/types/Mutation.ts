@@ -1,25 +1,23 @@
-import { SystemUser } from './objects/SystemUser'
 import { mutationType, stringArg } from '@nexus/schema'
-import { sign } from 'jsonwebtoken'
 import { compare } from 'bcryptjs'
+import { sign } from 'jsonwebtoken'
 
 export const Mutation = mutationType({
   definition(t) {
-    t.crud.createOneOrganization(),
-    t.crud.createOneUserPool(),
     t.crud.createOneoAuthClient(),
-    t.crud.createOneUser(),
-    t.crud.updateOneUser(),
-    t.crud.deleteOneUser(),
-    t.crud.createOneoAuthRedirectURI(),
-    t.crud.updateOneoAuthClient(),
+      t.crud.createOneUser(),
+      t.crud.updateOneUser(),
+      t.crud.deleteOneUser(),
+      t.crud.createOneoAuthRedirectURI(),
+      t.crud.updateOneoAuthClient(),
       t.field('login', {
         type: 'AuthPayload',
         args: {
           email: stringArg({ nullable: false }),
           password: stringArg({ nullable: false }),
         },
-        resolve: async (_parent, { email, password }, ctx) => {
+        nullable: true,
+        async resolve(_parent, { email, password }, ctx) {
           const user = await ctx.prisma.systemUser.findOne({
             where: {
               email,
@@ -36,7 +34,7 @@ export const Mutation = mutationType({
             token: sign({ userId: user.id }, process.env.APP_SECRET as string, {
               expiresIn: '1 day',
             }),
-            user,
+            user: user,
           }
         },
       })

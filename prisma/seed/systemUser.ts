@@ -12,7 +12,7 @@ export const seedSystemUser = async (prisma: PrismaClient) => {
     data: {
       username: 'admin',
       email: 'tuvshinbayar@tomujin.digital',
-      role: SystemRole.SUPER_ADMIN,
+      SystemRole: SystemRole.SUPER_ADMIN,
       password: hashPassword,
     },
   })

@@ -7,7 +7,7 @@ import { Strategy as ClientPasswordStrategy } from 'passport-oauth2-client-passw
 import { Strategy as BearerStrategy } from 'passport-http-bearer'
 import { prisma } from '../../context'
 import { compare } from 'bcryptjs'
-import { User } from '@prisma/client'
+import { AccountStatusType, User } from '@prisma/client'
 /**
  * LocalStrategy
  *
@@ -17,28 +17,34 @@ import { User } from '@prisma/client'
  */
 passport.use(
   new LocalStrategy(
-    { usernameField: 'username', passReqToCallback: true },
-    async (req, username, password, done) => {
-      prisma.userPool
-        .findOne({
+    { usernameField: 'username'},
+    async (username, password, done) => {
+      prisma.user
+        .findFirst({
           where: {
-            identifier: String(req.vhost[0]),
+            OR: [
+              {
+                username: username,
+              },
+              {
+                email: username,
+              },
+            ],
           },
-        })
-        .then((userPool) => {
-          if (!userPool) return done(null, false)
-          prisma.user
-            .findOne({
-              where: {
-                username_userPoolId: {
-                  username,
-                  userPoolId: userPool.id,
+          include: {
+            Roles: {
+              include: {
+                CustomScopes: {
+                  include: {
+                    ResourceServer: true,
+                  },
                 },
               },
+            },
+            Groups: {
               include: {
                 Roles: {
                   include: {
-                    Scopes: true,
                     CustomScopes: {
                       include: {
                         ResourceServer: true,
@@ -46,32 +52,22 @@ passport.use(
                     },
                   },
                 },
-                Groups: {
-                  include: {
-                    Roles: {
-                      include: {
-                        Scopes: true,
-                        CustomScopes: {
-                          include: {
-                            ResourceServer: true,
-                          },
-                        },
-                      },
-                    },
-                  },
-                },
               },
-            })
-            .then(async (user) => {
-              if (!user || (user && user.isDisabled)) {
-                return done(null, false)
-              }
-              const passwordValid = await compare(password, user.password)
-              if (!passwordValid) {
-                return done(null, false)
-              }
-              return done(null, user)
-            })
+            },
+          },
+        })
+        .then(async (user) => {
+          if (
+            !user ||
+            (user && user.accountStatusType === AccountStatusType.DISABLED)
+          ) {
+            return done(null, false)
+          }
+          const passwordValid = await compare(password, user.password)
+          if (!passwordValid) {
+            return done(null, false)
+          }
+          return done(null, user)
         })
         .catch((error) => done(error))
     },
@@ -91,7 +87,6 @@ passport.deserializeUser((id: string, done) => {
       include: {
         Roles: {
           include: {
-            Scopes: true,
             CustomScopes: {
               include: {
                 ResourceServer: true,
@@ -103,7 +98,6 @@ passport.deserializeUser((id: string, done) => {
           include: {
             Roles: {
               include: {
-                Scopes: true,
                 CustomScopes: {
                   include: {
                     ResourceServer: true,
@@ -116,7 +110,11 @@ passport.deserializeUser((id: string, done) => {
       },
     })
     .then((user) => {
-      if (!user || (user && user.isDisabled)) return done(null, false)
+      if (
+        !user ||
+        (user && user.accountStatusType === AccountStatusType.DISABLED)
+      )
+        return done(null, false)
       return done(null, user)
     })
     .catch((error) => done(error))
@@ -142,7 +140,6 @@ function verifyClient(clientId: string, clientSecret: string, done: any) {
       include: {
         EnabledScopes: true,
         EnabledCustomScopes: true,
-        UserPool: true,
       },
     })
     .then((client) => {

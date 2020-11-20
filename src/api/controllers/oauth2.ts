@@ -1,4 +1,10 @@
-import { ensureLoggedIn } from 'connect-ensure-login';
+import {
+  getClient,
+  getUserById,
+  issueAccessToken,
+  issueRefreshToken,
+} from './utils'
+import { ensureLoggedIn } from 'connect-ensure-login'
 import {
   oAuthCustomScope,
   oAuthResourceServer,
@@ -67,101 +73,37 @@ function issueTokens(
     (scope: string) => scope.split('/').length > 1,
   )
   console.log('# custom scopes', customScopes)
-  prisma.oAuthClient
-    .findOne({
-      where: {
-        id: clientId,
-      },
-      include: {
-        UserPool: true,
-        EnabledCustomScopes: {
-          include: {
-            ResourceServer: true,
-          },
-        },
-        EnabledScopes: true,
-      },
-    })
+  getClient(clientId)
     .then((client) => {
       if (!client) throw new Error('The client not found!')
-
       if (userId) {
-        prisma.user
-          .findOne({
-            where: {
-              id: userId,
-            },
-          })
-          .then((user) => {
-            if (!user) throw new Error('The user not found!')
-            prisma.oAuthAccessToken
-              .create({
-                data: {
-                  Client: {
-                    connect: {
-                      id: client.id,
-                    },
-                  },
-                  User: {
-                    connect: {
-                      id: user.id,
-                    },
-                  },
-                  Scopes: {
-                    connect: [...scopes.map((x: string) => ({ name: x }))],
-                  },
-                  CustomScopes: {
-                    connect: [
-                      ...client.EnabledCustomScopes.map((customScope) => ({
-                        id: customScope.id,
-                        name: `${customScope.ResourceServer.identifier}/${customScope.name}`,
-                      }))
-                        .filter(
-                          (scope) => customScopes.indexOf(scope.name) > -1,
-                        )
-                        .map((scope) => ({ id: scope.id })),
-                    ],
-                  },
-                  expirationDate: moment()
-                    .add({
-                      minute: client.accessTokenLifetime,
-                    })
-                    .toISOString(),
+        getUserById(userId).then((user) => {
+          if (!user) throw new Error('The user not found!')
+          issueAccessToken(
+            clientId,
+            userId,
+            scopes,
+            customScopes,
+            client.accessTokenLifetime,
+          ).then((accessToken) => {
+            issueRefreshToken(
+              clientId,
+              userId,
+              client.refreshTokenLifetime,
+            ).then((refreshToken) => {
+              return done(
+                null,
+                accessToken.accessToken,
+                refreshToken.refreshToken,
+                {
+                  expires_in: moment
+                    .parseZone(accessToken.expirationDate)
+                    .diff(moment(), 'seconds'),
                 },
-              })
-              .then((accessToken) => {
-                prisma.oAuthRefreshToken
-                  .create({
-                    data: {
-                      Client: {
-                        connect: {
-                          id: client!.id,
-                        },
-                      },
-                      User: {
-                        connect: {
-                          id: user!.id,
-                        },
-                      },
-                      expirationDate: moment()
-                        .add({
-                          minute: client!.refreshTokenLifetime,
-                        })
-                        .toISOString(),
-                    },
-                  })
-                  .then((refreshToken) => {
-                    return done(
-                      null,
-                      accessToken.accessToken,
-                      refreshToken.refreshToken,
-                      {
-                        expires_in: client.accessTokenLifetime * 60,
-                      },
-                    )
-                  })
-              })
+              )
+            })
           })
+        })
       } else {
         prisma.oAuthAccessToken
           .create({

@@ -1,6 +1,8 @@
 # Configure
 Please, create .env.development from example.env by coping and configure database and port
-
+```bash
+ssh-keygen -t rsa -b 4096 -m PEM -f ./keys/default.key
+```
 1. First install packages
 ```
 $ yarn install

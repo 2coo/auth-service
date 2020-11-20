@@ -7,7 +7,8 @@
       "values": [
         "SUPER_ADMIN",
         "ADMIN",
-        "DEVELOPER"
+        "MANAGER",
+        "AUDITOR"
       ]
     },
     {
@@ -40,7 +41,8 @@
         "COMPROMISED",
         "UNKNOWN",
         "RESET_REQUIRED",
-        "FORCE_CHANGE_PASSWORD"
+        "FORCE_CHANGE_PASSWORD",
+        "DISABLED"
       ]
     },
     {
@@ -158,7 +160,7 @@
     {
       "tag": "CreateField",
       "model": "SystemUser",
-      "field": "role",
+      "field": "SystemRole",
       "type": "SystemRole",
       "arity": "Required"
     },
@@ -168,7 +170,7 @@
         "path": {
           "tag": "Field",
           "model": "SystemUser",
-          "field": "role"
+          "field": "SystemRole"
         },
         "directive": "default"
       }
@@ -180,19 +182,12 @@
         "path": {
           "tag": "Field",
           "model": "SystemUser",
-          "field": "role"
+          "field": "SystemRole"
         },
         "directive": "default"
       },
       "argument": "",
-      "value": "DEVELOPER"
-    },
-    {
-      "tag": "CreateField",
-      "model": "SystemUser",
-      "field": "Organizations",
-      "type": "Organization",
-      "arity": "List"
+      "value": "AUDITOR"
     },
     {
       "tag": "CreateField",
@@ -242,381 +237,6 @@
           "field": "updatedAt"
         },
         "directive": "updatedAt"
-      }
-    },
-    {
-      "tag": "CreateModel",
-      "model": "Organization"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Organization",
-      "field": "id",
-      "type": "String",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "Organization",
-          "field": "id"
-        },
-        "directive": "id"
-      }
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "Organization",
-          "field": "id"
-        },
-        "directive": "default"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "Organization",
-          "field": "id"
-        },
-        "directive": "default"
-      },
-      "argument": "",
-      "value": "uuid()"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Organization",
-      "field": "name",
-      "type": "String",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Organization",
-      "field": "url",
-      "type": "String",
-      "arity": "Optional"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Organization",
-      "field": "address",
-      "type": "String",
-      "arity": "Optional"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Organization",
-      "field": "phoneNumber",
-      "type": "String",
-      "arity": "Optional"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Organization",
-      "field": "UserPools",
-      "type": "UserPool",
-      "arity": "List"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Organization",
-      "field": "CreatedBy",
-      "type": "SystemUser",
-      "arity": "Optional"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "Organization",
-          "field": "CreatedBy"
-        },
-        "directive": "relation"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "Organization",
-          "field": "CreatedBy"
-        },
-        "directive": "relation"
-      },
-      "argument": "fields",
-      "value": "[systemUserId]"
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "Organization",
-          "field": "CreatedBy"
-        },
-        "directive": "relation"
-      },
-      "argument": "references",
-      "value": "[id]"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Organization",
-      "field": "systemUserId",
-      "type": "String",
-      "arity": "Optional"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Organization",
-      "field": "createdAt",
-      "type": "DateTime",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "Organization",
-          "field": "createdAt"
-        },
-        "directive": "default"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "Organization",
-          "field": "createdAt"
-        },
-        "directive": "default"
-      },
-      "argument": "",
-      "value": "now()"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Organization",
-      "field": "updatedAt",
-      "type": "DateTime",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "Organization",
-          "field": "updatedAt"
-        },
-        "directive": "updatedAt"
-      }
-    },
-    {
-      "tag": "CreateModel",
-      "model": "UserPool"
-    },
-    {
-      "tag": "CreateField",
-      "model": "UserPool",
-      "field": "id",
-      "type": "String",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "UserPool",
-          "field": "id"
-        },
-        "directive": "id"
-      }
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "UserPool",
-          "field": "id"
-        },
-        "directive": "default"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "UserPool",
-          "field": "id"
-        },
-        "directive": "default"
-      },
-      "argument": "",
-      "value": "uuid()"
-    },
-    {
-      "tag": "CreateField",
-      "model": "UserPool",
-      "field": "name",
-      "type": "String",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateField",
-      "model": "UserPool",
-      "field": "identifier",
-      "type": "String",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "UserPool",
-          "field": "identifier"
-        },
-        "directive": "unique"
-      }
-    },
-    {
-      "tag": "CreateField",
-      "model": "UserPool",
-      "field": "Organization",
-      "type": "Organization",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "UserPool",
-          "field": "Organization"
-        },
-        "directive": "relation"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "UserPool",
-          "field": "Organization"
-        },
-        "directive": "relation"
-      },
-      "argument": "fields",
-      "value": "[organizationId]"
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "UserPool",
-          "field": "Organization"
-        },
-        "directive": "relation"
-      },
-      "argument": "references",
-      "value": "[id]"
-    },
-    {
-      "tag": "CreateField",
-      "model": "UserPool",
-      "field": "organizationId",
-      "type": "String",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateField",
-      "model": "UserPool",
-      "field": "Users",
-      "type": "User",
-      "arity": "List"
-    },
-    {
-      "tag": "CreateField",
-      "model": "UserPool",
-      "field": "Groups",
-      "type": "Group",
-      "arity": "List"
-    },
-    {
-      "tag": "CreateField",
-      "model": "UserPool",
-      "field": "Roles",
-      "type": "Role",
-      "arity": "List"
-    },
-    {
-      "tag": "CreateField",
-      "model": "UserPool",
-      "field": "Clients",
-      "type": "oAuthClient",
-      "arity": "List"
-    },
-    {
-      "tag": "CreateField",
-      "model": "UserPool",
-      "field": "Scopes",
-      "type": "oAuthScope",
-      "arity": "List"
-    },
-    {
-      "tag": "CreateField",
-      "model": "UserPool",
-      "field": "CustomScopes",
-      "type": "oAuthCustomScope",
-      "arity": "List"
-    },
-    {
-      "tag": "CreateField",
-      "model": "UserPool",
-      "field": "ResourceServers",
-      "type": "oAuthResourceServer",
-      "arity": "List"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Model",
-          "model": "UserPool",
-          "arguments": [
-            {
-              "name": "",
-              "value": "[name, organizationId]"
-            }
-          ]
-        },
-        "directive": "unique"
       }
     },
     {
@@ -683,59 +303,6 @@
     {
       "tag": "CreateField",
       "model": "Role",
-      "field": "UserPool",
-      "type": "UserPool",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "Role",
-          "field": "UserPool"
-        },
-        "directive": "relation"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "Role",
-          "field": "UserPool"
-        },
-        "directive": "relation"
-      },
-      "argument": "fields",
-      "value": "[userPoolId]"
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "Role",
-          "field": "UserPool"
-        },
-        "directive": "relation"
-      },
-      "argument": "references",
-      "value": "[id]"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Role",
-      "field": "userPoolId",
-      "type": "String",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Role",
       "field": "Users",
       "type": "User",
       "arity": "List"
@@ -745,13 +312,6 @@
       "model": "Role",
       "field": "Groups",
       "type": "Group",
-      "arity": "List"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Role",
-      "field": "Scopes",
-      "type": "oAuthScope",
       "arity": "List"
     },
     {
@@ -809,22 +369,6 @@
           "field": "updatedAt"
         },
         "directive": "updatedAt"
-      }
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Model",
-          "model": "Role",
-          "arguments": [
-            {
-              "name": "",
-              "value": "[name, userPoolId]"
-            }
-          ]
-        },
-        "directive": "unique"
       }
     },
     {
@@ -912,59 +456,6 @@
       },
       "argument": "",
       "value": "uuid()"
-    },
-    {
-      "tag": "CreateField",
-      "model": "oAuthClient",
-      "field": "UserPool",
-      "type": "UserPool",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "oAuthClient",
-          "field": "UserPool"
-        },
-        "directive": "relation"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "oAuthClient",
-          "field": "UserPool"
-        },
-        "directive": "relation"
-      },
-      "argument": "fields",
-      "value": "[userPoolId]"
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "oAuthClient",
-          "field": "UserPool"
-        },
-        "directive": "relation"
-      },
-      "argument": "references",
-      "value": "[id]"
-    },
-    {
-      "tag": "CreateField",
-      "model": "oAuthClient",
-      "field": "userPoolId",
-      "type": "String",
-      "arity": "Required"
     },
     {
       "tag": "CreateField",
@@ -1215,22 +706,6 @@
       }
     },
     {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Model",
-          "model": "oAuthClient",
-          "arguments": [
-            {
-              "name": "",
-              "value": "[name, userPoolId]"
-            }
-          ]
-        },
-        "directive": "unique"
-      }
-    },
-    {
       "tag": "CreateModel",
       "model": "oAuthScope"
     },
@@ -1328,20 +803,6 @@
       "model": "oAuthScope",
       "field": "RefreshTokenScope",
       "type": "oAuthRefreshToken",
-      "arity": "List"
-    },
-    {
-      "tag": "CreateField",
-      "model": "oAuthScope",
-      "field": "Roles",
-      "type": "Role",
-      "arity": "List"
-    },
-    {
-      "tag": "CreateField",
-      "model": "oAuthScope",
-      "field": "UserPools",
-      "type": "UserPool",
       "arity": "List"
     },
     {
@@ -1881,57 +1342,15 @@
       "arity": "Required"
     },
     {
-      "tag": "CreateField",
-      "model": "oAuthResourceServer",
-      "field": "UserPool",
-      "type": "UserPool",
-      "arity": "Required"
-    },
-    {
       "tag": "CreateDirective",
       "location": {
         "path": {
           "tag": "Field",
           "model": "oAuthResourceServer",
-          "field": "UserPool"
+          "field": "identifier"
         },
-        "directive": "relation"
+        "directive": "unique"
       }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "oAuthResourceServer",
-          "field": "UserPool"
-        },
-        "directive": "relation"
-      },
-      "argument": "fields",
-      "value": "[userPoolId]"
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "oAuthResourceServer",
-          "field": "UserPool"
-        },
-        "directive": "relation"
-      },
-      "argument": "references",
-      "value": "[id]"
-    },
-    {
-      "tag": "CreateField",
-      "model": "oAuthResourceServer",
-      "field": "userPoolId",
-      "type": "String",
-      "arity": "Required"
     },
     {
       "tag": "CreateField",
@@ -1991,22 +1410,6 @@
       }
     },
     {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Model",
-          "model": "oAuthResourceServer",
-          "arguments": [
-            {
-              "name": "",
-              "value": "[name, userPoolId]"
-            }
-          ]
-        },
-        "directive": "unique"
-      }
-    },
-    {
       "tag": "CreateModel",
       "model": "oAuthCustomScope"
     },
@@ -2059,6 +1462,17 @@
       "field": "name",
       "type": "String",
       "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "oAuthCustomScope",
+          "field": "name"
+        },
+        "directive": "unique"
+      }
     },
     {
       "tag": "CreateField",
@@ -2133,59 +1547,6 @@
       "field": "Roles",
       "type": "Role",
       "arity": "List"
-    },
-    {
-      "tag": "CreateField",
-      "model": "oAuthCustomScope",
-      "field": "UserPool",
-      "type": "UserPool",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "oAuthCustomScope",
-          "field": "UserPool"
-        },
-        "directive": "relation"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "oAuthCustomScope",
-          "field": "UserPool"
-        },
-        "directive": "relation"
-      },
-      "argument": "fields",
-      "value": "[userPoolId]"
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "oAuthCustomScope",
-          "field": "UserPool"
-        },
-        "directive": "relation"
-      },
-      "argument": "references",
-      "value": "[id]"
-    },
-    {
-      "tag": "CreateField",
-      "model": "oAuthCustomScope",
-      "field": "userPoolId",
-      "type": "String",
-      "arity": "Required"
     },
     {
       "tag": "CreateField",
@@ -2322,31 +1683,6 @@
         },
         "directive": "unique"
       }
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "oAuthAccessToken",
-          "field": "accessToken"
-        },
-        "directive": "default"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "oAuthAccessToken",
-          "field": "accessToken"
-        },
-        "directive": "default"
-      },
-      "argument": "",
-      "value": "uuid()"
     },
     {
       "tag": "CreateField",
@@ -3116,6 +2452,49 @@
     {
       "tag": "CreateField",
       "model": "Group",
+      "field": "identifier",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Group",
+          "field": "identifier"
+        },
+        "directive": "unique"
+      }
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Group",
+          "field": "identifier"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Group",
+          "field": "identifier"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "uuid()"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Group",
       "field": "name",
       "type": "String",
       "arity": "Required"
@@ -3126,59 +2505,6 @@
       "field": "description",
       "type": "String",
       "arity": "Optional"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Group",
-      "field": "UserPool",
-      "type": "UserPool",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "Group",
-          "field": "UserPool"
-        },
-        "directive": "relation"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "Group",
-          "field": "UserPool"
-        },
-        "directive": "relation"
-      },
-      "argument": "fields",
-      "value": "[userPoolId]"
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "Group",
-          "field": "UserPool"
-        },
-        "directive": "relation"
-      },
-      "argument": "references",
-      "value": "[id]"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Group",
-      "field": "userPoolId",
-      "type": "String",
-      "arity": "Required"
     },
     {
       "tag": "CreateField",
@@ -3342,6 +2668,17 @@
       "arity": "Required"
     },
     {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "User",
+          "field": "username"
+        },
+        "directive": "unique"
+      }
+    },
+    {
       "tag": "CreateField",
       "model": "User",
       "field": "accountStatusType",
@@ -3422,38 +2759,6 @@
     {
       "tag": "CreateField",
       "model": "User",
-      "field": "isDisabled",
-      "type": "Boolean",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "User",
-          "field": "isDisabled"
-        },
-        "directive": "default"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "User",
-          "field": "isDisabled"
-        },
-        "directive": "default"
-      },
-      "argument": "",
-      "value": "false"
-    },
-    {
-      "tag": "CreateField",
-      "model": "User",
       "field": "Profile",
       "type": "Profile",
       "arity": "Optional"
@@ -3461,22 +2766,8 @@
     {
       "tag": "CreateField",
       "model": "User",
-      "field": "Groups",
-      "type": "Group",
-      "arity": "List"
-    },
-    {
-      "tag": "CreateField",
-      "model": "User",
       "field": "PasswordResets",
       "type": "PasswordReset",
-      "arity": "List"
-    },
-    {
-      "tag": "CreateField",
-      "model": "User",
-      "field": "Roles",
-      "type": "Role",
       "arity": "List"
     },
     {
@@ -3505,6 +2796,20 @@
       "model": "User",
       "field": "RefreshTokens",
       "type": "oAuthRefreshToken",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "User",
+      "field": "Roles",
+      "type": "Role",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "User",
+      "field": "Groups",
+      "type": "Group",
       "arity": "List"
     },
     {
@@ -3542,7 +2847,7 @@
     {
       "tag": "CreateField",
       "model": "User",
-      "field": "Notification",
+      "field": "Activities",
       "type": "Notification",
       "arity": "List"
     },
@@ -3552,7 +2857,7 @@
         "path": {
           "tag": "Field",
           "model": "User",
-          "field": "Notification"
+          "field": "Activities"
         },
         "directive": "relation"
       }
@@ -3564,65 +2869,12 @@
         "path": {
           "tag": "Field",
           "model": "User",
-          "field": "Notification"
+          "field": "Activities"
         },
         "directive": "relation"
       },
       "argument": "",
       "value": "\"NotificationSender\""
-    },
-    {
-      "tag": "CreateField",
-      "model": "User",
-      "field": "UserPool",
-      "type": "UserPool",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "User",
-          "field": "UserPool"
-        },
-        "directive": "relation"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "User",
-          "field": "UserPool"
-        },
-        "directive": "relation"
-      },
-      "argument": "fields",
-      "value": "[userPoolId]"
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "User",
-          "field": "UserPool"
-        },
-        "directive": "relation"
-      },
-      "argument": "references",
-      "value": "[id]"
-    },
-    {
-      "tag": "CreateField",
-      "model": "User",
-      "field": "userPoolId",
-      "type": "String",
-      "arity": "Required"
     },
     {
       "tag": "CreateField",
@@ -3776,22 +3028,6 @@
             {
               "name": "",
               "value": "[email, isExternalProvider]"
-            }
-          ]
-        },
-        "directive": "unique"
-      }
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Model",
-          "model": "User",
-          "arguments": [
-            {
-              "name": "",
-              "value": "[username, userPoolId]"
             }
           ]
         },
@@ -4049,7 +3285,7 @@
       "model": "Notification",
       "field": "Sender",
       "type": "User",
-      "arity": "Required"
+      "arity": "Optional"
     },
     {
       "tag": "CreateDirective",
@@ -4109,7 +3345,7 @@
       "model": "Notification",
       "field": "senderId",
       "type": "String",
-      "arity": "Required"
+      "arity": "Optional"
     },
     {
       "tag": "CreateField",
@@ -4327,13 +3563,6 @@
       "field": "userId",
       "type": "String",
       "arity": "Required"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Profile",
-      "field": "Emails",
-      "type": "Email",
-      "arity": "List"
     },
     {
       "tag": "CreateField",
@@ -4584,227 +3813,6 @@
       },
       "argument": "",
       "value": "[name, profileId]"
-    },
-    {
-      "tag": "CreateModel",
-      "model": "Email"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Email",
-      "field": "id",
-      "type": "String",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "Email",
-          "field": "id"
-        },
-        "directive": "id"
-      }
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "Email",
-          "field": "id"
-        },
-        "directive": "default"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "Email",
-          "field": "id"
-        },
-        "directive": "default"
-      },
-      "argument": "",
-      "value": "uuid()"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Email",
-      "field": "email",
-      "type": "String",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Email",
-      "field": "isVerified",
-      "type": "Boolean",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "Email",
-          "field": "isVerified"
-        },
-        "directive": "default"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "Email",
-          "field": "isVerified"
-        },
-        "directive": "default"
-      },
-      "argument": "",
-      "value": "false"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Email",
-      "field": "isPrimary",
-      "type": "Boolean",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "Email",
-          "field": "isPrimary"
-        },
-        "directive": "default"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "Email",
-          "field": "isPrimary"
-        },
-        "directive": "default"
-      },
-      "argument": "",
-      "value": "false"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Email",
-      "field": "Profile",
-      "type": "Profile",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "Email",
-          "field": "Profile"
-        },
-        "directive": "relation"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "Email",
-          "field": "Profile"
-        },
-        "directive": "relation"
-      },
-      "argument": "fields",
-      "value": "[profileId]"
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "Email",
-          "field": "Profile"
-        },
-        "directive": "relation"
-      },
-      "argument": "references",
-      "value": "[id]"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Email",
-      "field": "profileId",
-      "type": "String",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Email",
-      "field": "createdAt",
-      "type": "DateTime",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "Email",
-          "field": "createdAt"
-        },
-        "directive": "default"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "Email",
-          "field": "createdAt"
-        },
-        "directive": "default"
-      },
-      "argument": "",
-      "value": "now()"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Email",
-      "field": "updatedAt",
-      "type": "DateTime",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "Email",
-          "field": "updatedAt"
-        },
-        "directive": "updatedAt"
-      }
     },
     {
       "tag": "CreateModel",
