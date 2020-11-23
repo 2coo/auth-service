@@ -16,7 +16,7 @@ import {
   getScopesFromUser,
   getUserByUsernameOrEmail,
   issueAccessToken,
-  issueRefreshToken
+  issueRefreshToken,
 } from './utils'
 
 // Create OAuth 2.0 server
@@ -93,19 +93,13 @@ server.grant(
 
 server.exchange(
   oauth2orize.exchange.code((client, code, redirectUri, done) => {
-    console.log('#code', code)
     getAuthCode(code)
       .then(async (authCode) => {
         if (!authCode) return done(null, false)
         if (redirectUri !== authCode.redirectURI) return done(null, false)
-        console.log('code existing!')
-
         if (!moment().isBefore(moment.parseZone(authCode.expirationDate)))
           return done(null, false)
-        console.log('code is available')
-
         await deleteAuthCode(authCode.id)
-        console.log('code is deleted')
         const scopes = authCode.Scopes.map((scope) => scope.name)
         issueTokens(authCode.userId, client.id, scopes, done)
       })
@@ -165,7 +159,7 @@ export const authorization = [
           if (!client) return done(null, false)
           if (
             _.some(client.RedirectUris, {
-              uri: redirectUri,
+              url: redirectUri,
             })
           ) {
             return done(null, client, redirectUri)
