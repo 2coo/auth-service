@@ -6,6 +6,11 @@ export const seedTestData = (prisma: PrismaClient) => {
       email: 'tuvshinbayar@tomujin.digital',
       username: 'Giva',
       password: '$2y$10$PeKLgfT5usfxM3PVRrKQyedSb5aGKHRYDzov/hMiyFe4pwq9FL9L2',
+      Groups: {
+        connect: {
+          name: 'default',
+        },
+      },
     },
   })
   const testClient = prisma.oAuthClient.create({

@@ -1,7 +1,6 @@
 export * from './oAuthAccessToken'
 export * from './oAuthAuthorizationCode'
 export * from './oAuthClient'
-export * from './oAuthCustomScope'
 export * from './oAuthGrant'
 export * from './oAuthJavascriptOrigin'
 export * from './oAuthRedirectURI'

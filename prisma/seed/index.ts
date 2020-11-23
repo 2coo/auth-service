@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import _ from 'lodash'
+import { seedGroups } from './group'
 import { seedDefaultScopes } from './scopes'
 import { seedSystemUser } from './systemUser'
 import { seedTestData } from './testdata'
@@ -10,7 +11,11 @@ async function seed() {
   let transactions: any = []
   // console.log(seedDefaultScopes(prisma))
 
-  transactions = _.concat(transactions, seedDefaultScopes(prisma))
+  transactions = _.concat(
+    transactions,
+    seedDefaultScopes(prisma),
+    seedGroups(prisma),
+  )
   if (process.env.NODE_ENV === 'development') {
     await seedSystemUser(prisma)
     transactions = _.concat(transactions, seedTestData(prisma))

@@ -1,11 +1,7 @@
-'use strict'
-
+import { ensureLoggedIn } from 'connect-ensure-login'
+import { Request, Response } from 'express'
 import passport from 'passport'
-import celogin, { ensureLoggedIn } from 'connect-ensure-login'
-import { Request, Response, NextFunction } from 'express'
-import { SystemUser } from '@prisma/client'
 
-import queryString from 'query-string'
 
 export const index = (req: Request, res: Response) => {
   if (!req.query.code) {

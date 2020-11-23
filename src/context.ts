@@ -1,15 +1,14 @@
 import { PrismaClient } from '@prisma/client'
-import { Request, Response } from 'express'
 import { PubSub } from 'apollo-server-express'
+import { ExpressContext } from 'apollo-server-express/dist/ApolloServer'
+import { hash } from 'bcryptjs'
+import { Request, Response } from 'express'
 import {
   connectDefaultUserScopes,
   createGrantTypesAndConnect,
-  createRolesAndConnect,
   getUserId,
-  Token,
+  Token
 } from './utils'
-import { ExpressContext } from 'apollo-server-express/dist/ApolloServer'
-import { hash } from 'bcryptjs'
 
 export const prisma = new PrismaClient({
   datasources: {
@@ -47,9 +46,6 @@ prisma.$use(async (params, next) => {
   switch (params.action) {
     case 'create':
       switch (params.model) {
-        case 'UserPool':
-          await createRolesAndConnect(prisma, result.id)
-          break
         case 'oAuthClient':
           {
             await createGrantTypesAndConnect(prisma, result.id)

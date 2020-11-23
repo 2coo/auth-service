@@ -1,14 +1,12 @@
 import moment from 'moment-timezone'
 import { Request, Response } from 'express'
-import { validateAccessTokenExpiration } from './../validate'
 import { prisma } from '../../context'
+import { getAccessToken } from './utils'
 
 export const info = async (req: Request, res: Response, next: Function) => {
   try {
-    const accessToken = await validateAccessTokenExpiration(
-      req.params!.access_token,
-      String(req.vhost[0]),
-    )
+    const accessToken = await getAccessToken(req.params!.jti)
+    if (!accessToken) throw Error('AccessToken not found!')
     const now = moment()
     const diff = moment
       .duration(moment.parseZone(accessToken.expirationDate).diff(now))
@@ -16,7 +14,7 @@ export const info = async (req: Request, res: Response, next: Function) => {
     return res.json({
       audience: accessToken.Client.id,
       expires_in: diff * 60,
-      scope: accessToken.Scopes.map((scope) => scope.name).join(' '),
+      scope: accessToken.Scopes.map((scope: any) => scope.name).join(' '),
     })
   } catch (err) {
     res.status(400).json({
@@ -29,7 +27,7 @@ export const revoke = async (req: Request, res: Response, next: Function) => {
   try {
     await prisma.oAuthAccessToken.delete({
       where: {
-        accessToken: req.params!.access_token,
+        jti: req.params!.jti,
       },
     })
     return res.json({

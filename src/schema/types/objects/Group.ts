@@ -6,7 +6,7 @@ export const Group = objectType({
     t.model.name()
     t.model.description()
     t.model.Users()
-    t.model.Roles()
+    t.model.Scopes()
     t.model.createdAt()
     t.model.updatedAt()
   },

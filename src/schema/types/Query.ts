@@ -16,10 +16,6 @@ export const Query = queryType({
         }
         return null
       },
-    }),
-      t.crud.oAuthClient(),
-      t.crud.users(),
-      t.crud.roles(),
-      t.crud.group()
+    })
   },
 })

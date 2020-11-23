@@ -35,17 +35,6 @@ enum GrantType {
   EXTENSION
 }
 
-model Role {
-  id          String       @id @default(uuid())
-  name        String
-  description String?
-  Users       User[]
-  Groups      Group[]
-  Scopes      oAuthScope[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-}
-
 model oAuthClient {
   id                   String                   @id @default(cuid())
   name                 String
@@ -74,7 +63,7 @@ model oAuthScope {
   isCustomScope         Boolean                  @default(false)
   ResourceServer        oAuthResourceServer?     @relation(fields: [oAuthResourceServerId], references: [id])
   oAuthResourceServerId String?
-  Roles                 Role[]
+  Groups                Group[]
   Clients               oAuthClient[]
   AccessTokens          oAuthAccessToken[]
   AuthorizationCodes    oAuthAuthorizationCode[]
@@ -120,7 +109,7 @@ model oAuthResourceServer {
 
 model oAuthAccessToken {
   id             String       @id @default(uuid())
-  accessToken    String       @unique
+  jti            String       @unique
   expirationDate DateTime
   Scopes         oAuthScope[]
   User           User?        @relation(fields: [userId], references: [id])
@@ -165,14 +154,14 @@ enum Gender {
 }
 
 model Group {
-  id          String   @id @default(uuid())
-  identifier  String   @unique @default(uuid())
-  name        String
+  id          String       @id @default(uuid())
+  identifier  String       @unique @default(cuid())
+  name        String       @unique
   description String?
   Users       User[]
-  Roles       Role[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  Scopes      oAuthScope[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 }
 
 enum AccountStatusType {
@@ -201,7 +190,6 @@ model User {
   AccessTokens       oAuthAccessToken[]
   AuthorizationCodes oAuthAuthorizationCode[]
   RefreshTokens      oAuthRefreshToken[]
-  Roles              Role[]
   Groups             Group[]
   Notifications      Notification[]           @relation("NotificationRecipent")
   Activities         Notification[]           @relation("NotificationSender")

@@ -46,6 +46,14 @@
       ]
     },
     {
+      "tag": "CreateEnum",
+      "enum": "IdentityStatus",
+      "values": [
+        "VERIFIED",
+        "DISABLED"
+      ]
+    },
+    {
       "tag": "CreateSource",
       "source": "db"
     },
@@ -241,138 +249,6 @@
     },
     {
       "tag": "CreateModel",
-      "model": "Role"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Role",
-      "field": "id",
-      "type": "String",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "Role",
-          "field": "id"
-        },
-        "directive": "id"
-      }
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "Role",
-          "field": "id"
-        },
-        "directive": "default"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "Role",
-          "field": "id"
-        },
-        "directive": "default"
-      },
-      "argument": "",
-      "value": "uuid()"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Role",
-      "field": "name",
-      "type": "String",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Role",
-      "field": "description",
-      "type": "String",
-      "arity": "Optional"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Role",
-      "field": "Users",
-      "type": "User",
-      "arity": "List"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Role",
-      "field": "Groups",
-      "type": "Group",
-      "arity": "List"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Role",
-      "field": "CustomScopes",
-      "type": "oAuthCustomScope",
-      "arity": "List"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Role",
-      "field": "createdAt",
-      "type": "DateTime",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "Role",
-          "field": "createdAt"
-        },
-        "directive": "default"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "Role",
-          "field": "createdAt"
-        },
-        "directive": "default"
-      },
-      "argument": "",
-      "value": "now()"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Role",
-      "field": "updatedAt",
-      "type": "DateTime",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "Role",
-          "field": "updatedAt"
-        },
-        "directive": "updatedAt"
-      }
-    },
-    {
-      "tag": "CreateModel",
       "model": "oAuthClient"
     },
     {
@@ -490,13 +366,6 @@
       "model": "oAuthClient",
       "field": "EnabledScopes",
       "type": "oAuthScope",
-      "arity": "List"
-    },
-    {
-      "tag": "CreateField",
-      "model": "oAuthClient",
-      "field": "EnabledCustomScopes",
-      "type": "oAuthCustomScope",
       "arity": "List"
     },
     {
@@ -780,6 +649,98 @@
     {
       "tag": "CreateField",
       "model": "oAuthScope",
+      "field": "isCustomScope",
+      "type": "Boolean",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "oAuthScope",
+          "field": "isCustomScope"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "oAuthScope",
+          "field": "isCustomScope"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "false"
+    },
+    {
+      "tag": "CreateField",
+      "model": "oAuthScope",
+      "field": "ResourceServer",
+      "type": "oAuthResourceServer",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "oAuthScope",
+          "field": "ResourceServer"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "oAuthScope",
+          "field": "ResourceServer"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[oAuthResourceServerId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "oAuthScope",
+          "field": "ResourceServer"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "oAuthScope",
+      "field": "oAuthResourceServerId",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "oAuthScope",
+      "field": "Groups",
+      "type": "Group",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "oAuthScope",
       "field": "Clients",
       "type": "oAuthClient",
       "arity": "List"
@@ -801,7 +762,7 @@
     {
       "tag": "CreateField",
       "model": "oAuthScope",
-      "field": "RefreshTokenScope",
+      "field": "RefreshTokens",
       "type": "oAuthRefreshToken",
       "arity": "List"
     },
@@ -1356,7 +1317,7 @@
       "tag": "CreateField",
       "model": "oAuthResourceServer",
       "field": "Scopes",
-      "type": "oAuthCustomScope",
+      "type": "oAuthScope",
       "arity": "List"
     },
     {
@@ -1404,216 +1365,6 @@
         "path": {
           "tag": "Field",
           "model": "oAuthResourceServer",
-          "field": "updatedAt"
-        },
-        "directive": "updatedAt"
-      }
-    },
-    {
-      "tag": "CreateModel",
-      "model": "oAuthCustomScope"
-    },
-    {
-      "tag": "CreateField",
-      "model": "oAuthCustomScope",
-      "field": "id",
-      "type": "String",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "oAuthCustomScope",
-          "field": "id"
-        },
-        "directive": "id"
-      }
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "oAuthCustomScope",
-          "field": "id"
-        },
-        "directive": "default"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "oAuthCustomScope",
-          "field": "id"
-        },
-        "directive": "default"
-      },
-      "argument": "",
-      "value": "uuid()"
-    },
-    {
-      "tag": "CreateField",
-      "model": "oAuthCustomScope",
-      "field": "name",
-      "type": "String",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "oAuthCustomScope",
-          "field": "name"
-        },
-        "directive": "unique"
-      }
-    },
-    {
-      "tag": "CreateField",
-      "model": "oAuthCustomScope",
-      "field": "description",
-      "type": "String",
-      "arity": "Optional"
-    },
-    {
-      "tag": "CreateField",
-      "model": "oAuthCustomScope",
-      "field": "ResourceServer",
-      "type": "oAuthResourceServer",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "oAuthCustomScope",
-          "field": "ResourceServer"
-        },
-        "directive": "relation"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "oAuthCustomScope",
-          "field": "ResourceServer"
-        },
-        "directive": "relation"
-      },
-      "argument": "fields",
-      "value": "[oAuthResourceServerId]"
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "oAuthCustomScope",
-          "field": "ResourceServer"
-        },
-        "directive": "relation"
-      },
-      "argument": "references",
-      "value": "[id]"
-    },
-    {
-      "tag": "CreateField",
-      "model": "oAuthCustomScope",
-      "field": "oAuthResourceServerId",
-      "type": "String",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateField",
-      "model": "oAuthCustomScope",
-      "field": "Clients",
-      "type": "oAuthClient",
-      "arity": "List"
-    },
-    {
-      "tag": "CreateField",
-      "model": "oAuthCustomScope",
-      "field": "Roles",
-      "type": "Role",
-      "arity": "List"
-    },
-    {
-      "tag": "CreateField",
-      "model": "oAuthCustomScope",
-      "field": "oAuthAccessTokens",
-      "type": "oAuthAccessToken",
-      "arity": "List"
-    },
-    {
-      "tag": "CreateField",
-      "model": "oAuthCustomScope",
-      "field": "oAuthRefreshTokens",
-      "type": "oAuthRefreshToken",
-      "arity": "List"
-    },
-    {
-      "tag": "CreateField",
-      "model": "oAuthCustomScope",
-      "field": "oAuthAuthorizationCodes",
-      "type": "oAuthAuthorizationCode",
-      "arity": "List"
-    },
-    {
-      "tag": "CreateField",
-      "model": "oAuthCustomScope",
-      "field": "createdAt",
-      "type": "DateTime",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "oAuthCustomScope",
-          "field": "createdAt"
-        },
-        "directive": "default"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "oAuthCustomScope",
-          "field": "createdAt"
-        },
-        "directive": "default"
-      },
-      "argument": "",
-      "value": "now()"
-    },
-    {
-      "tag": "CreateField",
-      "model": "oAuthCustomScope",
-      "field": "updatedAt",
-      "type": "DateTime",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "oAuthCustomScope",
           "field": "updatedAt"
         },
         "directive": "updatedAt"
@@ -1669,7 +1420,7 @@
     {
       "tag": "CreateField",
       "model": "oAuthAccessToken",
-      "field": "accessToken",
+      "field": "jti",
       "type": "String",
       "arity": "Required"
     },
@@ -1679,7 +1430,7 @@
         "path": {
           "tag": "Field",
           "model": "oAuthAccessToken",
-          "field": "accessToken"
+          "field": "jti"
         },
         "directive": "unique"
       }
@@ -1696,13 +1447,6 @@
       "model": "oAuthAccessToken",
       "field": "Scopes",
       "type": "oAuthScope",
-      "arity": "List"
-    },
-    {
-      "tag": "CreateField",
-      "model": "oAuthAccessToken",
-      "field": "CustomScopes",
-      "type": "oAuthCustomScope",
       "arity": "List"
     },
     {
@@ -1968,16 +1712,9 @@
     {
       "tag": "CreateField",
       "model": "oAuthRefreshToken",
-      "field": "CustomScopes",
-      "type": "oAuthCustomScope",
-      "arity": "List"
-    },
-    {
-      "tag": "CreateField",
-      "model": "oAuthRefreshToken",
       "field": "User",
       "type": "User",
-      "arity": "Optional"
+      "arity": "Required"
     },
     {
       "tag": "CreateDirective",
@@ -2023,7 +1760,7 @@
       "model": "oAuthRefreshToken",
       "field": "userId",
       "type": "String",
-      "arity": "Optional"
+      "arity": "Required"
     },
     {
       "tag": "CreateField",
@@ -2237,13 +1974,6 @@
       "model": "oAuthAuthorizationCode",
       "field": "Scopes",
       "type": "oAuthScope",
-      "arity": "List"
-    },
-    {
-      "tag": "CreateField",
-      "model": "oAuthAuthorizationCode",
-      "field": "CustomScopes",
-      "type": "oAuthCustomScope",
       "arity": "List"
     },
     {
@@ -2490,7 +2220,7 @@
         "directive": "default"
       },
       "argument": "",
-      "value": "uuid()"
+      "value": "cuid()"
     },
     {
       "tag": "CreateField",
@@ -2498,6 +2228,17 @@
       "field": "name",
       "type": "String",
       "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Group",
+          "field": "name"
+        },
+        "directive": "unique"
+      }
     },
     {
       "tag": "CreateField",
@@ -2516,8 +2257,8 @@
     {
       "tag": "CreateField",
       "model": "Group",
-      "field": "Roles",
-      "type": "Role",
+      "field": "Scopes",
+      "type": "oAuthScope",
       "arity": "List"
     },
     {
@@ -2620,49 +2361,6 @@
     {
       "tag": "CreateField",
       "model": "User",
-      "field": "sub",
-      "type": "String",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "User",
-          "field": "sub"
-        },
-        "directive": "unique"
-      }
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "User",
-          "field": "sub"
-        },
-        "directive": "default"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "User",
-          "field": "sub"
-        },
-        "directive": "default"
-      },
-      "argument": "",
-      "value": "uuid()"
-    },
-    {
-      "tag": "CreateField",
-      "model": "User",
       "field": "username",
       "type": "String",
       "arity": "Required"
@@ -2677,6 +2375,31 @@
         },
         "directive": "unique"
       }
+    },
+    {
+      "tag": "CreateField",
+      "model": "User",
+      "field": "email",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "User",
+          "field": "email"
+        },
+        "directive": "unique"
+      }
+    },
+    {
+      "tag": "CreateField",
+      "model": "User",
+      "field": "password",
+      "type": "String",
+      "arity": "Required"
     },
     {
       "tag": "CreateField",
@@ -2713,48 +2436,9 @@
     {
       "tag": "CreateField",
       "model": "User",
-      "field": "isExternalProvider",
-      "type": "Boolean",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "User",
-          "field": "isExternalProvider"
-        },
-        "directive": "default"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "User",
-          "field": "isExternalProvider"
-        },
-        "directive": "default"
-      },
-      "argument": "",
-      "value": "false"
-    },
-    {
-      "tag": "CreateField",
-      "model": "User",
-      "field": "email",
-      "type": "String",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateField",
-      "model": "User",
-      "field": "password",
-      "type": "String",
-      "arity": "Required"
+      "field": "Identities",
+      "type": "Identity",
+      "arity": "List"
     },
     {
       "tag": "CreateField",
@@ -2796,13 +2480,6 @@
       "model": "User",
       "field": "RefreshTokens",
       "type": "oAuthRefreshToken",
-      "arity": "List"
-    },
-    {
-      "tag": "CreateField",
-      "model": "User",
-      "field": "Roles",
-      "type": "Role",
       "arity": "List"
     },
     {
@@ -3019,19 +2696,217 @@
       }
     },
     {
+      "tag": "CreateModel",
+      "model": "Identity"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Identity",
+      "field": "id",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
       "tag": "CreateDirective",
       "location": {
         "path": {
-          "tag": "Model",
-          "model": "User",
-          "arguments": [
-            {
-              "name": "",
-              "value": "[email, isExternalProvider]"
-            }
-          ]
+          "tag": "Field",
+          "model": "Identity",
+          "field": "id"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Identity",
+          "field": "id"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Identity",
+          "field": "id"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "uuid()"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Identity",
+      "field": "sub",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Identity",
+          "field": "sub"
         },
         "directive": "unique"
+      }
+    },
+    {
+      "tag": "CreateField",
+      "model": "Identity",
+      "field": "provider",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Identity",
+      "field": "User",
+      "type": "User",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Identity",
+          "field": "User"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Identity",
+          "field": "User"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[userId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Identity",
+          "field": "User"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Identity",
+      "field": "userId",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Identity",
+      "field": "status",
+      "type": "IdentityStatus",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Identity",
+          "field": "status"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Identity",
+          "field": "status"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "VERIFIED"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Identity",
+      "field": "isUserCreatedBefore",
+      "type": "Boolean",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Identity",
+      "field": "createdAt",
+      "type": "DateTime",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Identity",
+          "field": "createdAt"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Identity",
+          "field": "createdAt"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "now()"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Identity",
+      "field": "updatedAt",
+      "type": "DateTime",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Identity",
+          "field": "updatedAt"
+        },
+        "directive": "updatedAt"
       }
     },
     {

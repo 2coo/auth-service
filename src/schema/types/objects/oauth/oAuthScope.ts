@@ -4,6 +4,7 @@ export const oAuthScope = objectType({
   name: 'oAuthScope',
   definition(t) {
     t.model.name()
+    t.model.Groups()
     t.model.description()
   },
 })

@@ -35,17 +35,6 @@ enum GrantType {
   EXTENSION
 }
 
-model Role {
-  id           String             @id @default(uuid())
-  name         String
-  description  String?
-  Users        User[]
-  Groups       Group[]
-  CustomScopes oAuthCustomScope[]
-  createdAt    DateTime           @default(now())
-  updatedAt    DateTime           @updatedAt
-}
-
 model oAuthClient {
   id                   String                   @id @default(cuid())
   name                 String
@@ -55,7 +44,6 @@ model oAuthClient {
   RedirectUris         oAuthRedirectURI[]
   JavascriptOrigins    oAuthJavascriptOrigin[]
   EnabledScopes        oAuthScope[]
-  EnabledCustomScopes  oAuthCustomScope[]
   AccessTokens         oAuthAccessToken[]
   AuthorizationCodes   oAuthAuthorizationCode[]
   RefreshTokens        oAuthRefreshToken[]
@@ -69,15 +57,19 @@ model oAuthClient {
 }
 
 model oAuthScope {
-  id                 String                   @id @default(uuid())
-  name               String                   @unique
-  description        String?
-  Clients            oAuthClient[]
-  AccessTokens       oAuthAccessToken[]
-  AuthorizationCodes oAuthAuthorizationCode[]
-  RefreshTokenScope  oAuthRefreshToken[]
-  createdAt          DateTime                 @default(now())
-  updatedAt          DateTime                 @updatedAt
+  id                    String                   @id @default(uuid())
+  name                  String                   @unique
+  description           String?
+  isCustomScope         Boolean                  @default(false)
+  ResourceServer        oAuthResourceServer?     @relation(fields: [oAuthResourceServerId], references: [id])
+  oAuthResourceServerId String?
+  Groups                Group[]
+  Clients               oAuthClient[]
+  AccessTokens          oAuthAccessToken[]
+  AuthorizationCodes    oAuthAuthorizationCode[]
+  RefreshTokens         oAuthRefreshToken[]
+  createdAt             DateTime                 @default(now())
+  updatedAt             DateTime                 @updatedAt
 }
 
 model oAuthGrant {
@@ -107,70 +99,52 @@ model oAuthJavascriptOrigin {
 }
 
 model oAuthResourceServer {
-  id         String             @id @default(uuid())
+  id         String       @id @default(uuid())
   name       String
-  identifier String             @unique
-  Scopes     oAuthCustomScope[]
-  createdAt  DateTime           @default(now())
-  updatedAt  DateTime           @updatedAt
-}
-
-model oAuthCustomScope {
-  id                      String                   @id @default(uuid())
-  name                    String                   @unique
-  description             String?
-  ResourceServer          oAuthResourceServer      @relation(fields: [oAuthResourceServerId], references: [id])
-  oAuthResourceServerId   String
-  Clients                 oAuthClient[]
-  Roles                   Role[]
-  oAuthAccessTokens       oAuthAccessToken[]
-  oAuthRefreshTokens      oAuthRefreshToken[]
-  oAuthAuthorizationCodes oAuthAuthorizationCode[]
-  createdAt               DateTime                 @default(now())
-  updatedAt               DateTime                 @updatedAt
+  identifier String       @unique
+  Scopes     oAuthScope[]
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
 }
 
 model oAuthAccessToken {
-  id             String             @id @default(uuid())
-  accessToken    String             @unique
+  id             String       @id @default(uuid())
+  jti            String       @unique
   expirationDate DateTime
   Scopes         oAuthScope[]
-  CustomScopes   oAuthCustomScope[]
-  User           User?              @relation(fields: [userId], references: [id])
+  User           User?        @relation(fields: [userId], references: [id])
   userId         String?
-  Client         oAuthClient        @relation(fields: [oAuthClientId], references: [id])
+  Client         oAuthClient  @relation(fields: [oAuthClientId], references: [id])
   oAuthClientId  String
-  createdAt      DateTime           @default(now())
-  updatedAt      DateTime           @updatedAt
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 }
 
 model oAuthRefreshToken {
-  id             String             @id @default(uuid())
-  refreshToken   String             @unique @default(uuid())
+  id             String       @id @default(uuid())
+  refreshToken   String       @unique @default(uuid())
   expirationDate DateTime
   Scopes         oAuthScope[]
-  CustomScopes   oAuthCustomScope[]
-  User           User?              @relation(fields: [userId], references: [id])
-  userId         String?
-  Client         oAuthClient        @relation(fields: [oAuthClientId], references: [id])
+  User           User         @relation(fields: [userId], references: [id])
+  userId         String
+  Client         oAuthClient  @relation(fields: [oAuthClientId], references: [id])
   oAuthClientId  String
-  createdAt      DateTime           @default(now())
-  updatedAt      DateTime           @updatedAt
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 }
 
 model oAuthAuthorizationCode {
-  id             String             @id @default(uuid())
-  code           String             @unique @default(cuid(16))
+  id             String       @id @default(uuid())
+  code           String       @unique @default(cuid(16))
   expirationDate DateTime
   redirectURI    String
   Scopes         oAuthScope[]
-  CustomScopes   oAuthCustomScope[]
-  User           User               @relation(fields: [userId], references: [id])
+  User           User         @relation(fields: [userId], references: [id])
   userId         String
-  Client         oAuthClient        @relation(fields: [oAuthClientId], references: [id])
+  Client         oAuthClient  @relation(fields: [oAuthClientId], references: [id])
   oAuthClientId  String
-  createdAt      DateTime           @default(now())
-  updatedAt      DateTime           @updatedAt
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 }
 
 enum Gender {
@@ -180,14 +154,14 @@ enum Gender {
 }
 
 model Group {
-  id          String   @id @default(uuid())
-  identifier  String   @unique @default(uuid())
-  name        String
+  id          String       @id @default(uuid())
+  identifier  String       @unique @default(cuid())
+  name        String       @unique
   description String?
   Users       User[]
-  Roles       Role[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  Scopes      oAuthScope[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 }
 
 enum AccountStatusType {
@@ -203,19 +177,19 @@ enum AccountStatusType {
 
 model User {
   id                 String                   @id @default(uuid())
-  sub                String                   @unique @default(uuid())
   username           String                   @unique
-  accountStatusType  AccountStatusType        @default(UNCONFIRMED)
-  isExternalProvider Boolean                  @default(false)
-  email              String
+  email              String                   @unique
   password           String
+  //
+  accountStatusType  AccountStatusType        @default(UNCONFIRMED)
+  Identities         Identity[]
+  //
   Profile            Profile?
   PasswordResets     PasswordReset[]
   Devices            UserDevice[]
   AccessTokens       oAuthAccessToken[]
   AuthorizationCodes oAuthAuthorizationCode[]
   RefreshTokens      oAuthRefreshToken[]
-  Roles              Role[]
   Groups             Group[]
   Notifications      Notification[]           @relation("NotificationRecipent")
   Activities         Notification[]           @relation("NotificationSender")
@@ -223,8 +197,23 @@ model User {
   Following          User[]                   @relation("UserFollows", references: [id])
   createdAt          DateTime                 @default(now())
   updatedAt          DateTime                 @updatedAt
+}
 
-  @@unique([email, isExternalProvider])
+enum IdentityStatus {
+  VERIFIED
+  DISABLED
+}
+
+model Identity {
+  id                  String         @id @default(uuid())
+  sub                 String         @unique
+  provider            String
+  User                User           @relation(fields: [userId], references: [id])
+  userId              String
+  status              IdentityStatus @default(VERIFIED)
+  isUserCreatedBefore Boolean
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
 }
 
 model NotificationType {

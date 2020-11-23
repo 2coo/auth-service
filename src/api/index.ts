@@ -7,8 +7,8 @@ import expressSession from 'express-session'
 import passport from 'passport'
 import path from 'path'
 import redis from 'redis'
-import { prisma } from '../context'
 import routes from './controllers'
+
 const RedisStore = connectRedis(expressSession)
 
 const redisClient = redis.createClient(
@@ -80,11 +80,8 @@ module.exports = function (app: Express.Application) {
     .post(routes.oauth2.decision)
   // Create endpoint handlers for oauth2 token
   router.route('/oauth2/token').post(routes.oauth2.token)
-  router.get('/api/profile', routes.user.info)
-  router.get('/api/clientinfo', routes.client.info)
 
-  router.get('/api/revoke', routes.token.revoke)
-  router.get('/api/tokeninfo/:access_token', routes.token.info)
+  router.get('/api/revoke/:jti', routes.token.revoke)
 
   app.use(router)
 }

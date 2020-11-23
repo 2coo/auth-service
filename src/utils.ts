@@ -45,67 +45,6 @@ export const createGrantTypesAndConnect = async (
   prisma.$transaction(manyGrantTypes)
 }
 
-export const createRolesAndConnect = async (
-  prisma: PrismaClient,
-  userPoolId: string,
-) => {
-  const userPoolRoles = [
-    {
-      name: 'USER',
-      description: 'User role',
-      Scopes: {
-        connect: [
-          {
-            name: 'user',
-          },
-          {
-            name: 'read:user',
-          },
-          {
-            name: 'user:email',
-          },
-          {
-            name: 'user:follow',
-          },
-        ],
-      },
-    },
-    {
-      name: 'ORG_ADMIN',
-      description:
-        'Fully manage the organization and its group and memberships.',
-      Scopes: {
-        create: [
-          {
-            name: 'write:org',
-            description:
-              'Read and write access to organization membership, organization group and membership.',
-          },
-          {
-            name: 'read:org',
-            description:
-              'Read-only access to organization membership, organization group and membership.',
-          },
-        ],
-      },
-    },
-  ].map((grantType) => ({
-    ...grantType,
-    UserPool: {
-      connect: {
-        id: userPoolId,
-      },
-    },
-  }))
-
-  const manyRoles = userPoolRoles.map((role) =>
-    prisma.role.create({
-      data: role,
-    }),
-  )
-  prisma.$transaction(manyRoles)
-}
-
 export const connectDefaultUserScopes = async (
   prisma: PrismaClient,
   id: string,
@@ -136,49 +75,15 @@ export const connectDefaultUserScopes = async (
   prisma.$transaction([scopes])
 }
 
-export const createOrConnectRole = async (
-  prisma: PrismaClient,
-  id: string,
-  userPoolId: string,
-) => {
+export const createOrConnectRole = async (prisma: PrismaClient, id: string) => {
   prisma.user.update({
     where: {
       id,
     },
     data: {
-      Roles: {
-        connectOrCreate: {
-          where: {
-            name_userPoolId: {
-              name: 'Role',
-              userPoolId,
-            },
-          },
-          create: {
-            name: 'USER',
-            description: 'User role',
-            UserPool: {
-              connect: {
-                id: userPoolId,
-              },
-            },
-            Scopes: {
-              connect: [
-                {
-                  name: 'user',
-                },
-                {
-                  name: 'read:user',
-                },
-                {
-                  name: 'user:email',
-                },
-                {
-                  name: 'user:follow',
-                },
-              ],
-            },
-          },
+      Groups: {
+        connect: {
+          name: 'default',
         },
       },
     },
