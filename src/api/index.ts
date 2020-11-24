@@ -38,7 +38,7 @@ module.exports = function (app: Express.Application) {
       secret: process.env.SESSION_SECRET as string,
       store: new RedisStore({ client: redisClient }),
       cookie: {
-        sameSite: true,
+        path: "/",
         secure: process.env.NODE_ENV === 'production',
         httpOnly: true,
         maxAge: Number(process.env.SESSION_MAX_AGE),
@@ -58,7 +58,14 @@ module.exports = function (app: Express.Application) {
   app.use(Express.static(path.join(__dirname, './public')))
 
   app.use((req, res, next) => {
-    console.log('# Request recieved on: ', `[${req.method}]`, req.url)
+    console.log()
+
+    console.log(
+      '# Request recieved on: ',
+      `[${req.method}]`,
+      req.url,
+      req.url === '/oauth2/token' ? `(GRANT_TYPE: ${req.body.grant_type})` : '',
+    )
     next()
   })
 
@@ -81,7 +88,7 @@ module.exports = function (app: Express.Application) {
   // Create endpoint handlers for oauth2 token
   router.route('/oauth2/token').post(routes.oauth2.token)
 
-  router.get('/api/revoke/:jti', routes.token.revoke)
+  router.post('/api/revoke', routes.token.revoke)
 
   app.use(router)
 }

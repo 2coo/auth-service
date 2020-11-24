@@ -1,6 +1,6 @@
 import { compare } from 'bcryptjs'
 import { ensureLoggedIn } from 'connect-ensure-login'
-import { Request, Response } from 'express'
+import { Request, Response, NextFunction } from 'express'
 import _ from 'lodash'
 import moment from 'moment-timezone'
 import oauth2orize from 'oauth2orize'
@@ -12,9 +12,11 @@ import {
   getAuthCode,
   getClient,
   getClientById,
+  getRefreshToken,
   getScopesFromClient,
   getScopesFromUser,
   getUserByUsernameOrEmail,
+  isExpired,
   issueAccessToken,
   issueRefreshToken,
 } from './utils'
@@ -42,6 +44,7 @@ const issueTokens = (
   clientId: string,
   scope: Array<string>,
   done: any,
+  onlyAccessToken: boolean = false,
 ) => {
   return getClient(clientId)
     .then((client) => {
@@ -53,7 +56,7 @@ const issueTokens = (
         client.accessTokenLifetime,
       ).then(async (accessToken) => {
         let refreshToken = null
-        if (userId) {
+        if (userId && !onlyAccessToken) {
           refreshToken = (
             await issueRefreshToken(
               clientId,
@@ -64,7 +67,7 @@ const issueTokens = (
           ).refreshToken
         }
         return done(null, accessToken, refreshToken, {
-          expires_in: client.accessTokenLifetime * 60,
+          expiresIn: client.accessTokenLifetime * 60,
         })
       })
     })
@@ -122,7 +125,7 @@ server.exchange(
           const passwordValid = await compare(password, user.password)
           if (!passwordValid) return done(null, false)
           // Everything validated, return the token
-          issueTokens(user.id, client.id, scope, done)
+          issueTokens(user.id, client.id, scope, done, true)
         })
       })
       .catch((error) => {
@@ -140,7 +143,7 @@ server.exchange(
         if (localClient.secret !== client.secret) return done(null, false)
         // Everything validated, return the token
         // Pass in a null for user id since there is no user with this grant type
-        issueTokens(null, client.clientId, scope, done)
+        issueTokens(null, client.clientId, scope, done, true)
       })
       .catch((error) => {
         return done(error)
@@ -148,10 +151,38 @@ server.exchange(
   }),
 )
 
+server.exchange(
+  oauth2orize.exchange.refreshToken((client, refreshToken, scope, done) => {
+    getRefreshToken(refreshToken)
+      .then((refreshToken) => {
+        if (!refreshToken) return done(null, false)
+        if (isExpired(refreshToken.expirationDate)) return done(null, false)
+        issueTokens(
+          refreshToken.userId,
+          client.id,
+          refreshToken.Scopes.map((scope) => scope.name),
+          done,
+          true,
+        )
+      })
+      .catch((err) => done(null, false))
+  }),
+)
+
 // User authorization endpoint.
 
 export const authorization = [
-  ensureLoggedIn(),
+  (req: any, res: Response, next: NextFunction) => {
+    req.session.returnTo = req.url || req.baseUrl
+    req.session.save((err: any) => {
+      if (err) {
+        console.log(err)
+      }
+      ensureLoggedIn({
+        setRedirectTo: false,
+      })(req, res, next)
+    })
+  },
   server.authorization(
     (clientId, redirectUri, done) => {
       getClientById(clientId)

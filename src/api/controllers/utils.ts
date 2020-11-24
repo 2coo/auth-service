@@ -12,7 +12,7 @@ const privateKey = fs.readFileSync(`./keys/default.key`)
 const signToken = (payload: object, expiresIn: number) => {
   return jwt.sign(payload, privateKey, {
     algorithm: 'RS256',
-    expiresIn: expiresIn,
+    expiresIn: expiresIn * 60,
   })
 }
 
@@ -112,14 +112,14 @@ export const issueAccessToken = async (
           // exp: expirationDate.valueOf(),
           token_use: 'jwt',
           // nbf: NaN,
-          iat: moment().valueOf(),
+          iat: moment().valueOf() / 1000,
           jti: jti,
           // claims
           username: user.username,
           email: user.email,
           displayName: user.Profile?.displayName,
         },
-        accessTokenLifetime * 60,
+        accessTokenLifetime,
       )
       await prisma.oAuthAccessToken.create({
         data: {
@@ -205,7 +205,9 @@ export const issueRefreshToken = (
   })
 }
 
-export const calculateExpiresInAsSecond = (expirationDate: string | Moment) => {
+export const calculateExpiresInAsSecond = (
+  expirationDate: string | Moment | Date,
+) => {
   return moment.parseZone(expirationDate).diff(moment(), 'seconds')
 }
 
@@ -213,6 +215,10 @@ export const calculateExpirationDate = (accessTokenLifetime: number) => {
   return moment().add({
     minute: accessTokenLifetime,
   })
+}
+
+export const isExpired = (expirationDate: string | Date): boolean => {
+  return moment().isAfter(moment(expirationDate))
 }
 
 export const getClientById = (clientId: string) => {
@@ -286,4 +292,15 @@ export const getScopesFromClient = (client: {
   EnabledScopes: Array<oAuthScope>
 }) => {
   return client.EnabledScopes.map((scope: oAuthScope) => scope.name)
+}
+
+export const getRefreshToken = (refreshToken: string) => {
+  return prisma.oAuthRefreshToken.findOne({
+    where: {
+      refreshToken,
+    },
+    include: {
+      Scopes: true,
+    },
+  })
 }

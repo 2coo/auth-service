@@ -2,7 +2,6 @@ import { ensureLoggedIn } from 'connect-ensure-login'
 import { Request, Response } from 'express'
 import passport from 'passport'
 
-
 export const index = (req: Request, res: Response) => {
   if (!req.query.code) {
     res.send('OAuth 2.0 Server <br/> <a href="account">Account</a>')
@@ -19,7 +18,10 @@ export const loginForm = (req: Request, res: Response) => {
 }
 
 export const login = [
-  passport.authenticate('local', { successReturnToOrRedirect: '/account', failureRedirect: '/login' }),
+  passport.authenticate('local', {
+    successReturnToOrRedirect: '/account',
+    failureRedirect: '/login',
+  }),
 ]
 
 export const logout = (req: Request, res: Response) => {

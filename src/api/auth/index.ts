@@ -7,10 +7,8 @@ import { Strategy as ClientPasswordStrategy } from 'passport-oauth2-client-passw
 import {
   getClientById,
   getUserById,
-  getUserByUsernameOrEmail
+  getUserByUsernameOrEmail,
 } from './../controllers/utils'
-
-
 
 passport.use(
   new LocalStrategy(
