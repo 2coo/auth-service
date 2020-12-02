@@ -1,19 +1,27 @@
 import { oAuthScope } from '@prisma/client'
 import fs from 'fs'
-import jwt from 'jsonwebtoken'
 import _ from 'lodash'
 import moment from 'moment'
 import { Moment } from 'moment-timezone'
+import { JWK, JWS } from 'node-jose'
 import { v4 as uuidv4 } from 'uuid'
 import { prisma } from '../../context'
 
-const privateKey = fs.readFileSync(`./keys/default.key`)
+const signToken = async (payload: object, expiresIn: number) => {
+  const ks = fs.readFileSync(`${__dirname}/../../keys/jwks.json`)
+  const keyStore = await JWK.asKeyStore(ks.toString())
+  const jwks = keyStore.all({ use: 'sig' })
+  const rawKey = _.sample(jwks)
 
-const signToken = (payload: object, expiresIn: number) => {
-  return jwt.sign(payload, privateKey, {
-    algorithm: 'RS256',
-    expiresIn: expiresIn * 60,
-  })
+  if (rawKey !== undefined) {
+    const key = await JWK.asKey(rawKey)
+    const opt = { compact: true, jwk: key, fields: { typ: 'jwt' } }
+    const token = await JWS.createSign(opt, key)
+      .update(JSON.stringify(payload))
+      .final()
+    return token
+  }
+  throw new Error('RawKey is undefined!')
 }
 
 const mapScopes = (scopes: Array<string>) => {
@@ -102,7 +110,7 @@ export const issueAccessToken = async (
   if (userId) {
     const user = await getUserById(userId)
     if (user) {
-      const token = signToken(
+      const token = await signToken(
         {
           iss: 'https://tomujin.org',
           sub: userId,
@@ -143,7 +151,7 @@ export const issueAccessToken = async (
       return token
     }
   } else {
-    const token = signToken(
+    const token = await signToken(
       {
         iss: '',
         sub: clientId,

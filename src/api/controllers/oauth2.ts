@@ -125,7 +125,7 @@ server.exchange(
           const passwordValid = await compare(password, user.password)
           if (!passwordValid) return done(null, false)
           // Everything validated, return the token
-          issueTokens(user.id, client.id, scope, done, true)
+          issueTokens(user.id, client.id, scope, done)
         })
       })
       .catch((error) => {

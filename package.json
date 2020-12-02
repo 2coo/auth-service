@@ -18,7 +18,7 @@
     "generate:nexus": "cross-env NODE_ENV=development ts-node --transpile-only ./src/schema",
     "start": "cross-env NODE_ENV=production node dist/index.js",
     "studio": "dotenv -e .env.development.local -- prisma studio",
-    "testa": "ts-node --transpile-only test.ts"
+    "key:generate": "ts-node --transpile-only src/keys/generator.ts"
   },
   "repository": {
     "type": "git",
@@ -35,6 +35,7 @@
     "@nexus/schema": "^0.18.0",
     "@prisma/client": "^2.11.0",
     "@types/connect-redis": "^0.0.15",
+    "@types/node-jose": "^1.1.5",
     "@types/redis": "^2.8.28",
     "@types/uuid": "^8.3.0",
     "@types/vhost": "^3.0.1",
@@ -57,14 +58,17 @@
     "lodash": "^4.17.20",
     "moment-timezone": "^0.5.31",
     "nexus-plugin-prisma": "^0.24.0",
+    "node-jose": "^2.0.0",
     "oauth2orize": "^1.11.0",
     "passport": "^0.4.1",
     "passport-http": "^0.3.0",
     "passport-http-bearer": "^1.0.1",
     "passport-local": "^1.0.0",
     "passport-oauth2-client-password": "^0.1.2",
+    "pem-jwk": "^2.0.0",
     "query-string": "^6.13.7",
     "redis": "^3.0.2",
+    "rsa-compat": "^2.0.8",
     "uuid": "^8.3.1",
     "vhost": "^3.0.2",
     "vhost-ts": "^4.0.0"

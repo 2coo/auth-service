@@ -1,6 +1,8 @@
-import { Request, Response } from 'express'
+import { Request, Response, NextFunction } from 'express'
 import passport from 'passport'
 import { prisma } from '../../context'
+import fs from 'fs'
+import jose from 'node-jose'
 
 export const revoke = [
   passport.authenticate(['basic', 'clientPassword'], {
@@ -25,3 +27,9 @@ export const revoke = [
     }
   },
 ]
+
+export const jwks = async (req: Request, res: Response, next: NextFunction) => {
+  const ks = fs.readFileSync(`${__dirname}/../../keys/jwks.json`)
+  const keyStore = await jose.JWK.asKeyStore(ks.toString())
+  res.json(keyStore.toJSON())
+}

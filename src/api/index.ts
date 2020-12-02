@@ -38,7 +38,7 @@ module.exports = function (app: Express.Application) {
       secret: process.env.SESSION_SECRET as string,
       store: new RedisStore({ client: redisClient }),
       cookie: {
-        path: "/",
+        path: '/',
         secure: process.env.NODE_ENV === 'production',
         httpOnly: true,
         maxAge: Number(process.env.SESSION_MAX_AGE),
@@ -87,7 +87,7 @@ module.exports = function (app: Express.Application) {
     .post(routes.oauth2.decision)
   // Create endpoint handlers for oauth2 token
   router.route('/oauth2/token').post(routes.oauth2.token)
-
+  router.route('/.well-known/jwks.json').get(routes.token.jwks)
   router.post('/api/revoke', routes.token.revoke)
 
   app.use(router)

@@ -7,6 +7,13 @@ import { permissions } from './permissions'
 import { schema } from './schema'
 import express from 'express'
 import * as HTTP from 'http'
+import fs from 'fs'
+
+if (!fs.existsSync(`${__dirname}/keys/jwks.json`)) {
+  throw new Error(
+    'Please generate jwks: to generate jwks run "yarn key:generate"',
+  )
+}
 
 const graphqlServer = new ApolloServer({
   schema: applyMiddleware(schema, permissions),
