@@ -1,9 +1,9 @@
 import { objectType } from '@nexus/schema'
 
-export const oAuthRedirectURI = objectType({
-  name: 'oAuthRedirectURI',
+export const JavascriptOrigin = objectType({
+  name: 'JavascriptOrigin',
   definition(t) {
-    t.model.url()
+    t.model.uri()
     t.model.createdAt()
   },
 })

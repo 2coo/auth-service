@@ -1,10 +1,10 @@
 import { objectType } from '@nexus/schema'
 
-export const Identity = objectType({
-  name: 'Identity',
+export const ExternalIdentity = objectType({
+  name: 'ExternalIdentity',
   definition(t) {
     t.model.sub()
-    t.model.provider()
+    t.model.providerType()
     t.model.status()
     t.model.isUserCreatedBefore()
     t.model.User()

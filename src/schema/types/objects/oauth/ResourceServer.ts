@@ -1,7 +1,7 @@
 import { objectType } from '@nexus/schema'
 
-export const oAuthResourceServer = objectType({
-  name: 'oAuthResourceServer',
+export const ResourceServer = objectType({
+  name: 'ResourceServer',
   definition(t) {
     t.model.name()
     t.model.identifier()

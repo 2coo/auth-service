@@ -38,7 +38,7 @@ export const createGrantTypesAndConnect = async (
     },
   }))
   const manyGrantTypes = grantTypes.map((grantType) =>
-    prisma.oAuthGrant.create({
+    prisma.grant.create({
       data: grantType,
     }),
   )
@@ -49,7 +49,7 @@ export const connectDefaultUserScopes = async (
   prisma: PrismaClient,
   id: string,
 ) => {
-  const scopes = prisma.oAuthClient.update({
+  const scopes = prisma.application.update({
     where: {
       id,
     },

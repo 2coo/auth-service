@@ -1,24 +1,22 @@
+import { seedDefaultGrantTypes } from './granttypes'
 import { PrismaClient } from '@prisma/client'
 import _ from 'lodash'
-import { seedGroups } from './group'
 import { seedDefaultScopes } from './scopes'
-import { seedSystemUser } from './systemUser'
-import { seedTestData } from './testdata'
+import { seedDefaultTenantWithAdmin } from './default'
 
 const prisma = new PrismaClient()
 
 async function seed() {
   let transactions: any = []
-  // console.log(seedDefaultScopes(prisma))
 
   transactions = _.concat(
     transactions,
+    seedDefaultGrantTypes(prisma),
     seedDefaultScopes(prisma),
-    seedGroups(prisma),
+    seedDefaultTenantWithAdmin(prisma),
   )
   if (process.env.NODE_ENV === 'development') {
-    await seedSystemUser(prisma)
-    transactions = _.concat(transactions, seedTestData(prisma))
+    // todo
   }
   await prisma.$transaction(transactions)
 }

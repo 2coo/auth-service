@@ -31,22 +31,13 @@ prisma.$use(async (params, next) => {
           )
         }
         break
-      case 'SystemUser':
-        {
-          const saltRounds = 10
-          params.args.data.password = await hash(
-            params.args.data.password,
-            saltRounds,
-          )
-        }
-        break
     }
   }
   const result = await next(params)
   switch (params.action) {
     case 'create':
       switch (params.model) {
-        case 'oAuthClient':
+        case 'Application':
           {
             await createGrantTypesAndConnect(prisma, result.id)
             await connectDefaultUserScopes(prisma, result.id)

@@ -7,7 +7,9 @@ import expressSession from 'express-session'
 import passport from 'passport'
 import path from 'path'
 import redis from 'redis'
+import { prisma } from '../context'
 import routes from './controllers'
+import vhost from 'vhost-ts'
 
 const RedisStore = connectRedis(expressSession)
 
@@ -73,6 +75,16 @@ module.exports = function (app: Express.Application) {
   require('./auth')
 
   const router = Express.Router()
+  // tenants
+  router.use((req, res, next) => {
+    console.log(req.vhost[0]);
+    
+    prisma.tenant.findOne({
+      where: {
+        domainName: req.vhost[0],
+      },
+    })
+  })
   // site
   router.get('/', [ensureLoggedIn(), routes.site.index])
   // static resources for stylesheets, images, javascript files
@@ -90,5 +102,5 @@ module.exports = function (app: Express.Application) {
   router.route('/.well-known/jwks.json').get(routes.token.jwks)
   router.post('/api/revoke', routes.token.revoke)
 
-  app.use(router)
+  app.use(vhost('*.auth.test', router))
 }

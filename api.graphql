@@ -2,6 +2,18 @@
 ### Do not make changes to this file directly
 
 
+type AccessToken {
+  Application: Application!
+  createdAt: DateTime!
+  expirationDate: DateTime!
+  User: User
+}
+
+input AccessTokenWhereUniqueInput {
+  id: String
+  jti: String
+}
+
 """Account status of users"""
 enum AccountStatusType {
   ARCHIVED
@@ -14,18 +26,98 @@ enum AccountStatusType {
   UNKNOWN
 }
 
+type Application {
+  accessTokenLifetime: Int!
+  AccessTokens(after: AccessTokenWhereUniqueInput, before: AccessTokenWhereUniqueInput, first: Int, last: Int): [AccessToken!]!
+  AuthorizationCodes(after: AuthorizationCodeWhereUniqueInput, before: AuthorizationCodeWhereUniqueInput, first: Int, last: Int): [AuthorizationCode!]!
+  createdAt: DateTime!
+  EnabledScopes(after: ScopeWhereUniqueInput, before: ScopeWhereUniqueInput, first: Int, last: Int): [Scope!]!
+  Grants(after: GrantWhereUniqueInput, before: GrantWhereUniqueInput, first: Int, last: Int): [Grant!]!
+  id: String!
+  idTokenLifetime: Int!
+  JavascriptOrigins(after: JavascriptOriginWhereUniqueInput, before: JavascriptOriginWhereUniqueInput, first: Int, last: Int): [JavascriptOrigin!]!
+  name: String!
+  RedirectUris(after: RedirectURIWhereUniqueInput, before: RedirectURIWhereUniqueInput, first: Int, last: Int): [RedirectURI!]!
+  refreshTokenLifetime: Int!
+  RefreshTokens(after: RefreshTokenWhereUniqueInput, before: RefreshTokenWhereUniqueInput, first: Int, last: Int): [RefreshToken!]!
+  Registrations(after: RegistrationWhereUniqueInput, before: RegistrationWhereUniqueInput, first: Int, last: Int): [Registration!]!
+  Roles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int): [Role!]!
+  secret: String!
+  trustedApplication: Boolean!
+  updatedAt: DateTime!
+}
+
+input ApplicationWhereUniqueInput {
+  id: String
+}
+
+type AuthorizationCode {
+  Application: Application!
+  code: String!
+  createdAt: DateTime!
+  expirationDate: DateTime!
+  redirectURI: String!
+  Scopes(after: ScopeWhereUniqueInput, before: ScopeWhereUniqueInput, first: Int, last: Int): [Scope!]!
+  User: User!
+}
+
+input AuthorizationCodeWhereUniqueInput {
+  code: String
+  id: String
+}
+
 type AuthPayload {
   token: String!
-  user: SystemUser!
+  user: User!
 }
 
 scalar DateTime
+
+type EmailSettings {
+  createdAt: DateTime!
+  from: String!
+  host: String!
+  id: String!
+  name: String!
+  password: String
+  port: String!
+  SMTPSecurity: SMTPSecurity!
+  updatedAt: DateTime!
+  username: String
+}
+
+type ExternalIdentity {
+  createdAt: DateTime!
+  isUserCreatedBefore: Boolean!
+  providerType: SupportedProvider!
+  status: ExternalIdentityStatus!
+  sub: String!
+  updatedAt: DateTime!
+  User: User!
+}
+
+"""Status of external identity"""
+enum ExternalIdentityStatus {
+  CONFIRMED
+  DISABLED
+  UNCONFIRMED
+}
+
+input ExternalIdentityWhereUniqueInput {
+  id: String
+  sub: String
+}
 
 """Gender of users"""
 enum Gender {
   FEMALE
   MALE
   OTHER
+}
+
+type Grant {
+  createdAt: DateTime!
+  grantType: GrantType!
 }
 
 """"""
@@ -37,154 +129,49 @@ enum GrantType {
   REFRESH_TOKEN
 }
 
+input GrantWhereUniqueInput {
+  grantType: GrantType
+  id: String
+}
+
 type Group {
   createdAt: DateTime!
   description: String
   name: String!
-  Scopes(after: oAuthScopeWhereUniqueInput, before: oAuthScopeWhereUniqueInput, first: Int, last: Int): [oAuthScope!]!
+  Roles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int): [Role!]!
   updatedAt: DateTime!
   Users(after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int): [User!]!
 }
 
 input GroupWhereUniqueInput {
   id: String
-  identifier: String
   name: String
 }
 
-type Identity {
+type IdentityProvider {
+  Applications(after: ApplicationWhereUniqueInput, before: ApplicationWhereUniqueInput, first: Int, last: Int): [Application!]!
+  authorizationUrl: String!
+  cliendId: String!
+  clientSecret: String!
   createdAt: DateTime!
-  isUserCreatedBefore: Boolean!
-  provider: String!
-  status: IdentityStatus!
-  sub: String!
-  updatedAt: DateTime!
-  User: User!
-}
-
-enum IdentityStatus {
-  DISABLED
-  VERIFIED
-}
-
-input IdentityWhereUniqueInput {
-  id: String
-  sub: String
-}
-
-type Mutation {
-  login(email: String!, password: String!): AuthPayload
-}
-
-type oAuthAccessToken {
-  Client: oAuthClient!
-  createdAt: DateTime!
-  expirationDate: DateTime!
-  Scopes(after: oAuthScopeWhereUniqueInput, before: oAuthScopeWhereUniqueInput, first: Int, last: Int): [oAuthScope!]!
-  User: User
-}
-
-input oAuthAccessTokenWhereUniqueInput {
-  id: String
-  jti: String
-}
-
-type oAuthAuthorizationCode {
-  Client: oAuthClient!
-  code: String!
-  createdAt: DateTime!
-  expirationDate: DateTime!
-  redirectURI: String!
-  Scopes(after: oAuthScopeWhereUniqueInput, before: oAuthScopeWhereUniqueInput, first: Int, last: Int): [oAuthScope!]!
-  User: User!
-}
-
-input oAuthAuthorizationCodeWhereUniqueInput {
-  code: String
-  id: String
-}
-
-type oAuthClient {
-  accessTokenLifetime: Int!
-  AccessTokens(after: oAuthAccessTokenWhereUniqueInput, before: oAuthAccessTokenWhereUniqueInput, first: Int, last: Int): [oAuthAccessToken!]!
-  AuthorizationCodes(after: oAuthAuthorizationCodeWhereUniqueInput, before: oAuthAuthorizationCodeWhereUniqueInput, first: Int, last: Int): [oAuthAuthorizationCode!]!
-  createdAt: DateTime!
-  EnabledScopes(after: oAuthScopeWhereUniqueInput, before: oAuthScopeWhereUniqueInput, first: Int, last: Int): [oAuthScope!]!
-  Grants(after: oAuthGrantWhereUniqueInput, before: oAuthGrantWhereUniqueInput, first: Int, last: Int): [oAuthGrant!]!
-  id: String!
-  idTokenLifetime: Int!
-  JavascriptOrigins(after: oAuthJavascriptOriginWhereUniqueInput, before: oAuthJavascriptOriginWhereUniqueInput, first: Int, last: Int): [oAuthJavascriptOrigin!]!
-  name: String!
-  RedirectUris(after: oAuthRedirectURIWhereUniqueInput, before: oAuthRedirectURIWhereUniqueInput, first: Int, last: Int): [oAuthRedirectURI!]!
-  refreshTokenLifetime: Int!
-  RefreshTokens(after: oAuthRefreshTokenWhereUniqueInput, before: oAuthRefreshTokenWhereUniqueInput, first: Int, last: Int): [oAuthRefreshToken!]!
-  secret: String!
-  trustedClient: Boolean!
+  ExternalIdentities(after: ExternalIdentityWhereUniqueInput, before: ExternalIdentityWhereUniqueInput, first: Int, last: Int): [ExternalIdentity!]!
+  issuer: String!
+  providerType: SupportedProvider!
+  tokenUrl: String!
   updatedAt: DateTime!
 }
 
-type oAuthGrant {
-  createdAt: DateTime!
-  grantType: GrantType!
-}
-
-input oAuthGrantWhereUniqueInput {
-  id: String
-}
-
-type oAuthJavascriptOrigin {
+type JavascriptOrigin {
   createdAt: DateTime!
   uri: String!
 }
 
-input oAuthJavascriptOriginWhereUniqueInput {
+input JavascriptOriginWhereUniqueInput {
   id: String
 }
 
-type oAuthRedirectURI {
-  createdAt: DateTime!
-  url: String!
-}
-
-input oAuthRedirectURIWhereUniqueInput {
-  id: String
-}
-
-type oAuthRefreshToken {
-  createdAt: DateTime!
-  expirationDate: DateTime!
-  refreshToken: String!
-}
-
-input oAuthRefreshTokenWhereUniqueInput {
-  id: String
-  refreshToken: String
-}
-
-type oAuthResourceServer {
-  createdAt: DateTime!
-  identifier: String!
-  name: String!
-  Scopes(after: oAuthScopeWhereUniqueInput, before: oAuthScopeWhereUniqueInput, first: Int, last: Int): [oAuthScope!]!
-}
-
-type oAuthScope {
-  description: String
-  Groups(after: GroupWhereUniqueInput, before: GroupWhereUniqueInput, first: Int, last: Int): [Group!]!
-  name: String!
-}
-
-input oAuthScopeWhereUniqueInput {
-  id: String
-  name: String
-}
-
-type Photo {
-  Profile: Profile!
-}
-
-input PhotoWhereUniqueInput {
-  id: String
+type Mutation {
+  login(email: String!, password: String!): AuthPayload
 }
 
 type Profile {
@@ -195,29 +182,106 @@ type Profile {
   gender: Gender
   lastName: String
   mobileNumber: String
-  Photos(after: PhotoWhereUniqueInput, before: PhotoWhereUniqueInput, first: Int, last: Int): [Photo!]!
+  profilePicture: String
   updatedAt: DateTime!
   User: User!
 }
 
 type Query {
-  me: SystemUser
+  me: User
 }
 
-enum SystemRole {
-  ADMIN
-  AUDITOR
-  MANAGER
-  SUPER_ADMIN
-}
-
-type SystemUser {
+type RedirectURI {
   createdAt: DateTime!
-  email: String!
-  id: String!
-  SystemRole: SystemRole!
+  url: String!
+}
+
+input RedirectURIWhereUniqueInput {
+  id: String
+}
+
+type RefreshToken {
+  createdAt: DateTime!
+  expirationDate: DateTime!
+  refreshToken: String!
+}
+
+input RefreshTokenWhereUniqueInput {
+  id: String
+  refreshToken: String
+}
+
+type Registration {
+  Application: Application!
+  createdAt: DateTime!
+  isVerified: Boolean!
+  Roles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int): [Role!]!
   updatedAt: DateTime!
+  User: User!
   username: String!
+}
+
+input RegistrationWhereUniqueInput {
+  id: String
+  userId_clientId: UserIdClientIdCompoundUniqueInput
+  username: String
+}
+
+type ResourceServer {
+  createdAt: DateTime!
+  identifier: String!
+  name: String!
+  Scopes(after: ScopeWhereUniqueInput, before: ScopeWhereUniqueInput, first: Int, last: Int): [Scope!]!
+}
+
+type Role {
+  ChildRoles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int): [Role!]!
+  createdAt: DateTime!
+  Groups(after: GroupWhereUniqueInput, before: GroupWhereUniqueInput, first: Int, last: Int): [Group!]!
+  ParentRoles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int): [Role!]!
+  permissions: String
+  Registrations(after: RegistrationWhereUniqueInput, before: RegistrationWhereUniqueInput, first: Int, last: Int): [Registration!]!
+  updatedAt: DateTime!
+}
+
+input RoleWhereUniqueInput {
+  id: String
+  name: String
+}
+
+type Scope {
+  description: String
+  name: String!
+}
+
+input ScopeWhereUniqueInput {
+  id: String
+  name: String
+}
+
+"""Security options of SMTP server"""
+enum SMTPSecurity {
+  NONE
+  SSL
+  TLS
+}
+
+"""Supported providers"""
+enum SupportedProvider {
+  APPLE
+  FACEBOOK
+  GOOGLE
+}
+
+type Tenant {
+  Applications(after: ApplicationWhereUniqueInput, before: ApplicationWhereUniqueInput, first: Int, last: Int): [Application!]!
+  createdAt: DateTime!
+  domainName: String!
+  EmailSettings: EmailSettings
+  Groups(after: GroupWhereUniqueInput, before: GroupWhereUniqueInput, first: Int, last: Int): [Group!]!
+  id: String!
+  isAcitve: Boolean!
+  updatedAt: DateTime!
 }
 
 type User {
@@ -225,9 +289,11 @@ type User {
   createdAt: DateTime!
   Devices(after: UserDeviceWhereUniqueInput, before: UserDeviceWhereUniqueInput, first: Int, last: Int): [UserDevice!]!
   email: String!
+  ExternalIdentities(after: ExternalIdentityWhereUniqueInput, before: ExternalIdentityWhereUniqueInput, first: Int, last: Int): [ExternalIdentity!]!
   Groups(after: GroupWhereUniqueInput, before: GroupWhereUniqueInput, first: Int, last: Int): [Group!]!
-  Identities(after: IdentityWhereUniqueInput, before: IdentityWhereUniqueInput, first: Int, last: Int): [Identity!]!
   Profile: Profile
+  Registrations(after: RegistrationWhereUniqueInput, before: RegistrationWhereUniqueInput, first: Int, last: Int): [Registration!]!
+  Tenant: Tenant!
   updatedAt: DateTime!
   username: String!
 }
@@ -238,6 +304,11 @@ type UserDevice {
 
 input UserDeviceWhereUniqueInput {
   id: String
+}
+
+input UserIdClientIdCompoundUniqueInput {
+  clientId: String!
+  userId: String!
 }
 
 input UserWhereUniqueInput {

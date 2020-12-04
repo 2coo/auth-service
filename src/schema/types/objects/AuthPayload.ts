@@ -5,6 +5,6 @@ export const AuthPayload = objectType({
     t.string('token', {
       nullable: false,
     })
-    t.field('user', { type: 'SystemUser', nullable: false })
+    t.field('user', { type: 'User', nullable: false })
   },
 })

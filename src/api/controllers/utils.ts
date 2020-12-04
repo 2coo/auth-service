@@ -1,4 +1,4 @@
-import { oAuthScope } from '@prisma/client'
+import { Role, Scope } from '@prisma/client'
 import fs from 'fs'
 import _ from 'lodash'
 import moment from 'moment'
@@ -31,7 +31,7 @@ const mapScopes = (scopes: Array<string>) => {
 }
 
 export const getClient = (clientId: string) => {
-  return prisma.oAuthClient.findOne({
+  return prisma.application.findOne({
     where: {
       id: clientId,
     },
@@ -49,7 +49,12 @@ export const getUserById = (userId: string) => {
     include: {
       Groups: {
         include: {
-          Scopes: true,
+          Roles: true,
+        },
+      },
+      Registrations: {
+        include: {
+          Roles: true,
         },
       },
       Profile: true,
@@ -63,9 +68,9 @@ export const generateAuthCode = (
   redirectUri: string,
   scopes: Array<string>,
 ) => {
-  return prisma.oAuthAuthorizationCode.create({
+  return prisma.authorizationCode.create({
     data: {
-      Client: {
+      Application: {
         connect: {
           id: clientId,
         },
@@ -89,7 +94,7 @@ export const generateAuthCode = (
 }
 
 export const getAuthCode = (code: string) => {
-  return prisma.oAuthAuthorizationCode.findOne({
+  return prisma.authorizationCode.findOne({
     where: {
       code: code,
     },
@@ -116,7 +121,7 @@ export const issueAccessToken = async (
           sub: userId,
           aud: clientId,
           groups: user.Groups.map((group) => group.name),
-          scopes: getScopesFromUser(user),
+          scopes: getRolesFromUser(user),
           // exp: expirationDate.valueOf(),
           token_use: 'jwt',
           // nbf: NaN,
@@ -129,10 +134,10 @@ export const issueAccessToken = async (
         },
         accessTokenLifetime,
       )
-      await prisma.oAuthAccessToken.create({
+      await prisma.accessToken.create({
         data: {
           jti: jti,
-          Client: {
+          Application: {
             connect: {
               id: clientId,
             },
@@ -163,10 +168,10 @@ export const issueAccessToken = async (
       },
       accessTokenLifetime * 60,
     )
-    await prisma.oAuthAccessToken.create({
+    await prisma.accessToken.create({
       data: {
         jti: jti,
-        Client: {
+        Application: {
           connect: {
             id: clientId,
           },
@@ -189,9 +194,9 @@ export const issueRefreshToken = (
   scopes: Array<string>,
   refreshTokenLifetime: number,
 ) => {
-  return prisma.oAuthRefreshToken.create({
+  return prisma.refreshToken.create({
     data: {
-      Client: {
+      Application: {
         connect: {
           id: clientId,
         },
@@ -230,7 +235,7 @@ export const isExpired = (expirationDate: string | Date): boolean => {
 }
 
 export const getClientById = (clientId: string) => {
-  return prisma.oAuthClient.findOne({
+  return prisma.application.findOne({
     where: {
       id: clientId,
     },
@@ -242,12 +247,12 @@ export const getClientById = (clientId: string) => {
 }
 
 export const getAccessToken = (jti: string) => {
-  return prisma.oAuthAccessToken.findOne({
+  return prisma.accessToken.findOne({
     where: {
       jti,
     },
     include: {
-      Client: true,
+      Application: true,
       Scopes: true,
     },
   })
@@ -269,7 +274,7 @@ export const getUserByUsernameOrEmail = (username: string) => {
       Profile: true,
       Groups: {
         include: {
-          Scopes: true,
+          Roles: true,
         },
       },
     },
@@ -277,33 +282,36 @@ export const getUserByUsernameOrEmail = (username: string) => {
 }
 
 export const deleteAuthCode = (id: string) => {
-  return prisma.oAuthAuthorizationCode.delete({
+  return prisma.authorizationCode.delete({
     where: {
       id,
     },
   })
 }
 
-export const getScopesFromUser = (user: {
+export const getRolesFromUser = (user: {
   Groups: Array<{
-    Scopes: Array<oAuthScope>
+    Roles: Array<Role>
   }>
 }) => {
   return _.uniq(
     _.flatMap(user.Groups, (group) =>
-      group.Scopes.map((scope: oAuthScope) => String(scope.name)),
+      group.Roles.map((role: Role) => ({
+        ...role,
+        permissions: role.permissions ? JSON.parse(role.permissions) : null,
+      })),
     ),
   )
 }
 
 export const getScopesFromClient = (client: {
-  EnabledScopes: Array<oAuthScope>
+  EnabledScopes: Array<Scope>
 }) => {
-  return client.EnabledScopes.map((scope: oAuthScope) => scope.name)
+  return client.EnabledScopes.map((scope: Scope) => scope.name)
 }
 
 export const getRefreshToken = (refreshToken: string) => {
-  return prisma.oAuthRefreshToken.findOne({
+  return prisma.refreshToken.findOne({
     where: {
       refreshToken,
     },

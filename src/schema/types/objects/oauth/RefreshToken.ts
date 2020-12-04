@@ -1,7 +1,7 @@
 import { objectType } from '@nexus/schema'
 
-export const oAuthRefreshToken = objectType({
-  name: 'oAuthRefreshToken',
+export const RefreshToken = objectType({
+  name: 'RefreshToken',
   definition(t) {
     t.model.refreshToken()
     t.model.expirationDate()

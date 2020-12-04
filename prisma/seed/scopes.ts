@@ -1,30 +1,28 @@
-import { PrismaClient, oAuthScope } from '@prisma/client'
+import { PrismaClient, Scope } from '@prisma/client'
 
-export const seedDefaultScopes = (
-  prisma: PrismaClient,
-) => {
-  const scope1 = prisma.oAuthScope.create({
+export const seedDefaultScopes = (prisma: PrismaClient) => {
+  const scope1 = prisma.scope.create({
     data: {
-      name: 'user',
-      description: 'Grants read/write access to own profile info only',
+      name: 'openid',
+      description: 'OpenID Connect scope for id_token',
     },
   })
-  const scope2 = prisma.oAuthScope.create({
+  const scope2 = prisma.scope.create({
     data: {
-      name: 'read:user',
-      description: "Grants access to read a user's profile data.",
+      name: 'email',
+      description: "OpenID Connect scope for email",
     },
   })
-  const scope3 = prisma.oAuthScope.create({
+  const scope3 = prisma.scope.create({
     data: {
-      name: 'user:email',
-      description: "Grants read access to a user's email addresses.",
+      name: 'profile',
+      description: "OpenID Connect scope for profile",
     },
   })
-  const scope4 = prisma.oAuthScope.create({
+  const scope4 = prisma.scope.create({
     data: {
-      name: 'user:follow',
-      description: 'Grants access to follow or unfollow other users.',
+      name: 'avig.auth.user.admin',
+      description: 'Scope for user to manage his own user data',
     },
   })
 
