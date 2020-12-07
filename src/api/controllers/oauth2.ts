@@ -171,17 +171,6 @@ server.exchange(
 // User authorization endpoint.
 
 export const authorization = [
-  // (req: any, res: Response, next: NextFunction) => {
-  //   req.session.returnTo = req.url || req.baseUrl
-  //   req.session.save((err: any) => {
-  //     if (err) {
-  //       console.log(err)
-  //     }
-  //     ensureLoggedIn({
-  //       setRedirectTo: false,
-  //     })(req, res, next)
-  //   })
-  // },
   (req: any, res: Response, next: NextFunction) => {
     if (!req.isAuthenticated()) {
       return res.render('login')
