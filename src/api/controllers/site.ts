@@ -12,7 +12,7 @@ export const index = (req: Request, res: Response) => {
 
 export const loginForm = (req: Request, res: Response) => {
   if (req.isAuthenticated()) {
-    res.redirect(`/account`)
+    return res.redirect(`/account`)
   }
   return res.render('login')
 }
@@ -26,6 +26,8 @@ export const login = [
 
 export const logout = (req: Request, res: Response) => {
   req.logout()
+  res.clearCookie('access_token')
+  res.clearCookie('refresh_token')
   return res.redirect(`/`)
 }
 

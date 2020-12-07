@@ -12,6 +12,8 @@
   <script type="text/javascript" src="../javascripts/jquery.min.js"></script>
   <script type="text/javascript">
     $(document).ready(function () {
+		const urlParams = new URLSearchParams(window.location.search);
+		document.getElementById("clientId").value = urlParams.get("client_id")
 		$("#formABC").submit(function (e) {
 		console.log('#hey')
 
@@ -31,6 +33,7 @@
 	</script>
 <body>
 	<form  id="formABC" action="/login" method="post">
+		<input type="hidden" name="client_id" id="clientId" /><br/>
 		<div>
 		  <label>Username:</label>
 		  <input type="text" name="username" /><br/>

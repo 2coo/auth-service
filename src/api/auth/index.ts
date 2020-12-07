@@ -1,19 +1,30 @@
-import { AccountStatusType, User } from '@prisma/client'
-import { compare } from 'bcryptjs'
+import jwt from 'jsonwebtoken'
+import jwksClient from 'jwks-rsa'
+import { AccountStatusType, Application, User } from '@prisma/client'
 import passport from 'passport'
 import { BasicStrategy } from 'passport-http'
-import { Strategy as LocalStrategy } from 'passport-local'
 import { Strategy as ClientPasswordStrategy } from 'passport-oauth2-client-password'
+
 import {
   getClientById,
   getUserById,
   getUserByUsernameOrEmail,
+  getUserRegistration,
 } from './../controllers/utils'
+import { Strategy as LocalStrategy } from 'passport-local'
+import { compare } from 'bcryptjs'
+import { Strategy as CustomStrategy } from 'passport-custom'
+import { AppUser } from '../client/user'
+import { getKIDfromAccessToken } from '../client'
+import Axios from 'axios'
+
+const ISSUER = process.env.ISSUER
 
 passport.use(
   new LocalStrategy(
-    { usernameField: 'username' },
-    async (username, password, done) => {
+    { usernameField: 'username', passReqToCallback: true },
+    async (req, username, password, done) => {
+      const clientId = req.body.client_id
       getUserByUsernameOrEmail(username)
         .then(async (user) => {
           if (
@@ -22,6 +33,8 @@ passport.use(
           ) {
             return done(null, false)
           }
+          const registration = await getUserRegistration(user.id, clientId)
+          if (!registration) return done(null, false)
           const passwordValid = await compare(password, user.password)
           if (!passwordValid) {
             return done(null, false)
@@ -31,6 +44,36 @@ passport.use(
         .catch((error) => done(error))
     },
   ),
+)
+
+passport.use(
+  'jwt',
+  new CustomStrategy(async (req: any, done) => {
+    const defaultApp: Application = req.session.defaultApp
+    const host = req.protocol + '://' + req.get('host')
+    const client = jwksClient({
+      cache: true,
+      rateLimit: true,
+      cacheMaxEntries: 5,
+      cacheMaxAge: 10000,
+      jwksUri: `${host}/.well-known/jwks.json`,
+    })
+    const accessToken = req.cookies['access_token']
+    if (!accessToken) return done(null, false)
+    try {
+      const kid = getKIDfromAccessToken(accessToken)
+      const key = await client.getSigningKeyAsync(kid)
+      const payload: any = jwt.verify(accessToken, key.getPublicKey(), {
+        algorithms: ['RS256'],
+        audience: defaultApp.id,
+        issuer: ISSUER,
+      })
+      const user = new AppUser(payload)
+      return done(null, user)
+    } catch (err) {
+      if (err) done(new Error(err.message))
+    }
+  }),
 )
 
 passport.serializeUser((user: User, done) => {

@@ -7,6 +7,8 @@ import { JWK, JWS } from 'node-jose'
 import { v4 as uuidv4 } from 'uuid'
 import { prisma } from '../../context'
 
+const HOST = process.env.DOMAIN
+
 const signToken = async (payload: object, expiresIn: number) => {
   const ks = fs.readFileSync(`${__dirname}/../../keys/jwks.json`)
   const keyStore = await JWK.asKeyStore(ks.toString())
@@ -117,7 +119,7 @@ export const issueAccessToken = async (
     if (user) {
       const token = await signToken(
         {
-          iss: 'https://tomujin.org',
+          iss: `http://${HOST}`,
           sub: userId,
           aud: clientId,
           groups: user.Groups.map((group) => group.name),
@@ -280,6 +282,16 @@ export const getUserByUsernameOrEmail = (username: string) => {
     },
   })
 }
+export const getUserRegistration = (userId: string, appId: string) => {
+  return prisma.registration.findOne({
+    where: {
+      userId_clientId: {
+        userId: userId,
+        clientId: appId,
+      },
+    },
+  })
+}
 
 export const deleteAuthCode = (id: string) => {
   return prisma.authorizationCode.delete({
@@ -319,4 +331,16 @@ export const getRefreshToken = (refreshToken: string) => {
       Scopes: true,
     },
   })
+}
+
+export const getDefaultApplicationByTenant = (id: string) => {
+  const defaultApp = prisma.application.findOne({
+    where: {
+      tenantId_name: {
+        name: 'Default',
+        tenantId: id,
+      },
+    },
+  })
+  return defaultApp
 }

@@ -1,6 +1,6 @@
 import { compare } from 'bcryptjs'
 import { ensureLoggedIn } from 'connect-ensure-login'
-import { Request, Response, NextFunction } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import _ from 'lodash'
 import moment from 'moment-timezone'
 import oauth2orize from 'oauth2orize'
@@ -14,7 +14,6 @@ import {
   getClientById,
   getRefreshToken,
   getScopesFromClient,
-  getScopesFromUser,
   getUserByUsernameOrEmail,
   isExpired,
   issueAccessToken,
@@ -172,16 +171,22 @@ server.exchange(
 // User authorization endpoint.
 
 export const authorization = [
+  // (req: any, res: Response, next: NextFunction) => {
+  //   req.session.returnTo = req.url || req.baseUrl
+  //   req.session.save((err: any) => {
+  //     if (err) {
+  //       console.log(err)
+  //     }
+  //     ensureLoggedIn({
+  //       setRedirectTo: false,
+  //     })(req, res, next)
+  //   })
+  // },
   (req: any, res: Response, next: NextFunction) => {
-    req.session.returnTo = req.url || req.baseUrl
-    req.session.save((err: any) => {
-      if (err) {
-        console.log(err)
-      }
-      ensureLoggedIn({
-        setRedirectTo: false,
-      })(req, res, next)
-    })
+    if (!req.isAuthenticated()) {
+      return res.render('login')
+    }
+    next()
   },
   server.authorization(
     (clientId, redirectUri, done) => {
@@ -219,10 +224,11 @@ export const authorization = [
   ),
   async (request: Request, response: Response) => {
     const clientScopes = getScopesFromClient(request!.oauth2!.client)
-    const invalidScopes = _.difference(
-      (request.query!.scope as string).split(' '),
-      clientScopes,
-    )
+    const scopes = request.query!.scope
+      ? (request.query!.scope as string).split(' ')
+      : []
+
+    const invalidScopes = _.difference(scopes, clientScopes)
     if (invalidScopes.length > 0) {
       return response.status(500).json({
         message: `Invalid scopes: [${invalidScopes.join(', ')}]`,
@@ -241,12 +247,8 @@ export const authorization = [
 export const decision = [
   ensureLoggedIn(),
   server.decision((req: any, done) => {
-    // remove all scopes user does not have
+    // remove all client does not have
     const requestedScopes = Array<string>(req.oauth2?.req.scope)
-
-    const user: any = req.user
-
-    const userScopes = getScopesFromUser(user)
 
     const client = req.oauth2.client
 
@@ -255,8 +257,7 @@ export const decision = [
     return done(null, {
       scope: _.filter(
         requestedScopes,
-        (scope) =>
-          userScopes.indexOf(scope) > -1 && clientScopes.indexOf(scope) > -1,
+        (scope) => clientScopes.indexOf(scope) > -1,
       ),
     })
   }),

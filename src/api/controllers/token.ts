@@ -11,7 +11,7 @@ export const revoke = [
   }),
   async (req: Request, res: Response, next: Function) => {
     try {
-      await prisma.oAuthRefreshToken.delete({
+      await prisma.refreshToken.delete({
         where: {
           refreshToken: req.body.refresh_token,
         },

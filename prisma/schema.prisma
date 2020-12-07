@@ -39,13 +39,13 @@ model Registration {
 }
 
 model Application {
-  id                   String              @id @default(cuid(32))
+  id                   String              @id @default(uuid())
   Tenant               Tenant              @relation(fields: [tenantId], references: [id])
   tenantId             String
   Registrations        Registration[]
   Roles                Role[]
   name                 String
-  secret               String              @default(uuid(32))
+  secret               String              @default(cuid())
   IdentityProviders    IdentityProvider[]
   Grants               Grant[]
   RedirectUris         RedirectURI[]
@@ -61,6 +61,8 @@ model Application {
   trustedApplication   Boolean             @default(false)
   createdAt            DateTime            @default(now())
   updatedAt            DateTime            @updatedAt
+
+  @@unique([tenantId, name])
 }
 
 model Scope {

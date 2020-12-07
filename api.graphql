@@ -49,6 +49,7 @@ type Application {
 
 input ApplicationWhereUniqueInput {
   id: String
+  tenantId_name: TenantIdNameCompoundUniqueInput
 }
 
 type AuthorizationCode {
@@ -282,6 +283,11 @@ type Tenant {
   id: String!
   isAcitve: Boolean!
   updatedAt: DateTime!
+}
+
+input TenantIdNameCompoundUniqueInput {
+  name: String!
+  tenantId: String!
 }
 
 type User {

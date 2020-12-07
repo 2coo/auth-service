@@ -1,17 +1,20 @@
-import { ensureLoggedIn } from 'connect-ensure-login'
 import connectRedis from 'connect-redis'
 import cookieParser from 'cookie-parser'
 import errorHandler from 'errorhandler'
-import Express from 'express'
+import Express, { NextFunction, Response } from 'express'
 import expressSession from 'express-session'
 import passport from 'passport'
 import path from 'path'
 import redis from 'redis'
-import { prisma } from '../context'
-import routes from './controllers'
 import vhost from 'vhost-ts'
+import { prisma } from '../context'
+import { authCodeCallback, ensureLoggedIn } from './client'
+import routes from './controllers'
+import { getDefaultApplicationByTenant } from './controllers/utils'
 
 const RedisStore = connectRedis(expressSession)
+
+const DOMAIN = process.env.DOMAIN_HOST
 
 const redisClient = redis.createClient(
   Number(process.env.REDIS_PORT),
@@ -42,6 +45,7 @@ module.exports = function (app: Express.Application) {
       cookie: {
         path: '/',
         secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
         httpOnly: true,
         maxAge: Number(process.env.SESSION_MAX_AGE),
       },
@@ -58,10 +62,7 @@ module.exports = function (app: Express.Application) {
   })
 
   app.use(Express.static(path.join(__dirname, './public')))
-
   app.use((req, res, next) => {
-    console.log()
-
     console.log(
       '# Request recieved on: ',
       `[${req.method}]`,
@@ -75,20 +76,29 @@ module.exports = function (app: Express.Application) {
   require('./auth')
 
   const router = Express.Router()
-  // tenants
-  router.use((req, res, next) => {
-    console.log(req.vhost[0]);
-    
-    prisma.tenant.findOne({
+
+  // tenant check
+  router.use(async (req: any, res, next) => {
+    const tenantDomain = req.vhost[0] === undefined ? '*' : req.vhost[0]
+    const tenant = await prisma.tenant.findOne({
       where: {
-        domainName: req.vhost[0],
+        domainName: tenantDomain,
       },
     })
+    if (!tenant) {
+      return res.send(`The "${tenantDomain}" tenant not found!`)
+    }
+    req.session.defaultApp = await getDefaultApplicationByTenant(tenant.id)
+    next()
   })
+
   // site
   router.get('/', [ensureLoggedIn(), routes.site.index])
   // static resources for stylesheets, images, javascript files
-  router.route('/login').get(routes.site.loginForm).post(routes.site.login)
+  router
+    .route('/login')
+    .get([authCodeCallback, ensureLoggedIn()])
+    .post(routes.site.login)
   router.get('/logout', routes.site.logout)
   router.get('/account', routes.site.account)
 
@@ -102,5 +112,7 @@ module.exports = function (app: Express.Application) {
   router.route('/.well-known/jwks.json').get(routes.token.jwks)
   router.post('/api/revoke', routes.token.revoke)
 
-  app.use(vhost('*.auth.test', router))
+  //subdomain tenant
+  app.use(vhost(`*.${DOMAIN}`, router))
+  app.use(vhost(`${DOMAIN}`, router))
 }

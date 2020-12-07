@@ -6,9 +6,7 @@ export const defaultGrantTypes = [
   { grantType: GrantType.REFRESH_TOKEN },
   { grantType: GrantType.EXTENSION },
 ]
-export const seedDefaultGrantTypes = async (
-  prisma: PrismaClient,
-): Promise<Grant[]> => {
+export const seedDefaultGrantTypes = (prisma: PrismaClient) => {
   const grantTypes = defaultGrantTypes.map(({ grantType }) =>
     prisma.grant.create({
       data: {
@@ -16,5 +14,5 @@ export const seedDefaultGrantTypes = async (
       },
     }),
   )
-  return prisma.$transaction(grantTypes)
+  return grantTypes
 }
