@@ -17,6 +17,13 @@ import { Strategy as CustomStrategy } from 'passport-custom'
 import { AppUser } from '../client/user'
 import { getKIDfromAccessToken } from '../client'
 
+export class JWTScopeStrategy extends CustomStrategy {
+  authenticate(req: any, options: any) {
+    req.scope = options.scope
+    return super.authenticate(req, options)
+  }
+}
+
 const ISSUER = process.env.ISSUER
 
 passport.use(
@@ -47,7 +54,7 @@ passport.use(
 
 passport.use(
   'jwt',
-  new CustomStrategy(async (req: any, done) => {
+  new JWTScopeStrategy(async (req: any, done) => {
     const defaultApp: Application = req.session.defaultApp
     const host = req.protocol + '://' + req.get('host')
     const client = jwksClient({
@@ -67,7 +74,11 @@ passport.use(
         audience: defaultApp.id,
         issuer: ISSUER,
       })
-      const user = new AppUser(payload)
+      const appUser = new AppUser(payload)
+      if (appUser.canScope(req.scope))
+        return done(new Error(`Not allowed scope`))
+      const user = await getUserById(String(appUser.sub))
+      if (user) return done(new Error('User not found!'))
       return done(null, user)
     } catch (err) {
       if (err) done(new Error(err.message))
@@ -97,7 +108,6 @@ function verifyClient(clientId: string, clientSecret: string, done: any) {
   getClientById(clientId)
     .then((client) => {
       if (!client) return done(null, false)
-      // if (!client.trustedClient) return done(null, false)
       if (client.secret === clientSecret) return done(null, client)
       return done(null, client)
     })

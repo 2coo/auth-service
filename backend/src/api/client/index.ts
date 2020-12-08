@@ -57,8 +57,6 @@ export const authCodeCallback = async (
         },
       )
     ).data
-    console.log('#tokens', tokens)
-
     if (tokens.access_token) {
       res.cookie('access_token', tokens.access_token, {
         httpOnly: true,

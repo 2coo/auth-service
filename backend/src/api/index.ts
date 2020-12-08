@@ -103,40 +103,27 @@ module.exports = function (app: Express.Application) {
     .get([authCodeCallback, ensureLoggedInWithCookie()])
     .post(routes.site.login)
   router.get('/logout', routes.site.logout)
-  router.get('/app/account', routes.site.account)
 
   // Create endpoint handlers for oauth2 authorize
   router.get('/oauth2/authorize', routes.oauth2.authorization)
+
+  router.get(
+    '/oauth2/userinfo',
+    routes.user.userinfo
+  )
+
   router
     .route('/oauth2/authorize/dialog')
     .get([ensureLoggedIn(), renderSPA])
-    .post(
-      // (req, res, next) => {
-      //   setTimeout(function () {
-      //     return res.json({
-      //       email: 'giva@gmail.com',
-      //       application: 'Default',
-      //       transaction_id: '123231',
-      //       scopes: [
-      //         {
-      //           name: "openid",
-      //           description: "hey"
-      //         },
-      //         {
-      //           name: "email",
-      //           description: "hey2"
-      //         }
-      //       ]
-      //     })
-      //   }, 3000)
-      // },
-      routes.oauth2.dialog
-    )
+    .post(routes.oauth2.dialog)
+
   router.post('/oauth2/authorize/decision', routes.oauth2.decision)
   // Create endpoint handlers for oauth2 token
   router.route('/oauth2/token').post(routes.oauth2.token)
+
   router.route('/.well-known/jwks.json').get(routes.token.jwks)
-  router.post('/api/revoke', routes.token.revoke)
+
+  router.post('/oauth2/token/revoke', routes.token.revoke)
 
   router.get('*', renderSPA)
   //subdomain tenant

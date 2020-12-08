@@ -183,7 +183,7 @@ type Profile {
   gender: Gender
   lastName: String
   mobileNumber: String
-  profilePicture: String
+  picture: String
   updatedAt: DateTime!
   User: User!
 }

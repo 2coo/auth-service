@@ -1,14 +1,5 @@
-import { ensureLoggedIn } from 'connect-ensure-login'
-import { Request, Response, NextFunction } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import passport from 'passport'
-
-export const index = (req: Request, res: Response) => {
-  if (!req.query.code) {
-    res.send('OAuth 2.0 Server <br/> <a href="account">Account</a>')
-  } else {
-    res.render('index-with-code')
-  }
-}
 
 export const login = [
   passport.authenticate('local', {
@@ -23,8 +14,3 @@ export const logout = (req: Request, res: Response, next: NextFunction) => {
   res.clearCookie('refresh_token')
   return res.redirect(`/`)
 }
-
-export const account = [
-  ensureLoggedIn(),
-  (req: Request, res: Response) => res.render('account', { user: req.user }),
-]
