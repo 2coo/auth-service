@@ -1,0 +1,352 @@
+// This is your Prisma schema file,
+// learn more about it in the docs https//pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Tenant {
+  id            String         @id @default(uuid())
+  domainName    String         @unique
+  isAcitve      Boolean        @default(true)
+  Applications  Application[]
+  Users         User[]
+  Groups        Group[]
+  EmailSettings EmailSettings?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model Registration {
+  id          String      @id @default(uuid())
+  User        User        @relation(fields: [userId], references: [id])
+  userId      String
+  Application Application @relation(fields: [clientId], references: [id])
+  clientId    String
+  username    String      @unique
+  Roles       Role[]
+  isVerified  Boolean     @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, clientId])
+}
+
+model Application {
+  id                   String              @id @default(uuid())
+  Tenant               Tenant              @relation(fields: [tenantId], references: [id])
+  tenantId             String
+  Registrations        Registration[]
+  Roles                Role[]
+  name                 String
+  secret               String              @default(cuid())
+  IdentityProviders    IdentityProvider[]
+  Grants               Grant[]
+  RedirectUris         RedirectURI[]
+  JavascriptOrigins    JavascriptOrigin[]
+  EnabledScopes        Scope[]
+  AccessTokens         AccessToken[]
+  AuthorizationCodes   AuthorizationCode[]
+  RefreshTokens        RefreshToken[]
+  refreshTokenLifetime Int                 @default(43200)
+  accessTokenLifetime  Int                 @default(60)
+  idTokenLifetime      Int                 @default(5)
+  logo                 String?
+  trustedApplication   Boolean             @default(false)
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+
+  @@unique([tenantId, name])
+}
+
+model Scope {
+  id                 String              @id @default(uuid())
+  name               String              @unique
+  description        String?
+  isCustomScope      Boolean             @default(false)
+  ResourceServer     ResourceServer?     @relation(fields: [ResourceServerId], references: [id])
+  ResourceServerId   String?
+  Applications       Application[]
+  AccessTokens       AccessToken[]
+  AuthorizationCodes AuthorizationCode[]
+  RefreshTokens      RefreshToken[]
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+}
+
+enum GrantType {
+  AUTHORIZATION_CODE
+  PASSWORD
+  REFRESH_TOKEN
+  CLIENT_CREDENTIALS
+  EXTENSION
+}
+
+model Grant {
+  id           String        @id @default(uuid())
+  grantType    GrantType     @unique
+  Applications Application[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model RedirectURI {
+  id            String      @id @default(uuid())
+  Application   Application @relation(fields: [ApplicationId], references: [id])
+  ApplicationId String
+  url           String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model JavascriptOrigin {
+  id            String      @id @default(uuid())
+  Application   Application @relation(fields: [ApplicationId], references: [id])
+  ApplicationId String
+  uri           String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model ResourceServer {
+  id         String   @id @default(uuid())
+  name       String
+  identifier String   @unique
+  Scopes     Scope[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model AccessToken {
+  id             String      @id @default(uuid())
+  jti            String      @unique
+  expirationDate DateTime
+  Scopes         Scope[]
+  User           User?       @relation(fields: [userId], references: [id])
+  userId         String?
+  Application    Application @relation(fields: [ApplicationId], references: [id])
+  ApplicationId  String
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}
+
+model RefreshToken {
+  id             String      @id @default(uuid())
+  refreshToken   String      @unique @default(uuid())
+  expirationDate DateTime
+  Scopes         Scope[]
+  User           User        @relation(fields: [userId], references: [id])
+  userId         String
+  Application    Application @relation(fields: [ApplicationId], references: [id])
+  ApplicationId  String
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}
+
+model AuthorizationCode {
+  id             String      @id @default(uuid())
+  code           String      @unique @default(cuid(16))
+  expirationDate DateTime
+  redirectURI    String
+  Scopes         Scope[]
+  User           User        @relation(fields: [userId], references: [id])
+  userId         String
+  Application    Application @relation(fields: [ApplicationId], references: [id])
+  ApplicationId  String
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}
+
+enum Gender {
+  FEMALE
+  MALE
+  OTHER
+}
+
+model Group {
+  id          String   @id @default(uuid())
+  Tenant      Tenant   @relation(fields: [tenantId], references: [id])
+  tenantId    String
+  name        String   @unique
+  description String?
+  Roles       Role[]
+  Users       User[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Role {
+  id            String         @id @default(uuid())
+  Application   Application    @relation(fields: [applicationId], references: [id])
+  applicationId String
+  name          String         @unique
+  description   String?
+  isDefault     Boolean        @default(false)
+  isSuperRole   Boolean        @default(false)
+  Registrations Registration[]
+  Groups        Group[]
+  permissions   String?
+  ParentRoles   Role[]         @relation("RoleHierarchy", references: [id])
+  ChildRoles    Role[]         @relation("RoleHierarchy", references: [id])
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+enum AccountStatusType {
+  UNCONFIRMED
+  CONFIRMED
+  ARCHIVED
+  COMPROMISED
+  UNKNOWN
+  RESET_REQUIRED
+  FORCE_CHANGE_PASSWORD
+  DISABLED
+}
+
+model User {
+  id                 String              @id @default(uuid())
+  Tenant             Tenant              @relation(fields: [tenantId], references: [id])
+  tenantId           String
+  username           String              @unique @default(cuid())
+  email              String              @unique
+  password           String
+  salt               String
+  //
+  accountStatusType  AccountStatusType   @default(UNCONFIRMED)
+  ExternalIdentities ExternalIdentity[]
+  //
+  Profile            Profile?
+  PasswordResets     PasswordReset[]
+  Devices            UserDevice[]
+  AccessTokens       AccessToken[]
+  AuthorizationCodes AuthorizationCode[]
+  RefreshTokens      RefreshToken[]
+  Groups             Group[]
+  FailedLogins       FailedLogin[]
+  Registrations      Registration[]
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+}
+
+enum SupportedProvider {
+  GOOGLE
+  FACEBOOK
+  APPLE
+}
+
+model IdentityProvider {
+  id                 String             @id @default(uuid())
+  Applications       Application[]
+  ExternalIdentities ExternalIdentity[]
+  providerType       SupportedProvider
+  issuer             String
+  authorizationUrl   String
+  tokenUrl           String
+  cliendId           String
+  clientSecret       String
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+}
+
+enum ExternalIdentityStatus {
+  UNCONFIRMED
+  CONFIRMED
+  DISABLED
+}
+
+model ExternalIdentity {
+  id                  String                 @id @default(uuid())
+  sub                 String                 @unique
+  providerType        SupportedProvider
+  User                User                   @relation(fields: [userId], references: [id])
+  userId              String
+  status              ExternalIdentityStatus @default(CONFIRMED)
+  isUserCreatedBefore Boolean
+  IdentityProvider    IdentityProvider       @relation(fields: [identityProviderId], references: [id])
+  identityProviderId  String
+  createdAt           DateTime               @default(now())
+  updatedAt           DateTime               @updatedAt
+}
+
+model Profile {
+  id                   String                @id @default(uuid())
+  User                 User                  @relation(fields: [userId], references: [id])
+  userId               String
+  firstName            String?               @default("")
+  lastName             String?               @default("")
+  displayName          String?
+  birthdate            DateTime?
+  gender               Gender?
+  mobileNumber         String?
+  profilePicture       String?
+  UserCustomAttributes UserCustomAttribute[]
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+}
+
+model UserCustomAttribute {
+  name      String
+  value     String
+  Profile   Profile @relation(fields: [profileId], references: [id])
+  profileId String
+
+  @@id([name, profileId])
+}
+
+model PasswordReset {
+  id             String   @id @default(uuid())
+  User           User     @relation(fields: [userId], references: [id])
+  userId         String
+  token          String
+  expirationDate DateTime
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+enum SMTPSecurity {
+  NONE
+  TLS
+  SSL
+}
+
+model EmailSettings {
+  id           String       @id @default(uuid())
+  Tenant       Tenant       @relation(fields: [tenantId], references: [id])
+  tenantId     String
+  host         String
+  port         String
+  username     String?
+  password     String?
+  SMTPSecurity SMTPSecurity @default(NONE)
+  from         String
+  name         String
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}
+
+model FailedLogin {
+  id        String   @id @default(uuid())
+  User      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  userId    String
+}
+
+model UserDevice {
+  id           String   @id @default(uuid())
+  User         User     @relation(fields: [userId], references: [id])
+  userId       String
+  deviceKey    String
+  name         String?
+  lastIP       String
+  isRemembered Boolean  @default(false)
+  SDK          String?
+  lastSeen     DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}

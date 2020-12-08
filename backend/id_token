@@ -1,0 +1,13 @@
+{
+      "sub": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+      "aud": "xxxxxxxxxxxxexample",
+      "email_verified": true,
+      "token_use": "id",
+      "auth_time": 1500009400,
+      "iss": "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_example",
+      "cognito:username": "janedoe",
+      "exp": 1500013000,
+      "given_name": "Jane",
+      "iat": 1500009400,
+      "email": "janedoe@example.com"
+      }
