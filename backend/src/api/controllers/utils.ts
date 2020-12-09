@@ -7,7 +7,7 @@ import { JWK, JWS } from 'node-jose'
 import { v4 as uuidv4 } from 'uuid'
 import { prisma } from '../../context'
 
-const HOST = process.env.DOMAIN
+const HOST = process.env.DOMAIN_HOST
 
 const signToken = async (payload: object, expiresIn: number) => {
   const ks = fs.readFileSync(`${__dirname}/../../keys/jwks.json`)
@@ -114,6 +114,7 @@ export const issueAccessToken = async (
 ) => {
   const expirationDate = calculateExpirationDate(accessTokenLifetime)
   const jti = uuidv4()
+
   if (userId) {
     const user = await getUserById(userId)
     if (user) {
@@ -123,7 +124,7 @@ export const issueAccessToken = async (
           sub: userId,
           aud: clientId,
           groups: user.Groups.map((group) => group.name),
-          scopes: getRolesFromUser(user),
+          scopes: scopes,
           // exp: expirationDate.valueOf(),
           token_use: 'jwt',
           // nbf: NaN,
@@ -340,6 +341,9 @@ export const getDefaultApplicationByTenant = (id: string) => {
         name: 'Default',
         tenantId: id,
       },
+    },
+    include: {
+      EnabledScopes: true,
     },
   })
   return defaultApp

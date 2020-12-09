@@ -8,6 +8,11 @@ import Login from "../view/login/LoginPage";
 
 const routes: Array<Routes> = [
   {
+    component: Landing,
+    label: "Landing",
+    path: "/",
+  },
+  {
     component: Login,
     label: "Login",
     path: "/oauth2/authorize",
@@ -16,11 +21,6 @@ const routes: Array<Routes> = [
     component: Dialog,
     label: "Dialog",
     path: "/oauth2/authorize/dialog",
-  },
-  {
-    component: Landing,
-    label: "Landing",
-    path: "/",
   },
   {
     component: Layout,

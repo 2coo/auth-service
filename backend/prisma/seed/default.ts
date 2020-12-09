@@ -28,6 +28,7 @@ export const seedDefaultTenantWithAdmin = (prisma: PrismaClient) => {
       Applications: {
         create: {
           name: 'Default',
+          trustedApplication: true,
           RedirectUris: {
             create: {
               url: '/oauth2/authorize',

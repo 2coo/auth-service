@@ -1,4 +1,4 @@
-import { Application } from '@prisma/client'
+import { Application, Scope } from '@prisma/client'
 import Axios from 'axios'
 import { NextFunction, Response } from 'express'
 import passport from 'passport'
@@ -9,8 +9,10 @@ export const ensureLoggedInWithCookie = () => async (
   res: Response,
   next: NextFunction,
 ) => {
-  const defaultApp: Application = req.session.defaultApp
-  const failureRedirect = `/oauth2/authorize?response_type=code&redirect_uri=/oauth2/authorize&client_id=${defaultApp.id}`
+  const defaultApp: Application & {
+    EnabledScopes: Array<Scope>
+  } = req.session.defaultApp
+  const failureRedirect = defaultLinkBuilder(defaultApp)
   return passport.authenticate('jwt', {
     session: false,
     scope: ['openid', 'email', 'profile'],
@@ -38,7 +40,6 @@ export const authCodeCallback = async (
   const host = req.protocol + '://' + req.get('host')
   const { code } = req.query
   if (code) {
-    console.log("#code", code);
     const basicAuth = new Buffer(
       `${defaultApp.id}:${defaultApp.secret}`,
     ).toString('base64')
@@ -74,4 +75,12 @@ export const authCodeCallback = async (
 
 export const renderSPA = (req: any, res: Response, next: NextFunction) => {
   res.sendFile(path.join(__dirname, '../../../build', 'index.html'))
+}
+
+export const defaultLinkBuilder = (
+  defaultApp: Application & { EnabledScopes: Array<Scope> },
+) => {
+  const scopes = defaultApp.EnabledScopes.map((scope) => scope.name).join(' ')
+  const failureRedirect = `/oauth2/authorize?response_type=code&redirect_uri=/oauth2/authorize&client_id=${defaultApp.id}&scope=${scopes}`
+  return failureRedirect
 }

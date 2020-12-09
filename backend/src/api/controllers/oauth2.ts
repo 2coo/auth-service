@@ -6,7 +6,7 @@ import moment from 'moment-timezone'
 import oauth2orize from 'oauth2orize'
 import passport from 'passport'
 import { store } from '../../redisclient'
-import { renderSPA } from '../client'
+import { defaultLinkBuilder, renderSPA } from '../client'
 import {
   deleteAuthCode,
   generateAuthCode,
@@ -21,6 +21,7 @@ import {
   issueRefreshToken,
 } from './utils'
 import queryString from 'querystring'
+import { Application, Scope } from '@prisma/client'
 
 // Create OAuth 2.0 server
 const server = oauth2orize.createServer({
@@ -173,21 +174,15 @@ server.exchange(
 // User authorization endpoint.
 export const authorization = (req: any, res: Response, next: NextFunction) => {
   req.session.returnTo = req.url || req.baseUrl
-  req.session.save((err: any) => {
-    if (err) {
-      console.log(err)
-    }
-  })
+  req.session.save()
+  if (!req.query.client_id) {
+    const defaultApp = req.session.defaultApp
+    return res.redirect(defaultLinkBuilder(defaultApp))
+  }
   if (!req.isAuthenticated()) {
     return renderSPA(req, res, next)
   }
   const queries = queryString.stringify(req.query)
-  if (!req.query.client_id) {
-    const defaultApp = req.session.defaultApp
-    return res.redirect(
-      `/oauth2/authorize/dialog?response_type=code&redirect_uri=/oauth2/authorize&client_id=${defaultApp.id}`,
-    )
-  }
   return res.redirect(`/oauth2/authorize/dialog?${queries}`)
 }
 
@@ -222,13 +217,13 @@ export const dialog = [
           return done(error)
         })
     },
-    (client, user, done: any) => {
+    (client: Application, user, done: any) => {
       // Check if grant request qualifies for immediate approval
       // Auto-approve
       if (
         client != null &&
-        client.trustedClient &&
-        client.trustedClient === true
+        client.trustedApplication &&
+        client.trustedApplication === true
       )
         return done(null, true)
       return done(null, false)
@@ -250,10 +245,14 @@ export const dialog = [
       transaction_id: request!.oauth2!.transactionID,
       email: request.user.email,
       application: request!.oauth2!.client.name,
-      scopes: request!.oauth2!.client.EnabledScopes.map((scope: any) => ({
-        name: scope.name,
-        description: scope.description,
-      })),
+      scopes: request!
+        .oauth2!.client.EnabledScopes.filter(
+          (scope: Scope) => scopes.indexOf(scope.name) > -1,
+        )
+        .map((scope: Scope) => ({
+          name: scope.name,
+          description: scope.description,
+        })),
     })
   },
 ]
@@ -264,7 +263,7 @@ export const decision = [
   ensureLoggedIn(),
   server.decision((req: any, done) => {
     // remove all client does not have
-    const requestedScopes = Array<string>(req.oauth2?.req.scope)
+    const requestedScopes = req.oauth2?.req.scope as Array<string>
 
     const client = req.oauth2.client
 

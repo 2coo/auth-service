@@ -1,8 +1,8 @@
-import { Redirect } from "@reach/router";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect } from "react";
 import { AuthConsumer, useAuthContext } from "../../store/auth/context";
 import { useAxios } from "../../utils/api";
 import { Backdrop, CircularProgress } from "@material-ui/core"
+import FullRedirect from "../full-redirect/FullRedirect"
 
 const PrivateRoute = (props: any) => {
     let { as: Comp, ...otherProps } = props;
@@ -29,19 +29,20 @@ const PrivateRoute = (props: any) => {
             })
         }
         return () => { }
-    }, [userProfile, dispatch])
+    }, [userProfile, error, dispatch])
 
     let decisionComp = (<Backdrop open={loading}>
         <CircularProgress color="inherit" />
     </Backdrop>)
 
-    if (error) decisionComp = (<Redirect to="/oauth2/authorize" replace={true} noThrow={true} />)
+    if(error?.request.status === 401) decisionComp = <FullRedirect url="/oauth2/authorize" />
 
     return <AuthConsumer>
         {auth =>
             <Fragment>
+                
                 {
-                    userProfile?.success ?
+                    userProfile?.success || auth.state.authenticated ?
                         (<Comp {...otherProps} />)
                         :
                         (decisionComp)

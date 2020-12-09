@@ -50,7 +50,7 @@ module.exports = function (app: Express.Application) {
       cookie: {
         path: '/',
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
+        // sameSite: 'strict', if you don't want SSO, it should be uncommented!
         httpOnly: true,
         maxAge: Number(process.env.SESSION_MAX_AGE),
       },
@@ -80,8 +80,6 @@ module.exports = function (app: Express.Application) {
   require('./auth')
 
   const router = Express.Router()
-  router.get('/', [ensureLoggedInWithCookie(), renderSPA])
-
   // tenant check
   router.use(async (req: any, res, next) => {
     const tenantDomain = req.vhost[0] === undefined ? '*' : req.vhost[0]
@@ -93,25 +91,26 @@ module.exports = function (app: Express.Application) {
     if (!tenant) {
       return res.send(`The "${tenantDomain}" tenant not found!`)
     }
-    req.session.defaultApp = await getDefaultApplicationByTenant(tenant.id)
+    const defaultApp = await getDefaultApplicationByTenant(tenant.id)
+    req.session.defaultApp = defaultApp
     next()
   })
 
+  // home
+  router.get('/', [ensureLoggedInWithCookie(), renderSPA])
+
   // static resources for stylesheets, images, javascript files
-  router
-    .route('/login')
-    .get(ensureLoggedInWithCookie())
-    .post(routes.site.login)
+  router.route('/login').get(ensureLoggedInWithCookie()).post(routes.site.login)
 
   router.get('/logout', routes.site.logout)
 
   // Create endpoint handlers for oauth2 authorize
-  router.get('/oauth2/authorize', [authCodeCallback, routes.oauth2.authorization])
+  router.get('/oauth2/authorize', [
+    authCodeCallback,
+    routes.oauth2.authorization,
+  ])
 
-  router.get(
-    '/oauth2/userinfo',
-    routes.user.userinfo
-  )
+  router.get('/oauth2/userinfo', routes.user.userinfo)
 
   router
     .route('/oauth2/authorize/dialog')
