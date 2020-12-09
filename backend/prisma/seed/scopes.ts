@@ -10,19 +10,19 @@ export const seedDefaultScopes = (prisma: PrismaClient) => {
   const scope2 = prisma.scope.create({
     data: {
       name: 'email',
-      description: "OpenID Connect scope for email",
+      description: "The email scope grants access to the email and email_verified claims. This scope can only be requested with the openid scope.",
     },
   })
   const scope3 = prisma.scope.create({
     data: {
       name: 'profile',
-      description: "OpenID Connect scope for profile",
+      description: "The profile scope grants access to all user attributes. This scope can only be requested with the openid scope.",
     },
   })
   const scope4 = prisma.scope.create({
     data: {
-      name: 'avig.auth.user.admin',
-      description: 'Scope for user to manage his own user data',
+      name: 'user.admin',
+      description: 'The user.admin scope grants access to the user own data.',
     },
   })
 

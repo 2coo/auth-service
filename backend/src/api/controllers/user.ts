@@ -11,13 +11,16 @@ export const userinfo = [
     const user: User = req.user
     const profile: Profile = req.user.Profile
     return res.json({
-      sub: user.id,
-      name: profile.displayName,
-      given_name: profile.firstName,
-      family_name: profile.lastName,
-      preferred_username: user.username,
-      email: user.email,
-      picture: profile.picture,
+      success: true,
+      data: {
+        sub: user.id,
+        name: profile.displayName,
+        given_name: profile.firstName,
+        family_name: profile.lastName,
+        preferred_username: user.username,
+        email: user.email,
+        picture: profile.picture,
+      },
     })
   },
 ]

@@ -100,12 +100,13 @@ module.exports = function (app: Express.Application) {
   // static resources for stylesheets, images, javascript files
   router
     .route('/login')
-    .get([authCodeCallback, ensureLoggedInWithCookie()])
+    .get(ensureLoggedInWithCookie())
     .post(routes.site.login)
+
   router.get('/logout', routes.site.logout)
 
   // Create endpoint handlers for oauth2 authorize
-  router.get('/oauth2/authorize', routes.oauth2.authorization)
+  router.get('/oauth2/authorize', [authCodeCallback, routes.oauth2.authorization])
 
   router.get(
     '/oauth2/userinfo',

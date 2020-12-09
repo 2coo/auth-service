@@ -20,19 +20,17 @@ export const seedDefaultTenantWithAdmin = (prisma: PrismaClient) => {
             create: {
               firstName: 'Admin',
               lastName: 'Super',
-              displayName: 'Super Admin',
+              displayName: 'Admin',
             },
           },
         },
       },
       Applications: {
         create: {
-          // id: "581af555-a990-4a4b-912d-e3cb9b880f55",
-          // secret: "ckid0nyml0000mndy9ulx7c7k",
           name: 'Default',
           RedirectUris: {
             create: {
-              url: '/login',
+              url: '/oauth2/authorize',
             },
           },
           EnabledScopes: {
@@ -40,7 +38,7 @@ export const seedDefaultTenantWithAdmin = (prisma: PrismaClient) => {
               { name: 'openid' },
               { name: 'email' },
               { name: 'profile' },
-              { name: 'avig.auth.user.admin' },
+              { name: 'user.admin' },
             ],
           },
           Grants: {

@@ -20,7 +20,7 @@ import {
   issueAccessToken,
   issueRefreshToken,
 } from './utils'
-import queryString from "querystring"
+import queryString from 'querystring'
 
 // Create OAuth 2.0 server
 const server = oauth2orize.createServer({
@@ -182,6 +182,12 @@ export const authorization = (req: any, res: Response, next: NextFunction) => {
     return renderSPA(req, res, next)
   }
   const queries = queryString.stringify(req.query)
+  if (!req.query.client_id) {
+    const defaultApp = req.session.defaultApp
+    return res.redirect(
+      `/oauth2/authorize/dialog?response_type=code&redirect_uri=/oauth2/authorize&client_id=${defaultApp.id}`,
+    )
+  }
   return res.redirect(`/oauth2/authorize/dialog?${queries}`)
 }
 

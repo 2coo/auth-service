@@ -10,7 +10,7 @@ export const ensureLoggedInWithCookie = () => async (
   next: NextFunction,
 ) => {
   const defaultApp: Application = req.session.defaultApp
-  const failureRedirect = `/oauth2/authorize?response_type=code&redirect_uri=/login&client_id=${defaultApp.id}`
+  const failureRedirect = `/oauth2/authorize?response_type=code&redirect_uri=/oauth2/authorize&client_id=${defaultApp.id}`
   return passport.authenticate('jwt', {
     session: false,
     scope: ['openid', 'email', 'profile'],
@@ -48,7 +48,7 @@ export const authCodeCallback = async (
         {
           grant_type: 'authorization_code',
           code: code,
-          redirect_uri: '/login',
+          redirect_uri: '/oauth2/authorize',
         },
         {
           headers: {

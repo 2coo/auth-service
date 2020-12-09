@@ -65,6 +65,7 @@ passport.use(
       jwksUri: `${host}/.well-known/jwks.json`,
     })
     const accessToken = req.cookies['access_token']
+
     if (!accessToken) return done(null, false)
     try {
       const kid = getKIDfromAccessToken(accessToken)
@@ -78,7 +79,7 @@ passport.use(
       if (appUser.canScope(req.scope))
         return done(new Error(`Not allowed scope`))
       const user = await getUserById(String(appUser.sub))
-      if (user) return done(new Error('User not found!'))
+      if (!user) return done(new Error('User not found!'))
       return done(null, user)
     } catch (err) {
       if (err) done(new Error(err.message))
