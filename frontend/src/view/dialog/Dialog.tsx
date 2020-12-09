@@ -20,6 +20,7 @@ import {
     IconButton,
     Collapse
 } from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { makeStyles } from '@material-ui/core/styles';
 import { useAxios } from '../../utils/api';
@@ -157,14 +158,14 @@ const Dialog = (props: any) => {
                                 </List>
                             </CardContent>
                             <CardActions className={classes.cardAction}>
-                                <form action={`/oauth2/authorize/decision${location.search}`} method="post">
+                                <form action={`/oauth2/authorize/decision${location.search}`} method="get">
                                     <input name="transaction_id" type="hidden" value={transactionData.transaction_id} />
                                     <input type="hidden" name="cancel" value="Deny" />
                                     <Button type="submit" autoFocus onClick={() => { }} color="primary">
                                         Decline
                                     </Button>
                                 </form>
-                                <form className={classes.AcceptButton} action={`/oauth2/authorize/decision${location.search}`} method="post">
+                                <form className={classes.AcceptButton} action={`/oauth2/authorize/decision${location.search}`} method="get">
                                     <input name="transaction_id" type="hidden" value={transactionData.transaction_id} />
                                     <Button type="submit" color="primary">
                                         Accept
@@ -173,7 +174,9 @@ const Dialog = (props: any) => {
                             </CardActions>
                         </Fragment>
                         :
-                        <Skeleton variant="rect" width={396} height={250} />
+                        error?.request.status === 403 ? <Alert severity="error">
+                            Unauthorized application!
+                        </Alert> : <Skeleton variant="rect" width={396} height={250} />
                     }
                 </Card>
             </div>

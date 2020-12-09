@@ -117,7 +117,7 @@ module.exports = function (app: Express.Application) {
     .get([ensureLoggedIn(), renderSPA])
     .post(routes.oauth2.dialog)
 
-  router.post('/oauth2/authorize/decision', routes.oauth2.decision)
+  router.get('/oauth2/authorize/decision', routes.oauth2.decision)
   // Create endpoint handlers for oauth2 token
   router.route('/oauth2/token').post(routes.oauth2.token)
 

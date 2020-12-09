@@ -3,26 +3,28 @@ import { PrismaClient } from '@prisma/client'
 import _ from 'lodash'
 import { seedDefaultScopes } from './scopes'
 import { seedDefaultTenantWithAdmin } from './default'
+import { seedTestData } from './test'
 
 const prisma = new PrismaClient()
 
 async function seed() {
   let transactions: any = []
-
-  transactions = _.concat(
-    transactions,
-    seedDefaultGrantTypes(prisma),
-    seedDefaultScopes(prisma),
-    seedDefaultTenantWithAdmin(prisma),
-  )
   if (process.env.NODE_ENV === 'development') {
-    // todo
+    transactions = _.concat(transactions, seedTestData(prisma))
+  } else {
+    transactions = _.concat(
+      transactions,
+      seedDefaultGrantTypes(prisma),
+      seedDefaultScopes(prisma),
+      seedDefaultTenantWithAdmin(prisma),
+    )
   }
+
   await prisma.$transaction(transactions)
 }
 
 seed()
-.catch((e) => console.error(e))
-.finally(async () => {
-  await prisma.$disconnect()
-})
+  .catch((e) => console.error(e))
+  .finally(async () => {
+    await prisma.$disconnect()
+  })

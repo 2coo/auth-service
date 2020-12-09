@@ -108,7 +108,13 @@ passport.deserializeUser((id: string, done) => {
 function verifyClient(clientId: string, clientSecret: string, done: any) {
   getClientById(clientId)
     .then((client) => {
-      if (!client) return done(null, false)
+      if (!client)
+        return done(null, false, {
+          error: {
+            status: 403,
+            message: 'Unauthorized Client!',
+          },
+        })
       if (client.secret === clientSecret) return done(null, client)
       return done(null, client)
     })

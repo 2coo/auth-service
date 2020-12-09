@@ -172,7 +172,11 @@ server.exchange(
 )
 
 // User authorization endpoint.
-export const authorization = (req: any, res: Response, next: NextFunction) => {
+export const authorization = async (
+  req: any,
+  res: Response,
+  next: NextFunction,
+) => {
   req.session.returnTo = req.url || req.baseUrl
   req.session.save()
   if (!req.query.client_id) {
@@ -181,6 +185,51 @@ export const authorization = (req: any, res: Response, next: NextFunction) => {
   }
   if (!req.isAuthenticated()) {
     return renderSPA(req, res, next)
+  }
+  const client = await getClientById(req.query.client_id)
+  if (client?.trustedApplication) {
+    return server.authorization(
+      (clientId, redirectUri, done) => {
+        getClientById(clientId)
+          .then((client) => {
+            if (!client)
+              return done(null, false)
+            if (
+              _.some(client.RedirectUris, {
+                url: redirectUri,
+              })
+            ) {
+              return done(null, client, redirectUri)
+            }
+            return done(
+              new Error(
+                'Redirect uri does not match the registered Redirect Uri for this app.',
+              ),
+            )
+          })
+          .catch((error) => {
+            return done(error)
+          })
+      },
+      (
+        client: Application & { EnabledScopes: Array<Scope> },
+        user,
+        done: any,
+      ) => {
+        // Check if grant request qualifies for immediate approval
+        // Auto-approve
+        if (
+          client != null &&
+          client.trustedApplication &&
+          client.trustedApplication === true
+        ) {
+          return done(null, true, {
+            scope: client.EnabledScopes.map((scope) => scope.name),
+          })
+        }
+        return done(null, false)
+      },
+    )(req, res, next)
   }
   const queries = queryString.stringify(req.query)
   return res.redirect(`/oauth2/authorize/dialog?${queries}`)
@@ -217,20 +266,27 @@ export const dialog = [
           return done(error)
         })
     },
-    (client: Application, user, done: any) => {
+    (
+      client: Application & { EnabledScopes: Array<Scope> },
+      user,
+      done: any,
+    ) => {
       // Check if grant request qualifies for immediate approval
       // Auto-approve
       if (
         client != null &&
         client.trustedApplication &&
         client.trustedApplication === true
-      )
+      ) {
         return done(null, true)
+      }
       return done(null, false)
     },
   ),
   async (request: any, response: Response) => {
-    const clientScopes = getScopesFromClient(request!.oauth2!.client)
+    const client: Application & { EnabledScopes: Array<Scope> } = request!
+      .oauth2!.client
+    const clientScopes = getScopesFromClient(client)
     const scopes = request.query!.scope
       ? (request.query!.scope as string).split(' ')
       : []
@@ -264,11 +320,8 @@ export const decision = [
   server.decision((req: any, done) => {
     // remove all client does not have
     const requestedScopes = req.oauth2?.req.scope as Array<string>
-
     const client = req.oauth2.client
-
     const clientScopes = getScopesFromClient(client)
-
     return done(null, {
       scope: _.filter(
         requestedScopes,
