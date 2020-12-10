@@ -22,20 +22,28 @@ model Tenant {
   updatedAt     DateTime       @updatedAt
 }
 
+enum UsernameStatus {
+  ACTIVE
+  PENDING
+  REJECTED
+}
+
 model Registration {
-  id          String      @id @default(uuid())
-  User        User        @relation(fields: [userId], references: [id])
-  userId      String
-  Application Application @relation(fields: [clientId], references: [id])
-  clientId    String
-  username    String      @unique
-  Roles       Role[]
-  isVerified  Boolean     @default(false)
+  id             String         @id @default(uuid())
+  User           User           @relation(fields: [userId], references: [id])
+  userId         String
+  Application    Application    @relation(fields: [applicationId], references: [id])
+  applicationId  String
+  username       String
+  usernameStatus UsernameStatus @default(PENDING)
+  Roles          Role[]
+  isVerified     Boolean        @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([userId, clientId])
+  @@unique([userId, applicationId])
+  @@unique([username, applicationId])
 }
 
 model Application {
@@ -185,7 +193,7 @@ model Role {
   id            String         @id @default(uuid())
   Application   Application    @relation(fields: [applicationId], references: [id])
   applicationId String
-  name          String         @unique
+  name          String
   description   String?
   isDefault     Boolean        @default(false)
   isSuperRole   Boolean        @default(false)
@@ -196,6 +204,8 @@ model Role {
   ChildRoles    Role[]         @relation("RoleHierarchy", references: [id])
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
+
+  @@unique([name, applicationId])
 }
 
 enum AccountStatusType {
@@ -214,6 +224,7 @@ model User {
   Tenant             Tenant              @relation(fields: [tenantId], references: [id])
   tenantId           String
   username           String              @unique @default(cuid())
+  usernameStatus     UsernameStatus      @default(PENDING)
   email              String              @unique
   password           String
   salt               String

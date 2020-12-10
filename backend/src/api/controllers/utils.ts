@@ -1,6 +1,13 @@
-import { Role, Scope } from '@prisma/client'
+import {
+  Application,
+  Group,
+  Registration,
+  Role,
+  Scope,
+  User,
+} from '@prisma/client'
 import fs from 'fs'
-import _ from 'lodash'
+import { flatMap, groupBy, sample, uniq, uniqBy } from 'lodash'
 import moment from 'moment'
 import { Moment } from 'moment-timezone'
 import { JWK, JWS } from 'node-jose'
@@ -9,11 +16,24 @@ import { prisma } from '../../context'
 
 const HOST = process.env.DOMAIN_HOST
 
+type RoleWithApplication = Role & {
+  Application: Application
+}
+type UserWithGroupsAndRegistrations = User & {
+  Groups: (Group & {
+    Roles: RoleWithApplication[]
+  })[]
+  Registrations: (Registration & {
+    Application: Application
+    Roles: Role[]
+  })[]
+}
+
 const signToken = async (payload: object, expiresIn: number) => {
   const ks = fs.readFileSync(`${__dirname}/../../keys/jwks.json`)
   const keyStore = await JWK.asKeyStore(ks.toString())
   const jwks = keyStore.all({ use: 'sig' })
-  const rawKey = _.sample(jwks)
+  const rawKey = sample(jwks)
 
   if (rawKey !== undefined) {
     const key = await JWK.asKey(rawKey)
@@ -51,11 +71,16 @@ export const getUserById = (userId: string) => {
     include: {
       Groups: {
         include: {
-          Roles: true,
+          Roles: {
+            include: {
+              Application: true,
+            },
+          },
         },
       },
       Registrations: {
         include: {
+          Application: true,
           Roles: true,
         },
       },
@@ -124,6 +149,7 @@ export const issueAccessToken = async (
           sub: userId,
           aud: clientId,
           groups: user.Groups.map((group) => group.name),
+          roles: getUserApplicationRoles(user, clientId),
           scopes: scopes,
           // exp: expirationDate.valueOf(),
           token_use: 'jwt',
@@ -307,8 +333,8 @@ export const getRolesFromUser = (user: {
     Roles: Array<Role>
   }>
 }) => {
-  return _.uniq(
-    _.flatMap(user.Groups, (group) =>
+  return uniq(
+    flatMap(user.Groups, (group) =>
       group.Roles.map((role: Role) => ({
         ...role,
         permissions: role.permissions ? JSON.parse(role.permissions) : null,
@@ -347,4 +373,42 @@ export const getDefaultApplicationByTenant = (id: string) => {
     },
   })
   return defaultApp
+}
+
+export const getUserApplicationRoles = (
+  user: UserWithGroupsAndRegistrations,
+  applicationId: string,
+) => {
+  /*
+  Some or all of these Roles are managed by Group membership(s) to Academic head, Teacher.
+  Removing assigned Roles here may not remove the Role
+  from the User if the Role has been assigned by the Group membership.
+  */
+  const groupRoles = user.Groups.map((group) =>
+    group.Roles.filter((role) => role.applicationId === applicationId),
+  ).flat()
+  const registrationRoles = user.Registrations.find(
+    (registration) => registration.Application.id === applicationId,
+  )!.Roles
+  return uniq([...groupRoles, ...registrationRoles])
+}
+
+export const getUserRolesGroupedByApplication = (
+  user: UserWithGroupsAndRegistrations,
+) => {
+  const groupRoles = user.Groups.map((group) => group.Roles).flat()
+  const registrationRoles = user.Registrations.map((registration) =>
+    registration.Roles.map(
+      (role) =>
+        ({
+          ...role,
+          Application: registration.Application,
+        } as RoleWithApplication),
+    ).flat(),
+  )
+  const userRoles = groupBy(
+    uniqBy([...groupRoles, ...registrationRoles], 'id'),
+    'applicationId',
+  )
+  return userRoles
 }
