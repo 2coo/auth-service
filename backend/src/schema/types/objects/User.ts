@@ -4,7 +4,7 @@ export const User = objectType({
   name: 'User',
   definition(t) {
     t.model.Tenant()
-    t.model.ExternalIdentities()
+    t.model.ExternalIdentifiers()
     t.model.Registrations()
     t.model.username()
     t.model.accountStatusType()

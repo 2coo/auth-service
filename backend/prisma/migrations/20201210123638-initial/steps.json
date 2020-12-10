@@ -3,6 +3,15 @@
   "steps": [
     {
       "tag": "CreateEnum",
+      "enum": "UsernameStatus",
+      "values": [
+        "ACTIVE",
+        "PENDING",
+        "REJECTED"
+      ]
+    },
+    {
+      "tag": "CreateEnum",
       "enum": "GrantType",
       "values": [
         "AUTHORIZATION_CODE",
@@ -46,7 +55,7 @@
     },
     {
       "tag": "CreateEnum",
-      "enum": "ExternalIdentityStatus",
+      "enum": "ExternalIdentifierStatus",
       "values": [
         "UNCONFIRMED",
         "CONFIRMED",
@@ -193,6 +202,13 @@
       "model": "Tenant",
       "field": "Users",
       "type": "User",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Tenant",
+      "field": "ExternalIdentifier",
+      "type": "ExternalIdentifier",
       "arity": "List"
     },
     {
@@ -389,7 +405,7 @@
         "directive": "relation"
       },
       "argument": "fields",
-      "value": "[clientId]"
+      "value": "[applicationId]"
     },
     {
       "tag": "CreateArgument",
@@ -408,7 +424,7 @@
     {
       "tag": "CreateField",
       "model": "Registration",
-      "field": "clientId",
+      "field": "applicationId",
       "type": "String",
       "arity": "Required"
     },
@@ -420,15 +436,36 @@
       "arity": "Required"
     },
     {
+      "tag": "CreateField",
+      "model": "Registration",
+      "field": "usernameStatus",
+      "type": "UsernameStatus",
+      "arity": "Required"
+    },
+    {
       "tag": "CreateDirective",
       "location": {
         "path": {
           "tag": "Field",
           "model": "Registration",
-          "field": "username"
+          "field": "usernameStatus"
         },
-        "directive": "unique"
+        "directive": "default"
       }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Registration",
+          "field": "usernameStatus"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "PENDING"
     },
     {
       "tag": "CreateField",
@@ -528,7 +565,23 @@
           "arguments": [
             {
               "name": "",
-              "value": "[userId, clientId]"
+              "value": "[userId, applicationId]"
+            }
+          ]
+        },
+        "directive": "unique"
+      }
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Model",
+          "model": "Registration",
+          "arguments": [
+            {
+              "name": "",
+              "value": "[username, applicationId]"
             }
           ]
         },
@@ -645,6 +698,13 @@
     {
       "tag": "CreateField",
       "model": "Application",
+      "field": "ExternalIdentifier",
+      "type": "ExternalIdentifier",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Application",
       "field": "Roles",
       "type": "Role",
       "arity": "List"
@@ -691,8 +751,47 @@
     {
       "tag": "CreateField",
       "model": "Application",
+      "field": "selfRegistrationEnabled",
+      "type": "Boolean",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Application",
+          "field": "selfRegistrationEnabled"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Application",
+          "field": "selfRegistrationEnabled"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "false"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Application",
+      "field": "SelfRegistrationFields",
+      "type": "SelfRegistrationFields",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Application",
       "field": "IdentityProviders",
-      "type": "IdentityProvider",
+      "type": "IdProviderOnApplication",
       "arity": "List"
     },
     {
@@ -944,6 +1043,234 @@
         },
         "directive": "unique"
       }
+    },
+    {
+      "tag": "CreateModel",
+      "model": "SelfRegistrationFields"
+    },
+    {
+      "tag": "CreateField",
+      "model": "SelfRegistrationFields",
+      "field": "id",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "SelfRegistrationFields",
+          "field": "id"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "SelfRegistrationFields",
+          "field": "id"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "SelfRegistrationFields",
+          "field": "id"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "uuid()"
+    },
+    {
+      "tag": "CreateField",
+      "model": "SelfRegistrationFields",
+      "field": "Application",
+      "type": "Application",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "SelfRegistrationFields",
+          "field": "Application"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "SelfRegistrationFields",
+          "field": "Application"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[applicationId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "SelfRegistrationFields",
+          "field": "Application"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "SelfRegistrationFields",
+      "field": "fieldName",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "SelfRegistrationFields",
+      "field": "fieldType",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "SelfRegistrationFields",
+      "field": "isRequired",
+      "type": "Boolean",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "SelfRegistrationFields",
+          "field": "isRequired"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "SelfRegistrationFields",
+          "field": "isRequired"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "false"
+    },
+    {
+      "tag": "CreateField",
+      "model": "SelfRegistrationFields",
+      "field": "isEnabled",
+      "type": "Boolean",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "SelfRegistrationFields",
+          "field": "isEnabled"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "SelfRegistrationFields",
+          "field": "isEnabled"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "false"
+    },
+    {
+      "tag": "CreateField",
+      "model": "SelfRegistrationFields",
+      "field": "createdAt",
+      "type": "DateTime",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "SelfRegistrationFields",
+          "field": "createdAt"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "SelfRegistrationFields",
+          "field": "createdAt"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "now()"
+    },
+    {
+      "tag": "CreateField",
+      "model": "SelfRegistrationFields",
+      "field": "updatedAt",
+      "type": "DateTime",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "SelfRegistrationFields",
+          "field": "updatedAt"
+        },
+        "directive": "updatedAt"
+      }
+    },
+    {
+      "tag": "CreateField",
+      "model": "SelfRegistrationFields",
+      "field": "applicationId",
+      "type": "String",
+      "arity": "Required"
     },
     {
       "tag": "CreateModel",
@@ -2804,17 +3131,6 @@
       "arity": "Required"
     },
     {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "Role",
-          "field": "name"
-        },
-        "directive": "unique"
-      }
-    },
-    {
       "tag": "CreateField",
       "model": "Role",
       "field": "description",
@@ -3049,6 +3365,22 @@
       }
     },
     {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Model",
+          "model": "Role",
+          "arguments": [
+            {
+              "name": "",
+              "value": "[name, applicationId]"
+            }
+          ]
+        },
+        "directive": "unique"
+      }
+    },
+    {
       "tag": "CreateModel",
       "model": "User"
     },
@@ -3194,6 +3526,38 @@
     {
       "tag": "CreateField",
       "model": "User",
+      "field": "usernameStatus",
+      "type": "UsernameStatus",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "User",
+          "field": "usernameStatus"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "User",
+          "field": "usernameStatus"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "PENDING"
+    },
+    {
+      "tag": "CreateField",
+      "model": "User",
       "field": "email",
       "type": "String",
       "arity": "Required"
@@ -3258,8 +3622,8 @@
     {
       "tag": "CreateField",
       "model": "User",
-      "field": "ExternalIdentities",
-      "type": "ExternalIdentity",
+      "field": "ExternalIdentifiers",
+      "type": "ExternalIdentifier",
       "arity": "List"
     },
     {
@@ -3376,6 +3740,294 @@
       }
     },
     {
+      "tag": "CreateField",
+      "model": "User",
+      "field": "RememberMe",
+      "type": "RememberMe",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateModel",
+      "model": "IdProviderOnApplication"
+    },
+    {
+      "tag": "CreateField",
+      "model": "IdProviderOnApplication",
+      "field": "id",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "IdProviderOnApplication",
+          "field": "id"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "IdProviderOnApplication",
+          "field": "id"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "IdProviderOnApplication",
+          "field": "id"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "uuid()"
+    },
+    {
+      "tag": "CreateField",
+      "model": "IdProviderOnApplication",
+      "field": "isEnabled",
+      "type": "Boolean",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "IdProviderOnApplication",
+          "field": "isEnabled"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "IdProviderOnApplication",
+          "field": "isEnabled"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "true"
+    },
+    {
+      "tag": "CreateField",
+      "model": "IdProviderOnApplication",
+      "field": "isOverwritten",
+      "type": "Boolean",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "IdProviderOnApplication",
+          "field": "isOverwritten"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "IdProviderOnApplication",
+          "field": "isOverwritten"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "false"
+    },
+    {
+      "tag": "CreateField",
+      "model": "IdProviderOnApplication",
+      "field": "providerType",
+      "type": "SupportedProvider",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "IdProviderOnApplication",
+      "field": "data",
+      "type": "Json",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "IdProviderOnApplication",
+      "field": "IdentityProvider",
+      "type": "IdentityProvider",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "IdProviderOnApplication",
+          "field": "IdentityProvider"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "IdProviderOnApplication",
+          "field": "IdentityProvider"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[identityProviderId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "IdProviderOnApplication",
+          "field": "IdentityProvider"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "IdProviderOnApplication",
+      "field": "Application",
+      "type": "Application",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "IdProviderOnApplication",
+          "field": "Application"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "IdProviderOnApplication",
+          "field": "Application"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[applicationId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "IdProviderOnApplication",
+          "field": "Application"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "IdProviderOnApplication",
+      "field": "identityProviderId",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "IdProviderOnApplication",
+      "field": "applicationId",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "IdProviderOnApplication",
+      "field": "createdAt",
+      "type": "DateTime",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "IdProviderOnApplication",
+          "field": "createdAt"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "IdProviderOnApplication",
+          "field": "createdAt"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "now()"
+    },
+    {
+      "tag": "CreateField",
+      "model": "IdProviderOnApplication",
+      "field": "updatedAt",
+      "type": "DateTime",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "IdProviderOnApplication",
+          "field": "updatedAt"
+        },
+        "directive": "updatedAt"
+      }
+    },
+    {
       "tag": "CreateModel",
       "model": "IdentityProvider"
     },
@@ -3425,16 +4077,34 @@
     {
       "tag": "CreateField",
       "model": "IdentityProvider",
-      "field": "Applications",
-      "type": "Application",
-      "arity": "List"
+      "field": "isEnabled",
+      "type": "Boolean",
+      "arity": "Required"
     },
     {
-      "tag": "CreateField",
-      "model": "IdentityProvider",
-      "field": "ExternalIdentities",
-      "type": "ExternalIdentity",
-      "arity": "List"
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "IdentityProvider",
+          "field": "isEnabled"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "IdentityProvider",
+          "field": "isEnabled"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "true"
     },
     {
       "tag": "CreateField",
@@ -3446,37 +4116,23 @@
     {
       "tag": "CreateField",
       "model": "IdentityProvider",
-      "field": "issuer",
-      "type": "String",
+      "field": "data",
+      "type": "Json",
       "arity": "Required"
     },
     {
       "tag": "CreateField",
       "model": "IdentityProvider",
-      "field": "authorizationUrl",
-      "type": "String",
-      "arity": "Required"
+      "field": "Applications",
+      "type": "IdProviderOnApplication",
+      "arity": "List"
     },
     {
       "tag": "CreateField",
       "model": "IdentityProvider",
-      "field": "tokenUrl",
-      "type": "String",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateField",
-      "model": "IdentityProvider",
-      "field": "cliendId",
-      "type": "String",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateField",
-      "model": "IdentityProvider",
-      "field": "clientSecret",
-      "type": "String",
-      "arity": "Required"
+      "field": "ExternalIdentifiers",
+      "type": "ExternalIdentifier",
+      "arity": "List"
     },
     {
       "tag": "CreateField",
@@ -3530,11 +4186,11 @@
     },
     {
       "tag": "CreateModel",
-      "model": "ExternalIdentity"
+      "model": "ExternalIdentifier"
     },
     {
       "tag": "CreateField",
-      "model": "ExternalIdentity",
+      "model": "ExternalIdentifier",
       "field": "id",
       "type": "String",
       "arity": "Required"
@@ -3544,7 +4200,7 @@
       "location": {
         "path": {
           "tag": "Field",
-          "model": "ExternalIdentity",
+          "model": "ExternalIdentifier",
           "field": "id"
         },
         "directive": "id"
@@ -3555,7 +4211,7 @@
       "location": {
         "path": {
           "tag": "Field",
-          "model": "ExternalIdentity",
+          "model": "ExternalIdentifier",
           "field": "id"
         },
         "directive": "default"
@@ -3567,7 +4223,7 @@
         "tag": "Directive",
         "path": {
           "tag": "Field",
-          "model": "ExternalIdentity",
+          "model": "ExternalIdentifier",
           "field": "id"
         },
         "directive": "default"
@@ -3577,9 +4233,9 @@
     },
     {
       "tag": "CreateField",
-      "model": "ExternalIdentity",
-      "field": "sub",
-      "type": "String",
+      "model": "ExternalIdentifier",
+      "field": "Tenant",
+      "type": "Tenant",
       "arity": "Required"
     },
     {
@@ -3587,22 +4243,117 @@
       "location": {
         "path": {
           "tag": "Field",
-          "model": "ExternalIdentity",
-          "field": "sub"
+          "model": "ExternalIdentifier",
+          "field": "Tenant"
         },
-        "directive": "unique"
+        "directive": "relation"
       }
     },
     {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "ExternalIdentifier",
+          "field": "Tenant"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[tenantId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "ExternalIdentifier",
+          "field": "Tenant"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
       "tag": "CreateField",
-      "model": "ExternalIdentity",
+      "model": "ExternalIdentifier",
+      "field": "tenantId",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ExternalIdentifier",
+      "field": "Application",
+      "type": "Application",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "ExternalIdentifier",
+          "field": "Application"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "ExternalIdentifier",
+          "field": "Application"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[applicationId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "ExternalIdentifier",
+          "field": "Application"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ExternalIdentifier",
+      "field": "applicationId",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ExternalIdentifier",
+      "field": "data",
+      "type": "Json",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ExternalIdentifier",
       "field": "providerType",
       "type": "SupportedProvider",
       "arity": "Required"
     },
     {
       "tag": "CreateField",
-      "model": "ExternalIdentity",
+      "model": "ExternalIdentifier",
       "field": "User",
       "type": "User",
       "arity": "Required"
@@ -3612,7 +4363,7 @@
       "location": {
         "path": {
           "tag": "Field",
-          "model": "ExternalIdentity",
+          "model": "ExternalIdentifier",
           "field": "User"
         },
         "directive": "relation"
@@ -3624,7 +4375,7 @@
         "tag": "Directive",
         "path": {
           "tag": "Field",
-          "model": "ExternalIdentity",
+          "model": "ExternalIdentifier",
           "field": "User"
         },
         "directive": "relation"
@@ -3638,7 +4389,7 @@
         "tag": "Directive",
         "path": {
           "tag": "Field",
-          "model": "ExternalIdentity",
+          "model": "ExternalIdentifier",
           "field": "User"
         },
         "directive": "relation"
@@ -3648,16 +4399,16 @@
     },
     {
       "tag": "CreateField",
-      "model": "ExternalIdentity",
+      "model": "ExternalIdentifier",
       "field": "userId",
       "type": "String",
       "arity": "Required"
     },
     {
       "tag": "CreateField",
-      "model": "ExternalIdentity",
+      "model": "ExternalIdentifier",
       "field": "status",
-      "type": "ExternalIdentityStatus",
+      "type": "ExternalIdentifierStatus",
       "arity": "Required"
     },
     {
@@ -3665,7 +4416,7 @@
       "location": {
         "path": {
           "tag": "Field",
-          "model": "ExternalIdentity",
+          "model": "ExternalIdentifier",
           "field": "status"
         },
         "directive": "default"
@@ -3677,7 +4428,7 @@
         "tag": "Directive",
         "path": {
           "tag": "Field",
-          "model": "ExternalIdentity",
+          "model": "ExternalIdentifier",
           "field": "status"
         },
         "directive": "default"
@@ -3687,14 +4438,14 @@
     },
     {
       "tag": "CreateField",
-      "model": "ExternalIdentity",
+      "model": "ExternalIdentifier",
       "field": "isUserCreatedBefore",
       "type": "Boolean",
       "arity": "Required"
     },
     {
       "tag": "CreateField",
-      "model": "ExternalIdentity",
+      "model": "ExternalIdentifier",
       "field": "IdentityProvider",
       "type": "IdentityProvider",
       "arity": "Required"
@@ -3704,7 +4455,7 @@
       "location": {
         "path": {
           "tag": "Field",
-          "model": "ExternalIdentity",
+          "model": "ExternalIdentifier",
           "field": "IdentityProvider"
         },
         "directive": "relation"
@@ -3716,7 +4467,7 @@
         "tag": "Directive",
         "path": {
           "tag": "Field",
-          "model": "ExternalIdentity",
+          "model": "ExternalIdentifier",
           "field": "IdentityProvider"
         },
         "directive": "relation"
@@ -3730,7 +4481,7 @@
         "tag": "Directive",
         "path": {
           "tag": "Field",
-          "model": "ExternalIdentity",
+          "model": "ExternalIdentifier",
           "field": "IdentityProvider"
         },
         "directive": "relation"
@@ -3740,14 +4491,14 @@
     },
     {
       "tag": "CreateField",
-      "model": "ExternalIdentity",
+      "model": "ExternalIdentifier",
       "field": "identityProviderId",
       "type": "String",
       "arity": "Required"
     },
     {
       "tag": "CreateField",
-      "model": "ExternalIdentity",
+      "model": "ExternalIdentifier",
       "field": "createdAt",
       "type": "DateTime",
       "arity": "Required"
@@ -3757,7 +4508,7 @@
       "location": {
         "path": {
           "tag": "Field",
-          "model": "ExternalIdentity",
+          "model": "ExternalIdentifier",
           "field": "createdAt"
         },
         "directive": "default"
@@ -3769,7 +4520,7 @@
         "tag": "Directive",
         "path": {
           "tag": "Field",
-          "model": "ExternalIdentity",
+          "model": "ExternalIdentifier",
           "field": "createdAt"
         },
         "directive": "default"
@@ -3779,7 +4530,7 @@
     },
     {
       "tag": "CreateField",
-      "model": "ExternalIdentity",
+      "model": "ExternalIdentifier",
       "field": "updatedAt",
       "type": "DateTime",
       "arity": "Required"
@@ -3789,7 +4540,7 @@
       "location": {
         "path": {
           "tag": "Field",
-          "model": "ExternalIdentity",
+          "model": "ExternalIdentifier",
           "field": "updatedAt"
         },
         "directive": "updatedAt"
@@ -4147,6 +4898,156 @@
     },
     {
       "tag": "CreateModel",
+      "model": "RememberMe"
+    },
+    {
+      "tag": "CreateField",
+      "model": "RememberMe",
+      "field": "id",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "RememberMe",
+          "field": "id"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "RememberMe",
+          "field": "id"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "RememberMe",
+          "field": "id"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "uuid()"
+    },
+    {
+      "tag": "CreateField",
+      "model": "RememberMe",
+      "field": "token",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "RememberMe",
+          "field": "token"
+        },
+        "directive": "unique"
+      }
+    },
+    {
+      "tag": "CreateField",
+      "model": "RememberMe",
+      "field": "User",
+      "type": "User",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "RememberMe",
+          "field": "User"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "RememberMe",
+          "field": "User"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[userId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "RememberMe",
+          "field": "User"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "RememberMe",
+      "field": "userId",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "RememberMe",
+      "field": "createdAt",
+      "type": "DateTime",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "RememberMe",
+          "field": "createdAt"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "RememberMe",
+          "field": "createdAt"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "now()"
+    },
+    {
+      "tag": "CreateModel",
       "model": "PasswordReset"
     },
     {
@@ -4440,6 +5341,38 @@
     {
       "tag": "CreateField",
       "model": "EmailSettings",
+      "field": "secure",
+      "type": "Boolean",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "EmailSettings",
+          "field": "secure"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "EmailSettings",
+          "field": "secure"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "false"
+    },
+    {
+      "tag": "CreateField",
+      "model": "EmailSettings",
       "field": "SMTPSecurity",
       "type": "SMTPSecurity",
       "arity": "Required"
@@ -4472,6 +5405,13 @@
     {
       "tag": "CreateField",
       "model": "EmailSettings",
+      "field": "ciphers",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "EmailSettings",
       "field": "from",
       "type": "String",
       "arity": "Required"
@@ -4481,7 +5421,7 @@
       "model": "EmailSettings",
       "field": "name",
       "type": "String",
-      "arity": "Required"
+      "arity": "Optional"
     },
     {
       "tag": "CreateField",

@@ -79,7 +79,7 @@ type EmailSettings {
   from: String!
   host: String!
   id: String!
-  name: String!
+  name: String
   password: String
   port: String!
   SMTPSecurity: SMTPSecurity!
@@ -87,14 +87,27 @@ type EmailSettings {
   username: String
 }
 
-type ExternalIdentity {
+type ExternalIdentifier {
+  Application: Application!
   createdAt: DateTime!
+  data: Json
+  IdentityProvider: IdentityProvider!
   isUserCreatedBefore: Boolean!
   providerType: SupportedProvider!
-  status: ExternalIdentityStatus!
-  sub: String!
+  status: ExternalIdentifierStatus!
+  Tenant: Tenant!
   updatedAt: DateTime!
   User: User!
+}
+
+enum ExternalIdentifierStatus {
+  CONFIRMED
+  DISABLED
+  UNCONFIRMED
+}
+
+input ExternalIdentifierWhereUniqueInput {
+  id: String
 }
 
 """Status of external identity"""
@@ -102,11 +115,6 @@ enum ExternalIdentityStatus {
   CONFIRMED
   DISABLED
   UNCONFIRMED
-}
-
-input ExternalIdentityWhereUniqueInput {
-  id: String
-  sub: String
 }
 
 """Gender of users"""
@@ -150,16 +158,28 @@ input GroupWhereUniqueInput {
 }
 
 type IdentityProvider {
-  Applications(after: ApplicationWhereUniqueInput, before: ApplicationWhereUniqueInput, first: Int, last: Int): [Application!]!
-  authorizationUrl: String!
-  cliendId: String!
-  clientSecret: String!
+  Applications(after: IdProviderOnApplicationWhereUniqueInput, before: IdProviderOnApplicationWhereUniqueInput, first: Int, last: Int): [IdProviderOnApplication!]!
   createdAt: DateTime!
-  ExternalIdentities(after: ExternalIdentityWhereUniqueInput, before: ExternalIdentityWhereUniqueInput, first: Int, last: Int): [ExternalIdentity!]!
-  issuer: String!
+  data: Json!
+  ExternalIdentifiers(after: ExternalIdentifierWhereUniqueInput, before: ExternalIdentifierWhereUniqueInput, first: Int, last: Int): [ExternalIdentifier!]!
+  isEnabled: Boolean!
   providerType: SupportedProvider!
-  tokenUrl: String!
   updatedAt: DateTime!
+}
+
+type IdProviderOnApplication {
+  Application: Application!
+  createdAt: DateTime!
+  data: Json
+  IdentityProvider: IdentityProvider!
+  isEnabled: Boolean!
+  isOverwritten: Boolean!
+  providerType: SupportedProvider!
+  updatedAt: DateTime!
+}
+
+input IdProviderOnApplicationWhereUniqueInput {
+  id: String
 }
 
 type JavascriptOrigin {
@@ -171,8 +191,15 @@ input JavascriptOriginWhereUniqueInput {
   id: String
 }
 
+scalar Json
+
 type Mutation {
   login(email: String!, password: String!): AuthPayload
+}
+
+input NameApplicationIdCompoundUniqueInput {
+  applicationId: String!
+  name: String!
 }
 
 type Profile {
@@ -224,8 +251,8 @@ type Registration {
 
 input RegistrationWhereUniqueInput {
   id: String
-  userId_clientId: UserIdClientIdCompoundUniqueInput
-  username: String
+  userId_applicationId: UserIdApplicationIdCompoundUniqueInput
+  username_applicationId: UsernameApplicationIdCompoundUniqueInput
 }
 
 type ResourceServer {
@@ -247,7 +274,7 @@ type Role {
 
 input RoleWhereUniqueInput {
   id: String
-  name: String
+  name_applicationId: NameApplicationIdCompoundUniqueInput
 }
 
 type Scope {
@@ -295,7 +322,7 @@ type User {
   createdAt: DateTime!
   Devices(after: UserDeviceWhereUniqueInput, before: UserDeviceWhereUniqueInput, first: Int, last: Int): [UserDevice!]!
   email: String!
-  ExternalIdentities(after: ExternalIdentityWhereUniqueInput, before: ExternalIdentityWhereUniqueInput, first: Int, last: Int): [ExternalIdentity!]!
+  ExternalIdentifiers(after: ExternalIdentifierWhereUniqueInput, before: ExternalIdentifierWhereUniqueInput, first: Int, last: Int): [ExternalIdentifier!]!
   Groups(after: GroupWhereUniqueInput, before: GroupWhereUniqueInput, first: Int, last: Int): [Group!]!
   Profile: Profile
   Registrations(after: RegistrationWhereUniqueInput, before: RegistrationWhereUniqueInput, first: Int, last: Int): [Registration!]!
@@ -312,9 +339,14 @@ input UserDeviceWhereUniqueInput {
   id: String
 }
 
-input UserIdClientIdCompoundUniqueInput {
-  clientId: String!
+input UserIdApplicationIdCompoundUniqueInput {
+  applicationId: String!
   userId: String!
+}
+
+input UsernameApplicationIdCompoundUniqueInput {
+  applicationId: String!
+  username: String!
 }
 
 input UserWhereUniqueInput {

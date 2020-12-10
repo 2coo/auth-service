@@ -29,7 +29,7 @@ type UserWithGroupsAndRegistrations = User & {
   })[]
 }
 
-const signToken = async (payload: object, expiresIn: number) => {
+const signToken = async (payload: object) => {
   const ks = fs.readFileSync(`${__dirname}/../../keys/jwks.json`)
   const keyStore = await JWK.asKeyStore(ks.toString())
   const jwks = keyStore.all({ use: 'sig' })
@@ -143,29 +143,27 @@ export const issueAccessToken = async (
   if (userId) {
     const user = await getUserById(userId)
     if (user) {
-      const token = await signToken(
-        {
-          iss: `http://${HOST}`,
-          sub: userId,
-          aud: clientId,
-          
-          applicationId: clientId,
+      const token = await signToken({
+        iss: `http://${HOST}`,
+        sub: userId,
+        aud: clientId,
 
-          groups: user.Groups.map((group) => group.name),
-          roles: getUserApplicationRoles(user, clientId),
+        applicationId: clientId,
 
-          scopes: scopes,
-          token_use: 'access',
-          // nbf: NaN,
-          iat: moment().valueOf() / 1000,
-          jti: jti,
-          // claims
-          username: user.username,
-          email: user.email,
-          displayName: user.Profile?.displayName,
-        },
-        accessTokenLifetime,
-      )
+        groups: user.Groups.map((group) => group.name),
+        roles: getUserApplicationRoles(user, clientId),
+
+        scopes: scopes,
+        token_use: 'access',
+        // nbf: NaN,
+        iat: moment().valueOf() / 1000,
+        exp: expirationDate.valueOf() / 1000,
+        jti: jti,
+        // claims
+        username: user.username,
+        email: user.email,
+        displayName: user.Profile?.displayName,
+      })
       await prisma.accessToken.create({
         data: {
           jti: jti,
@@ -188,18 +186,16 @@ export const issueAccessToken = async (
       return token
     }
   } else {
-    const token = await signToken(
-      {
-        iss: '',
-        sub: clientId,
-        aud: clientId,
-        token_use: 'jwt',
-        nbf: null,
-        iat: moment().valueOf(),
-        jti: jti,
-      },
-      accessTokenLifetime * 60,
-    )
+    const token = await signToken({
+      iss: '',
+      sub: clientId,
+      aud: clientId,
+      token_use: 'access',
+      nbf: null,
+      iat: moment().valueOf(),
+      exp: expirationDate.valueOf() / 1000,
+      jti: jti,
+    })
     await prisma.accessToken.create({
       data: {
         jti: jti,
@@ -274,6 +270,7 @@ export const getClientById = (clientId: string) => {
     include: {
       EnabledScopes: true,
       RedirectUris: true,
+      SelfRegistrationFields: true,
     },
   })
 }
@@ -315,9 +312,9 @@ export const getUserByUsernameOrEmail = (username: string) => {
 export const getUserRegistration = (userId: string, appId: string) => {
   return prisma.registration.findOne({
     where: {
-      userId_clientId: {
+      userId_applicationId: {
         userId: userId,
-        clientId: appId,
+        applicationId: appId,
       },
     },
   })
@@ -414,4 +411,36 @@ export const getUserRolesGroupedByApplication = (
     'applicationId',
   )
   return userRoles
+}
+
+export const consumeRememberMeToken = async (token: string) => {
+  const user = (await prisma.rememberMe.findOne({
+    where: {
+      token,
+    },
+    include: {
+      User: true,
+    },
+  }))!.User
+  if (user) {
+    await prisma.rememberMe.delete({
+      where: {
+        token: token,
+      },
+    })
+  }
+  return user
+}
+
+export const saveRememberMeToken = (token: string, userId: string) => {
+  return prisma.rememberMe.create({
+    data: {
+      token,
+      User: {
+        connect: {
+          id: userId,
+        },
+      },
+    },
+  })
 }

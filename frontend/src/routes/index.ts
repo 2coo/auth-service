@@ -5,6 +5,8 @@ import Profile from "../view/app/profile/Profile";
 import Dialog from "../view/dialog/Dialog";
 import Landing from "../view/landing/Landing";
 import Login from "../view/login/LoginPage";
+import Register from "../view/register/Register";
+import ResetPassword from "../view/reset-password/ResetPassword";
 
 const routes: Array<Routes> = [
   {
@@ -16,6 +18,16 @@ const routes: Array<Routes> = [
     component: Login,
     label: "Login",
     path: "/oauth2/authorize",
+  },
+  {
+    component: Register,
+    label: "Register",
+    path: "/oauth2/register",
+  },
+  {
+    component: ResetPassword,
+    label: "Reset Password",
+    path: "/password/new",
   },
   {
     component: Dialog,

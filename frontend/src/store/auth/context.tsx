@@ -1,11 +1,13 @@
 import { Auth } from "../../models/Auth";
-import { createContext, useReducer, useContext, Dispatch } from "react";
+import { createContext, useReducer, useContext, Dispatch, useEffect } from "react";
 import { Action, authReducer } from "./reducers";
 
 const initialState: Auth = {
     authenticated: false,
     user: null
 }
+
+const localState = JSON.parse(String(localStorage.getItem("auth")))
 
 const AuthContext = createContext<{
     state: Auth,
@@ -16,7 +18,10 @@ const AuthContext = createContext<{
 });
 
 const AuthProvider = ({ children }: any) => {
-    const [state, dispatch] = useReducer(authReducer, initialState)
+    const [state, dispatch] = useReducer(authReducer, localState || initialState)
+    useEffect(() => {
+        localStorage.setItem("auth", JSON.stringify(state))
+    }, [state])
     return (<AuthContext.Provider value={{ state, dispatch }}>
         {children}
     </AuthContext.Provider>)

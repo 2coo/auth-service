@@ -11,15 +11,16 @@ generator client {
 }
 
 model Tenant {
-  id            String         @id @default(uuid())
-  domainName    String         @unique
-  isAcitve      Boolean        @default(true)
-  Applications  Application[]
-  Users         User[]
-  Groups        Group[]
-  EmailSettings EmailSettings?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  id                 String               @id @default(uuid())
+  domainName         String               @unique
+  isAcitve           Boolean              @default(true)
+  Applications       Application[]
+  Users              User[]
+  ExternalIdentifier ExternalIdentifier[]
+  Groups             Group[]
+  EmailSettings      EmailSettings?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
 }
 
 enum UsernameStatus {
@@ -47,30 +48,45 @@ model Registration {
 }
 
 model Application {
-  id                   String              @id @default(uuid())
-  Tenant               Tenant              @relation(fields: [tenantId], references: [id])
-  tenantId             String
-  Registrations        Registration[]
-  Roles                Role[]
-  name                 String
-  secret               String              @default(cuid())
-  IdentityProviders    IdentityProvider[]
-  Grants               Grant[]
-  RedirectUris         RedirectURI[]
-  JavascriptOrigins    JavascriptOrigin[]
-  EnabledScopes        Scope[]
-  AccessTokens         AccessToken[]
-  AuthorizationCodes   AuthorizationCode[]
-  RefreshTokens        RefreshToken[]
-  refreshTokenLifetime Int                 @default(43200)
-  accessTokenLifetime  Int                 @default(60)
-  idTokenLifetime      Int                 @default(5)
-  logo                 String?
-  trustedApplication   Boolean             @default(false)
-  createdAt            DateTime            @default(now())
-  updatedAt            DateTime            @updatedAt
+  id                      String                    @id @default(uuid())
+  Tenant                  Tenant                    @relation(fields: [tenantId], references: [id])
+  tenantId                String
+  Registrations           Registration[]
+  ExternalIdentifier      ExternalIdentifier[]
+  Roles                   Role[]
+  name                    String
+  secret                  String                    @default(cuid())
+  selfRegistrationEnabled Boolean                   @default(false)
+  SelfRegistrationFields  SelfRegistrationFields[]
+  IdentityProviders       IdProviderOnApplication[]
+  Grants                  Grant[]
+  RedirectUris            RedirectURI[]
+  JavascriptOrigins       JavascriptOrigin[]
+  EnabledScopes           Scope[]
+  AccessTokens            AccessToken[]
+  AuthorizationCodes      AuthorizationCode[]
+  RefreshTokens           RefreshToken[]
+  refreshTokenLifetime    Int                       @default(43200)
+  accessTokenLifetime     Int                       @default(60)
+  idTokenLifetime         Int                       @default(5)
+  logo                    String?
+  trustedApplication      Boolean                   @default(false)
+  createdAt               DateTime                  @default(now())
+  updatedAt               DateTime                  @updatedAt
 
   @@unique([tenantId, name])
+}
+
+model SelfRegistrationFields {
+  id            String      @id @default(uuid())
+  Application   Application @relation(fields: [applicationId], references: [id])
+  fieldName     String
+  fieldType     String?
+  isRequired    Boolean     @default(false)
+  isEnabled     Boolean     @default(false)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  applicationId String
 }
 
 model Scope {
@@ -220,29 +236,30 @@ enum AccountStatusType {
 }
 
 model User {
-  id                 String              @id @default(uuid())
-  Tenant             Tenant              @relation(fields: [tenantId], references: [id])
-  tenantId           String
-  username           String              @unique @default(cuid())
-  usernameStatus     UsernameStatus      @default(PENDING)
-  email              String              @unique
-  password           String
-  salt               String
+  id                  String               @id @default(uuid())
+  Tenant              Tenant               @relation(fields: [tenantId], references: [id])
+  tenantId            String
+  username            String               @unique @default(cuid())
+  usernameStatus      UsernameStatus       @default(PENDING)
+  email               String               @unique
+  password            String
+  salt                String
   //
-  accountStatusType  AccountStatusType   @default(UNCONFIRMED)
-  ExternalIdentities ExternalIdentity[]
+  accountStatusType   AccountStatusType    @default(UNCONFIRMED)
+  ExternalIdentifiers ExternalIdentifier[]
   //
-  Profile            Profile?
-  PasswordResets     PasswordReset[]
-  Devices            UserDevice[]
-  AccessTokens       AccessToken[]
-  AuthorizationCodes AuthorizationCode[]
-  RefreshTokens      RefreshToken[]
-  Groups             Group[]
-  FailedLogins       FailedLogin[]
-  Registrations      Registration[]
-  createdAt          DateTime            @default(now())
-  updatedAt          DateTime            @updatedAt
+  Profile             Profile?
+  PasswordResets      PasswordReset[]
+  Devices             UserDevice[]
+  AccessTokens        AccessToken[]
+  AuthorizationCodes  AuthorizationCode[]
+  RefreshTokens       RefreshToken[]
+  Groups              Group[]
+  FailedLogins        FailedLogin[]
+  Registrations       Registration[]
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  RememberMe          RememberMe[]
 }
 
 enum SupportedProvider {
@@ -251,38 +268,57 @@ enum SupportedProvider {
   APPLE
 }
 
-model IdentityProvider {
-  id                 String             @id @default(uuid())
-  Applications       Application[]
-  ExternalIdentities ExternalIdentity[]
-  providerType       SupportedProvider
-  issuer             String
-  authorizationUrl   String
-  tokenUrl           String
-  cliendId           String
-  clientSecret       String
-  createdAt          DateTime           @default(now())
-  updatedAt          DateTime           @updatedAt
+model IdProviderOnApplication {
+  id            String            @id @default(uuid())
+  isEnabled     Boolean           @default(true)
+  isOverwritten Boolean           @default(false)
+  providerType  SupportedProvider
+  data          Json?
+
+  IdentityProvider   IdentityProvider @relation(fields: [identityProviderId], references: [id])
+  Application        Application      @relation(fields: [applicationId], references: [id])
+  identityProviderId String
+  applicationId      String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
 }
 
-enum ExternalIdentityStatus {
+model IdentityProvider {
+  id                  String                    @id @default(uuid())
+  isEnabled           Boolean                   @default(true)
+  providerType        SupportedProvider
+  data                Json
+  Applications        IdProviderOnApplication[]
+  ExternalIdentifiers ExternalIdentifier[]
+  createdAt           DateTime                  @default(now())
+  updatedAt           DateTime                  @updatedAt
+
+}
+
+enum ExternalIdentifierStatus {
   UNCONFIRMED
   CONFIRMED
   DISABLED
 }
 
-model ExternalIdentity {
-  id                  String                 @id @default(uuid())
-  sub                 String                 @unique
+model ExternalIdentifier {
+  id                  String                   @id @default(uuid())
+  Tenant              Tenant                   @relation(fields: [tenantId], references: [id])
+  tenantId            String
+  Application         Application              @relation(fields: [applicationId], references: [id])
+  applicationId       String
+  data                Json?
   providerType        SupportedProvider
-  User                User                   @relation(fields: [userId], references: [id])
+  User                User                     @relation(fields: [userId], references: [id])
   userId              String
-  status              ExternalIdentityStatus @default(CONFIRMED)
+  status              ExternalIdentifierStatus @default(CONFIRMED)
   isUserCreatedBefore Boolean
-  IdentityProvider    IdentityProvider       @relation(fields: [identityProviderId], references: [id])
+  IdentityProvider    IdentityProvider         @relation(fields: [identityProviderId], references: [id])
   identityProviderId  String
-  createdAt           DateTime               @default(now())
-  updatedAt           DateTime               @updatedAt
+  createdAt           DateTime                 @default(now())
+  updatedAt           DateTime                 @updatedAt
 }
 
 model Profile {
@@ -308,6 +344,14 @@ model UserCustomAttribute {
   profileId String
 
   @@id([name, profileId])
+}
+
+model RememberMe {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  User      User     @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime @default(now())
 }
 
 model PasswordReset {

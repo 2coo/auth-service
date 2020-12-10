@@ -8,16 +8,22 @@ import { Router, globalHistory } from '@reach/router';
 import { QueryParamProvider } from 'use-query-params';
 import composeRoutes from './utils/route-composer';
 import routes from "./routes"
+import { AuthProvider } from './store/auth/context';
+import { ThemeProvider as UserControllableThemeProvider } from './store/theme/context';
 
 ReactDOM.render(
   <StrictMode>
-    <ThemeProvider theme={theme}>
-      <QueryParamProvider reachHistory={globalHistory}>
-        <Router>
-          {composeRoutes(routes)}
-        </Router>
-      </QueryParamProvider>
-    </ThemeProvider>
+    <AuthProvider>
+      <UserControllableThemeProvider>
+        <ThemeProvider theme={theme}>
+          <QueryParamProvider reachHistory={globalHistory}>
+            <Router>
+              {composeRoutes(routes)}
+            </Router>
+          </QueryParamProvider>
+        </ThemeProvider>
+      </UserControllableThemeProvider>
+    </AuthProvider>
   </StrictMode>,
   document.getElementById('root')
 );

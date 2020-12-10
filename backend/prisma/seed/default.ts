@@ -27,6 +27,7 @@ export const seedDefaultTenantWithAdmin = (prisma: PrismaClient) => {
       },
       Applications: {
         create: {
+          id: "71566877-ce96-4da8-94f5-330edd645b60",
           name: 'Default',
           trustedApplication: true,
           RedirectUris: {
@@ -67,7 +68,10 @@ export const seedDefaultTenantWithAdmin = (prisma: PrismaClient) => {
               },
               Roles: {
                 connect: {
-                  name: 'admin',
+                  name_applicationId: {
+                    name: 'admin',
+                    applicationId: '71566877-ce96-4da8-94f5-330edd645b60',
+                  },
                 },
               },
               username: 'admin',

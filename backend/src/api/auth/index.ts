@@ -6,16 +6,21 @@ import { BasicStrategy } from 'passport-http'
 import { Strategy as ClientPasswordStrategy } from 'passport-oauth2-client-password'
 
 import {
+  consumeRememberMeToken,
   getClientById,
   getUserById,
   getUserByUsernameOrEmail,
   getUserRegistration,
+  saveRememberMeToken,
 } from './../controllers/utils'
 import { Strategy as LocalStrategy } from 'passport-local'
 import { compare } from 'bcryptjs'
 import { Strategy as CustomStrategy } from 'passport-custom'
+import { Strategy as RememberMeStrategy } from 'passport-remember-me-extended'
 import { AppUser } from '../client/user'
 import { getKIDfromAccessToken } from '../client'
+import cryptoRandomString from 'crypto-random-string'
+import moment from 'moment'
 
 export class JWTScopeStrategy extends CustomStrategy {
   authenticate(req: any, options: any) {
@@ -53,6 +58,29 @@ passport.use(
 )
 
 passport.use(
+  new RememberMeStrategy(
+    async (token, done) => {
+      try {
+        const user = await consumeRememberMeToken(token)
+        if (!user) return done(null, false)
+        return done(null, user)
+      } catch (err) {
+        return done(err)
+      }
+    },
+    async (user, done) => {
+      const token = cryptoRandomString({ length: 64, type: 'url-safe' })
+      try {
+        const savedToken = await saveRememberMeToken(token, user.id)
+        if (savedToken) return done(null, token)
+      } catch (err) {
+        return done(err)
+      }
+    },
+  ),
+)
+
+passport.use(
   'jwt',
   new JWTScopeStrategy(async (req: any, done) => {
     const defaultApp: Application = req.session.defaultApp
@@ -75,6 +103,8 @@ passport.use(
         audience: defaultApp.id,
         issuer: ISSUER,
       })
+      console.log(moment.unix(payload.exp));
+      
       const appUser = new AppUser(payload)
       if (appUser.canScope(req.scope))
         return done(new Error(`Not allowed scope`))
@@ -82,7 +112,9 @@ passport.use(
       if (!user) return done(new Error('User not found!'))
       return done(null, user)
     } catch (err) {
-      if (err) done(new Error(err.message))
+      console.log(err);
+      
+      if (err) done(null, false)
     }
   }),
 )

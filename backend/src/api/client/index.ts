@@ -84,3 +84,15 @@ export const defaultLinkBuilder = (
   const failureRedirect = `/oauth2/authorize?response_type=code&redirect_uri=/oauth2/authorize&client_id=${defaultApp.id}&scope=${scopes}`
   return failureRedirect
 }
+
+export const removeCookieIfSSOisLoggedOut = (
+  req: any,
+  res: Response,
+  next: NextFunction,
+) => {
+  if (!req.isAuthenticated()) {
+    res.clearCookie('access_token')
+    res.clearCookie('refresh_token')
+  }
+  next()
+}

@@ -8,11 +8,17 @@ import path from 'path'
 import redis from 'redis'
 import vhost from 'vhost-ts'
 import { prisma } from '../context'
-import { authCodeCallback, ensureLoggedInWithCookie, renderSPA } from './client'
+import {
+  authCodeCallback,
+  ensureLoggedInWithCookie,
+  removeCookieIfSSOisLoggedOut,
+  renderSPA,
+} from './client'
 import routes from './controllers'
 import { getDefaultApplicationByTenant } from './controllers/utils'
 import serveStatic from 'serve-static'
 import { ensureLoggedIn } from 'connect-ensure-login'
+import { remove } from 'lodash'
 
 const RedisStore = connectRedis(expressSession)
 
@@ -80,6 +86,10 @@ module.exports = function (app: Express.Application) {
   require('./auth')
 
   const router = Express.Router()
+
+  router.get('/logout', routes.site.logout)
+
+  router.use(passport.authenticate('remember-me'))
   // tenant check
   router.use(async (req: any, res, next) => {
     const tenantDomain = req.vhost[0] === undefined ? '*' : req.vhost[0]
@@ -102,13 +112,15 @@ module.exports = function (app: Express.Application) {
   // static resources for stylesheets, images, javascript files
   router.route('/login').get(ensureLoggedInWithCookie()).post(routes.site.login)
 
-  router.get('/logout', routes.site.logout)
-
   // Create endpoint handlers for oauth2 authorize
   router.get('/oauth2/authorize', [
     authCodeCallback,
     routes.oauth2.authorization,
   ])
+
+  router.post('/oauth2/register/get/fields', routes.user.fields)
+
+  router.post('/oauth2/register', routes.user.register)
 
   router.get('/oauth2/userinfo', routes.user.userinfo)
 
@@ -124,6 +136,8 @@ module.exports = function (app: Express.Application) {
   router.route('/.well-known/jwks.json').get(routes.token.jwks)
 
   router.post('/oauth2/token/revoke', routes.token.revoke)
+
+  router.get(/^\/app(\/.*)?/, removeCookieIfSSOisLoggedOut, renderSPA)
 
   router.get('*', renderSPA)
   //subdomain tenant
