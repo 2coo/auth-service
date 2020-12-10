@@ -148,11 +148,14 @@ export const issueAccessToken = async (
           iss: `http://${HOST}`,
           sub: userId,
           aud: clientId,
+          
+          applicationId: clientId,
+
           groups: user.Groups.map((group) => group.name),
           roles: getUserApplicationRoles(user, clientId),
+
           scopes: scopes,
-          // exp: expirationDate.valueOf(),
-          token_use: 'jwt',
+          token_use: 'access',
           // nbf: NaN,
           iat: moment().valueOf() / 1000,
           jti: jti,

@@ -334,9 +334,11 @@ model EmailSettings {
   port         String
   username     String?
   password     String?
+  secure       Boolean      @default(false)
   SMTPSecurity SMTPSecurity @default(NONE)
+  ciphers      String?
   from         String
-  name         String
+  name         String?
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
 }

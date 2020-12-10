@@ -12,7 +12,7 @@ export const getUserId = (context: ExpressContext): Token => {
     const token = Authorization.replace('Bearer ', '')
     const verifiedToken = verify(
       token,
-      process.env.APP_SECRET as string,
+      String(process.env.APP_SECRET),
     ) as Token
     return verifiedToken
   }
