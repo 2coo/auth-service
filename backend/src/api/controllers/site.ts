@@ -21,7 +21,6 @@ export const login = [
         httpOnly: true,
         maxAge: 604800000,
       })
-    console.log('#returnTo', req.session.returnTo)
     if (req.session.returnTo) return res.redirect(req.session.returnTo)
     return res.redirect('/')
   },
@@ -29,8 +28,10 @@ export const login = [
 
 export const logout = (req: Request, res: Response, next: NextFunction) => {
   req.logout()
-  res.clearCookie('remember_me')
-  res.clearCookie('access_token')
-  res.clearCookie('refresh_token')
-  return res.redirect(`/`)
+  req.session.destroy((err) => {
+    res.clearCookie('remember_me')
+    res.clearCookie('access_token')
+    res.clearCookie('refresh_token')
+    return res.redirect(`/`)
+  })
 }

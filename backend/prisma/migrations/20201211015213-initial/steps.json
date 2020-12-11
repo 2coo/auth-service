@@ -846,6 +846,38 @@
     {
       "tag": "CreateField",
       "model": "Application",
+      "field": "issuer",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Application",
+          "field": "issuer"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Application",
+          "field": "issuer"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "\"http://tomujin.digital\""
+    },
+    {
+      "tag": "CreateField",
+      "model": "Application",
       "field": "refreshTokenLifetime",
       "type": "Int",
       "arity": "Required"

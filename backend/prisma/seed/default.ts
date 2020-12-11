@@ -29,6 +29,7 @@ export const seedDefaultTenantWithAdmin = (prisma: PrismaClient) => {
         create: {
           id: "71566877-ce96-4da8-94f5-330edd645b60",
           name: 'Default',
+          issuer: "http://tomujin.digital",
           trustedApplication: true,
           RedirectUris: {
             create: {

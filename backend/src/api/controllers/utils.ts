@@ -14,8 +14,6 @@ import { JWK, JWS } from 'node-jose'
 import { v4 as uuidv4 } from 'uuid'
 import { prisma } from '../../context'
 
-const HOST = process.env.DOMAIN_HOST
-
 type RoleWithApplication = Role & {
   Application: Application
 }
@@ -139,12 +137,13 @@ export const issueAccessToken = async (
 ) => {
   const expirationDate = calculateExpirationDate(accessTokenLifetime)
   const jti = uuidv4()
+  const application = await getClientById(clientId)
 
   if (userId) {
     const user = await getUserById(userId)
     if (user) {
       const token = await signToken({
-        iss: `http://${HOST}`,
+        iss: application!.issuer,
         sub: userId,
         aud: clientId,
 
@@ -187,7 +186,7 @@ export const issueAccessToken = async (
     }
   } else {
     const token = await signToken({
-      iss: '',
+      iss: application!.issuer,
       sub: clientId,
       aud: clientId,
       token_use: 'access',

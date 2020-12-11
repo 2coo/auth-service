@@ -3,6 +3,7 @@ import { AuthConsumer, useAuthContext } from "../../store/auth/context";
 import { useAxios } from "../../utils/api";
 import { Backdrop, CircularProgress } from "@material-ui/core"
 import FullRedirect from "../full-redirect/FullRedirect"
+import { useLocation } from "@reach/router"
 
 const PrivateRoute = (props: any) => {
     let { as: Comp, ...otherProps } = props;
@@ -10,14 +11,8 @@ const PrivateRoute = (props: any) => {
     const [{ data: userProfile, loading, error }, fetch] = useAxios({
         url: "/oauth2/userinfo",
         withCredentials: true
-    }, { manual: true })
-
-    useEffect(() => {
-        if (!state.authenticated) {
-            fetch()
-        }
-        return () => { }
-    }, [state.authenticated, fetch])
+    })
+    const location = useLocation()
     useEffect(() => {
         if (userProfile?.success === true) {
             dispatch({
@@ -35,12 +30,12 @@ const PrivateRoute = (props: any) => {
         <CircularProgress color="inherit" />
     </Backdrop>)
 
-    if(error?.request.status === 401) decisionComp = <FullRedirect url="/oauth2/authorize" />
+    if (error?.request.status === 401) decisionComp = <FullRedirect url={`/oauth2/authorize?return_to=${location.pathname}`} />
 
     return <AuthConsumer>
         {auth =>
             <Fragment>
-                
+
                 {
                     userProfile?.success || auth.state.authenticated ?
                         (<Comp {...otherProps} />)

@@ -66,6 +66,7 @@ model Application {
   AccessTokens            AccessToken[]
   AuthorizationCodes      AuthorizationCode[]
   RefreshTokens           RefreshToken[]
+  issuer                  String                    @default("http://tomujin.digital")
   refreshTokenLifetime    Int                       @default(43200)
   accessTokenLifetime     Int                       @default(60)
   idTokenLifetime         Int                       @default(5)

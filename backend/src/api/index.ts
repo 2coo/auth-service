@@ -22,7 +22,7 @@ import { remove } from 'lodash'
 
 const RedisStore = connectRedis(expressSession)
 
-const DOMAIN = process.env.DOMAIN_HOST
+const DOMAIN = process.env.DOMAIN
 
 const redisClient = redis.createClient(
   Number(process.env.REDIS_PORT),
@@ -74,9 +74,9 @@ module.exports = function (app: Express.Application) {
 
   app.use((req, res, next) => {
     console.log(
-      '# Request recieved on: ',
-      `[${req.method}]`,
-      req.url,
+      '#ON:',
+      `[${req.method}]\t`,
+      req.url+"\t",
       req.url === '/oauth2/token' ? `(GRANT_TYPE: ${req.body.grant_type})` : '',
     )
     next()
@@ -113,10 +113,7 @@ module.exports = function (app: Express.Application) {
   router.route('/login').get(ensureLoggedInWithCookie()).post(routes.site.login)
 
   // Create endpoint handlers for oauth2 authorize
-  router.get('/oauth2/authorize', [
-    authCodeCallback,
-    routes.oauth2.authorization,
-  ])
+  router.get('/oauth2/authorize', authCodeCallback, routes.oauth2.authorization)
 
   router.post('/oauth2/register/get/fields', routes.user.fields)
 
