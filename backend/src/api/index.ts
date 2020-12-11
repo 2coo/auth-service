@@ -76,7 +76,7 @@ module.exports = function (app: Express.Application) {
     console.log(
       '#ON:',
       `[${req.method}]\t`,
-      req.url+"\t",
+      req.url + '\t',
       req.url === '/oauth2/token' ? `(GRANT_TYPE: ${req.body.grant_type})` : '',
     )
     next()
@@ -86,8 +86,6 @@ module.exports = function (app: Express.Application) {
   require('./auth')
 
   const router = Express.Router()
-
-  router.get('/logout', routes.site.logout)
 
   router.use(passport.authenticate('remember-me'))
   // tenant check
@@ -106,6 +104,7 @@ module.exports = function (app: Express.Application) {
     next()
   })
 
+  router.get('/logout', routes.site.logout, renderSPA)
   // home
   router.get('/', [ensureLoggedInWithCookie(), renderSPA])
 

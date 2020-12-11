@@ -7,6 +7,7 @@ import Landing from "../view/landing/Landing";
 import Login from "../view/login/LoginPage";
 import Register from "../view/register/Register";
 import ResetPassword from "../view/reset-password/ResetPassword";
+import Signout from "../view/signout/Signout";
 
 const routes: Array<Routes> = [
   {
@@ -18,6 +19,11 @@ const routes: Array<Routes> = [
     component: Login,
     label: "Login",
     path: "/oauth2/authorize",
+  },
+  {
+    component: Signout,
+    label: "Signout",
+    path: "/logout",
   },
   {
     component: Register,

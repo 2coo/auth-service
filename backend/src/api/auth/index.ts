@@ -103,8 +103,6 @@ passport.use(
         audience: defaultApp.id,
         issuer: ISSUER,
       })
-      console.log(moment.unix(payload.exp));
-      
       const appUser = new AppUser(payload)
       if (appUser.canScope(req.scope))
         return done(new Error(`Not allowed scope`))

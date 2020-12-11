@@ -150,7 +150,7 @@ export const issueAccessToken = async (
         applicationId: clientId,
 
         groups: user.Groups.map((group) => group.name),
-        roles: getUserApplicationRoles(user, clientId),
+        roles: getUserApplicationRoles(user, clientId).map((role) => role.name),
 
         scopes: scopes,
         token_use: 'access',
@@ -369,6 +369,7 @@ export const getDefaultApplicationByTenant = (id: string) => {
     },
     include: {
       EnabledScopes: true,
+      RedirectUris: true,
     },
   })
   return defaultApp
@@ -389,7 +390,7 @@ export const getUserApplicationRoles = (
   const registrationRoles = user.Registrations.find(
     (registration) => registration.Application.id === applicationId,
   )!.Roles
-  return uniq([...groupRoles, ...registrationRoles])
+  return uniqBy([...groupRoles, ...registrationRoles], 'applicationId')
 }
 
 export const getUserRolesGroupedByApplication = (
@@ -404,7 +405,7 @@ export const getUserRolesGroupedByApplication = (
           Application: registration.Application,
         } as RoleWithApplication),
     ).flat(),
-  )
+  ).flat()
   const userRoles = groupBy(
     uniqBy([...groupRoles, ...registrationRoles], 'id'),
     'applicationId',

@@ -1,7 +1,8 @@
 import cryptoRandomString from 'crypto-random-string'
 import { NextFunction, Request, Response } from 'express'
+import { some } from 'lodash'
 import passport from 'passport'
-import { saveRememberMeToken } from './utils'
+import { getClientById, saveRememberMeToken } from './utils'
 
 export const login = [
   passport.authenticate('local', {
@@ -26,12 +27,33 @@ export const login = [
   },
 ]
 
-export const logout = (req: Request, res: Response, next: NextFunction) => {
+export const logout = async (req: any, res: Response, next: NextFunction) => {
   req.logout()
-  req.session.destroy((err) => {
-    res.clearCookie('remember_me')
-    res.clearCookie('access_token')
-    res.clearCookie('refresh_token')
-    return res.redirect(`/`)
-  })
+  res.clearCookie('remember_me')
+  res.clearCookie('access_token')
+  res.clearCookie('refresh_token')
+  const clientId = req.query.client_id
+  const logoutUrl = req.query.logout_url
+  if (logoutUrl) {
+    let application = req.session.defaultApp
+    if (clientId) application = await getClientById(clientId)
+    if (!application)
+      return res.status(403).json({
+        success: false,
+        error: 'The application does not exists!',
+      })
+    if (
+      some(application.RedirectUris, {
+        url: logoutUrl,
+      })
+    ) {
+      return res.redirect(String(req.query.logout_url))
+    } else {
+      return res.status(403).json({
+        success: false,
+        error: 'The logout url not exists on the application.',
+      })
+    }
+  }
+  next()
 }

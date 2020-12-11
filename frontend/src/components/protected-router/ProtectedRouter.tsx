@@ -11,8 +11,15 @@ const PrivateRoute = (props: any) => {
     const [{ data: userProfile, loading, error }, fetch] = useAxios({
         url: "/oauth2/userinfo",
         withCredentials: true
-    })
+    }, { manual: true })
     const location = useLocation()
+
+    useEffect(() => {
+        if (!state.authenticated && !error && !userProfile) {
+            fetch()
+        }
+        return () => { }
+    }, [state.authenticated, fetch, error, userProfile])
     useEffect(() => {
         if (userProfile?.success === true) {
             dispatch({
@@ -30,12 +37,11 @@ const PrivateRoute = (props: any) => {
         <CircularProgress color="inherit" />
     </Backdrop>)
 
-    if (error?.request.status === 401) decisionComp = <FullRedirect url={`/oauth2/authorize?return_to=${location.pathname}`} />
+    if (error?.request.status === 401) decisionComp = <FullRedirect url={`/oauth2/authorize`} />
 
     return <AuthConsumer>
         {auth =>
             <Fragment>
-
                 {
                     userProfile?.success || auth.state.authenticated ?
                         (<Comp {...otherProps} />)

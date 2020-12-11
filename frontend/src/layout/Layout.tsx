@@ -123,10 +123,7 @@ const App = (props: any) => {
 
   const handleLogout = () => {
     setAnchorEl(null);
-    dispatch({
-      type: "REMOVE_AUTH"
-    })
-    setLogginOutEl(<FullRedirect url="/logout" />)
+    setLogginOutEl(<FullRedirect url="/logout?logout_url=/logout" />)
   }
   const [logginOutEl, setLogginOutEl] = useState<JSX.Element | null>(null)
 

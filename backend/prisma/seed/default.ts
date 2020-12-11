@@ -27,14 +27,19 @@ export const seedDefaultTenantWithAdmin = (prisma: PrismaClient) => {
       },
       Applications: {
         create: {
-          id: "71566877-ce96-4da8-94f5-330edd645b60",
+          id: '71566877-ce96-4da8-94f5-330edd645b60',
           name: 'Default',
-          issuer: "http://tomujin.digital",
+          issuer: 'http://tomujin.digital',
           trustedApplication: true,
           RedirectUris: {
-            create: {
-              url: '/oauth2/authorize',
-            },
+            create: [
+              {
+                url: '/oauth2/authorize',
+              },
+              {
+                url: '/logout',
+              },
+            ],
           },
           EnabledScopes: {
             connect: [
