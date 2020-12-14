@@ -387,9 +387,10 @@ export const getUserApplicationRoles = (
   const groupRoles = user.Groups.map((group) =>
     group.Roles.filter((role) => role.applicationId === applicationId),
   ).flat()
-  const registrationRoles = user.Registrations.find(
-    (registration) => registration.Application.id === applicationId,
-  )!.Roles
+  const registrationRoles =
+    user.Registrations.find(
+      (registration) => registration.Application.id === applicationId,
+    )?.Roles || []
   return uniqBy([...groupRoles, ...registrationRoles], 'applicationId')
 }
 

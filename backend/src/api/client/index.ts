@@ -51,9 +51,11 @@ export const removeCookieIfSSOisLoggedOut = (
   res: Response,
   next: NextFunction,
 ) => {
-  if (!req.isAuthenticated()) {
-    res.clearCookie('access_token')
-    res.clearCookie('refresh_token')
+  if (
+    !req.isAuthenticated() ||
+    (!req.cookies.access_token && !req.cookies.refresh_token)
+  ) {
+    return res.redirect('/logout')
   }
   next()
 }
@@ -83,6 +85,7 @@ export const grantTypeCode = async (
   const host = req.protocol + '://' + req.get('host')
   const { code } = req.query
   if (code) {
+    console.log("#code", code);
     const basicAuth = Buffer.from(
       `${defaultApp.id}:${defaultApp.secret}`,
     ).toString('base64')
@@ -104,11 +107,13 @@ export const grantTypeCode = async (
     if (tokens.access_token) {
       res.cookie('access_token', tokens.access_token, {
         httpOnly: true,
+        sameSite: 'strict'
       })
     }
     if (tokens.refresh_token) {
       res.cookie('refresh_token', tokens.refresh_token, {
         httpOnly: true,
+        sameSite: 'strict'
       })
     }
     return res.redirect('/login')
@@ -130,7 +135,11 @@ export const grantTypeRefresh = async (
     cacheMaxAge: 10000,
     jwksUri: `${host}/.well-known/jwks.json`,
   })
-  if (req.cookies['access_token'] && req.cookies['refresh_token']) {
+  const access_token = req.cookies['access_token']
+  const refresh_token = req.cookies['refresh_token']
+  if (access_token && refresh_token) {
+    console.log("#access_token", access_token);
+    console.log("#refresh_token", refresh_token);
     try {
       const decoded = await verifyJWT(
         jwks_client,
@@ -138,8 +147,12 @@ export const grantTypeRefresh = async (
         defaultApp.id,
         defaultApp.issuer,
       )
-      if (req.session.return_to && req.session.return_to !== req.route.path) {
-        return res.redirect(req.query.return_to)
+      console.log('#returnTo', req.query.returnTo)
+      if (
+        req.session.returnTo !== undefined &&
+        req.session.returnTo !== req.route.path
+      ) {
+        return res.redirect(req.query.returnTo)
       }
       return res.redirect('/app')
     } catch (err) {
@@ -164,15 +177,16 @@ export const grantTypeRefresh = async (
         res.cookie('access_token', tokens.access_token, {
           httpOnly: true,
         })
-        if (req.session.return_to && req.session.return_to !== req.route.path) {
-          return res.redirect(req.query.return_to)
+        if (req.session.returnTo && req.session.returnTo !== req.route.path) {
+          return res.redirect(req.query.returnTo)
         }
         return res.redirect('/app')
       } catch (err2) {
+        console.log(err2)
         req.logout()
         res.clearCookie('access_token')
         res.clearCookie('refresh_token')
-        req.session.reset()
+        // req.session.reset()
       }
     }
   }

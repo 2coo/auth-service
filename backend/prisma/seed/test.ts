@@ -1,6 +1,5 @@
 import { GrantType, PrismaClient } from '@prisma/client'
 import bcrypt from 'bcryptjs'
-import { defaultRoles } from './roles'
 
 export const seedTestData = (prisma: PrismaClient) => {
   var salt = bcrypt.genSaltSync(10)
@@ -27,6 +26,8 @@ export const seedTestData = (prisma: PrismaClient) => {
   })
   const testApp = prisma.application.create({
     data: {
+      id: "0d33a87d-1b95-409b-b628-148d44293674",
+      secret: "ckiobeqr40000ofdyl4cl2ydw",
       Tenant: {
         connect: {
           domainName: '*',

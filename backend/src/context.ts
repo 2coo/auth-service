@@ -18,39 +18,39 @@ export const prisma = new PrismaClient({
   },
 })
 
-prisma.$use(async (params, next) => {
-  // console.log(params.model, ':', params.action)
-  if (params.action === 'create') {
-    switch (params.model) {
-      case 'User':
-        {
-          const saltRounds = 10
-          params.args.data.password = await hash(
-            params.args.data.password,
-            saltRounds,
-          )
-        }
-        break
-    }
-  }
-  const result = await next(params)
-  switch (params.action) {
-    case 'create':
-      switch (params.model) {
-        case 'Application':
-          {
-            await createGrantTypesAndConnect(prisma, result.id)
-            await connectDefaultUserScopes(prisma, result.id)
-          }
-          break
-      }
-      break
-    case 'update':
-      break
-  }
+// prisma.$use(async (params, next) => {
+//   // console.log(params.model, ':', params.action)
+//   if (params.action === 'create') {
+//     switch (params.model) {
+//       case 'User':
+//         {
+//           const saltRounds = 10
+//           params.args.data.password = await hash(
+//             params.args.data.password,
+//             saltRounds,
+//           )
+//         }
+//         break
+//     }
+//   }
+//   const result = await next(params)
+//   switch (params.action) {
+//     case 'create':
+//       switch (params.model) {
+//         case 'Application':
+//           {
+//             await createGrantTypesAndConnect(prisma, result.id)
+//             await connectDefaultUserScopes(prisma, result.id)
+//           }
+//           break
+//       }
+//       break
+//     case 'update':
+//       break
+//   }
 
-  return result
-})
+//   return result
+// })
 
 export const pubsub = new PubSub()
 

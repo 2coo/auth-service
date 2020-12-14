@@ -21,6 +21,7 @@ model Tenant {
   EmailSettings      EmailSettings?
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
+  FailedLoginLogs    FailedLoginLogs[]
 }
 
 enum UsernameStatus {
@@ -75,6 +76,7 @@ model Application {
   createdAt               DateTime                  @default(now())
   updatedAt               DateTime                  @updatedAt
 
+  LoginLog LoginLog[]
   @@unique([tenantId, name])
 }
 
@@ -261,6 +263,8 @@ model User {
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @updatedAt
   RememberMe          RememberMe[]
+  FailedLoginLogs     FailedLoginLogs[]
+  LoginLog            LoginLog[]
 }
 
 enum SupportedProvider {
@@ -407,4 +411,30 @@ model UserDevice {
   lastSeen     DateTime
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+}
+
+model AuditLog {
+  id String @id @default(uuid())
+}
+
+model FailedLoginLogs {
+  id        String   @id @default(uuid())
+  count     Int      @default(1)
+  Tenant    Tenant   @relation(fields: [tenantId], references: [id])
+  User      User     @relation(fields: [userId], references: [id])
+  tenantId  String
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model LoginLog {
+  id            String      @id @default(uuid())
+  ipAddress     String
+  User          User        @relation(fields: [userId], references: [id])
+  Application   Application @relation(fields: [applicationId], references: [id])
+  userId        String
+  applicationId String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 }

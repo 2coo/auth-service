@@ -14,7 +14,7 @@ const Signout = () => {
             Logging out ...
             <AuthConsumer>
                 {auth =>
-                    !auth.state.authenticated ? <FullRedirect url="/" /> : null
+                    !auth.state.authenticated ? <FullRedirect url="/oauth2/authorize" /> : null
                 }
             </AuthConsumer>
         </div>
