@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 const LoginPage = (props: any) => {
   const classes = useStyles();
   const [clientId,] = useQueryParam('client_id', StringParam);
-  const [error,] = useQueryParam('invalid_credential', StringParam)
+  const [error,] = useQueryParam('error', StringParam)
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />

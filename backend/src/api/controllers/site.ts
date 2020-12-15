@@ -1,14 +1,38 @@
+import queryString from 'querystring'
 import cryptoRandomString from 'crypto-random-string'
 import { NextFunction, Request, Response } from 'express'
 import { some } from 'lodash'
 import passport from 'passport'
 import { clearCookieTokens, logoutSSO } from '../client'
 import { getClientById, saveRememberMeToken } from './utils'
+import urlParser from 'url'
 
 export const login = [
-  passport.authenticate('local', {
-    failureRedirect: '/login',
-  }),
+  passport.authenticate('local', { failWithError: true }),
+  (req: any, res: Response, next: NextFunction) => {
+    // Handle success
+    if (req.xhr) {
+      return res.json({ id: req.user.id })
+    }
+    return next()
+  },
+  (err: any, req: any, res: Response, next: NextFunction) => {
+    const parsedUrl = urlParser.parse(req.url)
+    const query = req.query
+    if (err.message) {
+      query['error'] = err.message
+      parsedUrl.query = queryString.stringify(query)
+      parsedUrl.search = `?${queryString.stringify(query)}`
+    }
+    const redirectUrl = urlParser.format(parsedUrl)
+    console.log(redirectUrl)
+
+    // Handle error
+    if (req.xhr) {
+      return res.json(err)
+    }
+    return res.redirect(redirectUrl)
+  },
   async (req: any, res: Response, next: NextFunction) => {
     if (!req.body.remember_me) {
       if (req.session.returnTo) return res.redirect(req.session.returnTo)

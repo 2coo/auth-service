@@ -32,13 +32,14 @@ passport.use(
             !user ||
             (user && user.accountStatusType === AccountStatusType.DISABLED)
           ) {
-            return done(null, false)
+            return done(new Error('The user does not exists!'))
           }
           const registration = await getUserRegistration(user.id, clientId)
-          if (!registration) return done(null, false)
+          if (!registration)
+            return done(new Error("You don't have registration for this app!"))
           const passwordValid = await compare(password, user.password)
           if (!passwordValid) {
-            return done(null, false)
+            return done(new Error('Invalid username or password!'))
           }
           return done(null, user)
         })
