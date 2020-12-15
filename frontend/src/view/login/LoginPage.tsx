@@ -8,12 +8,14 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Alert from '@material-ui/lab/Alert';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { StringParam, useQueryParam } from "use-query-params";
 import Copyright from "../../components/copyright/Copyright"
+import { useState } from 'react';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -38,6 +40,7 @@ const LoginPage = (props: any) => {
   const classes = useStyles();
   const [clientId,] = useQueryParam('client_id', StringParam);
   const [error,] = useQueryParam('error', StringParam)
+  const [submitting, setSubmitting] = useState(false)
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -48,7 +51,7 @@ const LoginPage = (props: any) => {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} noValidate method="post">
+        <form onSubmit={() => setSubmitting(true)} className={classes.form} noValidate method="post">
           {error && <Alert severity="error">{error}</Alert>}
           <TextField type="hidden" name="client_id" value={clientId} />
           <TextField
@@ -82,9 +85,11 @@ const LoginPage = (props: any) => {
             fullWidth
             variant="contained"
             color="primary"
+            disabled={submitting}
             className={classes.submit}
           >
-            Sign In
+            {submitting && <CircularProgress size={28} />}
+            {!submitting && "Sign In"}
           </Button>
           <Grid container>
             <Grid item xs>

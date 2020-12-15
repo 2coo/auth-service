@@ -9,12 +9,19 @@ import urlParser from 'url'
 
 export const login = [
   passport.authenticate('local', { failWithError: true }),
-  (req: any, res: Response, next: NextFunction) => {
-    // Handle success
-    if (req.xhr) {
-      return res.json({ id: req.user.id })
+  async (req: any, res: Response, next: NextFunction) => {
+    if (!req.body.remember_me) {
+      return res.redirect(req.originalUrl)
     }
-    return next()
+    const token = cryptoRandomString({ length: 64, type: 'url-safe' })
+    const savedToken = await saveRememberMeToken(token, req.user.id)
+    if (savedToken)
+      res.cookie('remember_me', token, {
+        path: '/',
+        httpOnly: true,
+        maxAge: 604800000,
+      })
+    return res.redirect(req.originalUrl)
   },
   (err: any, req: any, res: Response, next: NextFunction) => {
     const parsedUrl = urlParser.parse(req.url)
@@ -25,29 +32,11 @@ export const login = [
       parsedUrl.search = `?${queryString.stringify(query)}`
     }
     const redirectUrl = urlParser.format(parsedUrl)
-    console.log(redirectUrl)
-
     // Handle error
     if (req.xhr) {
       return res.json(err)
     }
     return res.redirect(redirectUrl)
-  },
-  async (req: any, res: Response, next: NextFunction) => {
-    if (!req.body.remember_me) {
-      if (req.session.returnTo) return res.redirect(req.session.returnTo)
-      return next()
-    }
-    const token = cryptoRandomString({ length: 64, type: 'url-safe' })
-    const savedToken = await saveRememberMeToken(token, req.user.id)
-    if (savedToken)
-      res.cookie('remember_me', token, {
-        path: '/',
-        httpOnly: true,
-        maxAge: 604800000,
-      })
-    if (req.session.returnTo) return res.redirect(req.session.returnTo)
-    return res.redirect('/')
   },
 ]
 

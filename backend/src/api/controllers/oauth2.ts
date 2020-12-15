@@ -8,7 +8,7 @@ import oauth2orize from 'oauth2orize'
 import passport from 'passport'
 import queryString from 'querystring'
 import { store } from '../../redisclient'
-import { redirectWithApp, renderSPA } from '../client'
+import { renderSPA } from '../client'
 import {
   deleteAuthCode,
   generateAuthCode,
@@ -20,7 +20,7 @@ import {
   getUserByUsernameOrEmail,
   isExpired,
   issueAccessToken,
-  issueRefreshToken,
+  issueRefreshToken
 } from './utils'
 
 // Create OAuth 2.0 server
@@ -215,6 +215,7 @@ export const authorization = async (
   res: Response,
   next: NextFunction,
 ) => {
+  console.log('#hey auth')
   if (!req.isAuthenticated()) {
     return renderSPA(req, res, next)
   }
@@ -227,7 +228,8 @@ export const authorization = async (
   if (application?.trustedApplication) {
     return trustedAppHandler(req, res, next)
   }
-  return redirectWithApp(application, res, req.route.path)
+  const queries = queryString.stringify(req.query)
+  return res.redirect(`/oauth2/authorize/dialog?${queries}`)
 }
 
 export const dialog = [

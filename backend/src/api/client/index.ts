@@ -74,18 +74,33 @@ export const verifyAppOrRedirect = (
   next()
 }
 
-export const verifySSO = (returnTo: string = '/oauth2/authorize') => (
-  req: any,
-  res: Response,
-  next: NextFunction,
+export const verifySSO = (
+  options?:
+    | string
+    | {
+        redirectTo?: string
+        setReturnTo?: boolean
+      },
 ) => {
-  if (!req.isAuthenticated()) {
-    clearCookieTokens(res)
-    logoutSSO(req, res)
-    const defaultApp: ApplicationWithRedirectUris = req.session.defaultApp
-    return redirectWithApp(defaultApp, res, returnTo)
+  if (typeof options == 'string') {
+    options = { redirectTo: options }
   }
-  next()
+  options = options || {}
+  var url = options.redirectTo || '/oauth2/authorize'
+  var setReturnTo =
+    options.setReturnTo === undefined ? true : options.setReturnTo
+  return (req: any, res: Response, next: NextFunction) => {
+    if (!req.isAuthenticated || !req.isAuthenticated()) {
+      clearCookieTokens(res)
+      logoutSSO(req, res)
+      const defaultApp: ApplicationWithRedirectUris = req.session.defaultApp
+      if (setReturnTo && req.session) {
+        req.session.returnTo = req.originalUrl || req.url
+      }
+      return redirectWithApp(defaultApp, res, url)
+    }
+    next()
+  }
 }
 
 export const clearCookieTokens = (res: Response) => {

@@ -3,7 +3,6 @@ import { AuthConsumer, useAuthContext } from "../../store/auth/context";
 import { useAxios } from "../../utils/api";
 import { Backdrop, CircularProgress } from "@material-ui/core"
 import FullRedirect from "../full-redirect/FullRedirect"
-import { useLocation } from "@reach/router"
 
 const PrivateRoute = (props: any) => {
     let { as: Comp, ...otherProps } = props;
@@ -12,7 +11,6 @@ const PrivateRoute = (props: any) => {
         url: "/oauth2/userinfo",
         withCredentials: true
     }, { manual: true })
-    const location = useLocation()
 
     useEffect(() => {
         if (!state.authenticated && !error && !userProfile) {
