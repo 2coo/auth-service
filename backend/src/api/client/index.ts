@@ -1,28 +1,107 @@
-import queryString from 'querystring'
-import jwksClient, { JwksClient } from 'jwks-rsa'
 import { Application, Scope } from '@prisma/client'
 import Axios from 'axios'
 import { NextFunction, Response } from 'express'
+import jwt from 'jsonwebtoken'
+import jwksClient, { JwksClient } from 'jwks-rsa'
 import passport from 'passport'
 import path from 'path'
-import jwt from 'jsonwebtoken'
+import { prisma } from '../../context'
+import { getDefaultApplicationByTenant } from '../controllers/utils'
+import { Strategy as CustomStrategy } from 'passport-custom'
 
-export const ensureLoggedInWithCookie = () => async (
+export class JWTScopeStrategy extends CustomStrategy {
+  authenticate(req: any, options: any) {
+    req.scope = options.scope
+    return super.authenticate(req, options)
+  }
+}
+
+type ApplicationWithRedirectUris = Application & {
+  EnabledScopes: Array<Scope>
+}
+
+export const loggerMiddleware = (
   req: any,
   res: Response,
   next: NextFunction,
 ) => {
-  const defaultApp: Application & {
-    EnabledScopes: Array<Scope>
-  } = req.session.defaultApp
-  const failureRedirect = defaultLinkBuilder(defaultApp)
-  return passport.authenticate('jwt', {
-    session: false,
-    scope: ['openid', 'email', 'profile'],
-    successRedirect: '/app',
-    failureRedirect: failureRedirect,
-  })(req, res, next)
+  console.log(
+    '#ON:',
+    `[${req.method}]\t`,
+    req.url + '\t',
+    req.url === '/oauth2/token' ? `(GRANT_TYPE: ${req.body.grant_type})` : '',
+  )
+  next()
 }
+
+export const tenantAndDefaultAppMiddleware = async (
+  req: any,
+  res: Response,
+  next: NextFunction,
+) => {
+  const tenantDomain = req.vhost[0] === undefined ? '*' : req.vhost[0]
+  const tenant = await prisma.tenant.findOne({
+    where: {
+      domainName: tenantDomain,
+    },
+  })
+  if (!tenant) {
+    return res.send(`The "${tenantDomain}" tenant not found!`)
+  }
+  const defaultApp = await getDefaultApplicationByTenant(tenant.id)
+  req.session.defaultApp = defaultApp
+  next()
+}
+
+export const redirectWithApp = (
+  app: ApplicationWithRedirectUris,
+  res: Response,
+  route: string = '/oauth2/authorize',
+) => {
+  const redirectTo = defaultLinkBuilder(app, route)
+  return res.redirect(redirectTo)
+}
+
+export const verifyAppOrRedirect = (
+  req: any,
+  res: Response,
+  next: NextFunction,
+) => {
+  if (!req.query.client_id) {
+    const defaultApp: ApplicationWithRedirectUris = req.session.defaultApp
+    return redirectWithApp(defaultApp, res, req.route.path)
+  }
+  next()
+}
+
+export const verifySSO = (returnTo: string = '/oauth2/authorize') => (
+  req: any,
+  res: Response,
+  next: NextFunction,
+) => {
+  if (!req.isAuthenticated()) {
+    clearCookieTokens(res)
+    logoutSSO(req, res)
+    const defaultApp: ApplicationWithRedirectUris = req.session.defaultApp
+    return redirectWithApp(defaultApp, res, returnTo)
+  }
+  next()
+}
+
+export const clearCookieTokens = (res: Response) => {
+  res.clearCookie('access_token')
+  res.clearCookie('refresh_token')
+}
+
+export const logoutSSO = (req: any, res: Response) => {
+  req.logout()
+  res.clearCookie('remember_me')
+}
+
+export const verifyCookieTokens = passport.authenticate('jwt', {
+  session: false,
+  scope: ['openid', 'email', 'profile'],
+})
 
 export const getKIDfromAccessToken = (accessToken: string) => {
   const tokenSections = accessToken.split('.')
@@ -40,24 +119,11 @@ export const renderSPA = (req: any, res: Response, next: NextFunction) => {
 
 export const defaultLinkBuilder = (
   defaultApp: Application & { EnabledScopes: Array<Scope> },
+  route: string,
 ) => {
-  const scopes = defaultApp.EnabledScopes.map((scope) => scope.name).join(' ')
-  const failureRedirect = `/oauth2/authorize?response_type=code&redirect_uri=/oauth2/authorize&client_id=${defaultApp.id}&scope=${scopes}`
+  const scopes = defaultApp.EnabledScopes.map((scope) => scope.name).join('%20')
+  const failureRedirect = `${route}?response_type=code&redirect_uri=/oauth2/authorize&client_id=${defaultApp.id}&scope=${scopes}`
   return failureRedirect
-}
-
-export const removeCookieIfSSOisLoggedOut = (
-  req: any,
-  res: Response,
-  next: NextFunction,
-) => {
-  if (
-    !req.isAuthenticated() ||
-    (!req.cookies.access_token && !req.cookies.refresh_token)
-  ) {
-    return res.redirect('/logout')
-  }
-  next()
 }
 
 export const verifyJWT = async (
@@ -76,7 +142,7 @@ export const verifyJWT = async (
   return payload
 }
 
-export const grantTypeCode = async (
+export const grantTypeCodeHandler = (returnTo: string = '/app') => async (
   req: any,
   res: Response,
   next: NextFunction,
@@ -85,7 +151,6 @@ export const grantTypeCode = async (
   const host = req.protocol + '://' + req.get('host')
   const { code } = req.query
   if (code) {
-    console.log("#code", code);
     const basicAuth = Buffer.from(
       `${defaultApp.id}:${defaultApp.secret}`,
     ).toString('base64')
@@ -107,27 +172,28 @@ export const grantTypeCode = async (
     if (tokens.access_token) {
       res.cookie('access_token', tokens.access_token, {
         httpOnly: true,
-        sameSite: 'strict'
+        sameSite: 'strict',
       })
     }
     if (tokens.refresh_token) {
       res.cookie('refresh_token', tokens.refresh_token, {
         httpOnly: true,
-        sameSite: 'strict'
+        sameSite: 'strict',
       })
     }
-    return res.redirect('/login')
+    return res.redirect(returnTo)
   }
   return next()
 }
 
-export const grantTypeRefresh = async (
+export const grantTypeRefreshHandler = (returnTo: string = '/app') => async (
   req: any,
   res: Response,
   next: NextFunction,
 ) => {
   const defaultApp: Application = req.session.defaultApp
   const host = req.protocol + '://' + req.get('host')
+
   const jwks_client = jwksClient({
     cache: true,
     rateLimit: true,
@@ -138,8 +204,6 @@ export const grantTypeRefresh = async (
   const access_token = req.cookies['access_token']
   const refresh_token = req.cookies['refresh_token']
   if (access_token && refresh_token) {
-    console.log("#access_token", access_token);
-    console.log("#refresh_token", refresh_token);
     try {
       const decoded = await verifyJWT(
         jwks_client,
@@ -147,14 +211,8 @@ export const grantTypeRefresh = async (
         defaultApp.id,
         defaultApp.issuer,
       )
-      console.log('#returnTo', req.query.returnTo)
-      if (
-        req.session.returnTo !== undefined &&
-        req.session.returnTo !== req.route.path
-      ) {
-        return res.redirect(req.query.returnTo)
-      }
-      return res.redirect('/app')
+      console.log('\tJWT is currently active.')
+      return res.redirect(returnTo)
     } catch (err) {
       try {
         const basicAuth = Buffer.from(
@@ -176,21 +234,15 @@ export const grantTypeRefresh = async (
         ).data
         res.cookie('access_token', tokens.access_token, {
           httpOnly: true,
+          sameSite: 'strict',
         })
-        if (req.session.returnTo && req.session.returnTo !== req.route.path) {
-          return res.redirect(req.query.returnTo)
-        }
-        return res.redirect('/app')
+        return res.redirect(returnTo)
       } catch (err2) {
-        console.log(err2)
-        req.logout()
-        res.clearCookie('access_token')
-        res.clearCookie('refresh_token')
-        // req.session.reset()
+        console.log('\t', err2)
+        clearCookieTokens(res)
+        logoutSSO(req, res)
       }
     }
   }
   return next()
 }
-
-export const authCodeCallback = [grantTypeCode, grantTypeRefresh]

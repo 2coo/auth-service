@@ -2,11 +2,11 @@ import cryptoRandomString from 'crypto-random-string'
 import { NextFunction, Request, Response } from 'express'
 import { some } from 'lodash'
 import passport from 'passport'
+import { clearCookieTokens, logoutSSO } from '../client'
 import { getClientById, saveRememberMeToken } from './utils'
 
 export const login = [
   passport.authenticate('local', {
-    // successReturnToOrRedirect: '/account',
     failureRedirect: '/login',
   }),
   async (req: any, res: Response, next: NextFunction) => {
@@ -28,10 +28,8 @@ export const login = [
 ]
 
 export const logout = async (req: any, res: Response, next: NextFunction) => {
-  req.logout()
-  res.clearCookie('remember_me')
-  res.clearCookie('access_token')
-  res.clearCookie('refresh_token')
+  logoutSSO(req, res)
+  clearCookieTokens(res)
   const clientId = req.query.client_id
   const logoutUrl = req.query.logout_url
   if (logoutUrl) {

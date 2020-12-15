@@ -7,6 +7,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
+import Alert from '@material-ui/lab/Alert';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
@@ -36,6 +37,7 @@ const useStyles = makeStyles((theme) => ({
 const LoginPage = (props: any) => {
   const classes = useStyles();
   const [clientId,] = useQueryParam('client_id', StringParam);
+  const [error,] = useQueryParam('invalid_credential', StringParam)
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -46,7 +48,8 @@ const LoginPage = (props: any) => {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} noValidate action="/login" method="post">
+        <form className={classes.form} noValidate method="post">
+          {error && <Alert severity="error">{error}</Alert>}
           <TextField type="hidden" name="client_id" value={clientId} />
           <TextField
             variant="outlined"

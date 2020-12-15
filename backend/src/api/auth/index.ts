@@ -1,10 +1,15 @@
+import { AccountStatusType, Application, User } from '@prisma/client'
+import { compare } from 'bcryptjs'
+import cryptoRandomString from 'crypto-random-string'
 import jwt from 'jsonwebtoken'
 import jwksClient from 'jwks-rsa'
-import { AccountStatusType, Application, User } from '@prisma/client'
 import passport from 'passport'
 import { BasicStrategy } from 'passport-http'
+import { Strategy as LocalStrategy } from 'passport-local'
 import { Strategy as ClientPasswordStrategy } from 'passport-oauth2-client-password'
-
+import { Strategy as RememberMeStrategy } from 'passport-remember-me-extended'
+import { getKIDfromAccessToken, JWTScopeStrategy } from '../client'
+import { AppUser } from '../client/user'
 import {
   consumeRememberMeToken,
   getClientById,
@@ -13,21 +18,6 @@ import {
   getUserRegistration,
   saveRememberMeToken,
 } from './../controllers/utils'
-import { Strategy as LocalStrategy } from 'passport-local'
-import { compare } from 'bcryptjs'
-import { Strategy as CustomStrategy } from 'passport-custom'
-import { Strategy as RememberMeStrategy } from 'passport-remember-me-extended'
-import { AppUser } from '../client/user'
-import { getKIDfromAccessToken } from '../client'
-import cryptoRandomString from 'crypto-random-string'
-import moment from 'moment'
-
-export class JWTScopeStrategy extends CustomStrategy {
-  authenticate(req: any, options: any) {
-    req.scope = options.scope
-    return super.authenticate(req, options)
-  }
-}
 
 const ISSUER = process.env.ISSUER
 
@@ -110,8 +100,7 @@ passport.use(
       if (!user) return done(new Error('User not found!'))
       return done(null, user)
     } catch (err) {
-      console.log(err);
-      
+      console.log('\t', err)
       if (err) done(null, false)
     }
   }),

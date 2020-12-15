@@ -1,12 +1,14 @@
+import { Application, Scope } from '@prisma/client'
 import { compare } from 'bcryptjs'
 import { ensureLoggedIn } from 'connect-ensure-login'
-import { NextFunction, Request, Response } from 'express'
+import { NextFunction, Response } from 'express'
 import _ from 'lodash'
 import moment from 'moment-timezone'
 import oauth2orize from 'oauth2orize'
 import passport from 'passport'
+import queryString from 'querystring'
 import { store } from '../../redisclient'
-import { defaultLinkBuilder, renderSPA } from '../client'
+import { redirectWithApp, renderSPA } from '../client'
 import {
   deleteAuthCode,
   generateAuthCode,
@@ -20,8 +22,6 @@ import {
   issueAccessToken,
   issueRefreshToken,
 } from './utils'
-import queryString from 'querystring'
-import { Application, Scope } from '@prisma/client'
 
 // Create OAuth 2.0 server
 const server = oauth2orize.createServer({
@@ -171,79 +171,66 @@ server.exchange(
   }),
 )
 
+export const trustedAppHandler = server.authorization(
+  (clientId, redirectUri, done) => {
+    getClientById(clientId)
+      .then((client) => {
+        if (!client) return done(null, false)
+        if (
+          _.some(client.RedirectUris, {
+            url: redirectUri,
+          })
+        ) {
+          return done(null, client, redirectUri)
+        }
+        return done(
+          new Error(
+            'Redirect uri does not match the registered Redirect Uri for this app.',
+          ),
+        )
+      })
+      .catch((error) => {
+        return done(error)
+      })
+  },
+  (client: Application & { EnabledScopes: Array<Scope> }, user, done: any) => {
+    // Check if grant request qualifies for immediate approval
+    // Auto-approve
+    if (
+      client != null &&
+      client.trustedApplication &&
+      client.trustedApplication === true
+    ) {
+      return done(null, true, {
+        scope: client.EnabledScopes.map((scope) => scope.name),
+      })
+    }
+    return done(null, false)
+  },
+)
+
 // User authorization endpoint.
 export const authorization = async (
   req: any,
   res: Response,
   next: NextFunction,
 ) => {
-  req.session.returnTo = req.url || req.baseUrl
-  req.session.save()
-  if (!req.query.client_id) {
-    const defaultApp = req.session.defaultApp
-    return res.redirect(defaultLinkBuilder(defaultApp))
-  }
   if (!req.isAuthenticated()) {
     return renderSPA(req, res, next)
   }
-  const client = await getClientById(req.query.client_id)
-  if (client?.trustedApplication) {
-    return server.authorization(
-      (clientId, redirectUri, done) => {
-        getClientById(clientId)
-          .then((client) => {
-            if (!client)
-              return done(null, false)
-            if (
-              _.some(client.RedirectUris, {
-                url: redirectUri,
-              })
-            ) {
-              return done(null, client, redirectUri)
-            }
-            return done(
-              new Error(
-                'Redirect uri does not match the registered Redirect Uri for this app.',
-              ),
-            )
-          })
-          .catch((error) => {
-            return done(error)
-          })
-      },
-      (
-        client: Application & { EnabledScopes: Array<Scope> },
-        user,
-        done: any,
-      ) => {
-        // Check if grant request qualifies for immediate approval
-        // Auto-approve
-        if (
-          client != null &&
-          client.trustedApplication &&
-          client.trustedApplication === true
-        ) {
-          return done(null, true, {
-            scope: client.EnabledScopes.map((scope) => scope.name),
-          })
-        }
-        return done(null, false)
-      },
-    )(req, res, next)
+  const application = await getClientById(req.query.client_id)
+  if (!application)
+    return res.status(403).json({
+      success: false,
+      message: 'The application does not exists!',
+    })
+  if (application?.trustedApplication) {
+    return trustedAppHandler(req, res, next)
   }
-  const queries = queryString.stringify(req.query)
-  return res.redirect(`/oauth2/authorize/dialog?${queries}`)
+  return redirectWithApp(application, res, req.route.path)
 }
 
 export const dialog = [
-  (req: any, res: Response, next: NextFunction) => {
-    if (!req.isAuthenticated()) {
-      return res.status(401).json({
-        message: 'Unauthorized!',
-      })
-    }
-    next()
-  },
   server.authorization(
     (clientId, redirectUri, done) => {
       getClientById(clientId)
