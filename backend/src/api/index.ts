@@ -19,7 +19,7 @@ import { loggerMiddleware, tenantAndDefaultAppMiddleware } from './client/index'
 import routes from './controllers'
 
 const corsOptions = {
-  origin: ['http://localhost:3000'],
+  origin: ['http://localhost:3000'], //resource server
   credentials: true,
   allowedHeaders: 'X-Requested-With,content-type',
   exposedHeaders: ['set-cookie'],

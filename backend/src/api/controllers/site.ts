@@ -19,6 +19,7 @@ export const login = [
       res.cookie('remember_me', token, {
         path: '/',
         httpOnly: true,
+        sameSite: "strict",
         maxAge: 604800000,
       })
     return res.redirect(req.originalUrl)

@@ -215,7 +215,6 @@ export const authorization = async (
   res: Response,
   next: NextFunction,
 ) => {
-  console.log('#hey auth')
   if (!req.isAuthenticated()) {
     return renderSPA(req, res, next)
   }
