@@ -1,14 +1,17 @@
 import {
   Application,
-  Profile,
+
   RedirectURI,
   Scope,
-  SelfRegistrationFields,
-  User,
+  SelfRegistrationFields
 } from '@prisma/client'
-import { NextFunction, Request, Response } from 'express'
+import { NextFunction, Response } from 'express'
 import passport from 'passport'
-import { getClientById, getRolesFromUser, getUserById } from './utils'
+import {
+  getClientById,
+  getUserApplicationRoles,
+  getUserById
+} from './utils'
 
 export const userinfo = [
   passport.authenticate('jwt', {
@@ -16,6 +19,7 @@ export const userinfo = [
     scope: ['email', 'profile'],
   }),
   async (req: any, res: Response, next: NextFunction) => {
+    const appId = req.session.application_id
     const user = await getUserById(req.user.id)
     if (!user)
       return res.status(401).json({
@@ -34,7 +38,7 @@ export const userinfo = [
         email: user.email,
         picture: profile?.picture,
         groups: user.Groups.map((group) => group.name),
-        roles: getRolesFromUser(user).map((role) => role.name),
+        roles: getUserApplicationRoles(user, appId).map((role) => role.name),
       },
     })
   },

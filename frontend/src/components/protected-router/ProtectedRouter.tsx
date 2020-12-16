@@ -35,7 +35,7 @@ const PrivateRoute = (props: any) => {
         <CircularProgress color="inherit" />
     </Backdrop>)
 
-    if (error?.request.status === 401) decisionComp = <FullRedirect url={`/oauth2/authorize`} />
+    if (error) decisionComp = <FullRedirect url={`/oauth2/authorize`} />
 
     return <AuthConsumer>
         {auth =>

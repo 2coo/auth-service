@@ -1,13 +1,27 @@
 import { StringParam, useQueryParam } from "use-query-params"
+import { AuthConsumer } from "../../../store/auth/context";
 const Home = (props: any) => {
-    const [search, setSearch] = useQueryParam('search', StringParam);
-
     return (
-        <div>
-            Home
-            <p>{search}</p>
-            <input onChange={(e) => setSearch(e.target.value)} />
-        </div>
+        <AuthConsumer>
+            {auth => (
+                <div>
+                    <h3>
+                        Welcome, {auth.state.user?.name}
+                    </h3>
+                    <p>Roles</p>
+                    <ul>
+                        {
+                            auth.state.user?.roles?.map((role) =>
+                                <li>
+                                    {role}
+                                </li>
+                            )
+                        }
+                    </ul>
+                </div>
+            )
+            }
+        </AuthConsumer>
     )
 }
 

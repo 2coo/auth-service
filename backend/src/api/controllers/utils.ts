@@ -44,7 +44,7 @@ const signToken = async (payload: object) => {
   throw new Error('RawKey is undefined!')
 }
 
-const mapScopes = (scopes: Array<string>) => {
+export const mapScopes = (scopes: Array<string>) => {
   return scopes.map((scope) => ({
     name: scope,
   }))

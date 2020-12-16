@@ -1,6 +1,7 @@
 import { AccountStatusType, Application, User } from '@prisma/client'
 import { compare } from 'bcryptjs'
 import cryptoRandomString from 'crypto-random-string'
+import { access } from 'fs'
 import jwt from 'jsonwebtoken'
 import jwksClient from 'jwks-rsa'
 import passport from 'passport'
@@ -43,7 +44,7 @@ passport.use(
           }
           return done(null, user)
         })
-        .catch((error) => done(error))
+        .catch((error) => done(new Error(error)))
     },
   ),
 )
@@ -53,10 +54,10 @@ passport.use(
     async (token, done) => {
       try {
         const user = await consumeRememberMeToken(token)
-        if (!user) return done(null, false)
+        if (!user) return done(new Error('The user does not exists!'))
         return done(null, user)
       } catch (err) {
-        return done(err)
+        return done(new Error(err))
       }
     },
     async (user, done) => {
@@ -65,7 +66,7 @@ passport.use(
         const savedToken = await saveRememberMeToken(token, user.id)
         if (savedToken) return done(null, token)
       } catch (err) {
-        return done(err)
+        return done(new Error(err))
       }
     },
   ),
@@ -83,9 +84,18 @@ passport.use(
       cacheMaxAge: 10000,
       jwksUri: `${host}/.well-known/jwks.json`,
     })
-    const accessToken = req.cookies['access_token']
-
-    if (!accessToken) return done(null, false)
+    let accessToken = req.signedCookies.access_token
+    if (!accessToken && req.headers.authorization) {
+      const parts = req.headers.authorization.split(' ')
+      if (parts.length === 2) {
+        const scheme = parts[0]
+        const credentials = parts[1]
+        if (/^Bearer$/i.test(scheme)) {
+          accessToken = credentials
+        }
+      }
+    }
+    if (!accessToken) return done(new Error('The token is empty!'))
     try {
       const kid = getKIDfromAccessToken(accessToken)
       const key = await client.getSigningKeyAsync(kid)
@@ -94,6 +104,7 @@ passport.use(
         audience: defaultApp.id,
         issuer: ISSUER,
       })
+      req.session.application_id = payload.applicationId
       const appUser = new AppUser(payload)
       if (appUser.canScope(req.scope))
         return done(new Error(`Not allowed scope`))
@@ -102,7 +113,7 @@ passport.use(
       return done(null, user)
     } catch (err) {
       console.log('\t', err)
-      if (err) done(null, false)
+      if (err) done(new Error(err))
     }
   }),
 )
@@ -118,11 +129,11 @@ passport.deserializeUser((id: string, done) => {
         !user ||
         (user && user.accountStatusType === AccountStatusType.DISABLED)
       ) {
-        return done(null, false)
+        return done(new Error('The user does not exists!'))
       }
       return done(null, user)
     })
-    .catch((error) => done(error))
+    .catch((error) => done(new Error(error)))
 })
 
 function verifyClient(clientId: string, clientSecret: string, done: any) {
@@ -138,7 +149,7 @@ function verifyClient(clientId: string, clientSecret: string, done: any) {
       if (client.secret === clientSecret) return done(null, client)
       return done(null, client)
     })
-    .catch((error) => done(error))
+    .catch((error) => done(new Error(error)))
 }
 
 passport.use(new BasicStrategy(verifyClient))

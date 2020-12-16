@@ -45,10 +45,10 @@ module.exports = function (app: Express.Application) {
     }),
   )
   app.use(errorHandler())
-  app.use(cookieParser())
+  app.use(cookieParser(process.env.SESSION_SECRET || "s4per$ecret"))
   app.use(
     expressSession({
-      name: 'AUTHORIZATION_SERVER',
+      name: 'TOMUJIN_DIGITAL_AUTH',
       saveUninitialized: true,
       resave: true,
       secret: process.env.SESSION_SECRET as string,

@@ -6,4 +6,6 @@ export type User = {
   preferred_username: string;
   email: string;
   picture: string;
+  roles?: string[];
+  groups?: string[];
 };

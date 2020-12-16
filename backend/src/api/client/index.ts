@@ -187,13 +187,15 @@ export const grantTypeCodeHandler = (returnTo: string = '/app') => async (
     if (tokens.access_token) {
       res.cookie('access_token', tokens.access_token, {
         httpOnly: true,
-        sameSite: 'strict',
+        sameSite: true,
+        signed: true,
       })
     }
     if (tokens.refresh_token) {
       res.cookie('refresh_token', tokens.refresh_token, {
         httpOnly: true,
-        sameSite: 'strict',
+        sameSite: true,
+        signed: true,
       })
     }
     return res.redirect(returnTo)
@@ -222,7 +224,7 @@ export const grantTypeRefreshHandler = (returnTo: string = '/app') => async (
     try {
       const decoded = await verifyJWT(
         jwks_client,
-        req.cookies.access_token,
+        req.signedCookies.access_token,
         defaultApp.id,
         defaultApp.issuer,
       )
@@ -238,7 +240,7 @@ export const grantTypeRefreshHandler = (returnTo: string = '/app') => async (
             `${host}/oauth2/token`,
             {
               grant_type: 'refresh_token',
-              refresh_token: req.cookies.refresh_token,
+              refresh_token: req.signedCookies.refresh_token,
             },
             {
               headers: {
@@ -249,7 +251,8 @@ export const grantTypeRefreshHandler = (returnTo: string = '/app') => async (
         ).data
         res.cookie('access_token', tokens.access_token, {
           httpOnly: true,
-          sameSite: 'strict',
+          sameSite: true,
+          signed: true,
         })
         return res.redirect(returnTo)
       } catch (err2) {
