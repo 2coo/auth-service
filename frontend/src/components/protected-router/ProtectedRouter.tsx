@@ -16,7 +16,7 @@ const PrivateRoute = (props: any) => {
         if (!state.authenticated && !error && !userProfile) {
             fetch()
         }
-        return () => { }
+        return () => {}
     }, [state.authenticated, fetch, error, userProfile])
     useEffect(() => {
         if (userProfile?.success === true) {
