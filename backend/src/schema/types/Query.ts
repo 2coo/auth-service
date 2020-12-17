@@ -2,12 +2,11 @@ import { queryType } from 'nexus'
 import moment = require('moment-timezone')
 export const Query = queryType({
   definition(t) {
-    t.field('me', {
+    t.nullable.field('me', {
       type: 'User',
-      nullable: true,
       resolve: async (_parent, args, ctx) => {
         if (ctx.auth.userId) {
-          const user = await ctx.prisma.user.findOne({
+          const user = await ctx.prisma.user.findUnique({
             where: {
               id: ctx.auth.userId,
             },

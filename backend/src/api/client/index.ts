@@ -41,7 +41,7 @@ export const tenantAndDefaultAppMiddleware = async (
   next: NextFunction,
 ) => {
   const tenantDomain = req.vhost[0] === undefined ? '*' : req.vhost[0]
-  const tenant = await prisma.tenant.findOne({
+  const tenant = await prisma.tenant.findUnique({
     where: {
       domainName: tenantDomain,
     },

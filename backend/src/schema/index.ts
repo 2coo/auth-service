@@ -1,6 +1,6 @@
 import { join } from 'path'
 import { makeSchema } from 'nexus'
-import { nexusSchemaPrisma } from 'nexus-plugin-prisma/schema'
+import { nexusPrisma } from 'nexus-plugin-prisma'
 import * as types from './types'
 import path from 'path'
 
@@ -9,7 +9,7 @@ export const schema = makeSchema({
     process.env.NEXUS_SHOULD_EXIT_AFTER_GENERATE_ARTIFACTS === 'true',
   types,
   plugins: [
-    nexusSchemaPrisma({
+    nexusPrisma({
       experimentalCRUD: true,
     }),
   ],

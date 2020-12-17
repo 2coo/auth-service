@@ -1,6 +1,6 @@
-import { Enumerable, RoleCreateWithoutApplicationInput } from '@prisma/client'
+import { Prisma } from '@prisma/client';
 
-export const defaultRoles: Enumerable<RoleCreateWithoutApplicationInput> = [
+export const defaultRoles: Prisma.Enumerable<Prisma.RoleCreateWithoutApplicationInput> = [
   {
     name: 'admin',
     description: 'Global admin',

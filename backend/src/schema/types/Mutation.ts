@@ -1,18 +1,17 @@
-import { mutationType, stringArg } from 'nexus'
+import { mutationType, nonNull, stringArg } from 'nexus'
 import { compare } from 'bcryptjs'
 import { sign } from 'jsonwebtoken'
 
 export const Mutation = mutationType({
   definition(t) {
-    t.field('login', {
+    t.nullable.field('login', {
       type: 'AuthPayload',
       args: {
-        email: stringArg({ nullable: false }),
-        password: stringArg({ nullable: false }),
+        email: nonNull(stringArg()),
+        password: nonNull(stringArg()),
       },
-      nullable: true,
       async resolve(_parent, { email, password }, ctx) {
-        const user = await ctx.prisma.user.findOne({
+        const user = await ctx.prisma.user.findUnique({
           where: {
             email,
           },

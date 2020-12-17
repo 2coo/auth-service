@@ -52,18 +52,18 @@ export const mapScopes = (scopes: Array<string>) => {
 }
 
 export const getClient = (clientId: string) => {
-  return prisma.application.findOne({
+  return prisma.application.findUnique({
     where: {
       id: clientId,
     },
     include: {
       EnabledScopes: true,
     },
-  })
+  });
 }
 
 export const getUserById = (userId: string) => {
-  return prisma.user.findOne({
+  return prisma.user.findUnique({
     where: {
       id: userId,
     },
@@ -85,7 +85,7 @@ export const getUserById = (userId: string) => {
       },
       Profile: true,
     },
-  })
+  });
 }
 
 export const generateAuthCode = (
@@ -120,14 +120,14 @@ export const generateAuthCode = (
 }
 
 export const getAuthCode = (code: string) => {
-  return prisma.authorizationCode.findOne({
+  return prisma.authorizationCode.findUnique({
     where: {
       code: code,
     },
     include: {
       Scopes: true,
     },
-  })
+  });
 }
 
 export const issueAccessToken = async (
@@ -265,7 +265,7 @@ export const isExpired = (expirationDate: string | Date): boolean => {
 }
 
 export const getClientById = (clientId: string) => {
-  return prisma.application.findOne({
+  return prisma.application.findUnique({
     where: {
       id: clientId,
     },
@@ -274,11 +274,11 @@ export const getClientById = (clientId: string) => {
       RedirectUris: true,
       SelfRegistrationFields: true,
     },
-  })
+  });
 }
 
 export const getAccessToken = (jti: string) => {
-  return prisma.accessToken.findOne({
+  return prisma.accessToken.findUnique({
     where: {
       jti,
     },
@@ -286,7 +286,7 @@ export const getAccessToken = (jti: string) => {
       Application: true,
       Scopes: true,
     },
-  })
+  });
 }
 
 export const getUserByUsernameOrEmail = (username: string) => {
@@ -312,14 +312,14 @@ export const getUserByUsernameOrEmail = (username: string) => {
   })
 }
 export const getUserRegistration = (userId: string, appId: string) => {
-  return prisma.registration.findOne({
+  return prisma.registration.findUnique({
     where: {
       userId_applicationId: {
         userId: userId,
         applicationId: appId,
       },
     },
-  })
+  });
 }
 
 export const deleteAuthCode = (id: string) => {
@@ -352,18 +352,18 @@ export const getScopesFromClient = (client: {
 }
 
 export const getRefreshToken = (refreshToken: string) => {
-  return prisma.refreshToken.findOne({
+  return prisma.refreshToken.findUnique({
     where: {
       refreshToken,
     },
     include: {
       Scopes: true,
     },
-  })
+  });
 }
 
 export const getDefaultApplicationByTenant = (id: string) => {
-  const defaultApp = prisma.application.findOne({
+  const defaultApp = prisma.application.findUnique({
     where: {
       tenantId_name: {
         name: 'Default',
@@ -418,7 +418,7 @@ export const getUserRolesGroupedByApplication = (
 }
 
 export const consumeRememberMeToken = async (token: string) => {
-  const user = (await prisma.rememberMe.findOne({
+  const user = (await prisma.rememberMe.findUnique({
     where: {
       token,
     },
