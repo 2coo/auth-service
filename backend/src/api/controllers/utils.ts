@@ -1,3 +1,4 @@
+import { Payload } from './../../core/interfaces/Payload'
 import {
   Application,
   Group,
@@ -27,7 +28,7 @@ type UserWithGroupsAndRegistrations = User & {
   })[]
 }
 
-const signToken = async (payload: object) => {
+const signToken = async (payload: Payload) => {
   const ks = fs.readFileSync(`${__dirname}/../../keys/jwks.json`)
   const keyStore = await JWK.asKeyStore(ks.toString())
   const jwks = keyStore.all({ use: 'sig' })
@@ -147,12 +148,12 @@ export const issueAccessToken = async (
         sub: userId,
         aud: clientId,
 
-        applicationId: clientId,
+        client_id: clientId,
 
         groups: user.Groups.map((group) => group.name),
         roles: getUserApplicationRoles(user, clientId).map((role) => role.name),
 
-        scopes: scopes,
+        scope: scopes,
         token_use: 'access',
         // nbf: NaN,
         iat: moment().valueOf() / 1000,
@@ -160,8 +161,6 @@ export const issueAccessToken = async (
         jti: jti,
         // claims
         username: user.username,
-        email: user.email,
-        displayName: user.Profile?.displayName,
       })
       await prisma.accessToken.create({
         data: {
@@ -189,11 +188,15 @@ export const issueAccessToken = async (
       iss: application!.issuer,
       sub: clientId,
       aud: clientId,
+      client_id: clientId,
       token_use: 'access',
-      nbf: null,
       iat: moment().valueOf(),
       exp: expirationDate.valueOf() / 1000,
       jti: jti,
+      scope: application!.EnabledScopes.map((scope) => scope.name),
+      roles: [],
+      groups: [],
+      username: application!.name,
     })
     await prisma.accessToken.create({
       data: {

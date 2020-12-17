@@ -1,4 +1,4 @@
-import { queryType } from '@nexus/schema'
+import { queryType } from 'nexus'
 import moment = require('moment-timezone')
 export const Query = queryType({
   definition(t) {

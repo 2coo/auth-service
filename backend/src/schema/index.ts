@@ -1,5 +1,5 @@
 import { join } from 'path'
-import { makeSchema } from '@nexus/schema'
+import { makeSchema } from 'nexus'
 import { nexusSchemaPrisma } from 'nexus-plugin-prisma/schema'
 import * as types from './types'
 import path from 'path'
@@ -13,18 +13,17 @@ export const schema = makeSchema({
       experimentalCRUD: true,
     }),
   ],
-  typegenAutoConfig: {
-    sources: [
+  contextType: {
+    module: require.resolve('.prisma/client/index.d.ts'),
+    export: 'PrismaClient',
+  },
+  sourceTypes: {
+    modules: [
       {
-        source: '@prisma/client',
-        alias: 'prisma',
-      },
-      {
-        source: join(__dirname, '../context.ts'),
-        alias: 'ctx',
+        module: require.resolve('.prisma/client/index.d.ts'),
+        alias: 'PrismaClient',
       },
     ],
-    contextType: 'ctx.Context',
   },
   outputs: {
     typegen: path.join(

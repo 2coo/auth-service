@@ -14,7 +14,6 @@ if (!fs.existsSync(`${__dirname}/keys/jwks.json`)) {
     'Please generate jwks: to generate jwks run "yarn key:generate"',
   )
 }
-
 const graphqlServer = new ApolloServer({
   schema: applyMiddleware(schema, permissions),
   context: createContext,

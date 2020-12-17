@@ -1,4 +1,4 @@
-import { enumType } from '@nexus/schema'
+import { enumType } from 'nexus'
 
 export const AccountStatusType = enumType({
   name: 'AccountStatusType',

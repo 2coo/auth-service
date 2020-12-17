@@ -1,7 +1,19 @@
 import { Enumerable, RoleCreateWithoutApplicationInput } from '@prisma/client'
 
 export const defaultRoles: Enumerable<RoleCreateWithoutApplicationInput> = [
-  { name: 'admin', description: 'Global admin', isSuperRole: true },
+  {
+    name: 'admin',
+    description: 'Global admin',
+    isSuperRole: true,
+    permissions: [
+      { action: 'read', subject: 'Article' },
+      {
+        action: 'manage',
+        subject: 'Article',
+        conditions: { authorId: '${user.id}' },
+      },
+    ],
+  },
   { name: 'api_key_manager', description: 'API key manager' },
   { name: 'application_deleter', description: 'Application deleter' },
   { name: 'application_manager', description: 'Application manager' },

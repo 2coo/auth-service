@@ -1,4 +1,4 @@
-import { mutationType, stringArg } from '@nexus/schema'
+import { mutationType, stringArg } from 'nexus'
 import { compare } from 'bcryptjs'
 import { sign } from 'jsonwebtoken'
 

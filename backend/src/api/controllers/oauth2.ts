@@ -18,9 +18,10 @@ import {
   getRefreshToken,
   getScopesFromClient,
   getUserByUsernameOrEmail,
+  getUserRegistration,
   isExpired,
   issueAccessToken,
-  issueRefreshToken
+  issueRefreshToken,
 } from './utils'
 
 // Create OAuth 2.0 server
@@ -227,6 +228,12 @@ export const authorization = async (
   if (application?.trustedApplication) {
     return trustedAppHandler(req, res, next)
   }
+  const registration = await getUserRegistration(
+    req.user.id,
+    req.query.client_id,
+  )
+  if (!registration)
+    return next(new Error("You don't have registration for this app!"))
   const queries = queryString.stringify(req.query)
   return res.redirect(`/oauth2/authorize/dialog?${queries}`)
 }

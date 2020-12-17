@@ -7,9 +7,10 @@
     "postinstall": "yarn run generate",
     "predev": "yarn run generate:prisma",
     "dev": "cross-env NODE_ENV=development tsnd --no-notify --respawn --transpileOnly ./src",
+    "dev:typecheck": "tsc --watch --noEmit",
     "dev:migrate": "dotenv -e .env.development.local -- prisma migrate save --experimental -c && dotenv -e .env.development.local -- prisma migrate up --experimental -c",
     "prebuild": "yarn run clean && yarn run generate",
-    "build": "tsc",
+    "build": "yarn nexus:reflect && tsc",
     "seed": "dotenv -e .env.development.local -- ts-node prisma/seed",
     "seed:dev": "cross-env NODE_ENV=development dotenv -e .env.development.local -- ts-node prisma/seed",
     "clean": "rimraf dist",
@@ -18,6 +19,7 @@
     "generate:nexus": "cross-env NODE_ENV=development ts-node --transpile-only ./src/schema",
     "start": "cross-env NODE_ENV=production node dist/index.js",
     "studio": "dotenv -e .env.development.local -- prisma studio",
+    "nexus:reflect": "NEXUS_SHOULD_EXIT_AFTER_GENERATE_ARTIFACTS=true ts-node --transpile-only api",
     "key:generate": "ts-node --transpile-only src/keys/generator.ts"
   },
   "repository": {
@@ -32,8 +34,8 @@
   },
   "homepage": "https://github.com/giva9712/prisma-nexus-boilerplate#readme",
   "dependencies": {
-    "@nexus/schema": "^0.18.0",
-    "@prisma/client": "^2.11.0",
+    "@casl/ability": "^4.1.6",
+    "@prisma/client": "^2.13.0",
     "@types/connect-redis": "^0.0.15",
     "@types/node-jose": "^1.1.5",
     "@types/passport-jwt": "^3.0.3",
@@ -43,7 +45,7 @@
     "@types/uuid": "^8.3.0",
     "@types/vhost": "^3.0.1",
     "apollo-errors": "^1.9.0",
-    "apollo-server-express": "^2.18.2",
+    "apollo-server-express": "^2.19.0",
     "axios": "^0.21.0",
     "bcryptjs": "^2.4.3",
     "connect-ensure-login": "^0.1.1",
@@ -64,7 +66,8 @@
     "jwks-rsa": "^1.11.0",
     "lodash": "^4.17.20",
     "moment-timezone": "^0.5.31",
-    "nexus-plugin-prisma": "^0.24.0",
+    "nexus": "^1.0.0",
+    "nexus-plugin-prisma": "^0.27.0",
     "node-jose": "^2.0.0",
     "oauth2orize": "^1.11.0",
     "passport": "^0.4.1",
@@ -86,7 +89,7 @@
     "vhost-ts": "^4.0.0"
   },
   "devDependencies": {
-    "@prisma/cli": "2.10.1",
+    "@prisma/cli": "2.13.0",
     "@types/bcryptjs": "^2.4.2",
     "@types/connect-ensure-login": "^0.1.5",
     "@types/cookie-parser": "^1.4.2",

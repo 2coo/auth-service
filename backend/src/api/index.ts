@@ -45,7 +45,7 @@ module.exports = function (app: Express.Application) {
     }),
   )
   app.use(errorHandler())
-  app.use(cookieParser(process.env.SESSION_SECRET || "s4per$ecret"))
+  app.use(cookieParser(process.env.SESSION_SECRET || 's4per$ecret'))
   app.use(
     expressSession({
       name: 'TOMUJIN_DIGITAL_AUTH',
@@ -122,6 +122,7 @@ module.exports = function (app: Express.Application) {
     .get(verifySSO(), (req, res, next) => res.redirect('/app'))
   router.get('/logout', [routes.site.logout, renderSPA])
   router.get(/^\/app(\/.*)?/, [verifySSO(), renderSPA])
+  router.get('*', renderSPA)
   //subdomain tenant
   app.use(vhost(`*.${DOMAIN}`, router))
   app.use(vhost(`${DOMAIN}`, router))

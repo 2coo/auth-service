@@ -1,14 +1,9 @@
 import { PrismaClient } from '@prisma/client'
 import { PubSub } from 'apollo-server-express'
 import { ExpressContext } from 'apollo-server-express/dist/ApolloServer'
-import { hash } from 'bcryptjs'
 import { Request, Response } from 'express'
-import {
-  connectDefaultUserScopes,
-  createGrantTypesAndConnect,
-  getUserId,
-  Token
-} from './utils'
+import { defineSystemAbilitiesFor } from './core/authorization'
+import { Await } from './core/types/Awaits'
 
 export const prisma = new PrismaClient({
   datasources: {
@@ -18,40 +13,6 @@ export const prisma = new PrismaClient({
   },
 })
 
-// prisma.$use(async (params, next) => {
-//   // console.log(params.model, ':', params.action)
-//   if (params.action === 'create') {
-//     switch (params.model) {
-//       case 'User':
-//         {
-//           const saltRounds = 10
-//           params.args.data.password = await hash(
-//             params.args.data.password,
-//             saltRounds,
-//           )
-//         }
-//         break
-//     }
-//   }
-//   const result = await next(params)
-//   switch (params.action) {
-//     case 'create':
-//       switch (params.model) {
-//         case 'Application':
-//           {
-//             await createGrantTypesAndConnect(prisma, result.id)
-//             await connectDefaultUserScopes(prisma, result.id)
-//           }
-//           break
-//       }
-//       break
-//     case 'update':
-//       break
-//   }
-
-//   return result
-// })
-
 export const pubsub = new PubSub()
 
 export interface Context {
@@ -59,7 +20,7 @@ export interface Context {
   req: Request
   res: Response
   pubsub: PubSub
-  auth: Token
+  ability: Await<ReturnType<typeof defineSystemAbilitiesFor>>
 }
 
 export async function createContext(ctx: ExpressContext): Promise<Context> {
@@ -67,6 +28,6 @@ export async function createContext(ctx: ExpressContext): Promise<Context> {
     ...ctx,
     prisma: prisma,
     pubsub,
-    auth: getUserId(ctx),
+    ability: await defineSystemAbilitiesFor(ctx.req),
   }
 }

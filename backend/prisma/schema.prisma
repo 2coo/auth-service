@@ -218,7 +218,7 @@ model Role {
   isSuperRole   Boolean        @default(false)
   Registrations Registration[]
   Groups        Group[]
-  permissions   String?
+  permissions   Json?
   ParentRoles   Role[]         @relation("RoleHierarchy", references: [id])
   ChildRoles    Role[]         @relation("RoleHierarchy", references: [id])
   createdAt     DateTime       @default(now())

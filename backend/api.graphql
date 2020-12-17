@@ -267,7 +267,7 @@ type Role {
   createdAt: DateTime!
   Groups(after: GroupWhereUniqueInput, before: GroupWhereUniqueInput, first: Int, last: Int): [Group!]!
   ParentRoles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int): [Role!]!
-  permissions: String
+  permissions: Json
   Registrations(after: RegistrationWhereUniqueInput, before: RegistrationWhereUniqueInput, first: Int, last: Int): [Registration!]!
   updatedAt: DateTime!
 }

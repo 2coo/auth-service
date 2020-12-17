@@ -1,7 +1,8 @@
+import { Payload } from './../../core/interfaces/Payload'
 import { Application, Scope } from '@prisma/client'
 import Axios from 'axios'
 import { NextFunction, Response } from 'express'
-import jwt from 'jsonwebtoken'
+import jwt, { VerifyOptions } from 'jsonwebtoken'
 import jwksClient, { JwksClient } from 'jwks-rsa'
 import passport from 'passport'
 import path from 'path'
@@ -144,16 +145,22 @@ export const defaultLinkBuilder = (
 export const verifyJWT = async (
   client: JwksClient,
   accessToken: string,
-  applicationId: string,
-  issuer: string,
+  issuer: string | null = null,
+  audience: string | null = null,
 ) => {
   const kid = getKIDfromAccessToken(accessToken)
   const key = await client.getSigningKeyAsync(kid)
-  const payload: any = jwt.verify(accessToken, key.getPublicKey(), {
+  let payload: Payload
+  const options: VerifyOptions = {
     algorithms: ['RS256'],
-    audience: applicationId,
-    issuer,
-  })
+    ...(issuer && {
+      issuer,
+    }),
+    ...(audience && {
+      audience,
+    }),
+  }
+  payload = jwt.verify(accessToken, key.getPublicKey(), options) as Payload
   return payload
 }
 
