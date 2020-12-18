@@ -21,6 +21,7 @@ import {
   getUserRegistration,
   isExpired,
   issueAccessToken,
+  issueIdToken,
   issueRefreshToken,
 } from './utils'
 
@@ -69,8 +70,20 @@ const issueTokens = (
             )
           ).refreshToken
         }
+        let idToken = null
+        if (scope.indexOf('openid') > -1 && userId) {
+          idToken = await issueIdToken(
+            clientId,
+            userId,
+            scope,
+            client.idTokenLifetime,
+          )
+        }
         return done(null, accessToken, refreshToken, {
           expiresIn: client.accessTokenLifetime * 60,
+          ...(idToken && {
+            id_token: idToken,
+          }),
         })
       })
     })

@@ -8,6 +8,7 @@ import { schema } from './schema'
 import express from 'express'
 import * as HTTP from 'http'
 import fs from 'fs'
+import cookieParser from 'cookie-parser'
 
 if (!fs.existsSync(`${__dirname}/keys/jwks.json`)) {
   throw new Error(
@@ -18,7 +19,9 @@ const graphqlServer = new ApolloServer({
   schema: applyMiddleware(schema, permissions),
   context: createContext,
 })
-const app = express()
+const app = express().use(
+  cookieParser(process.env.SESSION_SECRET || 's4per$ecret'),
+)
 const http = HTTP.createServer(app)
 
 graphqlServer.applyMiddleware({ app })

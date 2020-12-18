@@ -1,19 +1,16 @@
 // tslint:disable: no-any
-import { Ability, AbilityBuilder, InferSubjects } from '@casl/ability'
-import { Application, Scope } from '@prisma/client'
+import { Ability, InferSubjects } from '@casl/ability'
 import { Request } from 'express'
 import jwksClient from 'jwks-rsa'
 import { isEqual, uniqWith } from 'lodash'
-import {
-  getUserApplicationRoles,
-  getUserById,
-} from '../../api/controllers/utils'
+import { getUserById, getUserRoles } from '../../api/controllers/utils'
+import interpolate from '../helpers/interpolate'
 import { verifyJWT } from './../../api/client/index'
 import { createAbility } from './common/casl-helpers'
 
 // Modify these as per your needs
 type Action = 'manage' | 'create' | 'read' | 'update' | 'delete'
-type Subject = 'User' | 'all'
+type Subject = 'Test' | 'all'
 
 // Do not touch
 export type SystemAbilityAction = Action
@@ -28,10 +25,6 @@ export async function defineSystemAbilitiesFor(
   },
 ) {
   const host = req.protocol + '://' + req.get('host')
-  const defaultApp: Application & {
-    EnabledScopes: Scope[]
-  } = req.session.defaultApp
-
   const jwks_client = jwksClient({
     cache: true,
     rateLimit: true,
@@ -39,8 +32,7 @@ export async function defineSystemAbilitiesFor(
     cacheMaxAge: 10000,
     jwksUri: `${host}/.well-known/jwks.json`,
   })
-
-  let accessToken = req.signedCookies.access_token
+  let accessToken = req.cookies.access_token
   if (!accessToken && req.headers.authorization) {
     const parts = req.headers.authorization.split(' ')
     if (parts.length === 2) {
@@ -55,15 +47,18 @@ export async function defineSystemAbilitiesFor(
     return createAbility<SystemAbilityAction, SystemAbilitySubject>([])
   }
   const payload = await verifyJWT(jwks_client, accessToken)
+  console.log(payload)
   const user = await getUserById(payload.sub)
   if (!user) {
     return createAbility<SystemAbilityAction, SystemAbilitySubject>([])
   }
-  const roles = getUserApplicationRoles(user, defaultApp.id)
+  const roles = getUserRoles(user)
   const permissions = uniqWith(
-    roles.map((role) => role.permissions),
+    roles
+      .filter((role) => role.permissions !== null)
+      .map((role) => interpolate(role.permissions, { user }))
+      .flat(),
     isEqual,
   )
-
-  return createAbility<SystemAbilityAction, SystemAbilitySubject>([])
+  return createAbility<SystemAbilityAction, SystemAbilitySubject>(permissions)
 }

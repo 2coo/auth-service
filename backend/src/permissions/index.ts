@@ -1,21 +1,15 @@
-import { rule, shield } from 'graphql-shield'
-import { Context } from '../context'
-import { getUserId } from '../utils'
-
-const rules: any = {
-  isAuthenticatedUser: rule()((parent, args, context: Context) => {
-    const userId = context.auth.userId
-    return Boolean(userId)
-  }),
-}
+import { and, shield } from 'graphql-shield'
+import { isAuthenticated } from './is-authenticated'
+import { can } from './rules'
 
 export const permissions = shield(
   {
-    Query: {},
+    Query: {
+      test: and(isAuthenticated, can('read', 'Test')),
+    },
     Mutation: {},
   },
   {
     allowExternalErrors: true,
-    fallbackRule: rules.isAuthenticateUser,
   },
 )

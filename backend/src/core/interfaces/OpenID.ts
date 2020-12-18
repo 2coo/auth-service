@@ -1,4 +1,5 @@
 export interface OpenIDStandardClaims {
+  sub: string
   email?: string
   email_verified?: boolean
   name?: string
@@ -8,10 +9,10 @@ export interface OpenIDStandardClaims {
   nickname?: string
   preferred_username?: string
   profile?: string
-  picture?: string
+  picture?: string | null
   website?: string
   gender?: string
-  birthdate?: string
+  birthdate?: string | null
   zoneinfo?: string
   locale?: string
   phone_number?: string

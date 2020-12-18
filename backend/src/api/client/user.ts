@@ -1,48 +1,19 @@
-type UserParams = {
-  sub: string | number
-  email?: string
-  username?: string
-  displayName?: string
-  scopes: string | Array<string>
-  groups?: string | Array<string>
-  roles?: string | Array<string>
-  [key: string]: any
-} & {
-  iss?: never
-  aud?: never
-  exp?: never
-  token_use?: never
-  iat?: never
-  jti?: never
-}
+import { Payload } from '../../core/interfaces/Payload'
 
-interface UserInterface {
-  sub: string | number
-  scopes: string | Array<string>
-  canScope: (args0: string) => boolean
-}
-
-export class AppUser implements UserInterface {
-  sub
-  email
-  username
-  displayName
-  scopes
-  groups
-  roles
-  constructor(payload: UserParams) {
-    this.sub = payload.sub
-    this.email = payload.email
-    this.username = payload.username
-    this.displayName = payload.displayName
-    this.scopes = payload.scopes
-    this.groups = payload.groups
-    this.roles = payload.roles
+export class AppUser {
+  payload: Payload
+  constructor(payload: Payload) {
+    this.payload = payload
   }
   canScope = (scope: string): boolean => {
-    return this.scopes.indexOf(scope) > -1
+    if (this.payload.token_use === 'access')
+      return this.payload.scopes.indexOf(scope) > -1
+    return false
   }
-  getGroups = (): Array<string> | string | undefined => {
-    return this.groups
+  getGroups = (): Array<string> => {
+    return this.payload.groups ?? []
+  }
+  getRoles = (): Array<string> | undefined => {
+    if (this.payload.token_use === 'access') return this.payload.roles
   }
 }

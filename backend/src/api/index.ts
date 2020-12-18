@@ -1,5 +1,4 @@
 import connectRedis from 'connect-redis'
-import cookieParser from 'cookie-parser'
 import errorHandler from 'errorhandler'
 import Express from 'express'
 import expressSession from 'express-session'
@@ -18,12 +17,12 @@ import {
 import { loggerMiddleware, tenantAndDefaultAppMiddleware } from './client/index'
 import routes from './controllers'
 
-const corsOptions = {
-  origin: ['http://localhost:3000'], //resource server
-  credentials: true,
-  allowedHeaders: 'X-Requested-With,content-type',
-  exposedHeaders: ['set-cookie'],
-}
+// const corsOptions = {
+//   origin: ['http://localhost:3000'], //resource server
+//   credentials: true,
+//   allowedHeaders: 'X-Requested-With,content-type',
+//   exposedHeaders: ['set-cookie'],
+// }
 
 const RedisStore = connectRedis(expressSession)
 
@@ -45,7 +44,6 @@ module.exports = function (app: Express.Application) {
     }),
   )
   app.use(errorHandler())
-  app.use(cookieParser(process.env.SESSION_SECRET || 's4per$ecret'))
   app.use(
     expressSession({
       name: 'TOMUJIN_DIGITAL_AUTH',

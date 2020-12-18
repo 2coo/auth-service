@@ -1,3 +1,4 @@
+import { AccessTokenClaims } from './AccessToken'
 import { OpenIDStandardClaims } from './OpenID'
 
 export type Payload = {
@@ -13,12 +14,7 @@ export type Payload = {
   | ({
       token_use: 'id'
     } & OpenIDStandardClaims)
-  | {
+  | ({
       token_use: 'access'
-      username: string
-      client_id: string
-      scope: string[]
-      groups: string[]
-      roles: string[]
-    }
+    } & AccessTokenClaims)
 )

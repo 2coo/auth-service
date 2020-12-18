@@ -1,7 +1,6 @@
 import { AccountStatusType, Application, User } from '@prisma/client'
 import { compare } from 'bcryptjs'
 import cryptoRandomString from 'crypto-random-string'
-import { access } from 'fs'
 import jwt from 'jsonwebtoken'
 import jwksClient from 'jwks-rsa'
 import passport from 'passport'
@@ -11,6 +10,7 @@ import { Strategy as ClientPasswordStrategy } from 'passport-oauth2-client-passw
 import { Strategy as RememberMeStrategy } from 'passport-remember-me-extended'
 import { getKIDfromAccessToken, JWTScopeStrategy } from '../client'
 import { AppUser } from '../client/user'
+import { Payload } from './../../core/interfaces/Payload'
 import {
   consumeRememberMeToken,
   getClientById,
@@ -84,7 +84,7 @@ passport.use(
       cacheMaxAge: 10000,
       jwksUri: `${host}/.well-known/jwks.json`,
     })
-    let accessToken = req.signedCookies.access_token
+    let accessToken = req.cookies.access_token
     if (!accessToken && req.headers.authorization) {
       const parts = req.headers.authorization.split(' ')
       if (parts.length === 2) {
@@ -99,16 +99,17 @@ passport.use(
     try {
       const kid = getKIDfromAccessToken(accessToken)
       const key = await client.getSigningKeyAsync(kid)
-      const payload: any = jwt.verify(accessToken, key.getPublicKey(), {
+      const payload = jwt.verify(accessToken, key.getPublicKey(), {
         algorithms: ['RS256'],
         audience: defaultApp.id,
         issuer: ISSUER,
-      })
-      req.session.application_id = payload.applicationId
+      }) as Payload
+      if (payload.token_use === 'access')
+        req.session.client_id = payload.client_id
       const appUser = new AppUser(payload)
       if (appUser.canScope(req.scope))
         return done(new Error(`Not allowed scope`))
-      const user = await getUserById(String(appUser.sub))
+      const user = await getUserById(String(appUser.payload.sub))
       if (!user) return done(new Error('User not found!'))
       return done(null, user)
     } catch (err) {

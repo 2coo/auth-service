@@ -1,17 +1,14 @@
 import {
   Application,
-
   RedirectURI,
   Scope,
-  SelfRegistrationFields
+  SelfRegistrationFields,
 } from '@prisma/client'
 import { NextFunction, Response } from 'express'
+import moment from 'moment'
 import passport from 'passport'
-import {
-  getClientById,
-  getUserApplicationRoles,
-  getUserById
-} from './utils'
+import { OpenIDStandardClaims } from '../../core/interfaces/OpenID'
+import { getClientById, getUserApplicationRoles, getUserById } from './utils'
 
 export const userinfo = [
   passport.authenticate('jwt', {
@@ -19,7 +16,7 @@ export const userinfo = [
     scope: ['email', 'profile'],
   }),
   async (req: any, res: Response, next: NextFunction) => {
-    const appId = req.session.application_id
+    const appId = req.session.client_id
     const user = await getUserById(req.user.id)
     if (!user)
       return res.status(401).json({
@@ -27,19 +24,26 @@ export const userinfo = [
         message: 'The user does not exists!',
       })
     const profile = user.Profile
+    const data: OpenIDStandardClaims & {
+      roles: string[]
+    } = {
+      sub: user.id,
+      roles: getUserApplicationRoles(user, appId).map((role) => role.name),
+      ...(profile && {
+        name: profile.displayName,
+        gender: profile.gender,
+        birthdate:
+          profile.birthdate && moment.parseZone(profile.birthdate).format(),
+        family_name: profile.lastName,
+        given_name: profile.firstName,
+        picture: profile.picture,
+        preferred_username: user.username,
+        groups: user.Groups.map((group) => group.name),
+      }),
+    }
     return res.json({
       success: true,
-      data: {
-        sub: user.id,
-        name: profile?.displayName,
-        given_name: profile?.firstName,
-        family_name: profile?.lastName,
-        preferred_username: user.username,
-        email: user.email,
-        picture: profile?.picture,
-        groups: user.Groups.map((group) => group.name),
-        roles: getUserApplicationRoles(user, appId).map((role) => role.name),
-      },
+      data,
     })
   },
 ]

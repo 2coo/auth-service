@@ -205,10 +205,10 @@ input NameApplicationIdCompoundUniqueInput {
 type Profile {
   birthdate: DateTime
   createdAt: DateTime!
-  displayName: String
-  firstName: String
-  gender: Gender
-  lastName: String
+  displayName: String!
+  firstName: String!
+  gender: Gender!
+  lastName: String!
   mobileNumber: String
   picture: String
   updatedAt: DateTime!
@@ -216,7 +216,7 @@ type Profile {
 }
 
 type Query {
-  me: User
+  test: String
 }
 
 type RedirectURI {

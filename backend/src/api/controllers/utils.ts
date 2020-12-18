@@ -1,5 +1,6 @@
 import { Payload } from './../../core/interfaces/Payload'
 import {
+  AccountStatusType,
   Application,
   Group,
   Registration,
@@ -59,7 +60,7 @@ export const getClient = (clientId: string) => {
     include: {
       EnabledScopes: true,
     },
-  });
+  })
 }
 
 export const getUserById = (userId: string) => {
@@ -85,7 +86,7 @@ export const getUserById = (userId: string) => {
       },
       Profile: true,
     },
-  });
+  })
 }
 
 export const generateAuthCode = (
@@ -127,7 +128,7 @@ export const getAuthCode = (code: string) => {
     include: {
       Scopes: true,
     },
-  });
+  })
 }
 
 export const issueAccessToken = async (
@@ -153,14 +154,14 @@ export const issueAccessToken = async (
         groups: user.Groups.map((group) => group.name),
         roles: getUserApplicationRoles(user, clientId).map((role) => role.name),
 
-        scope: scopes,
+        scopes: scopes,
         token_use: 'access',
         // nbf: NaN,
         iat: moment().valueOf() / 1000,
         exp: expirationDate.valueOf() / 1000,
         jti: jti,
         // claims
-        username: user.username,
+        preferred_username: user.username,
       })
       await prisma.accessToken.create({
         data: {
@@ -193,10 +194,10 @@ export const issueAccessToken = async (
       iat: moment().valueOf(),
       exp: expirationDate.valueOf() / 1000,
       jti: jti,
-      scope: application!.EnabledScopes.map((scope) => scope.name),
+      scopes: application!.EnabledScopes.map((scope) => scope.name),
       roles: [],
       groups: [],
-      username: application!.name,
+      preferred_username: application!.name,
     })
     await prisma.accessToken.create({
       data: {
@@ -211,6 +212,48 @@ export const issueAccessToken = async (
         },
         expirationDate: expirationDate.toISOString(),
       },
+    })
+    return token
+  }
+  throw Error('User not found!')
+}
+
+export const issueIdToken = async (
+  clientId: string,
+  userId: string,
+  scopes: Array<string>,
+  idTokenLifetime: number,
+) => {
+  const expirationDate = calculateExpirationDate(idTokenLifetime)
+  const jti = uuidv4()
+  const application = await getClientById(clientId)
+  const user = await getUserById(userId)
+  if (user) {
+    const token = await signToken({
+      iss: application!.issuer,
+      sub: userId,
+      aud: clientId,
+      token_use: 'id',
+      // nbf: NaN,
+      iat: moment().valueOf() / 1000,
+      exp: expirationDate.valueOf() / 1000,
+      jti: jti,
+      // claims
+      ...(scopes.indexOf('email') > -1 && {
+        email: user.email,
+        email_verified: user.accountStatusType === AccountStatusType.CONFIRMED,
+      }),
+      ...(scopes.indexOf('profile') > -1 && {
+        ...(user.Profile && {
+          gender: user.Profile.gender,
+          birthdate: moment.parseZone(user.Profile.birthdate).format(),
+          family_name: user.Profile.lastName,
+          given_name: user.Profile.firstName,
+          picture: user.Profile!.picture,
+          preferred_username: user.username,
+          groups: user.Groups.map((group) => group.name),
+        }),
+      }),
     })
     return token
   }
@@ -274,7 +317,7 @@ export const getClientById = (clientId: string) => {
       RedirectUris: true,
       SelfRegistrationFields: true,
     },
-  });
+  })
 }
 
 export const getAccessToken = (jti: string) => {
@@ -286,7 +329,7 @@ export const getAccessToken = (jti: string) => {
       Application: true,
       Scopes: true,
     },
-  });
+  })
 }
 
 export const getUserByUsernameOrEmail = (username: string) => {
@@ -319,7 +362,7 @@ export const getUserRegistration = (userId: string, appId: string) => {
         applicationId: appId,
       },
     },
-  });
+  })
 }
 
 export const deleteAuthCode = (id: string) => {
@@ -339,7 +382,6 @@ export const getRolesFromUser = (user: {
     flatMap(user.Groups, (group) =>
       group.Roles.map((role: Role) => ({
         ...role,
-        permissions: role.permissions ? JSON.parse(role.permissions) : null,
       })),
     ),
   )
@@ -359,7 +401,7 @@ export const getRefreshToken = (refreshToken: string) => {
     include: {
       Scopes: true,
     },
-  });
+  })
 }
 
 export const getDefaultApplicationByTenant = (id: string) => {
@@ -376,6 +418,21 @@ export const getDefaultApplicationByTenant = (id: string) => {
     },
   })
   return defaultApp
+}
+
+export const getUserRoles = (user: UserWithGroupsAndRegistrations) => {
+  const groupRoles = user.Groups.map((group) => group.Roles).flat()
+  const registrationRoles = user.Registrations.map((registration) =>
+    registration.Roles.map(
+      (role) =>
+        ({
+          ...role,
+          Application: registration.Application,
+        } as RoleWithApplication),
+    ).flat(),
+  ).flat()
+  const userRoles = uniqBy([...groupRoles, ...registrationRoles], 'id')
+  return userRoles
 }
 
 export const getUserApplicationRoles = (

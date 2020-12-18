@@ -8,7 +8,7 @@
     "predev": "yarn run generate:prisma",
     "dev": "cross-env NODE_ENV=development tsnd --no-notify --respawn --transpileOnly ./src",
     "dev:typecheck": "tsc --watch --noEmit",
-    "dev:migrate": "dotenv -e .env.development.local -- prisma migrate save --experimental -c && dotenv -e .env.development.local -- prisma migrate up --experimental -c",
+    "dev:migrate": "dotenv -e .env.development.local -- prisma migrate dev --preview-feature",
     "prebuild": "yarn run clean && yarn run generate",
     "build": "yarn nexus:reflect && tsc",
     "seed": "dotenv -e .env.development.local -- ts-node prisma/seed",
