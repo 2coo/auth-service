@@ -202,6 +202,11 @@ input NameApplicationIdCompoundUniqueInput {
   name: String!
 }
 
+input NameProfileIdCompoundUniqueInput {
+  name: String!
+  profileId: String!
+}
+
 type Profile {
   birthdate: DateTime
   createdAt: DateTime!
@@ -213,6 +218,7 @@ type Profile {
   picture: String
   updatedAt: DateTime!
   User: User!
+  UserCustomAttributes(after: UserCustomAttributeWhereUniqueInput, before: UserCustomAttributeWhereUniqueInput, first: Int, last: Int): [UserCustomAttribute!]!
 }
 
 type Query {
@@ -329,6 +335,16 @@ type User {
   Tenant: Tenant!
   updatedAt: DateTime!
   username: String!
+}
+
+type UserCustomAttribute {
+  name: String!
+  Profile: Profile!
+  value: String!
+}
+
+input UserCustomAttributeWhereUniqueInput {
+  name_profileId: NameProfileIdCompoundUniqueInput
 }
 
 type UserDevice {

@@ -192,7 +192,6 @@ export const grantTypeCodeHandler = (returnTo: string = '/app') => async (
       )
     ).data
     if (tokens.access_token) {
-      console.log(tokens.access_token);
       res.cookie('access_token', tokens.access_token, {
         httpOnly: true,
         sameSite: true,
@@ -200,6 +199,12 @@ export const grantTypeCodeHandler = (returnTo: string = '/app') => async (
     }
     if (tokens.refresh_token) {
       res.cookie('refresh_token', tokens.refresh_token, {
+        httpOnly: true,
+        sameSite: true,
+      })
+    }
+    if (tokens.id_token) {
+      res.cookie('id_token', tokens.id_token, {
         httpOnly: true,
         sameSite: true,
       })
@@ -226,7 +231,8 @@ export const grantTypeRefreshHandler = (returnTo: string = '/app') => async (
   })
   const access_token = req.cookies['access_token']
   const refresh_token = req.cookies['refresh_token']
-  if (access_token && refresh_token) {
+  const id_token = req.cookies['id_token']
+  if (access_token && refresh_token && id_token) {
     try {
       const decoded = await verifyJWT(
         jwks_client,

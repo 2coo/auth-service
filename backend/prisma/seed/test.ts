@@ -46,7 +46,7 @@ export const seedTestData = (prisma: PrismaClient) => {
       name: 'Test Application #1',
       RedirectUris: {
         create: {
-          url: 'http://localhost:3000/auth/example/callback',
+          url: 'http://localhost:3030/auth/example/callback',
         },
       },
       EnabledScopes: {

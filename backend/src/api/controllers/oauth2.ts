@@ -24,6 +24,7 @@ import {
   issueIdToken,
   issueRefreshToken,
 } from './utils'
+import createError from 'http-errors'
 
 // Create OAuth 2.0 server
 const server = oauth2orize.createServer({
@@ -265,7 +266,8 @@ export const dialog = [
             return done(null, client, redirectUri)
           }
           return done(
-            new Error(
+            createError(
+              403,
               'Redirect uri does not match the registered Redirect Uri for this app.',
             ),
           )

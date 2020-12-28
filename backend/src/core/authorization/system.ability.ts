@@ -47,7 +47,6 @@ export async function defineSystemAbilitiesFor(
     return createAbility<SystemAbilityAction, SystemAbilitySubject>([])
   }
   const payload = await verifyJWT(jwks_client, accessToken)
-  console.log(payload)
   const user = await getUserById(payload.sub)
   if (!user) {
     return createAbility<SystemAbilityAction, SystemAbilitySubject>([])

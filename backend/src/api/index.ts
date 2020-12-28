@@ -1,6 +1,6 @@
 import connectRedis from 'connect-redis'
 import errorHandler from 'errorhandler'
-import Express from 'express'
+import Express, { Request, Response, NextFunction } from 'express'
 import expressSession from 'express-session'
 import passport from 'passport'
 import path from 'path'
@@ -99,6 +99,7 @@ module.exports = function (app: Express.Application) {
       routes.oauth2.authorization,
     ])
     .post(routes.site.login)
+
   router.post('/oauth2/register', verifyAppOrRedirect, routes.user.register)
   router.post('/oauth2/register/get/fields', routes.user.fields)
   router.get('/oauth2/userinfo', routes.user.userinfo)
@@ -106,6 +107,25 @@ module.exports = function (app: Express.Application) {
     .route('/oauth2/authorize/dialog')
     .get([verifySSO(), renderSPA])
     .post(routes.oauth2.dialog)
+
+  // error handler
+  router.use(function (
+    err: any,
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    // render the error page
+    if (err.status !== undefined) {
+      res.status(err.status)
+      return res.json({
+        success: false,
+        message: err.message,
+        error_description: err.description,
+      })
+    }
+    next(err)
+  })
 
   router.get('/oauth2/authorize/decision', routes.oauth2.decision)
   // Create endpoint handlers for oauth2 token

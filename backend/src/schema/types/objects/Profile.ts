@@ -11,6 +11,7 @@ export const Profile = objectType({
     t.model.picture()
     t.model.User()
     t.model.mobileNumber()
+    t.model.UserCustomAttributes()
     t.model.createdAt()
     t.model.updatedAt()
   },

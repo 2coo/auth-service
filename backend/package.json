@@ -61,6 +61,7 @@
     "graphql": "^15.4.0",
     "graphql-middleware": "^4.0.2",
     "graphql-shield": "^7.3.3",
+    "http-errors": "^1.8.0",
     "jsonwebtoken": "^8.5.1",
     "jwk-to-pem": "^2.0.4",
     "jwks-rsa": "^1.11.0",
@@ -89,7 +90,7 @@
     "vhost-ts": "^4.0.0"
   },
   "devDependencies": {
-    "@prisma/cli": "2.13.0",
+    "@prisma/cli": "^2.13.0",
     "@types/bcryptjs": "^2.4.2",
     "@types/connect-ensure-login": "^0.1.5",
     "@types/cookie-parser": "^1.4.2",
