@@ -1,5 +1,4 @@
 import { Prisma } from '@prisma/client'
-import { ClaimRawRule } from '@casl/ability'
 import { get } from 'lodash'
 
 export default (template: Prisma.JsonValue, vars: object) => {
@@ -13,5 +12,5 @@ export default (template: Prisma.JsonValue, vars: object) => {
       throw new ReferenceError(`Variable ${name} is not defined`)
     }
     return value
-  }) as ClaimRawRule<string>[]
+  })
 }

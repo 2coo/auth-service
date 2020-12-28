@@ -158,14 +158,14 @@ const Dialog = (props: any) => {
                                 </List>
                             </CardContent>
                             <CardActions className={classes.cardAction}>
-                                <form action={`/oauth2/authorize/decision${location.search}`} method="get">
+                                <form action={`/oauth2/authorize/decision${location.search}`} method="post">
                                     <input name="transaction_id" type="hidden" value={transactionData.transaction_id} />
-                                    <input type="hidden" name="cancel" value="Deny" />
+                                    <input name="cancel" type="hidden" value="Deny" />
                                     <Button type="submit" autoFocus onClick={() => { }} color="primary">
                                         Decline
                                     </Button>
                                 </form>
-                                <form className={classes.AcceptButton} action={`/oauth2/authorize/decision${location.search}`} method="get">
+                                <form className={classes.AcceptButton} action={`/oauth2/authorize/decision${location.search}`} method="post">
                                     <input name="transaction_id" type="hidden" value={transactionData.transaction_id} />
                                     <Button type="submit" color="primary">
                                         Accept

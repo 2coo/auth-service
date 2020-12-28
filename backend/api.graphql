@@ -222,7 +222,7 @@ type Profile {
 }
 
 type Query {
-  test: String
+  Test: String
 }
 
 type RedirectURI {

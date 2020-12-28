@@ -5,7 +5,7 @@ import { can } from './rules'
 export const permissions = shield(
   {
     Query: {
-      test: and(isAuthenticated, can('read', 'Test')),
+      Test: and(isAuthenticated, can('read', 'Test')),
     },
     Mutation: {},
   },

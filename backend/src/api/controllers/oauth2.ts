@@ -327,6 +327,10 @@ export const dialog = [
 
 export const decision = [
   ensureLoggedIn(),
+  (req: any, res: Response, next: NextFunction) => {
+    console.log(req.body);
+    next()
+  },
   server.decision((req: any, done) => {
     // remove all client does not have
     const requestedScopes = req.oauth2?.req.scope as Array<string>

@@ -34,4 +34,5 @@ export const defaultRoles: Prisma.Enumerable<Prisma.RoleCreateWithoutApplication
   { name: 'user_deleter', description: 'User deleter' },
   { name: 'user_manager', description: 'User manager' },
   { name: 'webhook_manager', description: 'Webhook manager' },
+  { name: 'everyone', description: 'Default user role' },
 ]

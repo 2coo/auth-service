@@ -7,7 +7,6 @@ import {
   makeStyles,
   Drawer,
   Divider,
-  List,
   Container,
   MenuItem,
   Menu
@@ -15,7 +14,6 @@ import {
 import { Menu as MenuIcon, Notifications as NotificationsIcon, ChevronLeft as ChevronLeftIcon, AccountCircle } from "@material-ui/icons"
 import clsx from "clsx"
 import { useState } from "react";
-import { useAuthContext } from "../store/auth/context";
 import FullRedirect from "../components/full-redirect/FullRedirect"
 
 const drawerWidth = 240;
@@ -101,7 +99,6 @@ const useStyles = makeStyles((theme) => ({
 
 const App = (props: any) => {
   const classes = useStyles()
-  const { dispatch } = useAuthContext()
   const [openDrawer, setOpenDrawer] = useState(true);
 
   const handleDrawerOpen = () => {

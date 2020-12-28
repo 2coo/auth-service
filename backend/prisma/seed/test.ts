@@ -22,26 +22,46 @@ export const seedTestData = (prisma: PrismaClient) => {
           displayName: 'Test Account',
         },
       },
+      Registrations: {
+        create: {
+          Application: {
+            connect: {
+              id: '71566877-ce96-4da8-94f5-330edd645b60',
+            },
+          },
+          Roles: {
+            connect: {
+              name_applicationId: {
+                name: 'everyone',
+                applicationId: '71566877-ce96-4da8-94f5-330edd645b60',
+              },
+            },
+          },
+          username: "test"
+        },
+      },
     },
   })
   const testApp = prisma.application.create({
     data: {
-      id: "0d33a87d-1b95-409b-b628-148d44293674",
-      secret: "ckiobeqr40000ofdyl4cl2ydw",
+      id: '0d33a87d-1b95-409b-b628-148d44293674',
+      secret: 'ckiobeqr40000ofdyl4cl2ydw',
       Tenant: {
         connect: {
           domainName: '*',
         },
       },
       Registrations: {
-        create: {
-          User: {
-            connect: {
-              email: 'test@test.com',
+        create: [
+          {
+            User: {
+              connect: {
+                email: 'test@test.com',
+              },
             },
+            username: 'test',
           },
-          username: 'test',
-        },
+        ],
       },
       name: 'Test Application #1',
       RedirectUris: {

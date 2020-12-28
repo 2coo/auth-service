@@ -10,19 +10,21 @@ import composeRoutes from './utils/route-composer';
 import routes from "./routes"
 import { AuthProvider } from './store/auth/context';
 import { ThemeProvider as UserControllableThemeProvider } from './store/theme/context';
-
+import { AbilityProvider } from './store/ability/context';
 ReactDOM.render(
   <StrictMode>
     <AuthProvider>
-      <UserControllableThemeProvider>
-        <ThemeProvider theme={theme}>
-          <QueryParamProvider reachHistory={globalHistory}>
-            <Router>
-              {composeRoutes(routes)}
-            </Router>
-          </QueryParamProvider>
-        </ThemeProvider>
-      </UserControllableThemeProvider>
+      <AbilityProvider>
+        <UserControllableThemeProvider>
+          <ThemeProvider theme={theme}>
+            <QueryParamProvider reachHistory={globalHistory}>
+              <Router>
+                {composeRoutes(routes)}
+              </Router>
+            </QueryParamProvider>
+          </ThemeProvider>
+        </UserControllableThemeProvider>
+      </AbilityProvider>
     </AuthProvider>
   </StrictMode>,
   document.getElementById('root')

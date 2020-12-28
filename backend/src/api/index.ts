@@ -103,6 +103,7 @@ module.exports = function (app: Express.Application) {
   router.post('/oauth2/register', verifyAppOrRedirect, routes.user.register)
   router.post('/oauth2/register/get/fields', routes.user.fields)
   router.get('/oauth2/userinfo', routes.user.userinfo)
+  router.get('/myabilities', routes.user.abilities)
   router
     .route('/oauth2/authorize/dialog')
     .get([verifySSO(), renderSPA])
@@ -127,7 +128,7 @@ module.exports = function (app: Express.Application) {
     next(err)
   })
 
-  router.get('/oauth2/authorize/decision', routes.oauth2.decision)
+  router.route('/oauth2/authorize/decision').post(routes.oauth2.decision).get(routes.oauth2.decision)
   // Create endpoint handlers for oauth2 token
   router.route('/oauth2/token').post(routes.oauth2.token)
   router.route('/.well-known/jwks.json').get(routes.token.jwks)

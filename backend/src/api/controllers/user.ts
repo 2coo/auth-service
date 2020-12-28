@@ -9,6 +9,8 @@ import moment from 'moment'
 import passport from 'passport'
 import { OpenIDStandardClaims } from '../../core/interfaces/OpenID'
 import { getClientById, getUserApplicationRoles, getUserById } from './utils'
+import { packRules } from '@casl/ability/extra'
+import { getRulesForUser } from '../../core/authorization'
 
 export const userinfo = [
   passport.authenticate('jwt', {
@@ -87,4 +89,18 @@ export const fields = async (req: any, res: Response, next: NextFunction) => {
 
 export const register = (req: any, res: Response, next: NextFunction) => {
   next()
+}
+
+export const abilities = async (
+  req: any,
+  res: Response,
+  next: NextFunction,
+) => {
+  const rules = await getRulesForUser(req)
+  return res.json({
+    success: true,
+    data: {
+      rules: packRules(rules),
+    },
+  })
 }

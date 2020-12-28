@@ -1,10 +1,10 @@
 import { queryType } from 'nexus'
 export const Query = queryType({
   definition(t) {
-    t.field('test', {
+    t.field('Test', {
       type: 'String',
       resolve: async (_parent, args, ctx) => {
-        return 'Hi'
+        return 'Surprise! Magic!'
       },
     })
   },
