@@ -174,8 +174,10 @@ const Dialog = (props: any) => {
                             </CardActions>
                         </Fragment>
                         :
-                        error?.request.status === 403 ? <Alert severity="error">
-                            Unauthorized application!
+                        error ? <Alert severity="error">
+                            {
+                                error.response?.data?.message || "Authorization failed!"
+                            }
                         </Alert> : <Skeleton variant="rect" width={396} height={250} />
                     }
                 </Card>
