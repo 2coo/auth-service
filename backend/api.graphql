@@ -9,6 +9,91 @@ type AccessToken {
   User: User
 }
 
+input AccessTokenCreateManyWithoutApplicationInput {
+  connect: [AccessTokenWhereUniqueInput!]
+  connectOrCreate: [AccessTokenCreateOrConnectWithoutApplicationInput!]
+  create: [AccessTokenCreateWithoutApplicationInput!]
+}
+
+input AccessTokenCreateManyWithoutScopesInput {
+  connect: [AccessTokenWhereUniqueInput!]
+  connectOrCreate: [AccessTokenCreateOrConnectWithoutScopesInput!]
+  create: [AccessTokenCreateWithoutScopesInput!]
+}
+
+input AccessTokenCreateManyWithoutUserInput {
+  connect: [AccessTokenWhereUniqueInput!]
+  connectOrCreate: [AccessTokenCreateOrConnectWithoutUserInput!]
+  create: [AccessTokenCreateWithoutUserInput!]
+}
+
+input AccessTokenCreateOrConnectWithoutApplicationInput {
+  create: AccessTokenCreateWithoutApplicationInput!
+  where: AccessTokenWhereUniqueInput!
+}
+
+input AccessTokenCreateOrConnectWithoutScopesInput {
+  create: AccessTokenCreateWithoutScopesInput!
+  where: AccessTokenWhereUniqueInput!
+}
+
+input AccessTokenCreateOrConnectWithoutUserInput {
+  create: AccessTokenCreateWithoutUserInput!
+  where: AccessTokenWhereUniqueInput!
+}
+
+input AccessTokenCreateWithoutApplicationInput {
+  createdAt: DateTime
+  expirationDate: DateTime!
+  id: String
+  jti: String!
+  Scopes: ScopeCreateManyWithoutAccessTokensInput
+  updatedAt: DateTime
+  User: UserCreateOneWithoutAccessTokensInput
+}
+
+input AccessTokenCreateWithoutScopesInput {
+  Application: ApplicationCreateOneWithoutAccessTokensInput!
+  createdAt: DateTime
+  expirationDate: DateTime!
+  id: String
+  jti: String!
+  updatedAt: DateTime
+  User: UserCreateOneWithoutAccessTokensInput
+}
+
+input AccessTokenCreateWithoutUserInput {
+  Application: ApplicationCreateOneWithoutAccessTokensInput!
+  createdAt: DateTime
+  expirationDate: DateTime!
+  id: String
+  jti: String!
+  Scopes: ScopeCreateManyWithoutAccessTokensInput
+  updatedAt: DateTime
+}
+
+input AccessTokenListRelationFilter {
+  every: AccessTokenWhereInput
+  none: AccessTokenWhereInput
+  some: AccessTokenWhereInput
+}
+
+input AccessTokenWhereInput {
+  AND: [AccessTokenWhereInput!]
+  Application: ApplicationWhereInput
+  ApplicationId: StringFilter
+  createdAt: DateTimeFilter
+  expirationDate: DateTimeFilter
+  id: StringFilter
+  jti: StringFilter
+  NOT: [AccessTokenWhereInput!]
+  OR: [AccessTokenWhereInput!]
+  Scopes: ScopeListRelationFilter
+  updatedAt: DateTimeFilter
+  User: UserWhereInput
+  userId: StringNullableFilter
+}
+
 input AccessTokenWhereUniqueInput {
   id: String
   jti: String
@@ -47,6 +132,435 @@ type Application {
   updatedAt: DateTime!
 }
 
+input ApplicationCreateManyWithoutEnabledScopesInput {
+  connect: [ApplicationWhereUniqueInput!]
+  connectOrCreate: [ApplicationCreateOrConnectWithoutEnabledScopesInput!]
+  create: [ApplicationCreateWithoutEnabledScopesInput!]
+}
+
+input ApplicationCreateManyWithoutTenantInput {
+  connect: [ApplicationWhereUniqueInput!]
+  connectOrCreate: [ApplicationCreateOrConnectWithoutTenantInput!]
+  create: [ApplicationCreateWithoutTenantInput!]
+}
+
+input ApplicationCreateOneWithoutAccessTokensInput {
+  connect: ApplicationWhereUniqueInput
+  connectOrCreate: ApplicationCreateOrConnectWithoutAccessTokensInput
+  create: ApplicationCreateWithoutAccessTokensInput
+}
+
+input ApplicationCreateOneWithoutAuthorizationCodesInput {
+  connect: ApplicationWhereUniqueInput
+  connectOrCreate: ApplicationCreateOrConnectWithoutAuthorizationCodesInput
+  create: ApplicationCreateWithoutAuthorizationCodesInput
+}
+
+input ApplicationCreateOneWithoutExternalIdentifierInput {
+  connect: ApplicationWhereUniqueInput
+  connectOrCreate: ApplicationCreateOrConnectWithoutExternalIdentifierInput
+  create: ApplicationCreateWithoutExternalIdentifierInput
+}
+
+input ApplicationCreateOneWithoutIdentityProvidersInput {
+  connect: ApplicationWhereUniqueInput
+  connectOrCreate: ApplicationCreateOrConnectWithoutIdentityProvidersInput
+  create: ApplicationCreateWithoutIdentityProvidersInput
+}
+
+input ApplicationCreateOneWithoutLoginLogInput {
+  connect: ApplicationWhereUniqueInput
+  connectOrCreate: ApplicationCreateOrConnectWithoutLoginLogInput
+  create: ApplicationCreateWithoutLoginLogInput
+}
+
+input ApplicationCreateOneWithoutRefreshTokensInput {
+  connect: ApplicationWhereUniqueInput
+  connectOrCreate: ApplicationCreateOrConnectWithoutRefreshTokensInput
+  create: ApplicationCreateWithoutRefreshTokensInput
+}
+
+input ApplicationCreateOneWithoutRegistrationsInput {
+  connect: ApplicationWhereUniqueInput
+  connectOrCreate: ApplicationCreateOrConnectWithoutRegistrationsInput
+  create: ApplicationCreateWithoutRegistrationsInput
+}
+
+input ApplicationCreateOneWithoutRolesInput {
+  connect: ApplicationWhereUniqueInput
+  connectOrCreate: ApplicationCreateOrConnectWithoutRolesInput
+  create: ApplicationCreateWithoutRolesInput
+}
+
+input ApplicationCreateOrConnectWithoutAccessTokensInput {
+  create: ApplicationCreateWithoutAccessTokensInput!
+  where: ApplicationWhereUniqueInput!
+}
+
+input ApplicationCreateOrConnectWithoutAuthorizationCodesInput {
+  create: ApplicationCreateWithoutAuthorizationCodesInput!
+  where: ApplicationWhereUniqueInput!
+}
+
+input ApplicationCreateOrConnectWithoutEnabledScopesInput {
+  create: ApplicationCreateWithoutEnabledScopesInput!
+  where: ApplicationWhereUniqueInput!
+}
+
+input ApplicationCreateOrConnectWithoutExternalIdentifierInput {
+  create: ApplicationCreateWithoutExternalIdentifierInput!
+  where: ApplicationWhereUniqueInput!
+}
+
+input ApplicationCreateOrConnectWithoutIdentityProvidersInput {
+  create: ApplicationCreateWithoutIdentityProvidersInput!
+  where: ApplicationWhereUniqueInput!
+}
+
+input ApplicationCreateOrConnectWithoutLoginLogInput {
+  create: ApplicationCreateWithoutLoginLogInput!
+  where: ApplicationWhereUniqueInput!
+}
+
+input ApplicationCreateOrConnectWithoutRefreshTokensInput {
+  create: ApplicationCreateWithoutRefreshTokensInput!
+  where: ApplicationWhereUniqueInput!
+}
+
+input ApplicationCreateOrConnectWithoutRegistrationsInput {
+  create: ApplicationCreateWithoutRegistrationsInput!
+  where: ApplicationWhereUniqueInput!
+}
+
+input ApplicationCreateOrConnectWithoutRolesInput {
+  create: ApplicationCreateWithoutRolesInput!
+  where: ApplicationWhereUniqueInput!
+}
+
+input ApplicationCreateOrConnectWithoutTenantInput {
+  create: ApplicationCreateWithoutTenantInput!
+  where: ApplicationWhereUniqueInput!
+}
+
+input ApplicationCreateWithoutAccessTokensInput {
+  accessTokenLifetime: Int
+  AuthorizationCodes: AuthorizationCodeCreateManyWithoutApplicationInput
+  createdAt: DateTime
+  EnabledScopes: ScopeCreateManyWithoutApplicationsInput
+  ExternalIdentifier: ExternalIdentifierCreateManyWithoutApplicationInput
+  Grants: GrantCreateManyWithoutApplicationsInput
+  id: String
+  IdentityProviders: IdProviderOnApplicationCreateManyWithoutApplicationInput
+  idTokenLifetime: Int
+  issuer: String
+  JavascriptOrigins: JavascriptOriginCreateManyWithoutApplicationInput
+  LoginLog: LoginLogCreateManyWithoutApplicationInput
+  logo: String
+  name: String!
+  RedirectUris: RedirectURICreateManyWithoutApplicationInput
+  refreshTokenLifetime: Int
+  RefreshTokens: RefreshTokenCreateManyWithoutApplicationInput
+  Registrations: RegistrationCreateManyWithoutApplicationInput
+  Roles: RoleCreateManyWithoutApplicationInput
+  secret: String
+  selfRegistrationEnabled: Boolean
+  SelfRegistrationFields: SelfRegistrationFieldsCreateManyWithoutApplicationInput
+  Tenant: TenantCreateOneWithoutApplicationsInput!
+  trustedApplication: Boolean
+  updatedAt: DateTime
+}
+
+input ApplicationCreateWithoutAuthorizationCodesInput {
+  accessTokenLifetime: Int
+  AccessTokens: AccessTokenCreateManyWithoutApplicationInput
+  createdAt: DateTime
+  EnabledScopes: ScopeCreateManyWithoutApplicationsInput
+  ExternalIdentifier: ExternalIdentifierCreateManyWithoutApplicationInput
+  Grants: GrantCreateManyWithoutApplicationsInput
+  id: String
+  IdentityProviders: IdProviderOnApplicationCreateManyWithoutApplicationInput
+  idTokenLifetime: Int
+  issuer: String
+  JavascriptOrigins: JavascriptOriginCreateManyWithoutApplicationInput
+  LoginLog: LoginLogCreateManyWithoutApplicationInput
+  logo: String
+  name: String!
+  RedirectUris: RedirectURICreateManyWithoutApplicationInput
+  refreshTokenLifetime: Int
+  RefreshTokens: RefreshTokenCreateManyWithoutApplicationInput
+  Registrations: RegistrationCreateManyWithoutApplicationInput
+  Roles: RoleCreateManyWithoutApplicationInput
+  secret: String
+  selfRegistrationEnabled: Boolean
+  SelfRegistrationFields: SelfRegistrationFieldsCreateManyWithoutApplicationInput
+  Tenant: TenantCreateOneWithoutApplicationsInput!
+  trustedApplication: Boolean
+  updatedAt: DateTime
+}
+
+input ApplicationCreateWithoutEnabledScopesInput {
+  accessTokenLifetime: Int
+  AccessTokens: AccessTokenCreateManyWithoutApplicationInput
+  AuthorizationCodes: AuthorizationCodeCreateManyWithoutApplicationInput
+  createdAt: DateTime
+  ExternalIdentifier: ExternalIdentifierCreateManyWithoutApplicationInput
+  Grants: GrantCreateManyWithoutApplicationsInput
+  id: String
+  IdentityProviders: IdProviderOnApplicationCreateManyWithoutApplicationInput
+  idTokenLifetime: Int
+  issuer: String
+  JavascriptOrigins: JavascriptOriginCreateManyWithoutApplicationInput
+  LoginLog: LoginLogCreateManyWithoutApplicationInput
+  logo: String
+  name: String!
+  RedirectUris: RedirectURICreateManyWithoutApplicationInput
+  refreshTokenLifetime: Int
+  RefreshTokens: RefreshTokenCreateManyWithoutApplicationInput
+  Registrations: RegistrationCreateManyWithoutApplicationInput
+  Roles: RoleCreateManyWithoutApplicationInput
+  secret: String
+  selfRegistrationEnabled: Boolean
+  SelfRegistrationFields: SelfRegistrationFieldsCreateManyWithoutApplicationInput
+  Tenant: TenantCreateOneWithoutApplicationsInput!
+  trustedApplication: Boolean
+  updatedAt: DateTime
+}
+
+input ApplicationCreateWithoutExternalIdentifierInput {
+  accessTokenLifetime: Int
+  AccessTokens: AccessTokenCreateManyWithoutApplicationInput
+  AuthorizationCodes: AuthorizationCodeCreateManyWithoutApplicationInput
+  createdAt: DateTime
+  EnabledScopes: ScopeCreateManyWithoutApplicationsInput
+  Grants: GrantCreateManyWithoutApplicationsInput
+  id: String
+  IdentityProviders: IdProviderOnApplicationCreateManyWithoutApplicationInput
+  idTokenLifetime: Int
+  issuer: String
+  JavascriptOrigins: JavascriptOriginCreateManyWithoutApplicationInput
+  LoginLog: LoginLogCreateManyWithoutApplicationInput
+  logo: String
+  name: String!
+  RedirectUris: RedirectURICreateManyWithoutApplicationInput
+  refreshTokenLifetime: Int
+  RefreshTokens: RefreshTokenCreateManyWithoutApplicationInput
+  Registrations: RegistrationCreateManyWithoutApplicationInput
+  Roles: RoleCreateManyWithoutApplicationInput
+  secret: String
+  selfRegistrationEnabled: Boolean
+  SelfRegistrationFields: SelfRegistrationFieldsCreateManyWithoutApplicationInput
+  Tenant: TenantCreateOneWithoutApplicationsInput!
+  trustedApplication: Boolean
+  updatedAt: DateTime
+}
+
+input ApplicationCreateWithoutIdentityProvidersInput {
+  accessTokenLifetime: Int
+  AccessTokens: AccessTokenCreateManyWithoutApplicationInput
+  AuthorizationCodes: AuthorizationCodeCreateManyWithoutApplicationInput
+  createdAt: DateTime
+  EnabledScopes: ScopeCreateManyWithoutApplicationsInput
+  ExternalIdentifier: ExternalIdentifierCreateManyWithoutApplicationInput
+  Grants: GrantCreateManyWithoutApplicationsInput
+  id: String
+  idTokenLifetime: Int
+  issuer: String
+  JavascriptOrigins: JavascriptOriginCreateManyWithoutApplicationInput
+  LoginLog: LoginLogCreateManyWithoutApplicationInput
+  logo: String
+  name: String!
+  RedirectUris: RedirectURICreateManyWithoutApplicationInput
+  refreshTokenLifetime: Int
+  RefreshTokens: RefreshTokenCreateManyWithoutApplicationInput
+  Registrations: RegistrationCreateManyWithoutApplicationInput
+  Roles: RoleCreateManyWithoutApplicationInput
+  secret: String
+  selfRegistrationEnabled: Boolean
+  SelfRegistrationFields: SelfRegistrationFieldsCreateManyWithoutApplicationInput
+  Tenant: TenantCreateOneWithoutApplicationsInput!
+  trustedApplication: Boolean
+  updatedAt: DateTime
+}
+
+input ApplicationCreateWithoutLoginLogInput {
+  accessTokenLifetime: Int
+  AccessTokens: AccessTokenCreateManyWithoutApplicationInput
+  AuthorizationCodes: AuthorizationCodeCreateManyWithoutApplicationInput
+  createdAt: DateTime
+  EnabledScopes: ScopeCreateManyWithoutApplicationsInput
+  ExternalIdentifier: ExternalIdentifierCreateManyWithoutApplicationInput
+  Grants: GrantCreateManyWithoutApplicationsInput
+  id: String
+  IdentityProviders: IdProviderOnApplicationCreateManyWithoutApplicationInput
+  idTokenLifetime: Int
+  issuer: String
+  JavascriptOrigins: JavascriptOriginCreateManyWithoutApplicationInput
+  logo: String
+  name: String!
+  RedirectUris: RedirectURICreateManyWithoutApplicationInput
+  refreshTokenLifetime: Int
+  RefreshTokens: RefreshTokenCreateManyWithoutApplicationInput
+  Registrations: RegistrationCreateManyWithoutApplicationInput
+  Roles: RoleCreateManyWithoutApplicationInput
+  secret: String
+  selfRegistrationEnabled: Boolean
+  SelfRegistrationFields: SelfRegistrationFieldsCreateManyWithoutApplicationInput
+  Tenant: TenantCreateOneWithoutApplicationsInput!
+  trustedApplication: Boolean
+  updatedAt: DateTime
+}
+
+input ApplicationCreateWithoutRefreshTokensInput {
+  accessTokenLifetime: Int
+  AccessTokens: AccessTokenCreateManyWithoutApplicationInput
+  AuthorizationCodes: AuthorizationCodeCreateManyWithoutApplicationInput
+  createdAt: DateTime
+  EnabledScopes: ScopeCreateManyWithoutApplicationsInput
+  ExternalIdentifier: ExternalIdentifierCreateManyWithoutApplicationInput
+  Grants: GrantCreateManyWithoutApplicationsInput
+  id: String
+  IdentityProviders: IdProviderOnApplicationCreateManyWithoutApplicationInput
+  idTokenLifetime: Int
+  issuer: String
+  JavascriptOrigins: JavascriptOriginCreateManyWithoutApplicationInput
+  LoginLog: LoginLogCreateManyWithoutApplicationInput
+  logo: String
+  name: String!
+  RedirectUris: RedirectURICreateManyWithoutApplicationInput
+  refreshTokenLifetime: Int
+  Registrations: RegistrationCreateManyWithoutApplicationInput
+  Roles: RoleCreateManyWithoutApplicationInput
+  secret: String
+  selfRegistrationEnabled: Boolean
+  SelfRegistrationFields: SelfRegistrationFieldsCreateManyWithoutApplicationInput
+  Tenant: TenantCreateOneWithoutApplicationsInput!
+  trustedApplication: Boolean
+  updatedAt: DateTime
+}
+
+input ApplicationCreateWithoutRegistrationsInput {
+  accessTokenLifetime: Int
+  AccessTokens: AccessTokenCreateManyWithoutApplicationInput
+  AuthorizationCodes: AuthorizationCodeCreateManyWithoutApplicationInput
+  createdAt: DateTime
+  EnabledScopes: ScopeCreateManyWithoutApplicationsInput
+  ExternalIdentifier: ExternalIdentifierCreateManyWithoutApplicationInput
+  Grants: GrantCreateManyWithoutApplicationsInput
+  id: String
+  IdentityProviders: IdProviderOnApplicationCreateManyWithoutApplicationInput
+  idTokenLifetime: Int
+  issuer: String
+  JavascriptOrigins: JavascriptOriginCreateManyWithoutApplicationInput
+  LoginLog: LoginLogCreateManyWithoutApplicationInput
+  logo: String
+  name: String!
+  RedirectUris: RedirectURICreateManyWithoutApplicationInput
+  refreshTokenLifetime: Int
+  RefreshTokens: RefreshTokenCreateManyWithoutApplicationInput
+  Roles: RoleCreateManyWithoutApplicationInput
+  secret: String
+  selfRegistrationEnabled: Boolean
+  SelfRegistrationFields: SelfRegistrationFieldsCreateManyWithoutApplicationInput
+  Tenant: TenantCreateOneWithoutApplicationsInput!
+  trustedApplication: Boolean
+  updatedAt: DateTime
+}
+
+input ApplicationCreateWithoutRolesInput {
+  accessTokenLifetime: Int
+  AccessTokens: AccessTokenCreateManyWithoutApplicationInput
+  AuthorizationCodes: AuthorizationCodeCreateManyWithoutApplicationInput
+  createdAt: DateTime
+  EnabledScopes: ScopeCreateManyWithoutApplicationsInput
+  ExternalIdentifier: ExternalIdentifierCreateManyWithoutApplicationInput
+  Grants: GrantCreateManyWithoutApplicationsInput
+  id: String
+  IdentityProviders: IdProviderOnApplicationCreateManyWithoutApplicationInput
+  idTokenLifetime: Int
+  issuer: String
+  JavascriptOrigins: JavascriptOriginCreateManyWithoutApplicationInput
+  LoginLog: LoginLogCreateManyWithoutApplicationInput
+  logo: String
+  name: String!
+  RedirectUris: RedirectURICreateManyWithoutApplicationInput
+  refreshTokenLifetime: Int
+  RefreshTokens: RefreshTokenCreateManyWithoutApplicationInput
+  Registrations: RegistrationCreateManyWithoutApplicationInput
+  secret: String
+  selfRegistrationEnabled: Boolean
+  SelfRegistrationFields: SelfRegistrationFieldsCreateManyWithoutApplicationInput
+  Tenant: TenantCreateOneWithoutApplicationsInput!
+  trustedApplication: Boolean
+  updatedAt: DateTime
+}
+
+input ApplicationCreateWithoutTenantInput {
+  accessTokenLifetime: Int
+  AccessTokens: AccessTokenCreateManyWithoutApplicationInput
+  AuthorizationCodes: AuthorizationCodeCreateManyWithoutApplicationInput
+  createdAt: DateTime
+  EnabledScopes: ScopeCreateManyWithoutApplicationsInput
+  ExternalIdentifier: ExternalIdentifierCreateManyWithoutApplicationInput
+  Grants: GrantCreateManyWithoutApplicationsInput
+  id: String
+  IdentityProviders: IdProviderOnApplicationCreateManyWithoutApplicationInput
+  idTokenLifetime: Int
+  issuer: String
+  JavascriptOrigins: JavascriptOriginCreateManyWithoutApplicationInput
+  LoginLog: LoginLogCreateManyWithoutApplicationInput
+  logo: String
+  name: String!
+  RedirectUris: RedirectURICreateManyWithoutApplicationInput
+  refreshTokenLifetime: Int
+  RefreshTokens: RefreshTokenCreateManyWithoutApplicationInput
+  Registrations: RegistrationCreateManyWithoutApplicationInput
+  Roles: RoleCreateManyWithoutApplicationInput
+  secret: String
+  selfRegistrationEnabled: Boolean
+  SelfRegistrationFields: SelfRegistrationFieldsCreateManyWithoutApplicationInput
+  trustedApplication: Boolean
+  updatedAt: DateTime
+}
+
+input ApplicationListRelationFilter {
+  every: ApplicationWhereInput
+  none: ApplicationWhereInput
+  some: ApplicationWhereInput
+}
+
+input ApplicationWhereInput {
+  accessTokenLifetime: IntFilter
+  AccessTokens: AccessTokenListRelationFilter
+  AND: [ApplicationWhereInput!]
+  AuthorizationCodes: AuthorizationCodeListRelationFilter
+  createdAt: DateTimeFilter
+  EnabledScopes: ScopeListRelationFilter
+  ExternalIdentifier: ExternalIdentifierListRelationFilter
+  Grants: GrantListRelationFilter
+  id: StringFilter
+  IdentityProviders: IdProviderOnApplicationListRelationFilter
+  idTokenLifetime: IntFilter
+  issuer: StringFilter
+  JavascriptOrigins: JavascriptOriginListRelationFilter
+  LoginLog: LoginLogListRelationFilter
+  logo: StringNullableFilter
+  name: StringFilter
+  NOT: [ApplicationWhereInput!]
+  OR: [ApplicationWhereInput!]
+  RedirectUris: RedirectURIListRelationFilter
+  refreshTokenLifetime: IntFilter
+  RefreshTokens: RefreshTokenListRelationFilter
+  Registrations: RegistrationListRelationFilter
+  Roles: RoleListRelationFilter
+  secret: StringFilter
+  selfRegistrationEnabled: BoolFilter
+  SelfRegistrationFields: SelfRegistrationFieldsListRelationFilter
+  Tenant: TenantWhereInput
+  tenantId: StringFilter
+  trustedApplication: BoolFilter
+  updatedAt: DateTimeFilter
+}
+
 input ApplicationWhereUniqueInput {
   id: String
   tenantId_name: TenantIdNameCompoundUniqueInput
@@ -62,6 +576,95 @@ type AuthorizationCode {
   User: User!
 }
 
+input AuthorizationCodeCreateManyWithoutApplicationInput {
+  connect: [AuthorizationCodeWhereUniqueInput!]
+  connectOrCreate: [AuthorizationCodeCreateOrConnectWithoutApplicationInput!]
+  create: [AuthorizationCodeCreateWithoutApplicationInput!]
+}
+
+input AuthorizationCodeCreateManyWithoutScopesInput {
+  connect: [AuthorizationCodeWhereUniqueInput!]
+  connectOrCreate: [AuthorizationCodeCreateOrConnectWithoutScopesInput!]
+  create: [AuthorizationCodeCreateWithoutScopesInput!]
+}
+
+input AuthorizationCodeCreateManyWithoutUserInput {
+  connect: [AuthorizationCodeWhereUniqueInput!]
+  connectOrCreate: [AuthorizationCodeCreateOrConnectWithoutUserInput!]
+  create: [AuthorizationCodeCreateWithoutUserInput!]
+}
+
+input AuthorizationCodeCreateOrConnectWithoutApplicationInput {
+  create: AuthorizationCodeCreateWithoutApplicationInput!
+  where: AuthorizationCodeWhereUniqueInput!
+}
+
+input AuthorizationCodeCreateOrConnectWithoutScopesInput {
+  create: AuthorizationCodeCreateWithoutScopesInput!
+  where: AuthorizationCodeWhereUniqueInput!
+}
+
+input AuthorizationCodeCreateOrConnectWithoutUserInput {
+  create: AuthorizationCodeCreateWithoutUserInput!
+  where: AuthorizationCodeWhereUniqueInput!
+}
+
+input AuthorizationCodeCreateWithoutApplicationInput {
+  code: String
+  createdAt: DateTime
+  expirationDate: DateTime!
+  id: String
+  redirectURI: String!
+  Scopes: ScopeCreateManyWithoutAuthorizationCodesInput
+  updatedAt: DateTime
+  User: UserCreateOneWithoutAuthorizationCodesInput!
+}
+
+input AuthorizationCodeCreateWithoutScopesInput {
+  Application: ApplicationCreateOneWithoutAuthorizationCodesInput!
+  code: String
+  createdAt: DateTime
+  expirationDate: DateTime!
+  id: String
+  redirectURI: String!
+  updatedAt: DateTime
+  User: UserCreateOneWithoutAuthorizationCodesInput!
+}
+
+input AuthorizationCodeCreateWithoutUserInput {
+  Application: ApplicationCreateOneWithoutAuthorizationCodesInput!
+  code: String
+  createdAt: DateTime
+  expirationDate: DateTime!
+  id: String
+  redirectURI: String!
+  Scopes: ScopeCreateManyWithoutAuthorizationCodesInput
+  updatedAt: DateTime
+}
+
+input AuthorizationCodeListRelationFilter {
+  every: AuthorizationCodeWhereInput
+  none: AuthorizationCodeWhereInput
+  some: AuthorizationCodeWhereInput
+}
+
+input AuthorizationCodeWhereInput {
+  AND: [AuthorizationCodeWhereInput!]
+  Application: ApplicationWhereInput
+  ApplicationId: StringFilter
+  code: StringFilter
+  createdAt: DateTimeFilter
+  expirationDate: DateTimeFilter
+  id: StringFilter
+  NOT: [AuthorizationCodeWhereInput!]
+  OR: [AuthorizationCodeWhereInput!]
+  redirectURI: StringFilter
+  Scopes: ScopeListRelationFilter
+  updatedAt: DateTimeFilter
+  User: UserWhereInput
+  userId: StringFilter
+}
+
 input AuthorizationCodeWhereUniqueInput {
   code: String
   id: String
@@ -72,7 +675,34 @@ type AuthPayload {
   user: User!
 }
 
+input BoolFilter {
+  equals: Boolean
+  not: NestedBoolFilter
+}
+
 scalar DateTime
+
+input DateTimeFilter {
+  equals: DateTime
+  gt: DateTime
+  gte: DateTime
+  in: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  not: NestedDateTimeFilter
+  notIn: [DateTime!]
+}
+
+input DateTimeNullableFilter {
+  equals: DateTime
+  gt: DateTime
+  gte: DateTime
+  in: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  not: NestedDateTimeNullableFilter
+  notIn: [DateTime!]
+}
 
 type EmailSettings {
   createdAt: DateTime!
@@ -85,6 +715,105 @@ type EmailSettings {
   SMTPSecurity: SMTPSecurity!
   updatedAt: DateTime!
   username: String
+}
+
+input EmailSettingsCreateOneWithoutTenantInput {
+  connect: EmailSettingsWhereUniqueInput
+  connectOrCreate: EmailSettingsCreateOrConnectWithoutTenantInput
+  create: EmailSettingsCreateWithoutTenantInput
+}
+
+input EmailSettingsCreateOrConnectWithoutTenantInput {
+  create: EmailSettingsCreateWithoutTenantInput!
+  where: EmailSettingsWhereUniqueInput!
+}
+
+input EmailSettingsCreateWithoutTenantInput {
+  ciphers: String
+  createdAt: DateTime
+  from: String!
+  host: String!
+  id: String
+  name: String
+  password: String
+  port: String!
+  secure: Boolean
+  SMTPSecurity: SMTPSecurity
+  updatedAt: DateTime
+  username: String
+}
+
+input EmailSettingsWhereInput {
+  AND: [EmailSettingsWhereInput!]
+  ciphers: StringNullableFilter
+  createdAt: DateTimeFilter
+  from: StringFilter
+  host: StringFilter
+  id: StringFilter
+  name: StringNullableFilter
+  NOT: [EmailSettingsWhereInput!]
+  OR: [EmailSettingsWhereInput!]
+  password: StringNullableFilter
+  port: StringFilter
+  secure: BoolFilter
+  SMTPSecurity: EnumSMTPSecurityFilter
+  Tenant: TenantWhereInput
+  tenantId: StringFilter
+  updatedAt: DateTimeFilter
+  username: StringNullableFilter
+}
+
+input EmailSettingsWhereUniqueInput {
+  id: String
+}
+
+input EnumAccountStatusTypeFilter {
+  equals: AccountStatusType
+  in: [AccountStatusType!]
+  not: NestedEnumAccountStatusTypeFilter
+  notIn: [AccountStatusType!]
+}
+
+input EnumExternalIdentifierStatusFilter {
+  equals: ExternalIdentifierStatus
+  in: [ExternalIdentifierStatus!]
+  not: NestedEnumExternalIdentifierStatusFilter
+  notIn: [ExternalIdentifierStatus!]
+}
+
+input EnumGenderFilter {
+  equals: Gender
+  in: [Gender!]
+  not: NestedEnumGenderFilter
+  notIn: [Gender!]
+}
+
+input EnumGrantTypeFilter {
+  equals: GrantType
+  in: [GrantType!]
+  not: NestedEnumGrantTypeFilter
+  notIn: [GrantType!]
+}
+
+input EnumSMTPSecurityFilter {
+  equals: SMTPSecurity
+  in: [SMTPSecurity!]
+  not: NestedEnumSMTPSecurityFilter
+  notIn: [SMTPSecurity!]
+}
+
+input EnumSupportedProviderFilter {
+  equals: SupportedProvider
+  in: [SupportedProvider!]
+  not: NestedEnumSupportedProviderFilter
+  notIn: [SupportedProvider!]
+}
+
+input EnumUsernameStatusFilter {
+  equals: UsernameStatus
+  in: [UsernameStatus!]
+  not: NestedEnumUsernameStatusFilter
+  notIn: [UsernameStatus!]
 }
 
 type ExternalIdentifier {
@@ -100,10 +829,133 @@ type ExternalIdentifier {
   User: User!
 }
 
+input ExternalIdentifierCreateManyWithoutApplicationInput {
+  connect: [ExternalIdentifierWhereUniqueInput!]
+  connectOrCreate: [ExternalIdentifierCreateOrConnectWithoutApplicationInput!]
+  create: [ExternalIdentifierCreateWithoutApplicationInput!]
+}
+
+input ExternalIdentifierCreateManyWithoutIdentityProviderInput {
+  connect: [ExternalIdentifierWhereUniqueInput!]
+  connectOrCreate: [ExternalIdentifierCreateOrConnectWithoutIdentityProviderInput!]
+  create: [ExternalIdentifierCreateWithoutIdentityProviderInput!]
+}
+
+input ExternalIdentifierCreateManyWithoutTenantInput {
+  connect: [ExternalIdentifierWhereUniqueInput!]
+  connectOrCreate: [ExternalIdentifierCreateOrConnectWithoutTenantInput!]
+  create: [ExternalIdentifierCreateWithoutTenantInput!]
+}
+
+input ExternalIdentifierCreateManyWithoutUserInput {
+  connect: [ExternalIdentifierWhereUniqueInput!]
+  connectOrCreate: [ExternalIdentifierCreateOrConnectWithoutUserInput!]
+  create: [ExternalIdentifierCreateWithoutUserInput!]
+}
+
+input ExternalIdentifierCreateOrConnectWithoutApplicationInput {
+  create: ExternalIdentifierCreateWithoutApplicationInput!
+  where: ExternalIdentifierWhereUniqueInput!
+}
+
+input ExternalIdentifierCreateOrConnectWithoutIdentityProviderInput {
+  create: ExternalIdentifierCreateWithoutIdentityProviderInput!
+  where: ExternalIdentifierWhereUniqueInput!
+}
+
+input ExternalIdentifierCreateOrConnectWithoutTenantInput {
+  create: ExternalIdentifierCreateWithoutTenantInput!
+  where: ExternalIdentifierWhereUniqueInput!
+}
+
+input ExternalIdentifierCreateOrConnectWithoutUserInput {
+  create: ExternalIdentifierCreateWithoutUserInput!
+  where: ExternalIdentifierWhereUniqueInput!
+}
+
+input ExternalIdentifierCreateWithoutApplicationInput {
+  createdAt: DateTime
+  data: Json
+  id: String
+  IdentityProvider: IdentityProviderCreateOneWithoutExternalIdentifiersInput!
+  isUserCreatedBefore: Boolean!
+  providerType: SupportedProvider!
+  status: ExternalIdentifierStatus
+  Tenant: TenantCreateOneWithoutExternalIdentifierInput!
+  updatedAt: DateTime
+  User: UserCreateOneWithoutExternalIdentifiersInput!
+}
+
+input ExternalIdentifierCreateWithoutIdentityProviderInput {
+  Application: ApplicationCreateOneWithoutExternalIdentifierInput!
+  createdAt: DateTime
+  data: Json
+  id: String
+  isUserCreatedBefore: Boolean!
+  providerType: SupportedProvider!
+  status: ExternalIdentifierStatus
+  Tenant: TenantCreateOneWithoutExternalIdentifierInput!
+  updatedAt: DateTime
+  User: UserCreateOneWithoutExternalIdentifiersInput!
+}
+
+input ExternalIdentifierCreateWithoutTenantInput {
+  Application: ApplicationCreateOneWithoutExternalIdentifierInput!
+  createdAt: DateTime
+  data: Json
+  id: String
+  IdentityProvider: IdentityProviderCreateOneWithoutExternalIdentifiersInput!
+  isUserCreatedBefore: Boolean!
+  providerType: SupportedProvider!
+  status: ExternalIdentifierStatus
+  updatedAt: DateTime
+  User: UserCreateOneWithoutExternalIdentifiersInput!
+}
+
+input ExternalIdentifierCreateWithoutUserInput {
+  Application: ApplicationCreateOneWithoutExternalIdentifierInput!
+  createdAt: DateTime
+  data: Json
+  id: String
+  IdentityProvider: IdentityProviderCreateOneWithoutExternalIdentifiersInput!
+  isUserCreatedBefore: Boolean!
+  providerType: SupportedProvider!
+  status: ExternalIdentifierStatus
+  Tenant: TenantCreateOneWithoutExternalIdentifierInput!
+  updatedAt: DateTime
+}
+
+input ExternalIdentifierListRelationFilter {
+  every: ExternalIdentifierWhereInput
+  none: ExternalIdentifierWhereInput
+  some: ExternalIdentifierWhereInput
+}
+
 enum ExternalIdentifierStatus {
   CONFIRMED
   DISABLED
   UNCONFIRMED
+}
+
+input ExternalIdentifierWhereInput {
+  AND: [ExternalIdentifierWhereInput!]
+  Application: ApplicationWhereInput
+  applicationId: StringFilter
+  createdAt: DateTimeFilter
+  data: JsonNullableFilter
+  id: StringFilter
+  IdentityProvider: IdentityProviderWhereInput
+  identityProviderId: StringFilter
+  isUserCreatedBefore: BoolFilter
+  NOT: [ExternalIdentifierWhereInput!]
+  OR: [ExternalIdentifierWhereInput!]
+  providerType: EnumSupportedProviderFilter
+  status: EnumExternalIdentifierStatusFilter
+  Tenant: TenantWhereInput
+  tenantId: StringFilter
+  updatedAt: DateTimeFilter
+  User: UserWhereInput
+  userId: StringFilter
 }
 
 input ExternalIdentifierWhereUniqueInput {
@@ -115,6 +967,104 @@ enum ExternalIdentityStatus {
   CONFIRMED
   DISABLED
   UNCONFIRMED
+}
+
+input FailedLoginCreateManyWithoutUserInput {
+  connect: [FailedLoginWhereUniqueInput!]
+  connectOrCreate: [FailedLoginCreateOrConnectWithoutUserInput!]
+  create: [FailedLoginCreateWithoutUserInput!]
+}
+
+input FailedLoginCreateOrConnectWithoutUserInput {
+  create: FailedLoginCreateWithoutUserInput!
+  where: FailedLoginWhereUniqueInput!
+}
+
+input FailedLoginCreateWithoutUserInput {
+  createdAt: DateTime
+  id: String
+}
+
+input FailedLoginListRelationFilter {
+  every: FailedLoginWhereInput
+  none: FailedLoginWhereInput
+  some: FailedLoginWhereInput
+}
+
+input FailedLoginLogsCreateManyWithoutTenantInput {
+  connect: [FailedLoginLogsWhereUniqueInput!]
+  connectOrCreate: [FailedLoginLogsCreateOrConnectWithoutTenantInput!]
+  create: [FailedLoginLogsCreateWithoutTenantInput!]
+}
+
+input FailedLoginLogsCreateManyWithoutUserInput {
+  connect: [FailedLoginLogsWhereUniqueInput!]
+  connectOrCreate: [FailedLoginLogsCreateOrConnectWithoutUserInput!]
+  create: [FailedLoginLogsCreateWithoutUserInput!]
+}
+
+input FailedLoginLogsCreateOrConnectWithoutTenantInput {
+  create: FailedLoginLogsCreateWithoutTenantInput!
+  where: FailedLoginLogsWhereUniqueInput!
+}
+
+input FailedLoginLogsCreateOrConnectWithoutUserInput {
+  create: FailedLoginLogsCreateWithoutUserInput!
+  where: FailedLoginLogsWhereUniqueInput!
+}
+
+input FailedLoginLogsCreateWithoutTenantInput {
+  count: Int
+  createdAt: DateTime
+  id: String
+  updatedAt: DateTime
+  User: UserCreateOneWithoutFailedLoginLogsInput!
+}
+
+input FailedLoginLogsCreateWithoutUserInput {
+  count: Int
+  createdAt: DateTime
+  id: String
+  Tenant: TenantCreateOneWithoutFailedLoginLogsInput!
+  updatedAt: DateTime
+}
+
+input FailedLoginLogsListRelationFilter {
+  every: FailedLoginLogsWhereInput
+  none: FailedLoginLogsWhereInput
+  some: FailedLoginLogsWhereInput
+}
+
+input FailedLoginLogsWhereInput {
+  AND: [FailedLoginLogsWhereInput!]
+  count: IntFilter
+  createdAt: DateTimeFilter
+  id: StringFilter
+  NOT: [FailedLoginLogsWhereInput!]
+  OR: [FailedLoginLogsWhereInput!]
+  Tenant: TenantWhereInput
+  tenantId: StringFilter
+  updatedAt: DateTimeFilter
+  User: UserWhereInput
+  userId: StringFilter
+}
+
+input FailedLoginLogsWhereUniqueInput {
+  id: String
+}
+
+input FailedLoginWhereInput {
+  AND: [FailedLoginWhereInput!]
+  createdAt: DateTimeFilter
+  id: StringFilter
+  NOT: [FailedLoginWhereInput!]
+  OR: [FailedLoginWhereInput!]
+  User: UserWhereInput
+  userId: StringFilter
+}
+
+input FailedLoginWhereUniqueInput {
+  id: String
 }
 
 """Gender of users"""
@@ -129,6 +1079,30 @@ type Grant {
   grantType: GrantType!
 }
 
+input GrantCreateManyWithoutApplicationsInput {
+  connect: [GrantWhereUniqueInput!]
+  connectOrCreate: [GrantCreateOrConnectWithoutApplicationsInput!]
+  create: [GrantCreateWithoutApplicationsInput!]
+}
+
+input GrantCreateOrConnectWithoutApplicationsInput {
+  create: GrantCreateWithoutApplicationsInput!
+  where: GrantWhereUniqueInput!
+}
+
+input GrantCreateWithoutApplicationsInput {
+  createdAt: DateTime
+  grantType: GrantType!
+  id: String
+  updatedAt: DateTime
+}
+
+input GrantListRelationFilter {
+  every: GrantWhereInput
+  none: GrantWhereInput
+  some: GrantWhereInput
+}
+
 """"""
 enum GrantType {
   AUTHORIZATION_CODE
@@ -136,6 +1110,17 @@ enum GrantType {
   EXTENSION
   PASSWORD
   REFRESH_TOKEN
+}
+
+input GrantWhereInput {
+  AND: [GrantWhereInput!]
+  Applications: ApplicationListRelationFilter
+  createdAt: DateTimeFilter
+  grantType: EnumGrantTypeFilter
+  id: StringFilter
+  NOT: [GrantWhereInput!]
+  OR: [GrantWhereInput!]
+  updatedAt: DateTimeFilter
 }
 
 input GrantWhereUniqueInput {
@@ -150,6 +1135,90 @@ type Group {
   Roles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int): [Role!]!
   updatedAt: DateTime!
   Users(after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int): [User!]!
+}
+
+input GroupCreateManyWithoutRolesInput {
+  connect: [GroupWhereUniqueInput!]
+  connectOrCreate: [GroupCreateOrConnectWithoutRolesInput!]
+  create: [GroupCreateWithoutRolesInput!]
+}
+
+input GroupCreateManyWithoutTenantInput {
+  connect: [GroupWhereUniqueInput!]
+  connectOrCreate: [GroupCreateOrConnectWithoutTenantInput!]
+  create: [GroupCreateWithoutTenantInput!]
+}
+
+input GroupCreateManyWithoutUsersInput {
+  connect: [GroupWhereUniqueInput!]
+  connectOrCreate: [GroupCreateOrConnectWithoutUsersInput!]
+  create: [GroupCreateWithoutUsersInput!]
+}
+
+input GroupCreateOrConnectWithoutRolesInput {
+  create: GroupCreateWithoutRolesInput!
+  where: GroupWhereUniqueInput!
+}
+
+input GroupCreateOrConnectWithoutTenantInput {
+  create: GroupCreateWithoutTenantInput!
+  where: GroupWhereUniqueInput!
+}
+
+input GroupCreateOrConnectWithoutUsersInput {
+  create: GroupCreateWithoutUsersInput!
+  where: GroupWhereUniqueInput!
+}
+
+input GroupCreateWithoutRolesInput {
+  createdAt: DateTime
+  description: String
+  id: String
+  name: String!
+  Tenant: TenantCreateOneWithoutGroupsInput!
+  updatedAt: DateTime
+  Users: UserCreateManyWithoutGroupsInput
+}
+
+input GroupCreateWithoutTenantInput {
+  createdAt: DateTime
+  description: String
+  id: String
+  name: String!
+  Roles: RoleCreateManyWithoutGroupsInput
+  updatedAt: DateTime
+  Users: UserCreateManyWithoutGroupsInput
+}
+
+input GroupCreateWithoutUsersInput {
+  createdAt: DateTime
+  description: String
+  id: String
+  name: String!
+  Roles: RoleCreateManyWithoutGroupsInput
+  Tenant: TenantCreateOneWithoutGroupsInput!
+  updatedAt: DateTime
+}
+
+input GroupListRelationFilter {
+  every: GroupWhereInput
+  none: GroupWhereInput
+  some: GroupWhereInput
+}
+
+input GroupWhereInput {
+  AND: [GroupWhereInput!]
+  createdAt: DateTimeFilter
+  description: StringNullableFilter
+  id: StringFilter
+  name: StringFilter
+  NOT: [GroupWhereInput!]
+  OR: [GroupWhereInput!]
+  Roles: RoleListRelationFilter
+  Tenant: TenantWhereInput
+  tenantId: StringFilter
+  updatedAt: DateTimeFilter
+  Users: UserListRelationFilter
 }
 
 input GroupWhereUniqueInput {
@@ -167,6 +1236,65 @@ type IdentityProvider {
   updatedAt: DateTime!
 }
 
+input IdentityProviderCreateOneWithoutApplicationsInput {
+  connect: IdentityProviderWhereUniqueInput
+  connectOrCreate: IdentityProviderCreateOrConnectWithoutApplicationsInput
+  create: IdentityProviderCreateWithoutApplicationsInput
+}
+
+input IdentityProviderCreateOneWithoutExternalIdentifiersInput {
+  connect: IdentityProviderWhereUniqueInput
+  connectOrCreate: IdentityProviderCreateOrConnectWithoutExternalIdentifiersInput
+  create: IdentityProviderCreateWithoutExternalIdentifiersInput
+}
+
+input IdentityProviderCreateOrConnectWithoutApplicationsInput {
+  create: IdentityProviderCreateWithoutApplicationsInput!
+  where: IdentityProviderWhereUniqueInput!
+}
+
+input IdentityProviderCreateOrConnectWithoutExternalIdentifiersInput {
+  create: IdentityProviderCreateWithoutExternalIdentifiersInput!
+  where: IdentityProviderWhereUniqueInput!
+}
+
+input IdentityProviderCreateWithoutApplicationsInput {
+  createdAt: DateTime
+  data: Json!
+  ExternalIdentifiers: ExternalIdentifierCreateManyWithoutIdentityProviderInput
+  id: String
+  isEnabled: Boolean
+  providerType: SupportedProvider!
+  updatedAt: DateTime
+}
+
+input IdentityProviderCreateWithoutExternalIdentifiersInput {
+  Applications: IdProviderOnApplicationCreateManyWithoutIdentityProviderInput
+  createdAt: DateTime
+  data: Json!
+  id: String
+  isEnabled: Boolean
+  providerType: SupportedProvider!
+  updatedAt: DateTime
+}
+
+input IdentityProviderWhereInput {
+  AND: [IdentityProviderWhereInput!]
+  Applications: IdProviderOnApplicationListRelationFilter
+  createdAt: DateTimeFilter
+  ExternalIdentifiers: ExternalIdentifierListRelationFilter
+  id: StringFilter
+  isEnabled: BoolFilter
+  NOT: [IdentityProviderWhereInput!]
+  OR: [IdentityProviderWhereInput!]
+  providerType: EnumSupportedProviderFilter
+  updatedAt: DateTimeFilter
+}
+
+input IdentityProviderWhereUniqueInput {
+  id: String
+}
+
 type IdProviderOnApplication {
   Application: Application!
   createdAt: DateTime!
@@ -178,13 +1306,127 @@ type IdProviderOnApplication {
   updatedAt: DateTime!
 }
 
+input IdProviderOnApplicationCreateManyWithoutApplicationInput {
+  connect: [IdProviderOnApplicationWhereUniqueInput!]
+  connectOrCreate: [IdProviderOnApplicationCreateOrConnectWithoutApplicationInput!]
+  create: [IdProviderOnApplicationCreateWithoutApplicationInput!]
+}
+
+input IdProviderOnApplicationCreateManyWithoutIdentityProviderInput {
+  connect: [IdProviderOnApplicationWhereUniqueInput!]
+  connectOrCreate: [IdProviderOnApplicationCreateOrConnectWithoutIdentityProviderInput!]
+  create: [IdProviderOnApplicationCreateWithoutIdentityProviderInput!]
+}
+
+input IdProviderOnApplicationCreateOrConnectWithoutApplicationInput {
+  create: IdProviderOnApplicationCreateWithoutApplicationInput!
+  where: IdProviderOnApplicationWhereUniqueInput!
+}
+
+input IdProviderOnApplicationCreateOrConnectWithoutIdentityProviderInput {
+  create: IdProviderOnApplicationCreateWithoutIdentityProviderInput!
+  where: IdProviderOnApplicationWhereUniqueInput!
+}
+
+input IdProviderOnApplicationCreateWithoutApplicationInput {
+  createdAt: DateTime
+  data: Json
+  id: String
+  IdentityProvider: IdentityProviderCreateOneWithoutApplicationsInput!
+  isEnabled: Boolean
+  isOverwritten: Boolean
+  providerType: SupportedProvider!
+  updatedAt: DateTime
+}
+
+input IdProviderOnApplicationCreateWithoutIdentityProviderInput {
+  Application: ApplicationCreateOneWithoutIdentityProvidersInput!
+  createdAt: DateTime
+  data: Json
+  id: String
+  isEnabled: Boolean
+  isOverwritten: Boolean
+  providerType: SupportedProvider!
+  updatedAt: DateTime
+}
+
+input IdProviderOnApplicationListRelationFilter {
+  every: IdProviderOnApplicationWhereInput
+  none: IdProviderOnApplicationWhereInput
+  some: IdProviderOnApplicationWhereInput
+}
+
+input IdProviderOnApplicationWhereInput {
+  AND: [IdProviderOnApplicationWhereInput!]
+  Application: ApplicationWhereInput
+  applicationId: StringFilter
+  createdAt: DateTimeFilter
+  data: JsonNullableFilter
+  id: StringFilter
+  IdentityProvider: IdentityProviderWhereInput
+  identityProviderId: StringFilter
+  isEnabled: BoolFilter
+  isOverwritten: BoolFilter
+  NOT: [IdProviderOnApplicationWhereInput!]
+  OR: [IdProviderOnApplicationWhereInput!]
+  providerType: EnumSupportedProviderFilter
+  updatedAt: DateTimeFilter
+}
+
 input IdProviderOnApplicationWhereUniqueInput {
   id: String
+}
+
+input IntFilter {
+  equals: Int
+  gt: Int
+  gte: Int
+  in: [Int!]
+  lt: Int
+  lte: Int
+  not: NestedIntFilter
+  notIn: [Int!]
 }
 
 type JavascriptOrigin {
   createdAt: DateTime!
   uri: String!
+}
+
+input JavascriptOriginCreateManyWithoutApplicationInput {
+  connect: [JavascriptOriginWhereUniqueInput!]
+  connectOrCreate: [JavascriptOriginCreateOrConnectWithoutApplicationInput!]
+  create: [JavascriptOriginCreateWithoutApplicationInput!]
+}
+
+input JavascriptOriginCreateOrConnectWithoutApplicationInput {
+  create: JavascriptOriginCreateWithoutApplicationInput!
+  where: JavascriptOriginWhereUniqueInput!
+}
+
+input JavascriptOriginCreateWithoutApplicationInput {
+  createdAt: DateTime
+  id: String
+  updatedAt: DateTime
+  uri: String!
+}
+
+input JavascriptOriginListRelationFilter {
+  every: JavascriptOriginWhereInput
+  none: JavascriptOriginWhereInput
+  some: JavascriptOriginWhereInput
+}
+
+input JavascriptOriginWhereInput {
+  AND: [JavascriptOriginWhereInput!]
+  Application: ApplicationWhereInput
+  ApplicationId: StringFilter
+  createdAt: DateTimeFilter
+  id: StringFilter
+  NOT: [JavascriptOriginWhereInput!]
+  OR: [JavascriptOriginWhereInput!]
+  updatedAt: DateTimeFilter
+  uri: StringFilter
 }
 
 input JavascriptOriginWhereUniqueInput {
@@ -193,7 +1435,75 @@ input JavascriptOriginWhereUniqueInput {
 
 scalar Json
 
+input JsonNullableFilter {
+  equals: Json
+  not: Json
+}
+
+input LoginLogCreateManyWithoutApplicationInput {
+  connect: [LoginLogWhereUniqueInput!]
+  connectOrCreate: [LoginLogCreateOrConnectWithoutApplicationInput!]
+  create: [LoginLogCreateWithoutApplicationInput!]
+}
+
+input LoginLogCreateManyWithoutUserInput {
+  connect: [LoginLogWhereUniqueInput!]
+  connectOrCreate: [LoginLogCreateOrConnectWithoutUserInput!]
+  create: [LoginLogCreateWithoutUserInput!]
+}
+
+input LoginLogCreateOrConnectWithoutApplicationInput {
+  create: LoginLogCreateWithoutApplicationInput!
+  where: LoginLogWhereUniqueInput!
+}
+
+input LoginLogCreateOrConnectWithoutUserInput {
+  create: LoginLogCreateWithoutUserInput!
+  where: LoginLogWhereUniqueInput!
+}
+
+input LoginLogCreateWithoutApplicationInput {
+  createdAt: DateTime
+  id: String
+  ipAddress: String!
+  updatedAt: DateTime
+  User: UserCreateOneWithoutLoginLogInput!
+}
+
+input LoginLogCreateWithoutUserInput {
+  Application: ApplicationCreateOneWithoutLoginLogInput!
+  createdAt: DateTime
+  id: String
+  ipAddress: String!
+  updatedAt: DateTime
+}
+
+input LoginLogListRelationFilter {
+  every: LoginLogWhereInput
+  none: LoginLogWhereInput
+  some: LoginLogWhereInput
+}
+
+input LoginLogWhereInput {
+  AND: [LoginLogWhereInput!]
+  Application: ApplicationWhereInput
+  applicationId: StringFilter
+  createdAt: DateTimeFilter
+  id: StringFilter
+  ipAddress: StringFilter
+  NOT: [LoginLogWhereInput!]
+  OR: [LoginLogWhereInput!]
+  updatedAt: DateTimeFilter
+  User: UserWhereInput
+  userId: StringFilter
+}
+
+input LoginLogWhereUniqueInput {
+  id: String
+}
+
 type Mutation {
+  createOneUser(data: UserCreateInput!): User!
   login(email: String!, password: String!): AuthPayload
 }
 
@@ -205,6 +1515,163 @@ input NameApplicationIdCompoundUniqueInput {
 input NameProfileIdCompoundUniqueInput {
   name: String!
   profileId: String!
+}
+
+input NestedBoolFilter {
+  equals: Boolean
+  not: NestedBoolFilter
+}
+
+input NestedDateTimeFilter {
+  equals: DateTime
+  gt: DateTime
+  gte: DateTime
+  in: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  not: NestedDateTimeFilter
+  notIn: [DateTime!]
+}
+
+input NestedDateTimeNullableFilter {
+  equals: DateTime
+  gt: DateTime
+  gte: DateTime
+  in: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  not: NestedDateTimeNullableFilter
+  notIn: [DateTime!]
+}
+
+input NestedEnumAccountStatusTypeFilter {
+  equals: AccountStatusType
+  in: [AccountStatusType!]
+  not: NestedEnumAccountStatusTypeFilter
+  notIn: [AccountStatusType!]
+}
+
+input NestedEnumExternalIdentifierStatusFilter {
+  equals: ExternalIdentifierStatus
+  in: [ExternalIdentifierStatus!]
+  not: NestedEnumExternalIdentifierStatusFilter
+  notIn: [ExternalIdentifierStatus!]
+}
+
+input NestedEnumGenderFilter {
+  equals: Gender
+  in: [Gender!]
+  not: NestedEnumGenderFilter
+  notIn: [Gender!]
+}
+
+input NestedEnumGrantTypeFilter {
+  equals: GrantType
+  in: [GrantType!]
+  not: NestedEnumGrantTypeFilter
+  notIn: [GrantType!]
+}
+
+input NestedEnumSMTPSecurityFilter {
+  equals: SMTPSecurity
+  in: [SMTPSecurity!]
+  not: NestedEnumSMTPSecurityFilter
+  notIn: [SMTPSecurity!]
+}
+
+input NestedEnumSupportedProviderFilter {
+  equals: SupportedProvider
+  in: [SupportedProvider!]
+  not: NestedEnumSupportedProviderFilter
+  notIn: [SupportedProvider!]
+}
+
+input NestedEnumUsernameStatusFilter {
+  equals: UsernameStatus
+  in: [UsernameStatus!]
+  not: NestedEnumUsernameStatusFilter
+  notIn: [UsernameStatus!]
+}
+
+input NestedIntFilter {
+  equals: Int
+  gt: Int
+  gte: Int
+  in: [Int!]
+  lt: Int
+  lte: Int
+  not: NestedIntFilter
+  notIn: [Int!]
+}
+
+input NestedStringFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  not: NestedStringFilter
+  notIn: [String!]
+  startsWith: String
+}
+
+input NestedStringNullableFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  not: NestedStringNullableFilter
+  notIn: [String!]
+  startsWith: String
+}
+
+input PasswordResetCreateManyWithoutUserInput {
+  connect: [PasswordResetWhereUniqueInput!]
+  connectOrCreate: [PasswordResetCreateOrConnectWithoutUserInput!]
+  create: [PasswordResetCreateWithoutUserInput!]
+}
+
+input PasswordResetCreateOrConnectWithoutUserInput {
+  create: PasswordResetCreateWithoutUserInput!
+  where: PasswordResetWhereUniqueInput!
+}
+
+input PasswordResetCreateWithoutUserInput {
+  createdAt: DateTime
+  expirationDate: DateTime!
+  id: String
+  token: String!
+  updatedAt: DateTime
+}
+
+input PasswordResetListRelationFilter {
+  every: PasswordResetWhereInput
+  none: PasswordResetWhereInput
+  some: PasswordResetWhereInput
+}
+
+input PasswordResetWhereInput {
+  AND: [PasswordResetWhereInput!]
+  createdAt: DateTimeFilter
+  expirationDate: DateTimeFilter
+  id: StringFilter
+  NOT: [PasswordResetWhereInput!]
+  OR: [PasswordResetWhereInput!]
+  token: StringFilter
+  updatedAt: DateTimeFilter
+  User: UserWhereInput
+  userId: StringFilter
+}
+
+input PasswordResetWhereUniqueInput {
+  id: String
 }
 
 type Profile {
@@ -221,13 +1688,99 @@ type Profile {
   UserCustomAttributes(after: UserCustomAttributeWhereUniqueInput, before: UserCustomAttributeWhereUniqueInput, first: Int, last: Int): [UserCustomAttribute!]!
 }
 
+input ProfileCreateOneWithoutUserInput {
+  connect: ProfileWhereUniqueInput
+  connectOrCreate: ProfileCreateOrConnectWithoutUserInput
+  create: ProfileCreateWithoutUserInput
+}
+
+input ProfileCreateOrConnectWithoutUserInput {
+  create: ProfileCreateWithoutUserInput!
+  where: ProfileWhereUniqueInput!
+}
+
+input ProfileCreateWithoutUserInput {
+  birthdate: DateTime
+  createdAt: DateTime
+  displayName: String!
+  firstName: String
+  gender: Gender
+  id: String
+  lastName: String
+  mobileNumber: String
+  picture: String
+  updatedAt: DateTime
+  UserCustomAttributes: UserCustomAttributeCreateManyWithoutProfileInput
+}
+
+input ProfileWhereInput {
+  AND: [ProfileWhereInput!]
+  birthdate: DateTimeNullableFilter
+  createdAt: DateTimeFilter
+  displayName: StringFilter
+  firstName: StringFilter
+  gender: EnumGenderFilter
+  id: StringFilter
+  lastName: StringFilter
+  mobileNumber: StringNullableFilter
+  NOT: [ProfileWhereInput!]
+  OR: [ProfileWhereInput!]
+  picture: StringNullableFilter
+  updatedAt: DateTimeFilter
+  User: UserWhereInput
+  UserCustomAttributes: UserCustomAttributeListRelationFilter
+  userId: StringFilter
+}
+
+input ProfileWhereUniqueInput {
+  id: String
+}
+
 type Query {
-  Test: String
+  Test: User
+  user(where: UserWhereUniqueInput!): User
+  users(after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int, orderBy: [UserOrderByInput!], where: UserWhereInput): [User!]!
 }
 
 type RedirectURI {
   createdAt: DateTime!
   url: String!
+}
+
+input RedirectURICreateManyWithoutApplicationInput {
+  connect: [RedirectURIWhereUniqueInput!]
+  connectOrCreate: [RedirectURICreateOrConnectWithoutApplicationInput!]
+  create: [RedirectURICreateWithoutApplicationInput!]
+}
+
+input RedirectURICreateOrConnectWithoutApplicationInput {
+  create: RedirectURICreateWithoutApplicationInput!
+  where: RedirectURIWhereUniqueInput!
+}
+
+input RedirectURICreateWithoutApplicationInput {
+  createdAt: DateTime
+  id: String
+  updatedAt: DateTime
+  url: String!
+}
+
+input RedirectURIListRelationFilter {
+  every: RedirectURIWhereInput
+  none: RedirectURIWhereInput
+  some: RedirectURIWhereInput
+}
+
+input RedirectURIWhereInput {
+  AND: [RedirectURIWhereInput!]
+  Application: ApplicationWhereInput
+  ApplicationId: StringFilter
+  createdAt: DateTimeFilter
+  id: StringFilter
+  NOT: [RedirectURIWhereInput!]
+  OR: [RedirectURIWhereInput!]
+  updatedAt: DateTimeFilter
+  url: StringFilter
 }
 
 input RedirectURIWhereUniqueInput {
@@ -238,6 +1791,91 @@ type RefreshToken {
   createdAt: DateTime!
   expirationDate: DateTime!
   refreshToken: String!
+}
+
+input RefreshTokenCreateManyWithoutApplicationInput {
+  connect: [RefreshTokenWhereUniqueInput!]
+  connectOrCreate: [RefreshTokenCreateOrConnectWithoutApplicationInput!]
+  create: [RefreshTokenCreateWithoutApplicationInput!]
+}
+
+input RefreshTokenCreateManyWithoutScopesInput {
+  connect: [RefreshTokenWhereUniqueInput!]
+  connectOrCreate: [RefreshTokenCreateOrConnectWithoutScopesInput!]
+  create: [RefreshTokenCreateWithoutScopesInput!]
+}
+
+input RefreshTokenCreateManyWithoutUserInput {
+  connect: [RefreshTokenWhereUniqueInput!]
+  connectOrCreate: [RefreshTokenCreateOrConnectWithoutUserInput!]
+  create: [RefreshTokenCreateWithoutUserInput!]
+}
+
+input RefreshTokenCreateOrConnectWithoutApplicationInput {
+  create: RefreshTokenCreateWithoutApplicationInput!
+  where: RefreshTokenWhereUniqueInput!
+}
+
+input RefreshTokenCreateOrConnectWithoutScopesInput {
+  create: RefreshTokenCreateWithoutScopesInput!
+  where: RefreshTokenWhereUniqueInput!
+}
+
+input RefreshTokenCreateOrConnectWithoutUserInput {
+  create: RefreshTokenCreateWithoutUserInput!
+  where: RefreshTokenWhereUniqueInput!
+}
+
+input RefreshTokenCreateWithoutApplicationInput {
+  createdAt: DateTime
+  expirationDate: DateTime!
+  id: String
+  refreshToken: String
+  Scopes: ScopeCreateManyWithoutRefreshTokensInput
+  updatedAt: DateTime
+  User: UserCreateOneWithoutRefreshTokensInput!
+}
+
+input RefreshTokenCreateWithoutScopesInput {
+  Application: ApplicationCreateOneWithoutRefreshTokensInput!
+  createdAt: DateTime
+  expirationDate: DateTime!
+  id: String
+  refreshToken: String
+  updatedAt: DateTime
+  User: UserCreateOneWithoutRefreshTokensInput!
+}
+
+input RefreshTokenCreateWithoutUserInput {
+  Application: ApplicationCreateOneWithoutRefreshTokensInput!
+  createdAt: DateTime
+  expirationDate: DateTime!
+  id: String
+  refreshToken: String
+  Scopes: ScopeCreateManyWithoutRefreshTokensInput
+  updatedAt: DateTime
+}
+
+input RefreshTokenListRelationFilter {
+  every: RefreshTokenWhereInput
+  none: RefreshTokenWhereInput
+  some: RefreshTokenWhereInput
+}
+
+input RefreshTokenWhereInput {
+  AND: [RefreshTokenWhereInput!]
+  Application: ApplicationWhereInput
+  ApplicationId: StringFilter
+  createdAt: DateTimeFilter
+  expirationDate: DateTimeFilter
+  id: StringFilter
+  NOT: [RefreshTokenWhereInput!]
+  OR: [RefreshTokenWhereInput!]
+  refreshToken: StringFilter
+  Scopes: ScopeListRelationFilter
+  updatedAt: DateTimeFilter
+  User: UserWhereInput
+  userId: StringFilter
 }
 
 input RefreshTokenWhereUniqueInput {
@@ -255,10 +1893,138 @@ type Registration {
   username: String!
 }
 
+input RegistrationCreateManyWithoutApplicationInput {
+  connect: [RegistrationWhereUniqueInput!]
+  connectOrCreate: [RegistrationCreateOrConnectWithoutApplicationInput!]
+  create: [RegistrationCreateWithoutApplicationInput!]
+}
+
+input RegistrationCreateManyWithoutRolesInput {
+  connect: [RegistrationWhereUniqueInput!]
+  connectOrCreate: [RegistrationCreateOrConnectWithoutRolesInput!]
+  create: [RegistrationCreateWithoutRolesInput!]
+}
+
+input RegistrationCreateManyWithoutUserInput {
+  connect: [RegistrationWhereUniqueInput!]
+  connectOrCreate: [RegistrationCreateOrConnectWithoutUserInput!]
+  create: [RegistrationCreateWithoutUserInput!]
+}
+
+input RegistrationCreateOrConnectWithoutApplicationInput {
+  create: RegistrationCreateWithoutApplicationInput!
+  where: RegistrationWhereUniqueInput!
+}
+
+input RegistrationCreateOrConnectWithoutRolesInput {
+  create: RegistrationCreateWithoutRolesInput!
+  where: RegistrationWhereUniqueInput!
+}
+
+input RegistrationCreateOrConnectWithoutUserInput {
+  create: RegistrationCreateWithoutUserInput!
+  where: RegistrationWhereUniqueInput!
+}
+
+input RegistrationCreateWithoutApplicationInput {
+  createdAt: DateTime
+  id: String
+  isVerified: Boolean
+  Roles: RoleCreateManyWithoutRegistrationsInput
+  updatedAt: DateTime
+  User: UserCreateOneWithoutRegistrationsInput!
+  username: String!
+  usernameStatus: UsernameStatus
+}
+
+input RegistrationCreateWithoutRolesInput {
+  Application: ApplicationCreateOneWithoutRegistrationsInput!
+  createdAt: DateTime
+  id: String
+  isVerified: Boolean
+  updatedAt: DateTime
+  User: UserCreateOneWithoutRegistrationsInput!
+  username: String!
+  usernameStatus: UsernameStatus
+}
+
+input RegistrationCreateWithoutUserInput {
+  Application: ApplicationCreateOneWithoutRegistrationsInput!
+  createdAt: DateTime
+  id: String
+  isVerified: Boolean
+  Roles: RoleCreateManyWithoutRegistrationsInput
+  updatedAt: DateTime
+  username: String!
+  usernameStatus: UsernameStatus
+}
+
+input RegistrationListRelationFilter {
+  every: RegistrationWhereInput
+  none: RegistrationWhereInput
+  some: RegistrationWhereInput
+}
+
+input RegistrationWhereInput {
+  AND: [RegistrationWhereInput!]
+  Application: ApplicationWhereInput
+  applicationId: StringFilter
+  createdAt: DateTimeFilter
+  id: StringFilter
+  isVerified: BoolFilter
+  NOT: [RegistrationWhereInput!]
+  OR: [RegistrationWhereInput!]
+  Roles: RoleListRelationFilter
+  updatedAt: DateTimeFilter
+  User: UserWhereInput
+  userId: StringFilter
+  username: StringFilter
+  usernameStatus: EnumUsernameStatusFilter
+}
+
 input RegistrationWhereUniqueInput {
   id: String
   userId_applicationId: UserIdApplicationIdCompoundUniqueInput
   username_applicationId: UsernameApplicationIdCompoundUniqueInput
+}
+
+input RememberMeCreateManyWithoutUserInput {
+  connect: [RememberMeWhereUniqueInput!]
+  connectOrCreate: [RememberMeCreateOrConnectWithoutUserInput!]
+  create: [RememberMeCreateWithoutUserInput!]
+}
+
+input RememberMeCreateOrConnectWithoutUserInput {
+  create: RememberMeCreateWithoutUserInput!
+  where: RememberMeWhereUniqueInput!
+}
+
+input RememberMeCreateWithoutUserInput {
+  createdAt: DateTime
+  id: String
+  token: String!
+}
+
+input RememberMeListRelationFilter {
+  every: RememberMeWhereInput
+  none: RememberMeWhereInput
+  some: RememberMeWhereInput
+}
+
+input RememberMeWhereInput {
+  AND: [RememberMeWhereInput!]
+  createdAt: DateTimeFilter
+  id: StringFilter
+  NOT: [RememberMeWhereInput!]
+  OR: [RememberMeWhereInput!]
+  token: StringFilter
+  User: UserWhereInput
+  userId: StringFilter
+}
+
+input RememberMeWhereUniqueInput {
+  id: String
+  token: String
 }
 
 type ResourceServer {
@@ -268,14 +2034,207 @@ type ResourceServer {
   Scopes(after: ScopeWhereUniqueInput, before: ScopeWhereUniqueInput, first: Int, last: Int): [Scope!]!
 }
 
+input ResourceServerCreateOneWithoutScopesInput {
+  connect: ResourceServerWhereUniqueInput
+  connectOrCreate: ResourceServerCreateOrConnectWithoutScopesInput
+  create: ResourceServerCreateWithoutScopesInput
+}
+
+input ResourceServerCreateOrConnectWithoutScopesInput {
+  create: ResourceServerCreateWithoutScopesInput!
+  where: ResourceServerWhereUniqueInput!
+}
+
+input ResourceServerCreateWithoutScopesInput {
+  createdAt: DateTime
+  id: String
+  identifier: String!
+  name: String!
+  updatedAt: DateTime
+}
+
+input ResourceServerWhereInput {
+  AND: [ResourceServerWhereInput!]
+  createdAt: DateTimeFilter
+  id: StringFilter
+  identifier: StringFilter
+  name: StringFilter
+  NOT: [ResourceServerWhereInput!]
+  OR: [ResourceServerWhereInput!]
+  Scopes: ScopeListRelationFilter
+  updatedAt: DateTimeFilter
+}
+
+input ResourceServerWhereUniqueInput {
+  id: String
+  identifier: String
+}
+
 type Role {
   ChildRoles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int): [Role!]!
   createdAt: DateTime!
   Groups(after: GroupWhereUniqueInput, before: GroupWhereUniqueInput, first: Int, last: Int): [Group!]!
+  name: String!
   ParentRoles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int): [Role!]!
   permissions: Json
   Registrations(after: RegistrationWhereUniqueInput, before: RegistrationWhereUniqueInput, first: Int, last: Int): [Registration!]!
   updatedAt: DateTime!
+}
+
+input RoleCreateManyWithoutApplicationInput {
+  connect: [RoleWhereUniqueInput!]
+  connectOrCreate: [RoleCreateOrConnectWithoutApplicationInput!]
+  create: [RoleCreateWithoutApplicationInput!]
+}
+
+input RoleCreateManyWithoutChildRolesInput {
+  connect: [RoleWhereUniqueInput!]
+  connectOrCreate: [RoleCreateOrConnectWithoutChildRolesInput!]
+  create: [RoleCreateWithoutChildRolesInput!]
+}
+
+input RoleCreateManyWithoutGroupsInput {
+  connect: [RoleWhereUniqueInput!]
+  connectOrCreate: [RoleCreateOrConnectWithoutGroupsInput!]
+  create: [RoleCreateWithoutGroupsInput!]
+}
+
+input RoleCreateManyWithoutParentRolesInput {
+  connect: [RoleWhereUniqueInput!]
+  connectOrCreate: [RoleCreateOrConnectWithoutParentRolesInput!]
+  create: [RoleCreateWithoutParentRolesInput!]
+}
+
+input RoleCreateManyWithoutRegistrationsInput {
+  connect: [RoleWhereUniqueInput!]
+  connectOrCreate: [RoleCreateOrConnectWithoutRegistrationsInput!]
+  create: [RoleCreateWithoutRegistrationsInput!]
+}
+
+input RoleCreateOrConnectWithoutApplicationInput {
+  create: RoleCreateWithoutApplicationInput!
+  where: RoleWhereUniqueInput!
+}
+
+input RoleCreateOrConnectWithoutChildRolesInput {
+  create: RoleCreateWithoutChildRolesInput!
+  where: RoleWhereUniqueInput!
+}
+
+input RoleCreateOrConnectWithoutGroupsInput {
+  create: RoleCreateWithoutGroupsInput!
+  where: RoleWhereUniqueInput!
+}
+
+input RoleCreateOrConnectWithoutParentRolesInput {
+  create: RoleCreateWithoutParentRolesInput!
+  where: RoleWhereUniqueInput!
+}
+
+input RoleCreateOrConnectWithoutRegistrationsInput {
+  create: RoleCreateWithoutRegistrationsInput!
+  where: RoleWhereUniqueInput!
+}
+
+input RoleCreateWithoutApplicationInput {
+  ChildRoles: RoleCreateManyWithoutParentRolesInput
+  createdAt: DateTime
+  description: String
+  Groups: GroupCreateManyWithoutRolesInput
+  id: String
+  isDefault: Boolean
+  isSuperRole: Boolean
+  name: String!
+  ParentRoles: RoleCreateManyWithoutChildRolesInput
+  permissions: Json
+  Registrations: RegistrationCreateManyWithoutRolesInput
+  updatedAt: DateTime
+}
+
+input RoleCreateWithoutChildRolesInput {
+  Application: ApplicationCreateOneWithoutRolesInput!
+  createdAt: DateTime
+  description: String
+  Groups: GroupCreateManyWithoutRolesInput
+  id: String
+  isDefault: Boolean
+  isSuperRole: Boolean
+  name: String!
+  ParentRoles: RoleCreateManyWithoutChildRolesInput
+  permissions: Json
+  Registrations: RegistrationCreateManyWithoutRolesInput
+  updatedAt: DateTime
+}
+
+input RoleCreateWithoutGroupsInput {
+  Application: ApplicationCreateOneWithoutRolesInput!
+  ChildRoles: RoleCreateManyWithoutParentRolesInput
+  createdAt: DateTime
+  description: String
+  id: String
+  isDefault: Boolean
+  isSuperRole: Boolean
+  name: String!
+  ParentRoles: RoleCreateManyWithoutChildRolesInput
+  permissions: Json
+  Registrations: RegistrationCreateManyWithoutRolesInput
+  updatedAt: DateTime
+}
+
+input RoleCreateWithoutParentRolesInput {
+  Application: ApplicationCreateOneWithoutRolesInput!
+  ChildRoles: RoleCreateManyWithoutParentRolesInput
+  createdAt: DateTime
+  description: String
+  Groups: GroupCreateManyWithoutRolesInput
+  id: String
+  isDefault: Boolean
+  isSuperRole: Boolean
+  name: String!
+  permissions: Json
+  Registrations: RegistrationCreateManyWithoutRolesInput
+  updatedAt: DateTime
+}
+
+input RoleCreateWithoutRegistrationsInput {
+  Application: ApplicationCreateOneWithoutRolesInput!
+  ChildRoles: RoleCreateManyWithoutParentRolesInput
+  createdAt: DateTime
+  description: String
+  Groups: GroupCreateManyWithoutRolesInput
+  id: String
+  isDefault: Boolean
+  isSuperRole: Boolean
+  name: String!
+  ParentRoles: RoleCreateManyWithoutChildRolesInput
+  permissions: Json
+  updatedAt: DateTime
+}
+
+input RoleListRelationFilter {
+  every: RoleWhereInput
+  none: RoleWhereInput
+  some: RoleWhereInput
+}
+
+input RoleWhereInput {
+  AND: [RoleWhereInput!]
+  Application: ApplicationWhereInput
+  applicationId: StringFilter
+  ChildRoles: RoleListRelationFilter
+  createdAt: DateTimeFilter
+  description: StringNullableFilter
+  Groups: GroupListRelationFilter
+  id: StringFilter
+  isDefault: BoolFilter
+  isSuperRole: BoolFilter
+  name: StringFilter
+  NOT: [RoleWhereInput!]
+  OR: [RoleWhereInput!]
+  ParentRoles: RoleListRelationFilter
+  permissions: JsonNullableFilter
+  Registrations: RegistrationListRelationFilter
+  updatedAt: DateTimeFilter
 }
 
 input RoleWhereUniqueInput {
@@ -288,9 +2247,175 @@ type Scope {
   name: String!
 }
 
+input ScopeCreateManyWithoutAccessTokensInput {
+  connect: [ScopeWhereUniqueInput!]
+  connectOrCreate: [ScopeCreateOrConnectWithoutAccessTokensInput!]
+  create: [ScopeCreateWithoutAccessTokensInput!]
+}
+
+input ScopeCreateManyWithoutApplicationsInput {
+  connect: [ScopeWhereUniqueInput!]
+  connectOrCreate: [ScopeCreateOrConnectWithoutApplicationsInput!]
+  create: [ScopeCreateWithoutApplicationsInput!]
+}
+
+input ScopeCreateManyWithoutAuthorizationCodesInput {
+  connect: [ScopeWhereUniqueInput!]
+  connectOrCreate: [ScopeCreateOrConnectWithoutAuthorizationCodesInput!]
+  create: [ScopeCreateWithoutAuthorizationCodesInput!]
+}
+
+input ScopeCreateManyWithoutRefreshTokensInput {
+  connect: [ScopeWhereUniqueInput!]
+  connectOrCreate: [ScopeCreateOrConnectWithoutRefreshTokensInput!]
+  create: [ScopeCreateWithoutRefreshTokensInput!]
+}
+
+input ScopeCreateOrConnectWithoutAccessTokensInput {
+  create: ScopeCreateWithoutAccessTokensInput!
+  where: ScopeWhereUniqueInput!
+}
+
+input ScopeCreateOrConnectWithoutApplicationsInput {
+  create: ScopeCreateWithoutApplicationsInput!
+  where: ScopeWhereUniqueInput!
+}
+
+input ScopeCreateOrConnectWithoutAuthorizationCodesInput {
+  create: ScopeCreateWithoutAuthorizationCodesInput!
+  where: ScopeWhereUniqueInput!
+}
+
+input ScopeCreateOrConnectWithoutRefreshTokensInput {
+  create: ScopeCreateWithoutRefreshTokensInput!
+  where: ScopeWhereUniqueInput!
+}
+
+input ScopeCreateWithoutAccessTokensInput {
+  Applications: ApplicationCreateManyWithoutEnabledScopesInput
+  AuthorizationCodes: AuthorizationCodeCreateManyWithoutScopesInput
+  createdAt: DateTime
+  description: String
+  id: String
+  isCustomScope: Boolean
+  name: String!
+  RefreshTokens: RefreshTokenCreateManyWithoutScopesInput
+  ResourceServer: ResourceServerCreateOneWithoutScopesInput
+  updatedAt: DateTime
+}
+
+input ScopeCreateWithoutApplicationsInput {
+  AccessTokens: AccessTokenCreateManyWithoutScopesInput
+  AuthorizationCodes: AuthorizationCodeCreateManyWithoutScopesInput
+  createdAt: DateTime
+  description: String
+  id: String
+  isCustomScope: Boolean
+  name: String!
+  RefreshTokens: RefreshTokenCreateManyWithoutScopesInput
+  ResourceServer: ResourceServerCreateOneWithoutScopesInput
+  updatedAt: DateTime
+}
+
+input ScopeCreateWithoutAuthorizationCodesInput {
+  AccessTokens: AccessTokenCreateManyWithoutScopesInput
+  Applications: ApplicationCreateManyWithoutEnabledScopesInput
+  createdAt: DateTime
+  description: String
+  id: String
+  isCustomScope: Boolean
+  name: String!
+  RefreshTokens: RefreshTokenCreateManyWithoutScopesInput
+  ResourceServer: ResourceServerCreateOneWithoutScopesInput
+  updatedAt: DateTime
+}
+
+input ScopeCreateWithoutRefreshTokensInput {
+  AccessTokens: AccessTokenCreateManyWithoutScopesInput
+  Applications: ApplicationCreateManyWithoutEnabledScopesInput
+  AuthorizationCodes: AuthorizationCodeCreateManyWithoutScopesInput
+  createdAt: DateTime
+  description: String
+  id: String
+  isCustomScope: Boolean
+  name: String!
+  ResourceServer: ResourceServerCreateOneWithoutScopesInput
+  updatedAt: DateTime
+}
+
+input ScopeListRelationFilter {
+  every: ScopeWhereInput
+  none: ScopeWhereInput
+  some: ScopeWhereInput
+}
+
+input ScopeWhereInput {
+  AccessTokens: AccessTokenListRelationFilter
+  AND: [ScopeWhereInput!]
+  Applications: ApplicationListRelationFilter
+  AuthorizationCodes: AuthorizationCodeListRelationFilter
+  createdAt: DateTimeFilter
+  description: StringNullableFilter
+  id: StringFilter
+  isCustomScope: BoolFilter
+  name: StringFilter
+  NOT: [ScopeWhereInput!]
+  OR: [ScopeWhereInput!]
+  RefreshTokens: RefreshTokenListRelationFilter
+  ResourceServer: ResourceServerWhereInput
+  ResourceServerId: StringNullableFilter
+  updatedAt: DateTimeFilter
+}
+
 input ScopeWhereUniqueInput {
   id: String
   name: String
+}
+
+input SelfRegistrationFieldsCreateManyWithoutApplicationInput {
+  connect: [SelfRegistrationFieldsWhereUniqueInput!]
+  connectOrCreate: [SelfRegistrationFieldsCreateOrConnectWithoutApplicationInput!]
+  create: [SelfRegistrationFieldsCreateWithoutApplicationInput!]
+}
+
+input SelfRegistrationFieldsCreateOrConnectWithoutApplicationInput {
+  create: SelfRegistrationFieldsCreateWithoutApplicationInput!
+  where: SelfRegistrationFieldsWhereUniqueInput!
+}
+
+input SelfRegistrationFieldsCreateWithoutApplicationInput {
+  createdAt: DateTime
+  fieldName: String!
+  fieldType: String
+  id: String
+  isEnabled: Boolean
+  isRequired: Boolean
+  updatedAt: DateTime
+}
+
+input SelfRegistrationFieldsListRelationFilter {
+  every: SelfRegistrationFieldsWhereInput
+  none: SelfRegistrationFieldsWhereInput
+  some: SelfRegistrationFieldsWhereInput
+}
+
+input SelfRegistrationFieldsWhereInput {
+  AND: [SelfRegistrationFieldsWhereInput!]
+  Application: ApplicationWhereInput
+  applicationId: StringFilter
+  createdAt: DateTimeFilter
+  fieldName: StringFilter
+  fieldType: StringNullableFilter
+  id: StringFilter
+  isEnabled: BoolFilter
+  isRequired: BoolFilter
+  NOT: [SelfRegistrationFieldsWhereInput!]
+  OR: [SelfRegistrationFieldsWhereInput!]
+  updatedAt: DateTimeFilter
+}
+
+input SelfRegistrationFieldsWhereUniqueInput {
+  id: String
 }
 
 """Security options of SMTP server"""
@@ -298,6 +2423,39 @@ enum SMTPSecurity {
   NONE
   SSL
   TLS
+}
+
+enum SortOrder {
+  asc
+  desc
+}
+
+input StringFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  not: NestedStringFilter
+  notIn: [String!]
+  startsWith: String
+}
+
+input StringNullableFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  not: NestedStringNullableFilter
+  notIn: [String!]
+  startsWith: String
 }
 
 """Supported providers"""
@@ -318,9 +2476,151 @@ type Tenant {
   updatedAt: DateTime!
 }
 
+input TenantCreateOneWithoutApplicationsInput {
+  connect: TenantWhereUniqueInput
+  connectOrCreate: TenantCreateOrConnectWithoutApplicationsInput
+  create: TenantCreateWithoutApplicationsInput
+}
+
+input TenantCreateOneWithoutExternalIdentifierInput {
+  connect: TenantWhereUniqueInput
+  connectOrCreate: TenantCreateOrConnectWithoutExternalIdentifierInput
+  create: TenantCreateWithoutExternalIdentifierInput
+}
+
+input TenantCreateOneWithoutFailedLoginLogsInput {
+  connect: TenantWhereUniqueInput
+  connectOrCreate: TenantCreateOrConnectWithoutFailedLoginLogsInput
+  create: TenantCreateWithoutFailedLoginLogsInput
+}
+
+input TenantCreateOneWithoutGroupsInput {
+  connect: TenantWhereUniqueInput
+  connectOrCreate: TenantCreateOrConnectWithoutGroupsInput
+  create: TenantCreateWithoutGroupsInput
+}
+
+input TenantCreateOneWithoutUsersInput {
+  connect: TenantWhereUniqueInput
+  connectOrCreate: TenantCreateOrConnectWithoutUsersInput
+  create: TenantCreateWithoutUsersInput
+}
+
+input TenantCreateOrConnectWithoutApplicationsInput {
+  create: TenantCreateWithoutApplicationsInput!
+  where: TenantWhereUniqueInput!
+}
+
+input TenantCreateOrConnectWithoutExternalIdentifierInput {
+  create: TenantCreateWithoutExternalIdentifierInput!
+  where: TenantWhereUniqueInput!
+}
+
+input TenantCreateOrConnectWithoutFailedLoginLogsInput {
+  create: TenantCreateWithoutFailedLoginLogsInput!
+  where: TenantWhereUniqueInput!
+}
+
+input TenantCreateOrConnectWithoutGroupsInput {
+  create: TenantCreateWithoutGroupsInput!
+  where: TenantWhereUniqueInput!
+}
+
+input TenantCreateOrConnectWithoutUsersInput {
+  create: TenantCreateWithoutUsersInput!
+  where: TenantWhereUniqueInput!
+}
+
+input TenantCreateWithoutApplicationsInput {
+  createdAt: DateTime
+  domainName: String!
+  EmailSettings: EmailSettingsCreateOneWithoutTenantInput
+  ExternalIdentifier: ExternalIdentifierCreateManyWithoutTenantInput
+  FailedLoginLogs: FailedLoginLogsCreateManyWithoutTenantInput
+  Groups: GroupCreateManyWithoutTenantInput
+  id: String
+  isAcitve: Boolean
+  updatedAt: DateTime
+  Users: UserCreateManyWithoutTenantInput
+}
+
+input TenantCreateWithoutExternalIdentifierInput {
+  Applications: ApplicationCreateManyWithoutTenantInput
+  createdAt: DateTime
+  domainName: String!
+  EmailSettings: EmailSettingsCreateOneWithoutTenantInput
+  FailedLoginLogs: FailedLoginLogsCreateManyWithoutTenantInput
+  Groups: GroupCreateManyWithoutTenantInput
+  id: String
+  isAcitve: Boolean
+  updatedAt: DateTime
+  Users: UserCreateManyWithoutTenantInput
+}
+
+input TenantCreateWithoutFailedLoginLogsInput {
+  Applications: ApplicationCreateManyWithoutTenantInput
+  createdAt: DateTime
+  domainName: String!
+  EmailSettings: EmailSettingsCreateOneWithoutTenantInput
+  ExternalIdentifier: ExternalIdentifierCreateManyWithoutTenantInput
+  Groups: GroupCreateManyWithoutTenantInput
+  id: String
+  isAcitve: Boolean
+  updatedAt: DateTime
+  Users: UserCreateManyWithoutTenantInput
+}
+
+input TenantCreateWithoutGroupsInput {
+  Applications: ApplicationCreateManyWithoutTenantInput
+  createdAt: DateTime
+  domainName: String!
+  EmailSettings: EmailSettingsCreateOneWithoutTenantInput
+  ExternalIdentifier: ExternalIdentifierCreateManyWithoutTenantInput
+  FailedLoginLogs: FailedLoginLogsCreateManyWithoutTenantInput
+  id: String
+  isAcitve: Boolean
+  updatedAt: DateTime
+  Users: UserCreateManyWithoutTenantInput
+}
+
+input TenantCreateWithoutUsersInput {
+  Applications: ApplicationCreateManyWithoutTenantInput
+  createdAt: DateTime
+  domainName: String!
+  EmailSettings: EmailSettingsCreateOneWithoutTenantInput
+  ExternalIdentifier: ExternalIdentifierCreateManyWithoutTenantInput
+  FailedLoginLogs: FailedLoginLogsCreateManyWithoutTenantInput
+  Groups: GroupCreateManyWithoutTenantInput
+  id: String
+  isAcitve: Boolean
+  updatedAt: DateTime
+}
+
 input TenantIdNameCompoundUniqueInput {
   name: String!
   tenantId: String!
+}
+
+input TenantWhereInput {
+  AND: [TenantWhereInput!]
+  Applications: ApplicationListRelationFilter
+  createdAt: DateTimeFilter
+  domainName: StringFilter
+  EmailSettings: EmailSettingsWhereInput
+  ExternalIdentifier: ExternalIdentifierListRelationFilter
+  FailedLoginLogs: FailedLoginLogsListRelationFilter
+  Groups: GroupListRelationFilter
+  id: StringFilter
+  isAcitve: BoolFilter
+  NOT: [TenantWhereInput!]
+  OR: [TenantWhereInput!]
+  updatedAt: DateTimeFilter
+  Users: UserListRelationFilter
+}
+
+input TenantWhereUniqueInput {
+  domainName: String
+  id: String
 }
 
 type User {
@@ -330,11 +2630,362 @@ type User {
   email: String!
   ExternalIdentifiers(after: ExternalIdentifierWhereUniqueInput, before: ExternalIdentifierWhereUniqueInput, first: Int, last: Int): [ExternalIdentifier!]!
   Groups(after: GroupWhereUniqueInput, before: GroupWhereUniqueInput, first: Int, last: Int): [Group!]!
+  id: String!
   Profile: Profile
   Registrations(after: RegistrationWhereUniqueInput, before: RegistrationWhereUniqueInput, first: Int, last: Int): [Registration!]!
   Tenant: Tenant!
   updatedAt: DateTime!
   username: String!
+}
+
+input UserCreateInput {
+  AccessTokens: AccessTokenCreateManyWithoutUserInput
+  accountStatusType: AccountStatusType
+  AuthorizationCodes: AuthorizationCodeCreateManyWithoutUserInput
+  createdAt: DateTime
+  Devices: UserDeviceCreateManyWithoutUserInput
+  email: String!
+  ExternalIdentifiers: ExternalIdentifierCreateManyWithoutUserInput
+  FailedLoginLogs: FailedLoginLogsCreateManyWithoutUserInput
+  FailedLogins: FailedLoginCreateManyWithoutUserInput
+  Groups: GroupCreateManyWithoutUsersInput
+  id: String
+  LoginLog: LoginLogCreateManyWithoutUserInput
+  password: String!
+  PasswordResets: PasswordResetCreateManyWithoutUserInput
+  Profile: ProfileCreateOneWithoutUserInput
+  RefreshTokens: RefreshTokenCreateManyWithoutUserInput
+  Registrations: RegistrationCreateManyWithoutUserInput
+  RememberMe: RememberMeCreateManyWithoutUserInput
+  salt: String!
+  Tenant: TenantCreateOneWithoutUsersInput!
+  updatedAt: DateTime
+  username: String
+  usernameStatus: UsernameStatus
+}
+
+input UserCreateManyWithoutGroupsInput {
+  connect: [UserWhereUniqueInput!]
+  connectOrCreate: [UserCreateOrConnectWithoutGroupsInput!]
+  create: [UserCreateWithoutGroupsInput!]
+}
+
+input UserCreateManyWithoutTenantInput {
+  connect: [UserWhereUniqueInput!]
+  connectOrCreate: [UserCreateOrConnectWithoutTenantInput!]
+  create: [UserCreateWithoutTenantInput!]
+}
+
+input UserCreateOneWithoutAccessTokensInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutAccessTokensInput
+  create: UserCreateWithoutAccessTokensInput
+}
+
+input UserCreateOneWithoutAuthorizationCodesInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutAuthorizationCodesInput
+  create: UserCreateWithoutAuthorizationCodesInput
+}
+
+input UserCreateOneWithoutExternalIdentifiersInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutExternalIdentifiersInput
+  create: UserCreateWithoutExternalIdentifiersInput
+}
+
+input UserCreateOneWithoutFailedLoginLogsInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutFailedLoginLogsInput
+  create: UserCreateWithoutFailedLoginLogsInput
+}
+
+input UserCreateOneWithoutLoginLogInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutLoginLogInput
+  create: UserCreateWithoutLoginLogInput
+}
+
+input UserCreateOneWithoutRefreshTokensInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutRefreshTokensInput
+  create: UserCreateWithoutRefreshTokensInput
+}
+
+input UserCreateOneWithoutRegistrationsInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutRegistrationsInput
+  create: UserCreateWithoutRegistrationsInput
+}
+
+input UserCreateOrConnectWithoutAccessTokensInput {
+  create: UserCreateWithoutAccessTokensInput!
+  where: UserWhereUniqueInput!
+}
+
+input UserCreateOrConnectWithoutAuthorizationCodesInput {
+  create: UserCreateWithoutAuthorizationCodesInput!
+  where: UserWhereUniqueInput!
+}
+
+input UserCreateOrConnectWithoutExternalIdentifiersInput {
+  create: UserCreateWithoutExternalIdentifiersInput!
+  where: UserWhereUniqueInput!
+}
+
+input UserCreateOrConnectWithoutFailedLoginLogsInput {
+  create: UserCreateWithoutFailedLoginLogsInput!
+  where: UserWhereUniqueInput!
+}
+
+input UserCreateOrConnectWithoutGroupsInput {
+  create: UserCreateWithoutGroupsInput!
+  where: UserWhereUniqueInput!
+}
+
+input UserCreateOrConnectWithoutLoginLogInput {
+  create: UserCreateWithoutLoginLogInput!
+  where: UserWhereUniqueInput!
+}
+
+input UserCreateOrConnectWithoutRefreshTokensInput {
+  create: UserCreateWithoutRefreshTokensInput!
+  where: UserWhereUniqueInput!
+}
+
+input UserCreateOrConnectWithoutRegistrationsInput {
+  create: UserCreateWithoutRegistrationsInput!
+  where: UserWhereUniqueInput!
+}
+
+input UserCreateOrConnectWithoutTenantInput {
+  create: UserCreateWithoutTenantInput!
+  where: UserWhereUniqueInput!
+}
+
+input UserCreateWithoutAccessTokensInput {
+  accountStatusType: AccountStatusType
+  AuthorizationCodes: AuthorizationCodeCreateManyWithoutUserInput
+  createdAt: DateTime
+  Devices: UserDeviceCreateManyWithoutUserInput
+  email: String!
+  ExternalIdentifiers: ExternalIdentifierCreateManyWithoutUserInput
+  FailedLoginLogs: FailedLoginLogsCreateManyWithoutUserInput
+  FailedLogins: FailedLoginCreateManyWithoutUserInput
+  Groups: GroupCreateManyWithoutUsersInput
+  id: String
+  LoginLog: LoginLogCreateManyWithoutUserInput
+  password: String!
+  PasswordResets: PasswordResetCreateManyWithoutUserInput
+  Profile: ProfileCreateOneWithoutUserInput
+  RefreshTokens: RefreshTokenCreateManyWithoutUserInput
+  Registrations: RegistrationCreateManyWithoutUserInput
+  RememberMe: RememberMeCreateManyWithoutUserInput
+  salt: String!
+  Tenant: TenantCreateOneWithoutUsersInput!
+  updatedAt: DateTime
+  username: String
+  usernameStatus: UsernameStatus
+}
+
+input UserCreateWithoutAuthorizationCodesInput {
+  AccessTokens: AccessTokenCreateManyWithoutUserInput
+  accountStatusType: AccountStatusType
+  createdAt: DateTime
+  Devices: UserDeviceCreateManyWithoutUserInput
+  email: String!
+  ExternalIdentifiers: ExternalIdentifierCreateManyWithoutUserInput
+  FailedLoginLogs: FailedLoginLogsCreateManyWithoutUserInput
+  FailedLogins: FailedLoginCreateManyWithoutUserInput
+  Groups: GroupCreateManyWithoutUsersInput
+  id: String
+  LoginLog: LoginLogCreateManyWithoutUserInput
+  password: String!
+  PasswordResets: PasswordResetCreateManyWithoutUserInput
+  Profile: ProfileCreateOneWithoutUserInput
+  RefreshTokens: RefreshTokenCreateManyWithoutUserInput
+  Registrations: RegistrationCreateManyWithoutUserInput
+  RememberMe: RememberMeCreateManyWithoutUserInput
+  salt: String!
+  Tenant: TenantCreateOneWithoutUsersInput!
+  updatedAt: DateTime
+  username: String
+  usernameStatus: UsernameStatus
+}
+
+input UserCreateWithoutExternalIdentifiersInput {
+  AccessTokens: AccessTokenCreateManyWithoutUserInput
+  accountStatusType: AccountStatusType
+  AuthorizationCodes: AuthorizationCodeCreateManyWithoutUserInput
+  createdAt: DateTime
+  Devices: UserDeviceCreateManyWithoutUserInput
+  email: String!
+  FailedLoginLogs: FailedLoginLogsCreateManyWithoutUserInput
+  FailedLogins: FailedLoginCreateManyWithoutUserInput
+  Groups: GroupCreateManyWithoutUsersInput
+  id: String
+  LoginLog: LoginLogCreateManyWithoutUserInput
+  password: String!
+  PasswordResets: PasswordResetCreateManyWithoutUserInput
+  Profile: ProfileCreateOneWithoutUserInput
+  RefreshTokens: RefreshTokenCreateManyWithoutUserInput
+  Registrations: RegistrationCreateManyWithoutUserInput
+  RememberMe: RememberMeCreateManyWithoutUserInput
+  salt: String!
+  Tenant: TenantCreateOneWithoutUsersInput!
+  updatedAt: DateTime
+  username: String
+  usernameStatus: UsernameStatus
+}
+
+input UserCreateWithoutFailedLoginLogsInput {
+  AccessTokens: AccessTokenCreateManyWithoutUserInput
+  accountStatusType: AccountStatusType
+  AuthorizationCodes: AuthorizationCodeCreateManyWithoutUserInput
+  createdAt: DateTime
+  Devices: UserDeviceCreateManyWithoutUserInput
+  email: String!
+  ExternalIdentifiers: ExternalIdentifierCreateManyWithoutUserInput
+  FailedLogins: FailedLoginCreateManyWithoutUserInput
+  Groups: GroupCreateManyWithoutUsersInput
+  id: String
+  LoginLog: LoginLogCreateManyWithoutUserInput
+  password: String!
+  PasswordResets: PasswordResetCreateManyWithoutUserInput
+  Profile: ProfileCreateOneWithoutUserInput
+  RefreshTokens: RefreshTokenCreateManyWithoutUserInput
+  Registrations: RegistrationCreateManyWithoutUserInput
+  RememberMe: RememberMeCreateManyWithoutUserInput
+  salt: String!
+  Tenant: TenantCreateOneWithoutUsersInput!
+  updatedAt: DateTime
+  username: String
+  usernameStatus: UsernameStatus
+}
+
+input UserCreateWithoutGroupsInput {
+  AccessTokens: AccessTokenCreateManyWithoutUserInput
+  accountStatusType: AccountStatusType
+  AuthorizationCodes: AuthorizationCodeCreateManyWithoutUserInput
+  createdAt: DateTime
+  Devices: UserDeviceCreateManyWithoutUserInput
+  email: String!
+  ExternalIdentifiers: ExternalIdentifierCreateManyWithoutUserInput
+  FailedLoginLogs: FailedLoginLogsCreateManyWithoutUserInput
+  FailedLogins: FailedLoginCreateManyWithoutUserInput
+  id: String
+  LoginLog: LoginLogCreateManyWithoutUserInput
+  password: String!
+  PasswordResets: PasswordResetCreateManyWithoutUserInput
+  Profile: ProfileCreateOneWithoutUserInput
+  RefreshTokens: RefreshTokenCreateManyWithoutUserInput
+  Registrations: RegistrationCreateManyWithoutUserInput
+  RememberMe: RememberMeCreateManyWithoutUserInput
+  salt: String!
+  Tenant: TenantCreateOneWithoutUsersInput!
+  updatedAt: DateTime
+  username: String
+  usernameStatus: UsernameStatus
+}
+
+input UserCreateWithoutLoginLogInput {
+  AccessTokens: AccessTokenCreateManyWithoutUserInput
+  accountStatusType: AccountStatusType
+  AuthorizationCodes: AuthorizationCodeCreateManyWithoutUserInput
+  createdAt: DateTime
+  Devices: UserDeviceCreateManyWithoutUserInput
+  email: String!
+  ExternalIdentifiers: ExternalIdentifierCreateManyWithoutUserInput
+  FailedLoginLogs: FailedLoginLogsCreateManyWithoutUserInput
+  FailedLogins: FailedLoginCreateManyWithoutUserInput
+  Groups: GroupCreateManyWithoutUsersInput
+  id: String
+  password: String!
+  PasswordResets: PasswordResetCreateManyWithoutUserInput
+  Profile: ProfileCreateOneWithoutUserInput
+  RefreshTokens: RefreshTokenCreateManyWithoutUserInput
+  Registrations: RegistrationCreateManyWithoutUserInput
+  RememberMe: RememberMeCreateManyWithoutUserInput
+  salt: String!
+  Tenant: TenantCreateOneWithoutUsersInput!
+  updatedAt: DateTime
+  username: String
+  usernameStatus: UsernameStatus
+}
+
+input UserCreateWithoutRefreshTokensInput {
+  AccessTokens: AccessTokenCreateManyWithoutUserInput
+  accountStatusType: AccountStatusType
+  AuthorizationCodes: AuthorizationCodeCreateManyWithoutUserInput
+  createdAt: DateTime
+  Devices: UserDeviceCreateManyWithoutUserInput
+  email: String!
+  ExternalIdentifiers: ExternalIdentifierCreateManyWithoutUserInput
+  FailedLoginLogs: FailedLoginLogsCreateManyWithoutUserInput
+  FailedLogins: FailedLoginCreateManyWithoutUserInput
+  Groups: GroupCreateManyWithoutUsersInput
+  id: String
+  LoginLog: LoginLogCreateManyWithoutUserInput
+  password: String!
+  PasswordResets: PasswordResetCreateManyWithoutUserInput
+  Profile: ProfileCreateOneWithoutUserInput
+  Registrations: RegistrationCreateManyWithoutUserInput
+  RememberMe: RememberMeCreateManyWithoutUserInput
+  salt: String!
+  Tenant: TenantCreateOneWithoutUsersInput!
+  updatedAt: DateTime
+  username: String
+  usernameStatus: UsernameStatus
+}
+
+input UserCreateWithoutRegistrationsInput {
+  AccessTokens: AccessTokenCreateManyWithoutUserInput
+  accountStatusType: AccountStatusType
+  AuthorizationCodes: AuthorizationCodeCreateManyWithoutUserInput
+  createdAt: DateTime
+  Devices: UserDeviceCreateManyWithoutUserInput
+  email: String!
+  ExternalIdentifiers: ExternalIdentifierCreateManyWithoutUserInput
+  FailedLoginLogs: FailedLoginLogsCreateManyWithoutUserInput
+  FailedLogins: FailedLoginCreateManyWithoutUserInput
+  Groups: GroupCreateManyWithoutUsersInput
+  id: String
+  LoginLog: LoginLogCreateManyWithoutUserInput
+  password: String!
+  PasswordResets: PasswordResetCreateManyWithoutUserInput
+  Profile: ProfileCreateOneWithoutUserInput
+  RefreshTokens: RefreshTokenCreateManyWithoutUserInput
+  RememberMe: RememberMeCreateManyWithoutUserInput
+  salt: String!
+  Tenant: TenantCreateOneWithoutUsersInput!
+  updatedAt: DateTime
+  username: String
+  usernameStatus: UsernameStatus
+}
+
+input UserCreateWithoutTenantInput {
+  AccessTokens: AccessTokenCreateManyWithoutUserInput
+  accountStatusType: AccountStatusType
+  AuthorizationCodes: AuthorizationCodeCreateManyWithoutUserInput
+  createdAt: DateTime
+  Devices: UserDeviceCreateManyWithoutUserInput
+  email: String!
+  ExternalIdentifiers: ExternalIdentifierCreateManyWithoutUserInput
+  FailedLoginLogs: FailedLoginLogsCreateManyWithoutUserInput
+  FailedLogins: FailedLoginCreateManyWithoutUserInput
+  Groups: GroupCreateManyWithoutUsersInput
+  id: String
+  LoginLog: LoginLogCreateManyWithoutUserInput
+  password: String!
+  PasswordResets: PasswordResetCreateManyWithoutUserInput
+  Profile: ProfileCreateOneWithoutUserInput
+  RefreshTokens: RefreshTokenCreateManyWithoutUserInput
+  Registrations: RegistrationCreateManyWithoutUserInput
+  RememberMe: RememberMeCreateManyWithoutUserInput
+  salt: String!
+  updatedAt: DateTime
+  username: String
+  usernameStatus: UsernameStatus
 }
 
 type UserCustomAttribute {
@@ -343,12 +2994,90 @@ type UserCustomAttribute {
   value: String!
 }
 
+input UserCustomAttributeCreateManyWithoutProfileInput {
+  connect: [UserCustomAttributeWhereUniqueInput!]
+  connectOrCreate: [UserCustomAttributeCreateOrConnectWithoutProfileInput!]
+  create: [UserCustomAttributeCreateWithoutProfileInput!]
+}
+
+input UserCustomAttributeCreateOrConnectWithoutProfileInput {
+  create: UserCustomAttributeCreateWithoutProfileInput!
+  where: UserCustomAttributeWhereUniqueInput!
+}
+
+input UserCustomAttributeCreateWithoutProfileInput {
+  name: String!
+  value: String!
+}
+
+input UserCustomAttributeListRelationFilter {
+  every: UserCustomAttributeWhereInput
+  none: UserCustomAttributeWhereInput
+  some: UserCustomAttributeWhereInput
+}
+
+input UserCustomAttributeWhereInput {
+  AND: [UserCustomAttributeWhereInput!]
+  name: StringFilter
+  NOT: [UserCustomAttributeWhereInput!]
+  OR: [UserCustomAttributeWhereInput!]
+  Profile: ProfileWhereInput
+  profileId: StringFilter
+  value: StringFilter
+}
+
 input UserCustomAttributeWhereUniqueInput {
   name_profileId: NameProfileIdCompoundUniqueInput
 }
 
 type UserDevice {
   User: User!
+}
+
+input UserDeviceCreateManyWithoutUserInput {
+  connect: [UserDeviceWhereUniqueInput!]
+  connectOrCreate: [UserDeviceCreateOrConnectWithoutUserInput!]
+  create: [UserDeviceCreateWithoutUserInput!]
+}
+
+input UserDeviceCreateOrConnectWithoutUserInput {
+  create: UserDeviceCreateWithoutUserInput!
+  where: UserDeviceWhereUniqueInput!
+}
+
+input UserDeviceCreateWithoutUserInput {
+  createdAt: DateTime
+  deviceKey: String!
+  id: String
+  isRemembered: Boolean
+  lastIP: String!
+  lastSeen: DateTime!
+  name: String
+  SDK: String
+  updatedAt: DateTime
+}
+
+input UserDeviceListRelationFilter {
+  every: UserDeviceWhereInput
+  none: UserDeviceWhereInput
+  some: UserDeviceWhereInput
+}
+
+input UserDeviceWhereInput {
+  AND: [UserDeviceWhereInput!]
+  createdAt: DateTimeFilter
+  deviceKey: StringFilter
+  id: StringFilter
+  isRemembered: BoolFilter
+  lastIP: StringFilter
+  lastSeen: DateTimeFilter
+  name: StringNullableFilter
+  NOT: [UserDeviceWhereInput!]
+  OR: [UserDeviceWhereInput!]
+  SDK: StringNullableFilter
+  updatedAt: DateTimeFilter
+  User: UserWhereInput
+  userId: StringFilter
 }
 
 input UserDeviceWhereUniqueInput {
@@ -360,9 +3089,64 @@ input UserIdApplicationIdCompoundUniqueInput {
   userId: String!
 }
 
+input UserListRelationFilter {
+  every: UserWhereInput
+  none: UserWhereInput
+  some: UserWhereInput
+}
+
 input UsernameApplicationIdCompoundUniqueInput {
   applicationId: String!
   username: String!
+}
+
+enum UsernameStatus {
+  ACTIVE
+  PENDING
+  REJECTED
+}
+
+input UserOrderByInput {
+  accountStatusType: SortOrder
+  createdAt: SortOrder
+  email: SortOrder
+  id: SortOrder
+  password: SortOrder
+  salt: SortOrder
+  tenantId: SortOrder
+  updatedAt: SortOrder
+  username: SortOrder
+  usernameStatus: SortOrder
+}
+
+input UserWhereInput {
+  AccessTokens: AccessTokenListRelationFilter
+  accountStatusType: EnumAccountStatusTypeFilter
+  AND: [UserWhereInput!]
+  AuthorizationCodes: AuthorizationCodeListRelationFilter
+  createdAt: DateTimeFilter
+  Devices: UserDeviceListRelationFilter
+  email: StringFilter
+  ExternalIdentifiers: ExternalIdentifierListRelationFilter
+  FailedLoginLogs: FailedLoginLogsListRelationFilter
+  FailedLogins: FailedLoginListRelationFilter
+  Groups: GroupListRelationFilter
+  id: StringFilter
+  LoginLog: LoginLogListRelationFilter
+  NOT: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  password: StringFilter
+  PasswordResets: PasswordResetListRelationFilter
+  Profile: ProfileWhereInput
+  RefreshTokens: RefreshTokenListRelationFilter
+  Registrations: RegistrationListRelationFilter
+  RememberMe: RememberMeListRelationFilter
+  salt: StringFilter
+  Tenant: TenantWhereInput
+  tenantId: StringFilter
+  updatedAt: DateTimeFilter
+  username: StringFilter
+  usernameStatus: EnumUsernameStatusFilter
 }
 
 input UserWhereUniqueInput {

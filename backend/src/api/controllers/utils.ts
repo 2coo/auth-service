@@ -7,6 +7,7 @@ import {
   Role,
   Scope,
   User,
+  Prisma,
 } from '@prisma/client'
 import fs from 'fs'
 import { flatMap, groupBy, sample, uniq, uniqBy } from 'lodash'
@@ -139,7 +140,11 @@ export const issueAccessToken = async (
 ) => {
   const expirationDate = calculateExpirationDate(accessTokenLifetime)
   const jti = uuidv4()
-  const application = await getClientById(clientId)
+  const application: any = await getClientById(clientId, {
+    EnabledScopes: true,
+    RedirectUris: true,
+    SelfRegistrationFields: true,
+  })
 
   if (userId) {
     const user = await getUserById(userId)
@@ -194,7 +199,7 @@ export const issueAccessToken = async (
       iat: moment().valueOf(),
       exp: expirationDate.valueOf() / 1000,
       jti: jti,
-      scopes: application!.EnabledScopes.map((scope) => scope.name),
+      scopes: application!.EnabledScopes!.map((scope: Scope) => scope.name),
       roles: [],
       groups: [],
       preferred_username: application!.name,
@@ -307,16 +312,19 @@ export const isExpired = (expirationDate: string | Date): boolean => {
   return moment().isAfter(moment(expirationDate))
 }
 
-export const getClientById = (clientId: string) => {
+export const getClientById = (
+  clientId: string,
+  include?: Prisma.ApplicationInclude,
+) => {
   return prisma.application.findUnique({
     where: {
       id: clientId,
     },
-    include: {
-      EnabledScopes: true,
-      RedirectUris: true,
-      SelfRegistrationFields: true,
-    },
+    ...(include !== undefined
+      ? {
+          include,
+        }
+      : {}),
   })
 }
 

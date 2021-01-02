@@ -1,14 +1,14 @@
-import { Payload } from './../../core/interfaces/Payload'
 import { Application, Scope } from '@prisma/client'
 import Axios from 'axios'
 import { NextFunction, Response } from 'express'
 import jwt, { VerifyOptions } from 'jsonwebtoken'
 import jwksClient, { JwksClient } from 'jwks-rsa'
 import passport from 'passport'
+import { Strategy as CustomStrategy } from 'passport-custom'
 import path from 'path'
 import { prisma } from '../../context'
 import { getDefaultApplicationByTenant } from '../controllers/utils'
-import { Strategy as CustomStrategy } from 'passport-custom'
+import { Payload } from './../../core/interfaces/Payload'
 
 export class JWTScopeStrategy extends CustomStrategy {
   authenticate(req: any, options: any) {

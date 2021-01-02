@@ -116,6 +116,8 @@ module.exports = function (app: Express.Application) {
     res: Response,
     next: NextFunction,
   ) {
+    console.log(err)
+
     // render the error page
     if (err.status !== undefined) {
       res.status(err.status)
@@ -127,18 +129,31 @@ module.exports = function (app: Express.Application) {
     }
     next(err)
   })
-
-  router.route('/oauth2/authorize/decision').post(routes.oauth2.decision).get(routes.oauth2.decision)
+  router.get('/locales/:locale/translation.json', (req, res, next) => {
+    res.json({
+      hi: 'tue',
+    })
+  })
+  router
+    .route('/oauth2/authorize/decision')
+    .post(routes.oauth2.decision)
+    .get(routes.oauth2.decision)
   // Create endpoint handlers for oauth2 token
   router.route('/oauth2/token').post(routes.oauth2.token)
   router.route('/.well-known/jwks.json').get(routes.token.jwks)
   router.post('/oauth2/token/revoke', routes.token.revoke)
+  router.get('/oauth2/providers', routes.oauth2.providers)
+  router.get('/oauth2/idpresponse', routes.oauth2.idpresponse)
 
   // Create enpoints for AuthSystem (SPA)
   router.get('/', renderSPA)
   router
     .route('/login')
-    .get(verifySSO(), (req, res, next) => res.redirect('/app'))
+    .get(routes.oauth2.authorization)
+    .post((req: any, res: Response, next: NextFunction) => {
+      req.query.client_id = req.session.defaultApp.id
+      next()
+    }, routes.site.login)
   router.get('/logout', [routes.site.logout, renderSPA])
   router.get(/^\/app(\/.*)?/, [verifySSO(), renderSPA])
   router.get('*', renderSPA)

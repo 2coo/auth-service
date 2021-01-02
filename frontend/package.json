@@ -5,6 +5,7 @@
   "dependencies": {
     "@casl/ability": "^5.1.0",
     "@casl/react": "2.1.0",
+    "@craco/craco": "^6.0.0",
     "@material-ui/core": "^4.11.1",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.57",
@@ -13,12 +14,22 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "@types/lodash": "^4.14.165",
+    "antd": "^4.9.4",
     "axios": "^0.21.0",
     "axios-hooks": "^2.2.0",
+    "clsx": "^1.1.1",
+    "craco-less": "^1.17.1",
+    "i18next": "^19.8.4",
+    "i18next-browser-languagedetector": "^6.0.1",
+    "i18next-http-backend": "^1.0.21",
     "lodash": "^4.17.20",
     "query-string": "^5.1.1",
     "react": "^17.0.1",
+    "react-device-detect": "^1.15.0",
     "react-dom": "^17.0.1",
+    "react-ellipsis-pjs": "^2.1.2",
+    "react-helmet-async": "^1.0.7",
+    "react-i18next": "^11.8.5",
     "react-scripts": "^4.0.1",
     "socket.io-client": "^3.0.3",
     "typescript": "^4.1.2",
@@ -26,10 +37,10 @@
     "web-vitals": "^0.2.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "craco eject"
   },
   "eslintConfig": {
     "extends": [

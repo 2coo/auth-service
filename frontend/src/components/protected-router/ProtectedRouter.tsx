@@ -1,10 +1,12 @@
+import { unpackRules } from '@casl/ability/extra';
+import { makeStyles } from "@material-ui/core";
 import { Fragment, useEffect } from "react";
+import { useAbility } from "../../store/ability/context";
 import { AuthConsumer, useAuthContext } from "../../store/auth/context";
 import { useAxios } from "../../utils/api";
-import { Backdrop, CircularProgress, makeStyles } from "@material-ui/core"
-import FullRedirect from "../full-redirect/FullRedirect"
-import { unpackRules } from '@casl/ability/extra'
-import { useAbility } from "../../store/ability/context";
+import FullRedirect from "../full-redirect/FullRedirect";
+import Loader from '../loader/Loader';
+
 const useStyles = makeStyles((theme) => ({
     Backdrop: {
         zIndex: 1202
@@ -13,7 +15,6 @@ const useStyles = makeStyles((theme) => ({
 
 const ProtectedRoute = (props: any) => {
     let { as: Comp, ...otherProps } = props;
-    const classes = useStyles()
     const { state, dispatch } = useAuthContext()
     const ability = useAbility()
     const [{ data: userProfile, loading, error }, fetch] = useAxios({
@@ -57,14 +58,11 @@ const ProtectedRoute = (props: any) => {
 
     let decisionComp = <Fragment />
 
-    if (error || abilityError) decisionComp = <FullRedirect url={`/oauth2/authorize`} />
-
+    // if (error || abilityError) decisionComp = <FullRedirect url={`/oauth2/authorize`} />
     return <AuthConsumer>
         {auth =>
             <Fragment>
-                <Backdrop className={classes.Backdrop} open={loading || abilityLoading}>
-                    <CircularProgress color="inherit" />
-                </Backdrop>
+                <Loader spinning={loading || abilityLoading} fullScreen={true} />
                 {
                     userProfile?.success || auth.state.authenticated ?
                         (<Comp {...otherProps} />)

@@ -31,5 +31,6 @@ export const Mutation = mutationType({
         }
       },
     })
+    t.crud.createOneUser()
   },
 })

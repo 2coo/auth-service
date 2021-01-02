@@ -8,7 +8,7 @@ import oauth2orize from 'oauth2orize'
 import passport from 'passport'
 import queryString from 'querystring'
 import { store } from '../../redisclient'
-import { renderSPA } from '../client'
+import { defaultLinkBuilder, renderSPA } from '../client'
 import {
   deleteAuthCode,
   generateAuthCode,
@@ -35,7 +35,11 @@ const server = oauth2orize.createServer({
 server.serializeClient((client, done) => done(null, client.id))
 
 server.deserializeClient((id, done) => {
-  getClientById(id)
+  getClientById(id, {
+    EnabledScopes: true,
+    RedirectUris: true,
+    SelfRegistrationFields: true,
+  })
     .then((client) => {
       return done(null, client)
     })
@@ -188,11 +192,15 @@ server.exchange(
 
 export const trustedAppHandler = server.authorization(
   (clientId, redirectUri, done) => {
-    getClientById(clientId)
-      .then((client) => {
+    getClientById(clientId, {
+      EnabledScopes: true,
+      RedirectUris: true,
+      SelfRegistrationFields: true,
+    })
+      .then((client: any) => {
         if (!client) return done(null, false)
         if (
-          _.some(client.RedirectUris, {
+          _.some(client!.RedirectUris, {
             url: redirectUri,
           })
         ) {
@@ -233,7 +241,15 @@ export const authorization = async (
   if (!req.isAuthenticated()) {
     return renderSPA(req, res, next)
   }
-  const application = await getClientById(req.query.client_id)
+  let application = req.session.defaultApp
+  let queries = defaultLinkBuilder(application, '').substr(1)
+  if (req.query.client_id) {
+    application = await getClientById(req.query.client_id)
+    queries = queryString.stringify(req.query)
+  }
+  if (!req.query.response_type) {
+    req.query = queryString.parse(queries)
+  }
   if (!application)
     return res.status(403).json({
       success: false,
@@ -248,15 +264,19 @@ export const authorization = async (
   )
   if (!registration)
     return next(new Error("You don't have registration for this app!"))
-  const queries = queryString.stringify(req.query)
+
   return res.redirect(`/oauth2/authorize/dialog?${queries}`)
 }
 
 export const dialog = [
   server.authorization(
     (clientId, redirectUri, done) => {
-      getClientById(clientId)
-        .then((client) => {
+      getClientById(clientId, {
+        EnabledScopes: true,
+        RedirectUris: true,
+        SelfRegistrationFields: true,
+      })
+        .then((client: any) => {
           if (!client) return done(null, false)
           if (
             _.some(client.RedirectUris, {
@@ -328,7 +348,7 @@ export const dialog = [
 export const decision = [
   ensureLoggedIn(),
   (req: any, res: Response, next: NextFunction) => {
-    console.log(req.body);
+    console.log(req.body)
     next()
   },
   server.decision((req: any, done) => {
@@ -356,3 +376,30 @@ export const token = [
   }),
   server.errorHandler(),
 ]
+
+export const idpresponse = (req: any, res: Response, next: NextFunction) => {
+  //todo
+}
+
+export const providers = async (
+  req: any,
+  res: Response,
+  next: NextFunction,
+) => {
+  const queryParams = req.query
+  if (!queryParams.client_id) {
+    queryParams.client_id = req.session.defaultApp.id
+  }
+  const application = getClientById(queryParams.client_id)
+  const providers = (
+    await application.IdentityProviders({
+      include: {
+        IdentityProvider: true,
+      },
+    })
+  ).map((provider) => provider.providerType)
+  return res.json({
+    success: true,
+    data: providers,
+  })
+}

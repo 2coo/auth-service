@@ -1,114 +1,125 @@
-import Avatar from '@material-ui/core/Avatar';
-import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
-import Checkbox from '@material-ui/core/Checkbox';
-import Container from '@material-ui/core/Container';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
-import Alert from '@material-ui/lab/Alert';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import { makeStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import { Link } from "@reach/router";
+import { Alert, Button, Checkbox, Col, Divider, Form, Input, Layout, Row, Space, Typography } from "antd";
+import React, { FormEvent, Fragment, useRef, useState } from 'react';
+import { Helmet } from "react-helmet-async";
 import { StringParam, useQueryParam } from "use-query-params";
-import Copyright from "../../components/copyright/Copyright"
-import { useState } from 'react';
+import loginStyles from "../../assets/jss/view/loginStyles";
+import { useAxios } from "../../utils/api";
+import PROVIDERS from "../../components/providers"
 
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-}));
+const { Content } = Layout;
+const { Title, Text } = Typography;
+const FormItem = Form.Item
+
 const LoginPage = (props: any) => {
-  const classes = useStyles();
+  const classes = loginStyles();
   const [clientId,] = useQueryParam('client_id', StringParam);
   const [error,] = useQueryParam('error', StringParam)
   const [submitting, setSubmitting] = useState(false)
+  const [fields, setFields] = useState<any[]>([]);
+  const [form] = Form.useForm();
+  const formHiddenEl = useRef<HTMLFormElement | undefined | null>()
+  const [{ data: providers,
+    loading: loadingProviders,
+    error: errorProviders
+  }, getProviders] = useAxios({
+    url: '/oauth2/providers',
+    method: "GET", params: { client_id: clientId }
+  })
+  const handleOk = (e: FormEvent<HTMLFormElement>) => {
+    formHiddenEl.current?.submit()
+  }
+  console.log(providers?.data);
+
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign in
-        </Typography>
-        <form onSubmit={() => setSubmitting(true)} className={classes.form} noValidate method="post">
-          {error && <Alert severity="error">{error}</Alert>}
-          <TextField type="hidden" name="client_id" value={clientId} />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="username"
-            autoComplete="email"
-            autoFocus
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-          />
-          <FormControlLabel
-            control={<Checkbox name="remember_me" value="remember" color="primary" />}
-            label="Remember me"
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            disabled={submitting}
-            className={classes.submit}
-          >
-            {submitting && <CircularProgress size={28} />}
-            {!submitting && "Sign In"}
-          </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link href="/password/new" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link href="/oauth2/register" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link>
-            </Grid>
-          </Grid>
-        </form>
-      </div>
-      <Box mt={8}>
-        <Copyright />
-      </Box>
-    </Container>
+    <Fragment>
+      <Helmet>
+        <title>Login</title>
+        <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
+      </Helmet>
+      <Content className={classes.wrapper}>
+        <Row className={classes.container}>
+          <Col xs={0} lg={14} xl={14} xxl={16} className={classes.leftPanel}>
+          </Col>
+          <Col xs={24} lg={10} xl={10} xxl={8} className={classes.rightPanel}>
+            <Row align="middle" style={{
+              height: "100%",
+              padding: "30px 64px"
+            }}>
+              <Col span={24}>
+                {error && <Row gutter={[0, 32]}>
+                  <Col span={24}>
+                    <Alert message={atob(error)} type="error" showIcon closable />
+                  </Col>
+                </Row>}
+                <Row justify="center" gutter={[0, 32]}>
+                  <Title level={4}>Login to your account</Title>
+                </Row>
+                <Form initialValues={{ remember_me: true }} onFinish={handleOk} form={form} onFieldsChange={(changedFields, allFields) => {
+                  setFields(allFields)
+                }}>
+                  <FormItem name="username"
+                    rules={[{ required: true, message: 'Please input email or username!' }]} hasFeedback>
+                    <Input
+                      placeholder={`Username`}
+                    />
+                  </FormItem>
+                  <FormItem name="password"
+                    rules={[{ required: true, message: 'Please input email or username!' }]} hasFeedback>
+                    <Input
+                      type="password"
+                      placeholder={`Password`}
+                    />
+                  </FormItem>
+                  <Form.Item>
+                    <Form.Item name="remember_me" valuePropName="checked" noStyle>
+                      <Checkbox>Remember me</Checkbox>
+                    </Form.Item>
+                    <Link className={classes.loginFormForgot} to="/password/new">
+                      Forgot your password?
+                    </Link>
+                  </Form.Item>
+                  <Space size={15} direction="vertical" style={{
+                    width: "100%"
+                  }}>
+                    <Row>
+                      <Button
+                        className={classes.button}
+                        type="primary"
+                        htmlType="submit"
+                        loading={submitting}
+                      >
+                        Log in
+                      </Button>
+                    </Row>
+                    <Row justify="center">
+                      <Text type="secondary">Don't have an account yet? <Link to="/signup">Register now</Link></Text>
+                    </Row>
+                  </Space>
+                  <Divider plain>Or log in with</Divider>
+                  <Row justify="center">
+                    {providers?.data.map((provider: 'GOOGLE') => {
+                      const ProviderButton = PROVIDERS?.[provider];
+                      return <ProviderButton />
+                    })}
+                  </Row>
+                </Form>
+                <form ref={(el) => formHiddenEl.current = el} method="post" onSubmit={() => setSubmitting(true)}>
+                  {
+                    fields.map((field) => <input key={field.name[0]} name={field.name[0]} value={field.value} type="hidden" />)
+                  }
+                </form>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+        {/* <Row justify="center">
+          <Col span={24}>
+            <footer className={classes.footer}>Tomujin Digital ©2020</footer>
+          </Col>
+        </Row> */}
+      </Content >
+    </Fragment >
   )
 }
 

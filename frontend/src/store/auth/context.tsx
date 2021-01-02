@@ -3,11 +3,11 @@ import { createContext, useReducer, useContext, Dispatch, useEffect } from "reac
 import { Action, authReducer } from "./reducers";
 
 const initialState: Auth = {
-    authenticated: false,
+    authenticated: true,
     user: null
 }
 
-const localState = JSON.parse(String(localStorage.getItem("auth")))
+const localState = JSON.parse(String(localStorage.getItem("authode-auth")))
 
 const AuthContext = createContext<{
     state: Auth,

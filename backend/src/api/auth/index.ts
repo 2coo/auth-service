@@ -11,6 +11,7 @@ import { Strategy as RememberMeStrategy } from 'passport-remember-me-extended'
 import { getKIDfromAccessToken, JWTScopeStrategy } from '../client'
 import { AppUser } from '../client/user'
 import { Payload } from './../../core/interfaces/Payload'
+import { Strategy as CustomStrategy } from 'passport-custom'
 import {
   consumeRememberMeToken,
   getClientById,
@@ -19,6 +20,7 @@ import {
   getUserRegistration,
   saveRememberMeToken,
 } from './../controllers/utils'
+import { encodeBase64 } from '../../core/helpers/base64ende'
 
 const ISSUER = process.env.ISSUER
 
@@ -26,25 +28,32 @@ passport.use(
   new LocalStrategy(
     { usernameField: 'username', passReqToCallback: true },
     async (req, username, password, done) => {
-      const clientId = req.body.client_id
+      const clientId = String(req.query.client_id)
       getUserByUsernameOrEmail(username)
         .then(async (user) => {
           if (
             !user ||
             (user && user.accountStatusType === AccountStatusType.DISABLED)
           ) {
-            return done(new Error('The user does not exists!'))
+            return done(new Error(encodeBase64('The user does not exists!')))
           }
           const registration = await getUserRegistration(user.id, clientId)
           if (!registration)
-            return done(new Error("You don't have registration for this app!"))
+            return done(
+              new Error(
+                encodeBase64("You don't have registration for this app!"),
+              ),
+            )
           const passwordValid = await compare(password, user.password)
           if (!passwordValid) {
-            return done(new Error('Invalid username or password!'))
+            return done(new Error(encodeBase64('Invalid username or password!')))
           }
           return done(null, user)
         })
-        .catch((error) => done(new Error(error)))
+        .catch((error) => {
+          console.log(error)
+          done(new Error(encodeBase64(error)))
+        })
     },
   ),
 )
@@ -138,7 +147,11 @@ passport.deserializeUser((id: string, done) => {
 })
 
 function verifyClient(clientId: string, clientSecret: string, done: any) {
-  getClientById(clientId)
+  getClientById(clientId, {
+    EnabledScopes: true,
+    RedirectUris: true,
+    SelfRegistrationFields: true,
+  })
     .then((client) => {
       if (!client)
         return done(null, false, {
@@ -156,3 +169,5 @@ function verifyClient(clientId: string, clientSecret: string, done: any) {
 passport.use(new BasicStrategy(verifyClient))
 
 passport.use('clientPassword', new ClientPasswordStrategy(verifyClient))
+
+passport.use('dynamicOAuth2Client', new CustomStrategy((req, done) => {}))

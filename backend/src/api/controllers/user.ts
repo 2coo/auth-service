@@ -53,13 +53,17 @@ export const userinfo = [
 export const fields = async (req: any, res: Response, next: NextFunction) => {
   let application:
     | (Application & {
-        EnabledScopes: Scope[]
-        SelfRegistrationFields: SelfRegistrationFields[]
-        RedirectUris: RedirectURI[]
+        EnabledScopes?: Scope[] | undefined
+        SelfRegistrationFields?: SelfRegistrationFields[] | undefined
+        RedirectUris?: RedirectURI[] | undefined
       })
     | null = req.session.defaultApp
   if (req.query.client_id) {
-    application = await getClientById(req.query.client_id)
+    application = await getClientById(req.query.client_id, {
+      EnabledScopes: true,
+      RedirectUris: true,
+      SelfRegistrationFields: true,
+    })
     if (!application)
       return res.status(403).json({
         success: false,
@@ -70,13 +74,13 @@ export const fields = async (req: any, res: Response, next: NextFunction) => {
     return res.json({
       success: true,
       data: {
-        fields: application.SelfRegistrationFields.filter(
-          (field) => field.isEnabled,
-        ).map((field) => ({
-          name: field.fieldName,
-          type: field.fieldType,
-          is_required: field.isRequired,
-        })),
+        fields: application!
+          .SelfRegistrationFields!.filter((field) => field.isEnabled)
+          .map((field) => ({
+            name: field.fieldName,
+            type: field.fieldType,
+            is_required: field.isRequired,
+          })),
       },
     })
   } else {
@@ -97,10 +101,12 @@ export const abilities = async (
   next: NextFunction,
 ) => {
   const rules = await getRulesForUser(req)
-  return res.json({
-    success: true,
-    data: {
-      rules: packRules(rules),
-    },
-  })
+  setTimeout(() => {
+    return res.json({
+      success: true,
+      data: {
+        rules: packRules(rules),
+      },
+    })
+  }, 1400)
 }

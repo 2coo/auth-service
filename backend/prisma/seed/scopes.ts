@@ -1,6 +1,6 @@
 import { PrismaClient, Scope } from '@prisma/client'
 
-export const seedDefaultScopes = (prisma: PrismaClient) => {
+export const seedDefaultScopes = async (prisma: PrismaClient) => {
   const scope1 = prisma.scope.create({
     data: {
       name: 'openid',

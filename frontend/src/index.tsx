@@ -1,31 +1,23 @@
-import { StrictMode } from 'react';
+import { Router } from '@reach/router';
+import "./App.less"
+import { StrictMode, Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import theme from "./theme"
-import { ThemeProvider } from '@material-ui/core/styles'
-import { Router, globalHistory } from '@reach/router';
-import { QueryParamProvider } from 'use-query-params';
+import routes from "./routes";
 import composeRoutes from './utils/route-composer';
-import routes from "./routes"
-import { AuthProvider } from './store/auth/context';
-import { ThemeProvider as UserControllableThemeProvider } from './store/theme/context';
-import { AbilityProvider } from './store/ability/context';
+import ProviderWrapper from "./components/provider-wrapper/ProviderWrapper"
+import "./i18n";
+
 ReactDOM.render(
   <StrictMode>
-    <AuthProvider>
-      <AbilityProvider>
-        <UserControllableThemeProvider>
-          <ThemeProvider theme={theme}>
-            <QueryParamProvider reachHistory={globalHistory}>
-              <Router>
-                {composeRoutes(routes)}
-              </Router>
-            </QueryParamProvider>
-          </ThemeProvider>
-        </UserControllableThemeProvider>
-      </AbilityProvider>
-    </AuthProvider>
+    <Suspense fallback={<div>Loading ……</div>}>
+      <ProviderWrapper>
+        <Router>
+          {composeRoutes(routes)}
+        </Router>
+      </ProviderWrapper>
+    </Suspense>
   </StrictMode>,
   document.getElementById('root')
 );
