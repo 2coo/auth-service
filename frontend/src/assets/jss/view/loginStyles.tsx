@@ -11,6 +11,13 @@ const loginStyles = makeStyles((theme) => ({
   container: {
     flexGrow: 1
   },
+  padding: {
+    height: "100%",
+    padding: theme.spacing(4, 8),
+    [theme.breakpoints.down('md')]: {
+      padding: theme.spacing(4, 3),
+    }
+  },
   leftPanel: {
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.getContrastText(theme.palette.primary.main),

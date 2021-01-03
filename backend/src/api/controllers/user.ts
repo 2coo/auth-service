@@ -101,12 +101,10 @@ export const abilities = async (
   next: NextFunction,
 ) => {
   const rules = await getRulesForUser(req)
-  setTimeout(() => {
-    return res.json({
-      success: true,
-      data: {
-        rules: packRules(rules),
-      },
-    })
-  }, 1400)
+  return res.json({
+    success: true,
+    data: {
+      rules: packRules(rules),
+    },
+  })
 }

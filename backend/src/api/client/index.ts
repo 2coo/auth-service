@@ -7,8 +7,12 @@ import passport from 'passport'
 import { Strategy as CustomStrategy } from 'passport-custom'
 import path from 'path'
 import { prisma } from '../../context'
-import { getDefaultApplicationByTenant } from '../controllers/utils'
+import {
+  getClientById,
+  getDefaultApplicationByTenant,
+} from '../controllers/utils'
 import { Payload } from './../../core/interfaces/Payload'
+import { getGoogleAuthorizationURL } from './identity-providers'
 
 export class JWTScopeStrategy extends CustomStrategy {
   authenticate(req: any, options: any) {
@@ -104,6 +108,38 @@ export const verifySSO = (
   }
 }
 
+export const verifyIdPandRedirect = async (
+  req: any,
+  res: Response,
+  next: NextFunction,
+) => {
+  const identity_provider: string = req.query.identity_provider
+  if (!identity_provider) {
+    return next()
+  }
+  let application = getClientById(req.session.defaultApp.id, {
+    IdentityProviders: true,
+  })
+  if (req.query.client_id) {
+    application = getClientById(req.query.client_id, {
+      IdentityProviders: true,
+    })
+  }
+  const identityProviders = await application.IdentityProviders()
+  let authorizationURL = null
+  switch (identity_provider.toUpperCase()) {
+    case 'GOOGLE':
+      {
+        authorizationURL = getGoogleAuthorizationURL()
+      }
+      break
+  }
+  if (!authorizationURL) {
+    return next(new Error('Identity Provider Not Found!'))
+  }
+  return res.redirect(authorizationURL)
+}
+
 export const clearCookieTokens = (res: Response) => {
   res.clearCookie('access_token')
   res.clearCookie('refresh_token')
@@ -164,7 +200,7 @@ export const verifyJWT = async (
   return payload
 }
 
-export const grantTypeCodeHandler = (returnTo: string = '/app') => async (
+export const grantTypeCodeHandler = (returnTo: string = '/app/') => async (
   req: any,
   res: Response,
   next: NextFunction,
@@ -214,7 +250,7 @@ export const grantTypeCodeHandler = (returnTo: string = '/app') => async (
   return next()
 }
 
-export const grantTypeRefreshHandler = (returnTo: string = '/app') => async (
+export const grantTypeRefreshHandler = (returnTo: string = '/app/') => async (
   req: any,
   res: Response,
   next: NextFunction,

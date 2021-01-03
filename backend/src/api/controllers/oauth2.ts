@@ -242,14 +242,15 @@ export const authorization = async (
     return renderSPA(req, res, next)
   }
   let application = req.session.defaultApp
-  let queries = defaultLinkBuilder(application, '').substr(1)
   if (req.query.client_id) {
     application = await getClientById(req.query.client_id)
-    queries = queryString.stringify(req.query)
+  } else {
+    req.query = {
+      ...queryString.parse(defaultLinkBuilder(application, '').substr(1)),
+      ...req.query,
+    }
   }
-  if (!req.query.response_type) {
-    req.query = queryString.parse(queries)
-  }
+  const queries = queryString.stringify(req.query)
   if (!application)
     return res.status(403).json({
       success: false,

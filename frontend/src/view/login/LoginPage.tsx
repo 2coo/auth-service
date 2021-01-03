@@ -6,12 +6,13 @@ import { StringParam, useQueryParam } from "use-query-params";
 import loginStyles from "../../assets/jss/view/loginStyles";
 import { useAxios } from "../../utils/api";
 import PROVIDERS from "../../components/providers"
+import queryString from "querystring"
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
 const FormItem = Form.Item
 
-const LoginPage = (props: any) => {
+const LoginPage = ({ location }: any) => {
   const classes = loginStyles();
   const [clientId,] = useQueryParam('client_id', StringParam);
   const [error,] = useQueryParam('error', StringParam)
@@ -29,8 +30,7 @@ const LoginPage = (props: any) => {
   const handleOk = (e: FormEvent<HTMLFormElement>) => {
     formHiddenEl.current?.submit()
   }
-  console.log(providers?.data);
-
+  const queryParams = queryString.parse(location.search.substr(1))
   return (
     <Fragment>
       <Helmet>
@@ -39,13 +39,10 @@ const LoginPage = (props: any) => {
       </Helmet>
       <Content className={classes.wrapper}>
         <Row className={classes.container}>
-          <Col xs={0} lg={14} xl={14} xxl={16} className={classes.leftPanel}>
+          <Col xs={0}  md={0} lg={12} xl={14} xxl={16} className={classes.leftPanel}>
           </Col>
-          <Col xs={24} lg={10} xl={10} xxl={8} className={classes.rightPanel}>
-            <Row align="middle" style={{
-              height: "100%",
-              padding: "30px 64px"
-            }}>
+          <Col xs={24} md={24} lg={12} xl={10} xxl={8} className={classes.rightPanel}>
+            <Row align="middle" justify="center" className={classes.padding}>
               <Col span={24}>
                 {error && <Row gutter={[0, 32]}>
                   <Col span={24}>
@@ -76,7 +73,7 @@ const LoginPage = (props: any) => {
                       <Checkbox>Remember me</Checkbox>
                     </Form.Item>
                     <Link className={classes.loginFormForgot} to="/password/new">
-                      Forgot your password?
+                      Forgot password?
                     </Link>
                   </Form.Item>
                   <Space size={15} direction="vertical" style={{
@@ -96,11 +93,12 @@ const LoginPage = (props: any) => {
                       <Text type="secondary">Don't have an account yet? <Link to="/signup">Register now</Link></Text>
                     </Row>
                   </Space>
-                  <Divider plain>Or log in with</Divider>
+                  <Divider plain>OR</Divider>
                   <Row justify="center">
                     {providers?.data.map((provider: 'GOOGLE') => {
                       const ProviderButton = PROVIDERS?.[provider];
-                      return <ProviderButton />
+                      queryParams["identity_provider"] = provider
+                      return <a key={provider} href={`/oauth2/authorize?${queryString.stringify(queryParams)}`}><ProviderButton /></a>
                     })}
                   </Row>
                 </Form>
