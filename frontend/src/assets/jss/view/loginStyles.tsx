@@ -1,5 +1,4 @@
 import { makeStyles } from "@material-ui/core";
-import Background from "../../img/LoginAsset1.png"
 
 const loginStyles = makeStyles((theme) => ({
   wrapper: {
@@ -11,20 +10,36 @@ const loginStyles = makeStyles((theme) => ({
   container: {
     flexGrow: 1
   },
-  padding: {
-    height: "100%",
-    padding: theme.spacing(4, 8),
+  form: {
+    // padding: theme.spacing(4, 8),
     [theme.breakpoints.down('md')]: {
       padding: theme.spacing(4, 3),
-    }
+    },
+    maxWidth: 480,
+    width: "90%"
   },
   leftPanel: {
+    // backgroundColor: theme.palette.primary.main,
+    // color: theme.palette.getContrastText(theme.palette.primary.main),
+    // backgroundRepeat: 'no-repeat',
+    // backgroundSize: 'cover',
+    // backgroundPosition: 'center',
+  },
+  contentStyle: {
+    height: '100vh',
+    color: '#fff',
+    lineHeight: '160px',
+    textAlign: 'center',
     backgroundColor: theme.palette.primary.main,
-    color: theme.palette.getContrastText(theme.palette.primary.main),
-    backgroundImage: `url(${Background})`,
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    display: "flex"
+  },
+  innerSlide: {
+    width: "70%",
+    "& img": {
+      width: "100%"
+    }
   },
   button: {
     width: "100%"
@@ -36,6 +51,11 @@ const loginStyles = makeStyles((theme) => ({
   },
   rightPanel: {
     paddingBottom: 64
+  },
+  company: {
+    fontSize: 26,
+    fontWeight: 500,
+    color: theme.palette.primary.main
   },
   loginFormForgot: {
     float: "right"

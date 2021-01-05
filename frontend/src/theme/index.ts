@@ -3,7 +3,7 @@ import { unstable_createMuiStrictModeTheme as createMuiTheme , responsiveFontSiz
 let theme = createMuiTheme({
   palette: {
     primary: {
-      main: "#4a3c98",
+      main: "#643492",
     },
     secondary: { main: "#34b9c1" },
   },

@@ -3,7 +3,7 @@ import { createContext, useReducer, useContext, Dispatch, useEffect } from "reac
 import { Action, authReducer } from "./reducers";
 
 const initialState: Auth = {
-    authenticated: true,
+    authenticated: false,
     user: null
 }
 

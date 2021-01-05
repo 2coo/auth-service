@@ -1,5 +1,5 @@
 import { Link } from "@reach/router";
-import { Alert, Button, Checkbox, Col, Divider, Form, Input, Layout, Row, Space, Typography } from "antd";
+import { Alert, Avatar, Button, Checkbox, Col, Divider, Form, Input, Layout, Row, Space, Typography } from "antd";
 import React, { FormEvent, Fragment, useRef, useState } from 'react';
 import { Helmet } from "react-helmet-async";
 import { StringParam, useQueryParam } from "use-query-params";
@@ -7,6 +7,10 @@ import loginStyles from "../../assets/jss/view/loginStyles";
 import { useAxios } from "../../utils/api";
 import PROVIDERS from "../../components/providers"
 import queryString from "querystring"
+import { Carousel } from 'antd';
+import clsx from "clsx";
+import Logo from '../../assets/img/Logo/Asset 10@300x.png'
+import { Box } from "@material-ui/core";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -39,31 +43,68 @@ const LoginPage = ({ location }: any) => {
       </Helmet>
       <Content className={classes.wrapper}>
         <Row className={classes.container}>
-          <Col xs={0}  md={0} lg={12} xl={14} xxl={16} className={classes.leftPanel}>
+          <Col xs={0} md={0} lg={12} xl={12} xxl={12} className={classes.leftPanel}>
+            <Carousel autoplay autoplaySpeed={3500}>
+              <div>
+                <div className={clsx(classes.contentStyle)}>
+                  <div className={classes.innerSlide}>
+                    <img src="https://app.startinfinity.com/img/register/workflow-image.png" alt="worflo" />
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div className={clsx(classes.contentStyle)}>
+                  <div className={classes.innerSlide}>
+                    <img src="https://app.startinfinity.com/img/register/workflow-image.png" alt="worflo" />
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div className={clsx(classes.contentStyle)}>
+                  <div className={classes.innerSlide}>
+                    <img src="https://app.startinfinity.com/img/register/workflow-image.png" alt="worflo" />
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div className={clsx(classes.contentStyle)}>
+                  <div className={classes.innerSlide}>
+                    <img src="https://app.startinfinity.com/img/register/workflow-image.png" alt="worflo" />
+                  </div>
+                </div>
+              </div>
+            </Carousel>
           </Col>
-          <Col xs={24} md={24} lg={12} xl={10} xxl={8} className={classes.rightPanel}>
-            <Row align="middle" justify="center" className={classes.padding}>
-              <Col span={24}>
+          <Col xs={24} md={24} lg={12} xl={12} xxl={12} className={classes.rightPanel}>
+            <Row align="middle" justify="center" style={{ height: "100%", }}>
+              <Col className={classes.form}>
                 {error && <Row gutter={[0, 32]}>
                   <Col span={24}>
                     <Alert message={atob(error)} type="error" showIcon closable />
                   </Col>
                 </Row>}
-                <Row justify="center" gutter={[0, 32]}>
-                  <Title level={4}>Login to your account</Title>
-                </Row>
+                <Box mb={4}>
+                  <Row justify="center" gutter={[0, 32]} align="middle">
+                    <Space>
+                      <Avatar size={40} shape="square" src={Logo} />
+                      <span className={classes.company}>TOMUJIN DIGITAL</span>
+                    </Space>
+                  </Row>
+                </Box>
                 <Form initialValues={{ remember_me: true }} onFinish={handleOk} form={form} onFieldsChange={(changedFields, allFields) => {
                   setFields(allFields)
                 }}>
                   <FormItem name="username"
                     rules={[{ required: true, message: 'Please input email or username!' }]} hasFeedback>
                     <Input
+                      size="large"
                       placeholder={`Username`}
                     />
                   </FormItem>
                   <FormItem name="password"
                     rules={[{ required: true, message: 'Please input email or username!' }]} hasFeedback>
                     <Input
+                      size="large"
                       type="password"
                       placeholder={`Password`}
                     />
@@ -81,6 +122,7 @@ const LoginPage = ({ location }: any) => {
                   }}>
                     <Row>
                       <Button
+                        size="large"
                         className={classes.button}
                         type="primary"
                         htmlType="submit"
@@ -107,6 +149,7 @@ const LoginPage = ({ location }: any) => {
                     fields.map((field) => <input key={field.name[0]} name={field.name[0]} value={field.value} type="hidden" />)
                   }
                 </form>
+
               </Col>
             </Row>
           </Col>
