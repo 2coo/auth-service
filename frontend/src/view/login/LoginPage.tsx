@@ -11,6 +11,7 @@ import { Carousel } from 'antd';
 import clsx from "clsx";
 import Logo from '../../assets/img/Logo/Asset 10@300x.png'
 import { Box } from "@material-ui/core";
+import { formatQueryString } from "../../utils/format";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -132,15 +133,16 @@ const LoginPage = ({ location }: any) => {
                       </Button>
                     </Row>
                     <Row justify="center">
-                      <Text type="secondary">Don't have an account yet? <Link to="/signup">Register now</Link></Text>
+                      <Text type="secondary">Don't have an account yet? <Link to={`/signup${formatQueryString(queryString.stringify(queryParams))}`}>Register now</Link></Text>
                     </Row>
                   </Space>
                   <Divider plain>OR</Divider>
                   <Row justify="center">
                     {providers?.data.map((provider: 'GOOGLE') => {
                       const ProviderButton = PROVIDERS?.[provider];
-                      queryParams["identity_provider"] = provider
-                      return <a key={provider} href={`/oauth2/authorize?${queryString.stringify(queryParams)}`}><ProviderButton /></a>
+                      const _queryParams = { ...queryParams }
+                      _queryParams["identity_provider"] = provider
+                      return <a key={provider} href={`/oauth2/authorize${formatQueryString(queryString.stringify(_queryParams))}`}><ProviderButton /></a>
                     })}
                   </Row>
                 </Form>

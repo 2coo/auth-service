@@ -24,3 +24,7 @@ export function arrayToTree(
   });
   return result;
 }
+
+export const formatQueryString = (queryString: string) => {
+  return queryString ? `?${queryString}` : "";
+};

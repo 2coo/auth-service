@@ -54,7 +54,7 @@ const loaderStyles = makeStyles((theme) => ({
             textAlign: 'center',
             fontSize: 12,
             letterSpacing: 4,
-            color: '#000',
+            color: theme.palette.primary.main,
         },
         "&.hidden": {
             zIndex: '-1',
