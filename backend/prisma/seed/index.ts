@@ -12,11 +12,13 @@ async function seed() {
   if (process.env.NODE_ENV === 'development') {
     transactions = _.concat(transactions, seedTestData(prisma))
   } else {
-    transactions = _.concat(
-      transactions,
-      seedDefaultGrantTypes(prisma),
-      seedDefaultScopes(prisma),
-      seedDefaultTenantWithAdmin(prisma),
+    transactions = _.flattenDeep(
+      _.concat(
+        transactions,
+        seedDefaultGrantTypes(prisma),
+        seedDefaultScopes(prisma),
+        seedDefaultTenantWithAdmin(prisma),
+      ),
     )
   }
 

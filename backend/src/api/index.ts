@@ -100,7 +100,7 @@ module.exports = function (app: Express.Application) {
     ])
     .post(routes.site.login)
 
-  router.post('/oauth2/register', verifyAppOrRedirect, routes.user.register)
+  router.post('/oauth2/register', routes.user.register)
   router.post('/oauth2/register/get/fields', routes.user.fields)
   router.get('/oauth2/userinfo', routes.user.userinfo)
   router.get('/myabilities', routes.user.abilities)

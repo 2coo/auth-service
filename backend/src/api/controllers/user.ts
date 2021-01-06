@@ -3,12 +3,19 @@ import {
   RedirectURI,
   Scope,
   SelfRegistrationFields,
+  Tenant,
 } from '@prisma/client'
-import { NextFunction, Response } from 'express'
+import { NextFunction, Response, Request } from 'express'
 import moment from 'moment'
 import passport from 'passport'
 import { OpenIDStandardClaims } from '../../core/interfaces/OpenID'
-import { getClientById, getUserApplicationRoles, getUserById } from './utils'
+import {
+  getClientById,
+  getUserApplicationRoles,
+  getUserById,
+  registerUser,
+} from './utils'
+import queryString from 'querystring'
 import { packRules } from '@casl/ability/extra'
 import { getRulesForUser } from '../../core/authorization'
 
@@ -57,7 +64,11 @@ export const fields = async (req: any, res: Response, next: NextFunction) => {
         SelfRegistrationFields?: SelfRegistrationFields[] | undefined
         RedirectUris?: RedirectURI[] | undefined
       })
-    | null = req.session.defaultApp
+    | null = await getClientById(req.session.defaultApp.id, {
+    EnabledScopes: true,
+    RedirectUris: true,
+    SelfRegistrationFields: true,
+  })
   if (req.query.client_id) {
     application = await getClientById(req.query.client_id, {
       EnabledScopes: true,
@@ -67,14 +78,14 @@ export const fields = async (req: any, res: Response, next: NextFunction) => {
     if (!application)
       return res.status(403).json({
         success: false,
-        error: 'The application does not exists!',
+        message: 'The application does not exists!',
       })
   }
   if (application?.selfRegistrationEnabled) {
     return res.json({
       success: true,
       data: {
-        fields: application!
+        fields: application
           .SelfRegistrationFields!.filter((field) => field.isEnabled)
           .map((field) => ({
             name: field.fieldName,
@@ -86,13 +97,60 @@ export const fields = async (req: any, res: Response, next: NextFunction) => {
   } else {
     return res.status(403).json({
       success: false,
-      error: 'The application is not enabled self-registration!',
+      message: 'The application is not enabled self-registration!',
     })
   }
 }
 
-export const register = (req: any, res: Response, next: NextFunction) => {
-  next()
+export const register = async (
+  req: Request & {
+    session: any
+  },
+  res: Response,
+  next: NextFunction,
+) => {
+  const { email, password, fullname } = req.body
+  let application = (await getClientById(req.session.defaultApp.id, {
+    Tenant: true,
+  })) as Application & {
+    Tenant: Tenant
+  }
+  if (req.query.client_id) {
+    application = (await getClientById(req.session.defaultApp.id, {
+      Tenant: true,
+    })) as Application & {
+      Tenant: Tenant
+    }
+  }
+  if (!application) {
+    return res.json({
+      success: false,
+      message: 'The application does not exits!',
+    })
+  }
+  const user = await registerUser({
+    data: {
+      email,
+      password,
+      fullname,
+    },
+    application: application,
+  })
+  req.login(user, function (err) {
+    if (err) {
+      return next(err)
+    }
+    if (req.xhr) {
+      return res.json({
+        success: true,
+        message: 'Successfully registered.',
+      })
+    } else {
+      return res.redirect(
+        `/oauth2/authorize?${queryString.stringify(req.query as any)}`,
+      )
+    }
+  })
 }
 
 export const abilities = async (

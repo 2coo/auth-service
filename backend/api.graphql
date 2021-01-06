@@ -1933,7 +1933,7 @@ input RegistrationCreateWithoutApplicationInput {
   Roles: RoleCreateManyWithoutRegistrationsInput
   updatedAt: DateTime
   User: UserCreateOneWithoutRegistrationsInput!
-  username: String!
+  username: String
   usernameStatus: UsernameStatus
 }
 
@@ -1944,7 +1944,7 @@ input RegistrationCreateWithoutRolesInput {
   isVerified: Boolean
   updatedAt: DateTime
   User: UserCreateOneWithoutRegistrationsInput!
-  username: String!
+  username: String
   usernameStatus: UsernameStatus
 }
 
@@ -1955,7 +1955,7 @@ input RegistrationCreateWithoutUserInput {
   isVerified: Boolean
   Roles: RoleCreateManyWithoutRegistrationsInput
   updatedAt: DateTime
-  username: String!
+  username: String
   usernameStatus: UsernameStatus
 }
 

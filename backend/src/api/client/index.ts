@@ -12,7 +12,7 @@ import {
   getDefaultApplicationByTenant,
 } from '../controllers/utils'
 import { Payload } from './../../core/interfaces/Payload'
-import { getGoogleAuthorizationURL } from './identity-providers'
+import { googleIdentityProvider } from './identity-providers'
 
 export class JWTScopeStrategy extends CustomStrategy {
   authenticate(req: any, options: any) {
@@ -130,7 +130,7 @@ export const verifyIdPandRedirect = async (
   switch (identity_provider.toUpperCase()) {
     case 'GOOGLE':
       {
-        authorizationURL = getGoogleAuthorizationURL()
+        authorizationURL = googleIdentityProvider()
       }
       break
   }
@@ -309,5 +309,13 @@ export const grantTypeRefreshHandler = (returnTo: string = '/app/') => async (
       }
     }
   }
+  return next()
+}
+
+export const checkIfVerifiedOrNot = (
+  req: any,
+  res: Response,
+  next: NextFunction,
+) => {
   return next()
 }

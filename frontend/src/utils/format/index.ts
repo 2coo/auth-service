@@ -1,4 +1,5 @@
-import { cloneDeep } from "lodash";
+import queryString from "querystring";
+import { cloneDeep, isEmpty } from "lodash";
 export function arrayToTree(
   array: any[],
   id = "id",
@@ -25,6 +26,6 @@ export function arrayToTree(
   return result;
 }
 
-export const formatQueryString = (queryString: string) => {
-  return queryString ? `?${queryString}` : "";
+export const formatQueryString = (queryParams: { [any: string]: any }) => {
+  return !isEmpty(queryParams) ? `?${queryString.stringify(queryParams)}` : "";
 };

@@ -8,6 +8,7 @@ import {
   Scope,
   User,
   Prisma,
+  Tenant,
 } from '@prisma/client'
 import fs from 'fs'
 import { flatMap, groupBy, sample, uniq, uniqBy } from 'lodash'
@@ -15,6 +16,7 @@ import moment from 'moment'
 import { Moment } from 'moment-timezone'
 import { JWK, JWS } from 'node-jose'
 import { v4 as uuidv4 } from 'uuid'
+import bcrypt from 'bcryptjs'
 import { prisma } from '../../context'
 
 type RoleWithApplication = Role & {
@@ -510,6 +512,56 @@ export const saveRememberMeToken = (token: string, userId: string) => {
           id: userId,
         },
       },
+    },
+  })
+}
+
+export const registerUser = ({
+  data,
+  application,
+}: {
+  data: {
+    email: string
+    password: string
+    fullname: string
+  }
+  application: Application & {
+    Tenant: Tenant
+  }
+}) => {
+  var salt = bcrypt.genSaltSync(10)
+  var hash = bcrypt.hashSync(data.password, salt)
+  return prisma.user.create({
+    data: {
+      Tenant: {
+        connect: {
+          id: application.Tenant.id,
+        },
+      },
+      salt: salt,
+      email: data.email,
+      password: hash,
+      Registrations: {
+        create: {          
+          Application: {
+            connect: {
+              id: application.id,
+            },
+          },
+          Roles: {
+            connect: {
+              name_applicationId: {
+                name: 'everyone',
+                applicationId: application.id,
+              },
+            },
+          },
+        },
+      },
+    },
+    include: {
+      Profile: true,
+      Groups: true,
     },
   })
 }

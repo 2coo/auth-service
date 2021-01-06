@@ -19,7 +19,7 @@ export const login = [
       res.cookie('remember_me', token, {
         path: '/',
         httpOnly: true,
-        sameSite: "strict",
+        sameSite: 'strict',
         maxAge: 604800000,
       })
     return res.redirect(req.originalUrl)
@@ -28,7 +28,7 @@ export const login = [
     const parsedUrl = urlParser.parse(req.url)
     const query = req.query
     if (err.message) {
-      query['error'] = err.message
+      query['error'] = Buffer.from(err.message).toString('base64')
       parsedUrl.query = queryString.stringify(query)
       parsedUrl.search = `?${queryString.stringify(query)}`
     }
@@ -44,6 +44,7 @@ export const login = [
 export const logout = async (req: any, res: Response, next: NextFunction) => {
   logoutSSO(req, res)
   clearCookieTokens(res)
+  res.clearCookie('remember_me')
   const clientId = req.query.client_id
   const logoutUrl = req.query.logout_url
   if (logoutUrl) {
@@ -52,7 +53,7 @@ export const logout = async (req: any, res: Response, next: NextFunction) => {
     if (!application)
       return res.status(403).json({
         success: false,
-        error: 'The application does not exists!',
+        message: 'The application does not exists!',
       })
     if (
       some(application.RedirectUris, {
@@ -63,7 +64,7 @@ export const logout = async (req: any, res: Response, next: NextFunction) => {
     } else {
       return res.status(403).json({
         success: false,
-        error: 'The logout url not exists on the application.',
+        message: 'The logout url not exists on the application.',
       })
     }
   }

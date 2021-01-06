@@ -11,12 +11,14 @@ const loginStyles = makeStyles((theme) => ({
     flexGrow: 1
   },
   form: {
-    // padding: theme.spacing(4, 8),
     [theme.breakpoints.down('md')]: {
       padding: theme.spacing(4, 3),
     },
     maxWidth: 480,
-    width: "90%"
+    width: "90%",
+    "& .ant-input-affix-wrapper-lg": {
+      color: theme.palette.primary.main
+    }
   },
   leftPanel: {
     // backgroundColor: theme.palette.primary.main,
@@ -50,12 +52,14 @@ const loginStyles = makeStyles((theme) => ({
     color: theme.palette.getContrastText(theme.palette.primary.main),
   },
   rightPanel: {
-    paddingBottom: 64
   },
   company: {
     fontSize: 26,
     fontWeight: 500,
     color: theme.palette.primary.main
+  },
+  inputIcon: {
+    color: "inherit"
   },
   loginFormForgot: {
     float: "right"

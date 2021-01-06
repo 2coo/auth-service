@@ -35,24 +35,20 @@ passport.use(
             !user ||
             (user && user.accountStatusType === AccountStatusType.DISABLED)
           ) {
-            return done(new Error(encodeBase64('The user does not exists!')))
+            return done(new Error('The user does not exists!'))
           }
           const registration = await getUserRegistration(user.id, clientId)
           if (!registration)
-            return done(
-              new Error(
-                encodeBase64("You don't have registration for this app!"),
-              ),
-            )
+            return done(new Error("You don't have registration for this app!"))
           const passwordValid = await compare(password, user.password)
           if (!passwordValid) {
-            return done(new Error(encodeBase64('Invalid username or password!')))
+            return done(new Error('Invalid username or password!'))
           }
           return done(null, user)
         })
         .catch((error) => {
           console.log(error)
-          done(new Error(encodeBase64(error)))
+          done(new Error(error))
         })
     },
   ),
@@ -63,7 +59,9 @@ passport.use(
     async (token, done) => {
       try {
         const user = await consumeRememberMeToken(token)
-        if (!user) return done(new Error('The user does not exists!'))
+        if (!user) {
+          return done(new Error('The user does not exists!'))
+        }
         return done(null, user)
       } catch (err) {
         return done(new Error(err))

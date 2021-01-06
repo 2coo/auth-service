@@ -1,5 +1,5 @@
 import GOOGLE from "./google-button/GoogleButton"
-const providers = {
+const IDENTITY_PROVIDERS = {
     GOOGLE
 }
-export default providers
+export default IDENTITY_PROVIDERS

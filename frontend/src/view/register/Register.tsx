@@ -1,156 +1,61 @@
-import { Fragment } from "react"
-import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
-import Link from "@material-ui/core/Link";
-import Grid from "@material-ui/core/Grid";
-import Box from "@material-ui/core/Box";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import Backdrop from "@material-ui/core/Backdrop"
-import Typography from "@material-ui/core/Typography";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Alert from "@material-ui/lab/Alert";
-import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
-import { useAxios } from "../../utils/api";
-import Copyright from "../../components/copyright/Copyright"
+import { Carousel, Col, Layout, Row } from "antd";
+import clsx from "clsx";
+import React, { Fragment } from 'react';
+import { Helmet } from "react-helmet-async";
+import loginStyles from "../../assets/jss/view/loginStyles";
+import RegisterForm from "../../components/forms/register/RegisterForm";
 
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    marginTop: theme.spacing(8),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(3),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-}));
+const { Content } = Layout;
 
-const SignUp = (props: any) => {
-  const classes = useStyles();
-  const [{ data, loading, error },] = useAxios({
-    url: '/oauth2/register/get/fields',
-    method: "POST"
-  })
+const SignUpPage = ({ location }: any) => {
+  const classes = loginStyles();
   return (
     <Fragment>
-      <Backdrop open={loading}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
-      {!loading && (<Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign up
-</Typography>
-          <form className={classes.form} noValidate>
-            {error ? <Fragment>
-              <Alert severity="error">
-                {error.response?.data.error} <br />
-              </Alert>
-              <Box mt={3}>
-                <Grid container justify="center">
-                  <Link href="/oauth2/authorize" variant="body2">
-                    Already have login and password? Sign in
-                  </Link>
-                </Grid>
-              </Box>
-            </Fragment> : (<Fragment>
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    autoComplete="fname"
-                    name="firstName"
-                    variant="outlined"
-                    required
-                    fullWidth
-                    id="firstName"
-                    label="First Name"
-                    autoFocus
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    variant="outlined"
-                    required
-                    fullWidth
-                    id="lastName"
-                    label="Last Name"
-                    name="lastName"
-                    autoComplete="lname"
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    variant="outlined"
-                    required
-                    fullWidth
-                    id="email"
-                    label="Email Address"
-                    name="email"
-                    autoComplete="email"
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    variant="outlined"
-                    required
-                    fullWidth
-                    name="password"
-                    label="Password"
-                    type="password"
-                    id="password"
-                    autoComplete="current-password"
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControlLabel
-                    control={<Checkbox value="allowExtraEmails" color="primary" />}
-                    label="I want to receive inspiration, marketing promotions and updates via email."
-                  />
-                </Grid>
-              </Grid>
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-              >
-                Sign Up
-  </Button>
-              <Grid container justify="flex-end">
-                <Grid item>
-                  <Link href="/oauth2/authorize" variant="body2">
-                    Already have an account? Sign in
-                  </Link>
-                </Grid>
-              </Grid>
-            </Fragment>)}
+      <Helmet>
+        <title>Register</title>
+        <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
+      </Helmet>
+      <Content className={classes.wrapper}>
+        <Row className={classes.container}>
+          <Col xs={0} md={0} lg={12} xl={12} xxl={12} className={classes.leftPanel}>
+            <Carousel autoplay autoplaySpeed={3500}>
+              <div>
+                <div className={clsx(classes.contentStyle)}>
+                  <div className={classes.innerSlide}>
+                    <img src="https://app.startinfinity.com/img/register/workflow-image.png" alt="worflo" />
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div className={clsx(classes.contentStyle)}>
+                  <div className={classes.innerSlide}>
+                    <img src="https://app.startinfinity.com/img/register/workflow-image.png" alt="worflo" />
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div className={clsx(classes.contentStyle)}>
+                  <div className={classes.innerSlide}>
+                    <img src="https://app.startinfinity.com/img/register/workflow-image.png" alt="worflo" />
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div className={clsx(classes.contentStyle)}>
+                  <div className={classes.innerSlide}>
+                    <img src="https://app.startinfinity.com/img/register/workflow-image.png" alt="worflo" />
+                  </div>
+                </div>
+              </div>
+            </Carousel>
+          </Col>
+          <Col xs={24} md={24} lg={12} xl={12} xxl={12} className={classes.rightPanel}>
+            <RegisterForm />
+          </Col>
+        </Row>
+      </Content >
+    </Fragment >
+  )
+}
 
-          </form>
-        </div>
-        <Box mt={5}>
-          <Copyright />
-        </Box>
-      </Container>)}
-    </Fragment>
-  );
-};
-
-export default SignUp;
+export default SignUpPage
