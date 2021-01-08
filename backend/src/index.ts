@@ -1,5 +1,4 @@
-import { config } from 'dotenv-flow'
-config()
+import 'dotenv-flow/config'
 import { ApolloServer } from 'apollo-server-express'
 import { applyMiddleware } from 'graphql-middleware'
 import { createContext } from './context'
@@ -9,6 +8,7 @@ import express from 'express'
 import * as HTTP from 'http'
 import fs from 'fs'
 import cookieParser from 'cookie-parser'
+import systemConfig from './config/system'
 
 if (!fs.existsSync(`${__dirname}/keys/jwks.json`)) {
   throw new Error(
@@ -19,9 +19,7 @@ const graphqlServer = new ApolloServer({
   schema: applyMiddleware(schema, permissions),
   context: createContext,
 })
-const app = express().use(
-  cookieParser(process.env.SESSION_SECRET || 's4per$ecret'),
-)
+const app = express().use(cookieParser(systemConfig.session_secret))
 const http = HTTP.createServer(app)
 
 graphqlServer.applyMiddleware({ app })
@@ -29,8 +27,8 @@ graphqlServer.installSubscriptionHandlers(http)
 
 require('./api/')(app)
 
-http.listen(Number(process.env.PORT), String(process.env.HOST), () => {
+http.listen(systemConfig.port, systemConfig.host, () => {
   console.log(
-    `🚀 GraphQL service ready at http://localhost:${process.env.PORT}/graphql`,
+    `🚀 GraphQL service ready at http://localhost:${systemConfig.port}/graphql`,
   )
 })

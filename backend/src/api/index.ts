@@ -17,7 +17,8 @@ import {
 } from './client'
 import { loggerMiddleware, tenantAndDefaultAppMiddleware } from './client/index'
 import routes from './controllers'
-
+import redisConfig from '../config/redis'
+import systemConfig from '../config/system'
 // const corsOptions = {
 //   origin: ['http://localhost:3000'], //resource server
 //   credentials: true,
@@ -27,11 +28,11 @@ import routes from './controllers'
 
 const RedisStore = connectRedis(expressSession)
 
-const DOMAIN = process.env.DOMAIN
+const DOMAIN = systemConfig.domain
 
 const redisClient = redis.createClient(
-  Number(process.env.REDIS_PORT),
-  process.env.REDIS_HOST,
+  Number(redisConfig.port),
+  redisConfig.host,
   {
     no_ready_check: true,
   },
@@ -50,14 +51,14 @@ module.exports = function (app: Express.Application) {
       name: 'TOMUJIN_DIGITAL_AUTH',
       saveUninitialized: true,
       resave: true,
-      secret: process.env.SESSION_SECRET as string,
+      secret: systemConfig.session_secret,
       store: new RedisStore({ client: redisClient }),
       cookie: {
         path: '/',
         secure: process.env.NODE_ENV === 'production',
         // sameSite: 'strict', if you don't want SSO, it should be uncommented!
         httpOnly: true,
-        maxAge: Number(process.env.SESSION_MAX_AGE),
+        maxAge: systemConfig.session_max_age,
       },
     }),
   )

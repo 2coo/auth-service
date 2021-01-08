@@ -3,15 +3,11 @@ import bcrypt from 'bcryptjs'
 import { defaultRoles } from './roles'
 
 export const seedDefaultTenantWithAdmin = (prisma: PrismaClient) => {
-  const MAIL_HOST = String(process.env.MAIL_HOST || 'smtp.gmail.com')
-  const MAIL_PORT = String(process.env.MAIL_PORT || '587')
-  const MAIL_USERNAME = String(
-    process.env.MAIL_USERNAME || 'noreply@tomujin.digital',
-  )
-  const MAIL_PASSWORD = String(process.env.MAIL_PASSWORD || 'password')
-  const MAIL_FROM = String(
-    process.env.MAIL_FROM || '"TOMUJIN DIGITAL" <noreply@tomujin.digital>',
-  )
+  const MAIL_HOST = process.env.MAIL_HOST
+  const MAIL_PORT = process.env.MAIL_PORT
+  const MAIL_USERNAME = process.env.MAIL_USER
+  const MAIL_PASSWORD = process.env.MAIL_PASS
+  const MAIL_FROM = process.env.MAIL_FROM
   const adminEmail = String(process.env.ADMIN_EMAIL)
   const adminPassword = String(process.env.ADMIN_PASSWORD)
   var salt = bcrypt.genSaltSync(10)
@@ -47,7 +43,7 @@ export const seedDefaultTenantWithAdmin = (prisma: PrismaClient) => {
         create: {
           id: '71566877-ce96-4da8-94f5-330edd645b60',
           name: 'Default',
-          issuer: 'http://tomujin.digital',
+          issuer: process.env.JWT_DEFAULT_ISSUER,
           trustedApplication: true,
           selfRegistrationEnabled: true,
           RedirectUris: {

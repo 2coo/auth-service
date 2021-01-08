@@ -1,5 +1,6 @@
 import redis from 'redis'
 const RedisStore = require('./redisstore')
+import redisConfig from './config/redis'
 
 // We are just getting a reference to the RedisStore class.
 // We do not need to pass an oauth server instance.
@@ -7,8 +8,8 @@ const RedisStore = require('./redisstore')
 
 // Override in-memory SessionStore with the RedisStore
 const redisClient = redis.createClient(
-  Number(process.env.REDIS_PORT),
-  process.env.REDIS_HOST,
+  Number(redisConfig.port),
+  redisConfig.host,
   {
     no_ready_check: true,
   },

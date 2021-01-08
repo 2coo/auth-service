@@ -11,7 +11,7 @@ import {
   Tenant,
 } from '@prisma/client'
 import fs from 'fs'
-import { flatMap, groupBy, sample, uniq, uniqBy } from 'lodash'
+import { flatMap, groupBy, sample, uniq, uniqBy, range } from 'lodash'
 import moment from 'moment'
 import { Moment } from 'moment-timezone'
 import { JWK, JWS } from 'node-jose'
@@ -542,7 +542,7 @@ export const registerUser = ({
       email: data.email,
       password: hash,
       Registrations: {
-        create: {          
+        create: {
           Application: {
             connect: {
               id: application.id,
@@ -564,4 +564,12 @@ export const registerUser = ({
       Groups: true,
     },
   })
+}
+
+function getRandomInt(max: number) {
+  return Math.floor(Math.random() * Math.floor(max))
+}
+
+export const generateVerificationCode = (length: number) => {
+  return range(length).map(i => getRandomInt(9)).join('')
 }

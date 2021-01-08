@@ -7,6 +7,7 @@ import { clearCookieTokens, logoutSSO } from '../client'
 import { getClientById, saveRememberMeToken } from './utils'
 import urlParser from 'url'
 import { AccountStatusType, User } from '@prisma/client'
+import Queue from '../../lib/Queue'
 
 export const login = [
   passport.authenticate('local', { failWithError: true }),
@@ -72,21 +73,22 @@ export const logout = async (req: any, res: Response, next: NextFunction) => {
   next()
 }
 
-export const validate_email = (
+export const validate_email = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
-  const user = req.user as User
+  const user = req.user as User  
   if (user.accountStatusType === AccountStatusType.UNCONFIRMED) {
     //to do send email
+    await Queue.add('VerificationMail', { user })
   }
   return res.json({
     success: true,
     data: {
       email: user.email,
       is_verified: user.accountStatusType === AccountStatusType.CONFIRMED,
-      is_email_sent: true
+      is_email_sent: true,
     },
   })
 }
@@ -100,7 +102,7 @@ export const verify_code = (
   return res.json({
     success: true,
     data: {
-      verified: true
-    }
+      verified: true,
+    },
   })
 }

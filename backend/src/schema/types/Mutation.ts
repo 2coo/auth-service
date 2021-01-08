@@ -24,7 +24,7 @@ export const Mutation = mutationType({
           throw new Error('Invalid password')
         }
         return {
-          token: sign({ userId: user.id }, process.env.APP_SECRET as string, {
+          token: sign({ userId: user.id }, '1231', {
             expiresIn: '1 day',
           }),
           user: user,

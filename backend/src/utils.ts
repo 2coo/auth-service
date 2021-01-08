@@ -1,6 +1,7 @@
 import { GrantType, PrismaClient } from '@prisma/client'
 import { ExpressContext } from 'apollo-server-express/dist/ApolloServer'
 import { verify } from 'jsonwebtoken'
+import systemConfig from './config/system'
 
 export interface Token {
   userId: string | null
@@ -12,7 +13,7 @@ export const getUserId = (context: ExpressContext): Token => {
     const token = Authorization.replace('Bearer ', '')
     const verifiedToken = verify(
       token,
-      String(process.env.APP_SECRET),
+      systemConfig.app_secret,
     ) as Token
     return verifiedToken
   }

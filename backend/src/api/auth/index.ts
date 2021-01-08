@@ -20,9 +20,7 @@ import {
   getUserRegistration,
   saveRememberMeToken,
 } from './../controllers/utils'
-import { encodeBase64 } from '../../core/helpers/base64ende'
-
-const ISSUER = process.env.ISSUER
+import systemConfig from '../../config/system'
 
 passport.use(
   new LocalStrategy(
@@ -109,7 +107,7 @@ passport.use(
       const payload = jwt.verify(accessToken, key.getPublicKey(), {
         algorithms: ['RS256'],
         audience: defaultApp.id,
-        issuer: ISSUER,
+        issuer: systemConfig.jwt_default_issuer,
       }) as Payload
       if (payload.token_use === 'access')
         req.session.client_id = payload.client_id

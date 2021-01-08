@@ -81,7 +81,7 @@ const ValidateEmailPage = () => {
                                             <Text type="secondary">Please enter the code we emailed you.</Text>
                                         </Row>
                                         <Row>
-                                            <Text>giva9712@gmail.com</Text>
+                                            <Text>{infoData.data.email}</Text>
                                         </Row>
                                         <Row>
                                             <span className={classes.CodeConfirmationLabel}>
