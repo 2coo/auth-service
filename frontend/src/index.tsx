@@ -1,13 +1,13 @@
 import { Router } from '@reach/router';
-import "./App.less"
 import { StrictMode, Suspense } from 'react';
 import ReactDOM from 'react-dom';
+import "./App.less";
+import ProviderWrapper from "./components/provider-wrapper/ProviderWrapper";
+import "./i18n";
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 import routes from "./routes";
 import composeRoutes from './utils/route-composer';
-import ProviderWrapper from "./components/provider-wrapper/ProviderWrapper"
-import "./i18n";
 
 ReactDOM.render(
   <StrictMode>

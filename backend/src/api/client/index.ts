@@ -1,6 +1,7 @@
-import { Application, Scope } from '@prisma/client'
+import queryString from 'querystring'
+import { AccountStatusType, Application, Scope, User } from '@prisma/client'
 import Axios from 'axios'
-import { NextFunction, Response } from 'express'
+import { NextFunction, Response, Request } from 'express'
 import jwt, { VerifyOptions } from 'jsonwebtoken'
 import jwksClient, { JwksClient } from 'jwks-rsa'
 import passport from 'passport'
@@ -312,10 +313,33 @@ export const grantTypeRefreshHandler = (returnTo: string = '/app/') => async (
   return next()
 }
 
-export const checkIfVerifiedOrNot = (
-  req: any,
-  res: Response,
-  next: NextFunction,
+export const verifyEmailIsVerified = (
+  options?:
+    | string
+    | {
+        redirectTo?: string
+        setReturnTo?: boolean
+      },
 ) => {
-  return next()
+  if (typeof options == 'string') {
+    options = { redirectTo: options }
+  }
+  options = options || {}
+  var url = options.redirectTo || '/signup/validate-email'
+  var setReturnTo =
+    options.setReturnTo === undefined ? true : options.setReturnTo
+  return (
+    req: any,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    const queryParams: any = req.query
+    if (setReturnTo && req.session) {
+      req.session.returnTo = req.originalUrl || req.url
+    }
+    if (req.user.accountStatusType === AccountStatusType.UNCONFIRMED) {
+      return res.redirect(`${url}?${queryString.stringify(queryParams)}`)
+    }
+    return next()
+  }
 }

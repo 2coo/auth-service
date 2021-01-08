@@ -1,22 +1,22 @@
+import {
+  AreaChartOutlined, DashboardOutlined, UserOutlined
+} from '@ant-design/icons';
+import CarouselForm from "../components/layout/carousel-form/CarouselForm";
 import Layout from "../layouts/Layout";
 import { Routes } from "../models/Routes";
+import Analytics from "../view/app/charts/analytics/Analytics";
+import ChartLayout from "../view/app/charts/index";
+import Insight from "../view/app/charts/insight/Insight";
 import Home from "../view/app/home/Home";
 import Profile from "../view/app/profile/Profile";
+import User from "../view/app/user/User";
 import Dialog from "../view/dialog/Dialog";
 import Landing from "../view/landing/Landing";
-import Login from "../view/login/LoginPage";
-import Register from "../view/register/Register";
+import LoginPage from "../view/login/LoginPage";
 import ResetPassword from "../view/reset-password/ResetPassword";
-import Signout from "../view/signout/Signout";
-import {
-  UserOutlined,
-  DashboardOutlined,
-  AreaChartOutlined
-} from '@ant-design/icons';
-import User from "../view/app/user/User";
-import ChartLayout from "../view/app/charts/index"
-import Insight from "../view/app/charts/insight/Insight";
-import Analytics from "../view/app/charts/analytics/Analytics";
+import SignUpPage from '../view/sign-up/SignUpPage';
+import Signout from '../view/signout/Signout';
+import ValidateEmailPage from '../view/validate-email/ValidateEmailPage';
 
 const routes: Routes[] = [
   {
@@ -25,14 +25,26 @@ const routes: Routes[] = [
     path: "/",
   },
   {
-    component: Login,
-    name: "Login",
-    path: "/oauth2/authorize",
+    component: ValidateEmailPage,
+    name: "SignUp",
+    path: "/signup/validate-email",
   },
   {
-    component: Login,
-    name: "Login",
-    path: "/login",
+    component: CarouselForm,
+    path: '/',
+    name: 'CarouselLayout',
+    subroutes: [
+      {
+        component: LoginPage,
+        name: "Login",
+        path: "/login",
+      },
+      {
+        component: SignUpPage,
+        name: "SignUp",
+        path: "/signup",
+      },
+    ],
   },
   {
     component: Signout,
@@ -40,14 +52,14 @@ const routes: Routes[] = [
     path: "/logout",
   },
   {
-    component: Register,
-    name: "Register",
-    path: "/oauth2/register",
+    component: LoginPage,
+    name: "Authorization",
+    path: "/oauth2/authorize",
   },
   {
-    component: Register,
-    name: "Login",
-    path: "/signup",
+    component: SignUpPage,
+    name: "Registration",
+    path: "/oauth2/register",
   },
   {
     component: ResetPassword,

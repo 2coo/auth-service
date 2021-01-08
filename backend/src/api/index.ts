@@ -12,6 +12,7 @@ import {
   grantTypeRefreshHandler,
   renderSPA,
   verifyAppOrRedirect,
+  verifyEmailIsVerified,
   verifySSO,
 } from './client'
 import { loggerMiddleware, tenantAndDefaultAppMiddleware } from './client/index'
@@ -102,11 +103,17 @@ module.exports = function (app: Express.Application) {
 
   router.post('/oauth2/register', routes.user.register)
   router.post('/oauth2/register/get/fields', routes.user.fields)
+  router.get('/signup/validate-email', [verifySSO(), renderSPA])
+  router.get('/signup/validate-email/info', [
+    verifySSO(),
+    routes.site.validate_email,
+  ])
+  router.get('/signup/validate-email/code', [verifySSO(), routes.site.verify_code])
   router.get('/oauth2/userinfo', routes.user.userinfo)
-  router.get('/myabilities', routes.user.abilities)
+  router.get('/myabioauth2/registerlities', routes.user.abilities)
   router
     .route('/oauth2/authorize/dialog')
-    .get([verifySSO(), renderSPA])
+    .get([verifySSO(), verifyEmailIsVerified(), renderSPA])
     .post(routes.oauth2.dialog)
 
   // error handler
@@ -155,7 +162,7 @@ module.exports = function (app: Express.Application) {
       next()
     }, routes.site.login)
   router.get('/logout', [routes.site.logout, renderSPA])
-  router.get(/^\/app(\/.*)?/, [verifySSO(), renderSPA])
+  router.get(/^\/app(\/.*)?/, [verifySSO(), verifyEmailIsVerified(), renderSPA])
   router.get('*', renderSPA)
   //subdomain tenant
   app.use(vhost(`*.${DOMAIN}`, router))

@@ -9,9 +9,10 @@ const composeRoutes = (routes: Array<Routes>) => {
         }
         if (route?.subroutes && route.subroutes.length > 0) {
             const withSubRoutes = <Route {...{ as: route.isProtected ? route.component : "" }} path={route.path} key={index} >
-                {composeRoutes(route!.subroutes)
+                {
+                    composeRoutes(route!.subroutes)
                 }
-            </Route >
+            </Route>
             return withSubRoutes;
         }
 

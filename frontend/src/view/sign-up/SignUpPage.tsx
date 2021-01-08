@@ -1,15 +1,15 @@
 import { Fragment } from 'react';
-import LoginForm from "../../components/forms/login/LoginForm";
+import RegisterForm from "../../components/forms/register/RegisterForm";
 import { Row } from 'antd'
 
-const LoginPage = ({ location }: any) => {
+const SignUpPage = ({ location }: any) => {
   return (
     <Fragment>
       <Row align="middle" justify="center" style={{ height: "100vh", }}>
-        <LoginForm />
+        <RegisterForm />
       </Row>
     </Fragment >
   )
 }
 
-export default LoginPage
+export default SignUpPage
