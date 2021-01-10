@@ -5,7 +5,7 @@ import { Row } from 'antd'
 const LoginPage = ({ location }: any) => {
   return (
     <Fragment>
-      <Row align="middle" justify="center" style={{ height: "100vh", }}>
+      <Row align="middle" justify="center" style={{ minHeight: '100vh' }}>
         <LoginForm />
       </Row>
     </Fragment >

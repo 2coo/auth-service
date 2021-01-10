@@ -37,7 +37,7 @@ export const seedTestData = (prisma: PrismaClient) => {
               },
             },
           },
-          username: "test"
+          username: 'test',
         },
       },
     },

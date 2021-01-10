@@ -2,7 +2,7 @@ import { EyeInvisibleOutlined, EyeTwoTone, LoadingOutlined } from '@ant-design/i
 import { Box } from "@material-ui/core"
 import { Link, useLocation } from "@reach/router"
 import { Alert, Button, Col, Form, Input, Row, Spin, Typography } from "antd"
-import queryString from "querystring"
+import queryString from "query-string"
 import { Fragment } from "react"
 import registerStyles from '../../../assets/jss/view/registerStyles'
 import { useAxios } from "../../../utils/api"
@@ -41,7 +41,7 @@ const RegisterForm = () => {
                 'X-Requested-With': 'XMLHttpRequest'
             }
         })
-    }
+    }    
     const EyeTwoToneIcon = <EyeTwoTone className={classes.inputIcon} />
     const EyeInvisibleOutlinedIcon = <EyeInvisibleOutlined className={classes.inputIcon} />
     return (

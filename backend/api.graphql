@@ -1737,7 +1737,7 @@ input ProfileWhereUniqueInput {
 }
 
 type Query {
-  Test: User
+  Test: String
   user(where: UserWhereUniqueInput!): User
   users(after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int, orderBy: [UserOrderByInput!], where: UserWhereInput): [User!]!
 }
@@ -2662,6 +2662,7 @@ input UserCreateInput {
   updatedAt: DateTime
   username: String
   usernameStatus: UsernameStatus
+  VerificationCodes: VerificationCodeCreateManyWithoutUserInput
 }
 
 input UserCreateManyWithoutGroupsInput {
@@ -2786,6 +2787,7 @@ input UserCreateWithoutAccessTokensInput {
   updatedAt: DateTime
   username: String
   usernameStatus: UsernameStatus
+  VerificationCodes: VerificationCodeCreateManyWithoutUserInput
 }
 
 input UserCreateWithoutAuthorizationCodesInput {
@@ -2811,6 +2813,7 @@ input UserCreateWithoutAuthorizationCodesInput {
   updatedAt: DateTime
   username: String
   usernameStatus: UsernameStatus
+  VerificationCodes: VerificationCodeCreateManyWithoutUserInput
 }
 
 input UserCreateWithoutExternalIdentifiersInput {
@@ -2836,6 +2839,7 @@ input UserCreateWithoutExternalIdentifiersInput {
   updatedAt: DateTime
   username: String
   usernameStatus: UsernameStatus
+  VerificationCodes: VerificationCodeCreateManyWithoutUserInput
 }
 
 input UserCreateWithoutFailedLoginLogsInput {
@@ -2861,6 +2865,7 @@ input UserCreateWithoutFailedLoginLogsInput {
   updatedAt: DateTime
   username: String
   usernameStatus: UsernameStatus
+  VerificationCodes: VerificationCodeCreateManyWithoutUserInput
 }
 
 input UserCreateWithoutGroupsInput {
@@ -2886,6 +2891,7 @@ input UserCreateWithoutGroupsInput {
   updatedAt: DateTime
   username: String
   usernameStatus: UsernameStatus
+  VerificationCodes: VerificationCodeCreateManyWithoutUserInput
 }
 
 input UserCreateWithoutLoginLogInput {
@@ -2911,6 +2917,7 @@ input UserCreateWithoutLoginLogInput {
   updatedAt: DateTime
   username: String
   usernameStatus: UsernameStatus
+  VerificationCodes: VerificationCodeCreateManyWithoutUserInput
 }
 
 input UserCreateWithoutRefreshTokensInput {
@@ -2936,6 +2943,7 @@ input UserCreateWithoutRefreshTokensInput {
   updatedAt: DateTime
   username: String
   usernameStatus: UsernameStatus
+  VerificationCodes: VerificationCodeCreateManyWithoutUserInput
 }
 
 input UserCreateWithoutRegistrationsInput {
@@ -2961,6 +2969,7 @@ input UserCreateWithoutRegistrationsInput {
   updatedAt: DateTime
   username: String
   usernameStatus: UsernameStatus
+  VerificationCodes: VerificationCodeCreateManyWithoutUserInput
 }
 
 input UserCreateWithoutTenantInput {
@@ -2986,6 +2995,7 @@ input UserCreateWithoutTenantInput {
   updatedAt: DateTime
   username: String
   usernameStatus: UsernameStatus
+  VerificationCodes: VerificationCodeCreateManyWithoutUserInput
 }
 
 type UserCustomAttribute {
@@ -3089,6 +3099,11 @@ input UserIdApplicationIdCompoundUniqueInput {
   userId: String!
 }
 
+input UserIdCodeCompoundUniqueInput {
+  code: String!
+  userId: String!
+}
+
 input UserListRelationFilter {
   every: UserWhereInput
   none: UserWhereInput
@@ -3147,10 +3162,54 @@ input UserWhereInput {
   updatedAt: DateTimeFilter
   username: StringFilter
   usernameStatus: EnumUsernameStatusFilter
+  VerificationCodes: VerificationCodeListRelationFilter
 }
 
 input UserWhereUniqueInput {
   email: String
   id: String
   username: String
+}
+
+input VerificationCodeCreateManyWithoutUserInput {
+  connect: [VerificationCodeWhereUniqueInput!]
+  connectOrCreate: [VerificationCodeCreateOrConnectWithoutUserInput!]
+  create: [VerificationCodeCreateWithoutUserInput!]
+}
+
+input VerificationCodeCreateOrConnectWithoutUserInput {
+  create: VerificationCodeCreateWithoutUserInput!
+  where: VerificationCodeWhereUniqueInput!
+}
+
+input VerificationCodeCreateWithoutUserInput {
+  code: String!
+  createdAt: DateTime
+  expirationDate: DateTime!
+  id: String
+  updatedAt: DateTime
+}
+
+input VerificationCodeListRelationFilter {
+  every: VerificationCodeWhereInput
+  none: VerificationCodeWhereInput
+  some: VerificationCodeWhereInput
+}
+
+input VerificationCodeWhereInput {
+  AND: [VerificationCodeWhereInput!]
+  code: StringFilter
+  createdAt: DateTimeFilter
+  expirationDate: DateTimeFilter
+  id: StringFilter
+  NOT: [VerificationCodeWhereInput!]
+  OR: [VerificationCodeWhereInput!]
+  updatedAt: DateTimeFilter
+  User: UserWhereInput
+  userId: StringFilter
+}
+
+input VerificationCodeWhereUniqueInput {
+  id: String
+  userId_code: UserIdCodeCompoundUniqueInput
 }

@@ -109,7 +109,7 @@ module.exports = function (app: Express.Application) {
     verifySSO(),
     routes.site.validate_email,
   ])
-  router.get('/signup/validate-email/code', [verifySSO(), routes.site.verify_code])
+  router.post('/signup/validate-email/code', [verifySSO(), routes.site.verify_code])
   router.get('/oauth2/userinfo', routes.user.userinfo)
   router.get('/myabioauth2/registerlities', routes.user.abilities)
   router

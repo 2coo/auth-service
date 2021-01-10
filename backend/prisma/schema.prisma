@@ -269,12 +269,15 @@ model User {
 }
 
 model VerificationCode {
-  id        String   @id @default(uuid())
-  User      User     @relation(fields: [userId], references: [id])
-  userId    String
-  code      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             String   @id @default(uuid())
+  User           User     @relation(fields: [userId], references: [id])
+  userId         String
+  code           String
+  expirationDate DateTime
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([userId, code])
 }
 
 enum SupportedProvider {

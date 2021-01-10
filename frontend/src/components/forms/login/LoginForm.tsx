@@ -2,7 +2,7 @@ import { LoadingOutlined, LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Box } from "@material-ui/core";
 import { Link, useLocation } from "@reach/router";
 import { Alert, Avatar, Button, Checkbox, Col, Divider, Form, Input, Row, Space, Spin, Typography } from "antd";
-import queryString from "querystring";
+import queryString from "query-string";
 import { FormEvent, Fragment, PropsWithChildren, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { StringParam, useQueryParam } from "use-query-params";
@@ -39,7 +39,7 @@ const LoginForm = ({ }: Props) => {
     const handleOk = (e: FormEvent<HTMLFormElement>) => {
         formHiddenEl.current?.submit()
     }
-    const queryParams = queryString.parse(location.search.substr(1))
+    const queryParams = queryString.parse(location.search)
     return (
         <Fragment>
             <Helmet>

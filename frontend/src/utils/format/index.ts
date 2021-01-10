@@ -1,4 +1,4 @@
-import queryString from "querystring";
+import queryString from "query-string";
 import { cloneDeep, isEmpty } from "lodash";
 export function arrayToTree(
   array: any[],

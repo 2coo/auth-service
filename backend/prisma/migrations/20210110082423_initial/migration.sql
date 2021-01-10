@@ -210,6 +210,19 @@ UNIQUE INDEX `User.email_unique`(`email`),
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `VerificationCode` (
+    `id` VARCHAR(191) NOT NULL,
+    `userId` VARCHAR(191) NOT NULL,
+    `code` VARCHAR(191) NOT NULL,
+    `expirationDate` DATETIME(3) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+UNIQUE INDEX `VerificationCode.userId_code_unique`(`userId`, `code`),
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `IdProviderOnApplication` (
     `id` VARCHAR(191) NOT NULL,
     `isEnabled` BOOLEAN NOT NULL DEFAULT true,
@@ -498,6 +511,9 @@ ALTER TABLE `Role` ADD FOREIGN KEY (`applicationId`) REFERENCES `Application`(`i
 
 -- AddForeignKey
 ALTER TABLE `User` ADD FOREIGN KEY (`tenantId`) REFERENCES `Tenant`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `VerificationCode` ADD FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `IdProviderOnApplication` ADD FOREIGN KEY (`identityProviderId`) REFERENCES `IdentityProvider`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

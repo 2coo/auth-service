@@ -6,7 +6,7 @@ import _ from 'lodash'
 import moment from 'moment-timezone'
 import oauth2orize from 'oauth2orize'
 import passport from 'passport'
-import queryString from 'querystring'
+import queryString from 'query-string'
 import { store } from '../../redisclient'
 import { defaultLinkBuilder, renderSPA } from '../client'
 import {
@@ -246,7 +246,7 @@ export const authorization = async (
     application = await getClientById(req.query.client_id)
   } else {
     req.query = {
-      ...queryString.parse(defaultLinkBuilder(application, '').substr(1)),
+      ...queryString.parse(defaultLinkBuilder(application, '')),
       ...req.query,
     }
   }

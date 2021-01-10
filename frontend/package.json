@@ -23,7 +23,7 @@
     "i18next-browser-languagedetector": "^6.0.1",
     "i18next-http-backend": "^1.0.21",
     "lodash": "^4.17.20",
-    "query-string": "^5.1.1",
+    "query-string": "^6.13.8",
     "react": "^17.0.1",
     "react-code-input": "^3.10.0",
     "react-device-detect": "^1.15.0",

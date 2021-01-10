@@ -516,46 +516,39 @@ export const saveRememberMeToken = (token: string, userId: string) => {
   })
 }
 
-export const registerUser = ({
+export const registerUser = async ({
   data,
-  application,
+  tenantId,
+  applications,
 }: {
+  tenantId: string
   data: {
     email: string
     password: string
     fullname: string
   }
-  application: Application & {
-    Tenant: Tenant
-  }
+  applications: string[]
 }) => {
   var salt = bcrypt.genSaltSync(10)
   var hash = bcrypt.hashSync(data.password, salt)
-  return prisma.user.create({
+  const fullNameSplitted = data.fullname.split(' ')
+  const firstName = fullNameSplitted[0]
+  const lastName = fullNameSplitted[fullNameSplitted.length - 1]
+  const user = await prisma.user.create({
     data: {
       Tenant: {
         connect: {
-          id: application.Tenant.id,
+          id: tenantId,
         },
       },
       salt: salt,
       email: data.email,
       password: hash,
-      Registrations: {
+      Profile: {
         create: {
-          Application: {
-            connect: {
-              id: application.id,
-            },
-          },
-          Roles: {
-            connect: {
-              name_applicationId: {
-                name: 'everyone',
-                applicationId: application.id,
-              },
-            },
-          },
+          displayName: data.fullname,
+          firstName,
+          lastName,
         },
       },
     },
@@ -564,12 +557,101 @@ export const registerUser = ({
       Groups: true,
     },
   })
+  await applications.forEach(async (app_id) => {
+    const defaultRole = await prisma.role.findFirst({
+      where: {
+        isDefault: true,
+        applicationId: app_id,
+      },
+    })
+    await prisma.registration.create({
+      data: {
+        User: {
+          connect: {
+            id: user.id,
+          },
+        },
+        Application: {
+          connect: {
+            id: app_id,
+          },
+        },
+        ...(defaultRole
+          ? {
+              Roles: {
+                connect: {
+                  id: defaultRole.id,
+                },
+              },
+            }
+          : {}),
+      },
+    })
+  })
+  return user
 }
 
 function getRandomInt(max: number) {
   return Math.floor(Math.random() * Math.floor(max))
 }
 
-export const generateVerificationCode = (length: number) => {
-  return range(length).map(i => getRandomInt(9)).join('')
+export const generateVerificationCode = (
+  length: number = 4,
+  user_id: string,
+) => {
+  const code = range(length)
+    .map((i) => getRandomInt(9))
+    .join('')
+  const expDate = calculateExpirationDate(1440)
+  return prisma.verificationCode.create({
+    data: {
+      User: {
+        connect: {
+          id: user_id,
+        },
+      },
+      code: code,
+      expirationDate: expDate.toISOString(),
+    },
+  })
+}
+
+export const verifyCode = async (code: string, user_id: string) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      id: user_id,
+    },
+  })
+  if (user?.accountStatusType === AccountStatusType.CONFIRMED) return true
+  const verificationCode = await prisma.verificationCode.findFirst({
+    where: {
+      userId: user_id,
+      code: code,
+      expirationDate: {
+        gt: moment().toISOString(),
+      },
+    },
+  })
+  const verificationCodeExists = Boolean(verificationCode)
+  let verified = false
+  if (verificationCodeExists) {
+    await prisma.user.update({
+      where: {
+        id: user_id,
+      },
+      data: {
+        accountStatusType: AccountStatusType.CONFIRMED,
+      },
+    })
+    verified = true
+    await prisma.verificationCode.delete({
+      where: {
+        userId_code: {
+          code,
+          userId: user_id,
+        },
+      },
+    })
+  }
+  return verified
 }

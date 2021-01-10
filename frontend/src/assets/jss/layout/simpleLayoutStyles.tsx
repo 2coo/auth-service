@@ -4,7 +4,7 @@ const simpleLayoutStyles = makeStyles((theme) => ({
     Layout: {
         backgroundColor: "white",
         flexDirection: 'column',
-        height: '100vh',
+        minHeight: '100vh'
     },
     Header: {
         backgroundColor: "rgba(0, 21, 41, 0)",

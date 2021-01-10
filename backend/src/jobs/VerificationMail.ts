@@ -9,13 +9,12 @@ export const VerificationMail = {
       user,
       code,
     }: { user: User & { Profile: Profile }; code: string } = data    
-    console.log("#sending email");
     await Mail.sendMail({
       from: mailConfig.from,
       to: `User <${user.email}>`,
       subject: 'Email Verification',
       html: `<p>Hi, ${user.email}</p>
-      <p>Verification code is <code>${code}</code></p>
+      <p>Verification code is <code>${code}</code>.</p>
       `,
     })
   },

@@ -1,10 +1,16 @@
-import queryString from 'querystring'
+import queryString from 'query-string'
 import cryptoRandomString from 'crypto-random-string'
 import { NextFunction, Request, Response } from 'express'
 import { some } from 'lodash'
 import passport from 'passport'
 import { clearCookieTokens, logoutSSO } from '../client'
-import { getClientById, saveRememberMeToken } from './utils'
+import {
+  generateVerificationCode,
+  getClientById,
+  getUserById,
+  saveRememberMeToken,
+  verifyCode,
+} from './utils'
 import urlParser from 'url'
 import { AccountStatusType, User } from '@prisma/client'
 import Queue from '../../lib/Queue'
@@ -78,10 +84,10 @@ export const validate_email = async (
   res: Response,
   next: NextFunction,
 ) => {
-  const user = req.user as User  
+  const user = req.user as User
   if (user.accountStatusType === AccountStatusType.UNCONFIRMED) {
-    //to do send email
-    await Queue.add('VerificationMail', { user })
+    const verificationCode = await generateVerificationCode(4, user.id)
+    await Queue.add('VerificationMail', { user, code: verificationCode.code })
   }
   return res.json({
     success: true,
@@ -93,16 +99,28 @@ export const validate_email = async (
   })
 }
 
-export const verify_code = (
+export const verify_code = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
-  // req.query.code verify code
-  return res.json({
-    success: true,
-    data: {
-      verified: true,
-    },
-  })
+  const code = req.body.code
+  const user_id = (req.user as User).id
+  const verified = await verifyCode(code, user_id)
+  if (verified)
+    return res.json({
+      success: true,
+      data: {
+        verified,
+      },
+    })
+  else
+    return res.status(500).json({
+      success: false,
+      message:
+        'Oops! The verification code you entered is incorrect! Please try again!',
+      data: {
+        verified,
+      },
+    })
 }

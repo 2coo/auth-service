@@ -1,4 +1,4 @@
-import queryString from 'querystring'
+import queryString from 'query-string'
 import { AccountStatusType, Application, Scope, User } from '@prisma/client'
 import Axios from 'axios'
 import { NextFunction, Response, Request } from 'express'
@@ -54,6 +54,7 @@ export const tenantAndDefaultAppMiddleware = async (
   if (!tenant) {
     return res.send(`The "${tenantDomain}" tenant not found!`)
   }
+  req.session.tenant = tenant
   const defaultApp = await getDefaultApplicationByTenant(tenant.id)
   req.session.defaultApp = defaultApp
   next()
@@ -328,11 +329,7 @@ export const verifyEmailIsVerified = (
   var url = options.redirectTo || '/signup/validate-email'
   var setReturnTo =
     options.setReturnTo === undefined ? true : options.setReturnTo
-  return (
-    req: any,
-    res: Response,
-    next: NextFunction,
-  ) => {
+  return (req: any, res: Response, next: NextFunction) => {
     const queryParams: any = req.query
     if (setReturnTo && req.session) {
       req.session.returnTo = req.originalUrl || req.url

@@ -15,9 +15,10 @@ import {
   getUserById,
   registerUser,
 } from './utils'
-import queryString from 'querystring'
+import queryString from 'query-string'
 import { packRules } from '@casl/ability/extra'
 import { getRulesForUser } from '../../core/authorization'
+import { uniq } from 'lodash'
 
 export const userinfo = [
   passport.authenticate('jwt', {
@@ -115,8 +116,9 @@ export const register = async (
   })) as Application & {
     Tenant: Tenant
   }
+  console.log(req.query.client_id)
   if (req.query.client_id) {
-    application = (await getClientById(req.session.defaultApp.id, {
+    application = (await getClientById(String(req.query.client_id), {
       Tenant: true,
     })) as Application & {
       Tenant: Tenant
@@ -134,7 +136,8 @@ export const register = async (
       password,
       fullname,
     },
-    application: application,
+    applications: uniq([req.session.defaultApp.id, application.id]),
+    tenantId: req.session.tenant.id,
   })
   req.login(user, function (err) {
     if (err) {

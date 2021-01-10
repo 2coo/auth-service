@@ -15,7 +15,7 @@ const loginStyles = makeStyles((theme) => ({
     }
   },
   company: {
-    fontSize: 26,
+    fontSize: 22,
     fontWeight: 500,
     color: theme.palette.primary.main
   },

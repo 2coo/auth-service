@@ -3,11 +3,11 @@ import bcrypt from 'bcryptjs'
 import { defaultRoles } from './roles'
 
 export const seedDefaultTenantWithAdmin = (prisma: PrismaClient) => {
-  const MAIL_HOST = process.env.MAIL_HOST
-  const MAIL_PORT = process.env.MAIL_PORT
-  const MAIL_USERNAME = process.env.MAIL_USER
-  const MAIL_PASSWORD = process.env.MAIL_PASS
-  const MAIL_FROM = process.env.MAIL_FROM
+  const MAIL_HOST = String(process.env.MAIL_HOST)
+  const MAIL_PORT = String(process.env.MAIL_PORT)
+  const MAIL_USERNAME = String(process.env.MAIL_USER)
+  const MAIL_PASSWORD = String(process.env.MAIL_PASS)
+  const MAIL_FROM = String(process.env.MAIL_FROM)
   const adminEmail = String(process.env.ADMIN_EMAIL)
   const adminPassword = String(process.env.ADMIN_PASSWORD)
   var salt = bcrypt.genSaltSync(10)
