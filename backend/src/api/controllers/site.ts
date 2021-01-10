@@ -9,9 +9,11 @@ import {
   generateVerificationCode,
   getClientById,
   getUserById,
+  getUserByUsernameOrEmail,
   registerUser,
   saveRememberMeToken,
   verifyCode,
+  verifyTokenAndUpdatePassword,
 } from './utils'
 import urlParser from 'url'
 import {
@@ -24,6 +26,7 @@ import {
   User,
 } from '@prisma/client'
 import Queue from '../../lib/Queue'
+import { prisma } from '../../context'
 
 export const login = [
   passport.authenticate('local', { failWithError: true }),
@@ -235,8 +238,16 @@ export const verify_code = async (
 
 export const forgot = async (req: any, res: Response, next: NextFunction) => {
   const email = req.body.email
-  // todo
-  const token = await generateResetPasswordToken(req.user.id)
+  console.log('#email', email)
+
+  const user = await getUserByUsernameOrEmail(email)
+  if (!user) {
+    return res.status(403).json({
+      success: false,
+      message: 'This email does not exist in our system!',
+    })
+  }
+  const token = await generateResetPasswordToken(user.id, req.originalUrl || req.url)
   await Queue.add('ResetPasswordMail', { email, token })
   return res.json({
     success: true,
@@ -245,4 +256,40 @@ export const forgot = async (req: any, res: Response, next: NextFunction) => {
       is_sent: true,
     },
   })
+}
+
+export const reset = async (req: any, res: Response, next: NextFunction) => {
+  const { token, password } = req.body
+  try {
+    const newPasswordToken = await verifyTokenAndUpdatePassword(
+      token,
+      password,
+    )
+    req.login(newPasswordToken.User, (err: any) => {
+      if (err) {
+        return next(err)
+      }
+      const returnTo = newPasswordToken.returnTo
+      const queryParsedString =
+        returnTo.indexOf('?') > -1
+          ? returnTo.substr(returnTo.indexOf('?'), returnTo.length)
+          : ''
+      if (req.xhr) {
+        return res.json({
+          success: true,
+          message: 'Successfully changed.',
+          data: {
+            returnTo: `/oauth2/authorize${queryParsedString}`,
+          },
+        })
+      } else {
+        return res.redirect(`/oauth2/authorize?${queryParsedString}`)
+      }
+    })
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: err.message,
+    })
+  }
 }

@@ -3,10 +3,9 @@ import { Box } from "@material-ui/core";
 import { Link, useLocation } from "@reach/router";
 import { Alert, Avatar, Button, Checkbox, Col, Divider, Form, Input, Row, Space, Spin, Typography } from "antd";
 import queryString from "query-string";
-import { FormEvent, Fragment, PropsWithChildren, useRef, useState } from "react";
+import { FormEvent, Fragment, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { StringParam, useQueryParam } from "use-query-params";
-import Logo from '../../../assets/img/Logo/Asset 10@300x.png';
 import loginStyles from "../../../assets/jss/view/loginStyles";
 import { useAxios } from "../../../utils/api";
 import { formatQueryString } from "../../../utils/format";
@@ -15,12 +14,9 @@ import IDENTITY_PROVIDERS from "../../identity-providers";
 const FormItem = Form.Item
 const { Text } = Typography
 
-interface Props extends PropsWithChildren<any> {
-}
-
 const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
-const LoginForm = ({ }: Props) => {
+const LoginForm = (props: any) => {
     const classes = loginStyles();
     const location = useLocation()
     const [clientId,] = useQueryParam('client_id', StringParam);
@@ -54,7 +50,7 @@ const LoginForm = ({ }: Props) => {
                 <Box mb={4}>
                     <Row justify="center" gutter={[0, 32]} align="middle">
                         <Space>
-                            <Avatar size={40} shape="square" src={Logo} />
+                            <Avatar size={40} shape="square" src="/logo300.png" />
                             <span className={classes.company}>TOMUJIN DIGITAL</span>
                         </Space>
                     </Row>
@@ -83,7 +79,7 @@ const LoginForm = ({ }: Props) => {
                         <Form.Item name="remember_me" valuePropName="checked" noStyle>
                             <Checkbox>Remember me</Checkbox>
                         </Form.Item>
-                        <Link className={classes.loginFormForgot} to={location.pathname === '/login' ? '/login/forgot' : '/oauth2/forgot'}>
+                        <Link className={classes.loginFormForgot} to={`${location.pathname === '/login' ? '/login/forgot' : '/oauth2/forgot'}${formatQueryString(queryParams)}`}>
                             Forgot password?
                         </Link>
                     </Form.Item>

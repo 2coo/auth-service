@@ -17,6 +17,8 @@ import ForgotPasswordPage from "../view/forgot-password/ForgotPasswordPage";
 import SignUpPage from '../view/sign-up/SignUpPage';
 import Signout from '../view/signout/Signout';
 import ValidateEmailPage from '../view/validate-email/ValidateEmailPage';
+import RecoverPage from '../view/recover/RecoverPage';
+import ResetPasswordPage from '../view/reset-password/ResetPasswordPage';
 
 const routes: Routes[] = [
   {
@@ -46,8 +48,18 @@ const routes: Routes[] = [
       },
       {
         component: ForgotPasswordPage,
-        name: "Reset Password",
+        name: "Forgot Password",
         path: "/login/forgot",
+      },
+      {
+        component: RecoverPage,
+        name: "Recover password",
+        path: "/login/recover",
+      },
+      {
+        component: ResetPasswordPage,
+        name: "Reset password",
+        path: "/login/reset",
       },
     ],
   },
@@ -62,14 +74,19 @@ const routes: Routes[] = [
     path: "/oauth2/authorize",
   },
   {
+    component: SignUpPage,
+    name: "Registration",
+    path: "/oauth2/register",
+  },
+  {
     component: ForgotPasswordPage,
     name: "Reset Password Page",
     path: "/oauth2/forgot",
   },
   {
-    component: SignUpPage,
-    name: "Registration",
-    path: "/oauth2/register",
+    component: RecoverPage,
+    name: "Recover page",
+    path: "/oauth2/recover",
   },
   {
     component: Dialog,

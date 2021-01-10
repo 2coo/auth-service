@@ -1,15 +1,15 @@
 import { Fragment } from 'react';
 import { Row } from 'antd'
-import ForgotPasswordForm from '../../components/forms/forgot-password/ForgotPasswordForm'
+import NewPasswordForm from '../../components/forms/new-password/NewPasswordForm';
 
-const ForgotPasswordPage = ({ location }: any) => {
+const ResetPassword = ({ location }: any) => {
     return (
         <Fragment>
             <Row align="middle" justify="center" style={{ minHeight: '100vh' }}>
-                <ForgotPasswordForm />
+                <NewPasswordForm />
             </Row>
         </Fragment >
     )
 }
 
-export default ForgotPasswordPage
+export default ResetPassword

@@ -27,5 +27,6 @@ export function arrayToTree(
 }
 
 export const formatQueryString = (queryParams: { [any: string]: any }) => {
+  console.log(!isEmpty(queryParams) ? `?${queryString.stringify(queryParams)}` : "");
   return !isEmpty(queryParams) ? `?${queryString.stringify(queryParams)}` : "";
 };

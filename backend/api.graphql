@@ -1647,6 +1647,7 @@ input PasswordResetCreateWithoutUserInput {
   createdAt: DateTime
   expirationDate: DateTime!
   id: String
+  returnTo: String!
   token: String!
   updatedAt: DateTime
 }
@@ -1664,6 +1665,7 @@ input PasswordResetWhereInput {
   id: StringFilter
   NOT: [PasswordResetWhereInput!]
   OR: [PasswordResetWhereInput!]
+  returnTo: StringFilter
   token: StringFilter
   updatedAt: DateTimeFilter
   User: UserWhereInput
@@ -1672,6 +1674,7 @@ input PasswordResetWhereInput {
 
 input PasswordResetWhereUniqueInput {
   id: String
+  token: String
 }
 
 type Profile {

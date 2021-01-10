@@ -11,7 +11,7 @@ import {
   Tenant,
 } from '@prisma/client'
 import fs from 'fs'
-import { flatMap, groupBy, sample, uniq, uniqBy, range } from 'lodash'
+import { flatMap, groupBy, sample, uniq, uniqBy, range, has } from 'lodash'
 import moment from 'moment'
 import { Moment } from 'moment-timezone'
 import { JWK, JWS } from 'node-jose'
@@ -657,28 +657,69 @@ export const verifyCode = async (code: string, userId: string) => {
   return verified
 }
 
-export const generateResetPasswordToken = async (userId: string) => {
+export const generateResetPasswordToken = async (
+  userId: string,
+  returnTo: string,
+): Promise<string> => {
   const token = randomBytes(48).toString('hex')
   const expDate = calculateExpirationDate(30)
-  // todo
   if (
-    await prisma.passwordReset.findUnique({
+    !(await prisma.passwordReset.findUnique({
+      where: {
+        token,
+      },
+    }))
+  ) {
+    await prisma.passwordReset.create({
+      data: {
+        token,
+        User: {
+          connect: {
+            id: userId,
+          },
+        },
+        expirationDate: expDate.toISOString(),
+        returnTo,
+      },
+    })
+    return token
+  }
+  return generateResetPasswordToken(userId, returnTo)
+}
+
+export const verifyTokenAndUpdatePassword = async (
+  token: string,
+  password: string,
+) => {
+  const resetPasswordToken = await prisma.passwordReset.findFirst({
+    where: {
+      token: token,
+      expirationDate: {
+        gt: moment().toISOString(),
+      },
+    },
+    include: {
+      User: true,
+    },
+  })
+  if (resetPasswordToken) {
+    var salt = bcrypt.genSaltSync(10)
+    var hash = bcrypt.hashSync(password, salt)
+    await prisma.user.update({
+      where: {
+        id: resetPasswordToken.User.id,
+      },
+      data: {
+        password: hash,
+        salt,
+      },
+    })
+    await prisma.passwordReset.delete({
       where: {
         token,
       },
     })
-  ) {
-
+    return resetPasswordToken
   }
-  const resetPasswordToken = prisma.passwordReset.create({
-    data: {
-      token,
-      User: {
-        connect: {
-          id: userId,
-        },
-      },
-      expirationDate: expDate.toISOString(),
-    },
-  })
+  throw Error('Token is expired or revoked code!')
 }

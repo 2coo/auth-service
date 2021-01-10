@@ -8,14 +8,12 @@ export const VerificationMail = {
     const {
       user,
       code,
-    }: { user: User & { Profile: Profile }; code: string } = data    
+    }: { user: User & { Profile: Profile }; code: string } = data
     await Mail.sendMail({
       from: mailConfig.from,
-      to: `User <${user.email}>`,
-      subject: 'Email Verification',
-      html: `<p>Hi, ${user.email}</p>
-      <p>Your verification code is <code>${code}</code>.</p>
-      `,
+      to: user.email,
+      subject: `TOMUJIN DIGITAL code you requested - ${code}`,
+      html: `<p>Your verification code is: ${code} - TOMUJIN DIGITAL TEAM.</p>`,
     })
   },
 }

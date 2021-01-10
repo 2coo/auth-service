@@ -1,16 +1,13 @@
-import { EyeInvisibleOutlined, EyeTwoTone, LoadingOutlined } from '@ant-design/icons'
 import { Box, Hidden } from "@material-ui/core"
-import { Link, useLocation } from "@reach/router"
-import { Alert, Button, Col, Form, Input, Row, Spin, Typography } from "antd"
+import { Link, Redirect, useLocation } from "@reach/router"
+import { Alert, Button, Col, Form, Input, Row, Typography } from "antd"
 import queryString from "query-string"
 import { Fragment } from "react"
+import { Helmet } from "react-helmet-async"
 import resetPasswordStyles from '../../../assets/jss/view/resetPasswordStyles'
 import { useAxios } from "../../../utils/api"
 import { formatQueryString } from "../../../utils/format"
-import FullRedirect from "../../full-redirect/FullRedirect"
-import { Helmet } from "react-helmet-async";
 
-const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 const { Title } = Typography
 const FormItem = Form.Item
 
@@ -40,19 +37,24 @@ const ResetPasswordForm = () => {
     return (
         <Fragment>
             <Helmet>
-                <title>Forgot your password?</title>
+                <title>Forgot your password</title>
             </Helmet>
             <div className={classes.form}>
                 <Row justify='center'>
                     <Title className={classes.title} level={3}>Forgot your <Hidden smUp><br /></Hidden>password?</Title>
                 </Row>
-                {resetPasswordError && <Row gutter={[0, 32]}>
+                {(resetPasswordError && resetPasswordError?.response?.status !== 403) && <Row gutter={[0, 32]}>
                     <Col span={24}>
                         <Alert message={resetPasswordError.response?.data?.message} type="error" showIcon closable />
                     </Col>
                 </Row>}
+                {
+                    resetPasswordData?.data?.is_sent && <Redirect to={`${location.pathname === '/login/forgot' ? '/login/recover' : '/oauth2/recover'}${formatQueryString(queryParams)}`} />
+                }
                 <Form layout="vertical" initialValues={{ remember_me: true }} onFinish={handleOk} form={form}>
-                    <FormItem label="Email">
+                    <FormItem label="Email"
+                        validateStatus={resetPasswordError?.response?.status === 403 ? 'error' : ''}
+                        help={resetPasswordError?.response?.status === 403 ? resetPasswordError.response?.data?.message : null}>
                         <FormItem name="email"
                             messageVariables={{
                                 name: 'Email'

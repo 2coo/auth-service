@@ -40,7 +40,7 @@ const Header = ({ collapsed, toggle }: Props) => {
                             <span style={{ color: '#999', marginRight: 4 }}>
                                 Hi
                             </span>
-                            <span>{auth.state.user?.preferred_username}</span>
+                            <span>{auth.state.user?.given_name}</span>
                             <Avatar style={{ marginLeft: 8 }} src={auth.state.user?.picture} />
                         </Fragment>
                     }

@@ -105,6 +105,7 @@ module.exports = function (app: Express.Application) {
   router.post('/oauth2/register', routes.site.register)
   router.post('/oauth2/register/get/fields', routes.site.fields)
   router.post('/oauth2/forgot', routes.site.forgot)
+  router.post('/oauth2/reset', routes.site.reset)
   router.get('/signup/validate-email', [verifySSO(), renderSPA])
   router.get('/signup/validate-email/info', [
     verifySSO(),

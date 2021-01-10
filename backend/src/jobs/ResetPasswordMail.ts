@@ -11,8 +11,8 @@ export const ResetPasswordMail = {
       to: email,
       subject:
         '[Important Action Required] Reset your TOMUJIN DIGITAL password',
-      html: `<p>It's okay! This happens to the best of us.</p><br/>
-      <a href="http://${systemConfig.domain}/login/reset?token=${token}"></a>
+      html: `<p>It's okay! This happens to the best of us.</p>
+      <a href="http://${systemConfig.domain}/login/reset?token=${token}">Reset Password</a>
       `,
     })
   },
