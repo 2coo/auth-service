@@ -18,6 +18,7 @@ import { JWK, JWS } from 'node-jose'
 import { v4 as uuidv4 } from 'uuid'
 import bcrypt from 'bcryptjs'
 import { prisma } from '../../context'
+import { randomBytes } from 'crypto'
 
 type RoleWithApplication = Role & {
   Application: Application
@@ -602,7 +603,7 @@ export const generateVerificationCode = (
   const code = range(length)
     .map((i) => getRandomInt(9))
     .join('')
-  const expDate = calculateExpirationDate(1440)
+  const expDate = calculateExpirationDate(30)
   return prisma.verificationCode.create({
     data: {
       User: {
@@ -616,16 +617,16 @@ export const generateVerificationCode = (
   })
 }
 
-export const verifyCode = async (code: string, user_id: string) => {
+export const verifyCode = async (code: string, userId: string) => {
   const user = await prisma.user.findUnique({
     where: {
-      id: user_id,
+      id: userId,
     },
   })
   if (user?.accountStatusType === AccountStatusType.CONFIRMED) return true
   const verificationCode = await prisma.verificationCode.findFirst({
     where: {
-      userId: user_id,
+      userId: userId,
       code: code,
       expirationDate: {
         gt: moment().toISOString(),
@@ -637,7 +638,7 @@ export const verifyCode = async (code: string, user_id: string) => {
   if (verificationCodeExists) {
     await prisma.user.update({
       where: {
-        id: user_id,
+        id: userId,
       },
       data: {
         accountStatusType: AccountStatusType.CONFIRMED,
@@ -648,10 +649,36 @@ export const verifyCode = async (code: string, user_id: string) => {
       where: {
         userId_code: {
           code,
-          userId: user_id,
+          userId: userId,
         },
       },
     })
   }
   return verified
+}
+
+export const generateResetPasswordToken = async (userId: string) => {
+  const token = randomBytes(48).toString('hex')
+  const expDate = calculateExpirationDate(30)
+  // todo
+  if (
+    await prisma.passwordReset.findUnique({
+      where: {
+        token,
+      },
+    })
+  ) {
+
+  }
+  const resetPasswordToken = prisma.passwordReset.create({
+    data: {
+      token,
+      User: {
+        connect: {
+          id: userId,
+        },
+      },
+      expirationDate: expDate.toISOString(),
+    },
+  })
 }

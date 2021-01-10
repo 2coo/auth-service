@@ -102,16 +102,19 @@ module.exports = function (app: Express.Application) {
     ])
     .post(routes.site.login)
 
-  router.post('/oauth2/register', routes.user.register)
-  router.post('/oauth2/register/get/fields', routes.user.fields)
+  router.post('/oauth2/register', routes.site.register)
+  router.post('/oauth2/register/get/fields', routes.site.fields)
+  router.post('/oauth2/forgot', routes.site.forgot)
   router.get('/signup/validate-email', [verifySSO(), renderSPA])
   router.get('/signup/validate-email/info', [
     verifySSO(),
     routes.site.validate_email,
   ])
   router.post('/signup/validate-email/code', [verifySSO(), routes.site.verify_code])
+  
+  
   router.get('/oauth2/userinfo', routes.user.userinfo)
-  router.get('/myabioauth2/registerlities', routes.user.abilities)
+  router.get('/myabilities', routes.user.abilities)
   router
     .route('/oauth2/authorize/dialog')
     .get([verifySSO(), verifyEmailIsVerified(), renderSPA])

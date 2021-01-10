@@ -1,18 +1,28 @@
 import queryString from 'query-string'
 import cryptoRandomString from 'crypto-random-string'
 import { NextFunction, Request, Response } from 'express'
-import { some } from 'lodash'
+import { some, uniq } from 'lodash'
 import passport from 'passport'
 import { clearCookieTokens, logoutSSO } from '../client'
 import {
+  generateResetPasswordToken,
   generateVerificationCode,
   getClientById,
   getUserById,
+  registerUser,
   saveRememberMeToken,
   verifyCode,
 } from './utils'
 import urlParser from 'url'
-import { AccountStatusType, User } from '@prisma/client'
+import {
+  AccountStatusType,
+  Application,
+  RedirectURI,
+  Scope,
+  SelfRegistrationFields,
+  Tenant,
+  User,
+} from '@prisma/client'
 import Queue from '../../lib/Queue'
 
 export const login = [
@@ -79,6 +89,104 @@ export const logout = async (req: any, res: Response, next: NextFunction) => {
   next()
 }
 
+export const fields = async (req: any, res: Response, next: NextFunction) => {
+  let application:
+    | (Application & {
+        EnabledScopes?: Scope[] | undefined
+        SelfRegistrationFields?: SelfRegistrationFields[] | undefined
+        RedirectUris?: RedirectURI[] | undefined
+      })
+    | null = await getClientById(req.session.defaultApp.id, {
+    EnabledScopes: true,
+    RedirectUris: true,
+    SelfRegistrationFields: true,
+  })
+  if (req.query.client_id) {
+    application = await getClientById(req.query.client_id, {
+      EnabledScopes: true,
+      RedirectUris: true,
+      SelfRegistrationFields: true,
+    })
+    if (!application)
+      return res.status(403).json({
+        success: false,
+        message: 'The application does not exists!',
+      })
+  }
+  if (application?.selfRegistrationEnabled) {
+    return res.json({
+      success: true,
+      data: {
+        fields: application
+          .SelfRegistrationFields!.filter((field) => field.isEnabled)
+          .map((field) => ({
+            name: field.fieldName,
+            type: field.fieldType,
+            is_required: field.isRequired,
+          })),
+      },
+    })
+  } else {
+    return res.status(403).json({
+      success: false,
+      message: 'The application is not enabled self-registration!',
+    })
+  }
+}
+
+export const register = async (
+  req: Request & {
+    session: any
+  },
+  res: Response,
+  next: NextFunction,
+) => {
+  const { email, password, fullname } = req.body
+  let application = (await getClientById(req.session.defaultApp.id, {
+    Tenant: true,
+  })) as Application & {
+    Tenant: Tenant
+  }
+  console.log(req.query.client_id)
+  if (req.query.client_id) {
+    application = (await getClientById(String(req.query.client_id), {
+      Tenant: true,
+    })) as Application & {
+      Tenant: Tenant
+    }
+  }
+  if (!application) {
+    return res.json({
+      success: false,
+      message: 'The application does not exits!',
+    })
+  }
+  const user = await registerUser({
+    data: {
+      email,
+      password,
+      fullname,
+    },
+    applications: uniq([req.session.defaultApp.id, application.id]),
+    tenantId: req.session.tenant.id,
+  })
+  req.login(user, function (err) {
+    if (err) {
+      return next(err)
+    }
+    if (req.xhr) {
+      return res.json({
+        success: true,
+        message: 'Successfully registered.',
+      })
+    } else {
+      return res.redirect(
+        `/oauth2/authorize?${queryString.stringify(req.query as any)}`,
+      )
+    }
+  })
+}
+
 export const validate_email = async (
   req: Request,
   res: Response,
@@ -123,4 +231,18 @@ export const verify_code = async (
         verified,
       },
     })
+}
+
+export const forgot = async (req: any, res: Response, next: NextFunction) => {
+  const email = req.body.email
+  // todo
+  const token = await generateResetPasswordToken(req.user.id)
+  await Queue.add('ResetPasswordMail', { email, token })
+  return res.json({
+    success: true,
+    message: 'Recovery link sent.',
+    data: {
+      is_sent: true,
+    },
+  })
 }

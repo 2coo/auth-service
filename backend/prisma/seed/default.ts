@@ -30,6 +30,7 @@ export const seedDefaultTenantWithAdmin = (prisma: PrismaClient) => {
           password: hash,
           salt: salt,
           username: 'admin',
+          accountStatusType: 'CONFIRMED',
           Profile: {
             create: {
               firstName: 'Admin',

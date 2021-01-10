@@ -14,7 +14,7 @@ export const VerificationMail = {
       to: `User <${user.email}>`,
       subject: 'Email Verification',
       html: `<p>Hi, ${user.email}</p>
-      <p>Verification code is <code>${code}</code>.</p>
+      <p>Your verification code is <code>${code}</code>.</p>
       `,
     })
   },

@@ -44,7 +44,6 @@ const LoginForm = ({ }: Props) => {
         <Fragment>
             <Helmet>
                 <title>Login</title>
-                <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
             </Helmet>
             <div className={classes.form}>
                 {error && <Row gutter={[0, 32]}>
@@ -84,9 +83,9 @@ const LoginForm = ({ }: Props) => {
                         <Form.Item name="remember_me" valuePropName="checked" noStyle>
                             <Checkbox>Remember me</Checkbox>
                         </Form.Item>
-                        <Link className={classes.loginFormForgot} to="/password/new">
+                        <Link className={classes.loginFormForgot} to={location.pathname === '/login' ? '/login/forgot' : '/oauth2/forgot'}>
                             Forgot password?
-                            </Link>
+                        </Link>
                     </Form.Item>
                     <Space size={15} direction="vertical" style={{
                         width: "100%"

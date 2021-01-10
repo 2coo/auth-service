@@ -13,7 +13,7 @@ import User from "../view/app/user/User";
 import Dialog from "../view/dialog/Dialog";
 import Landing from "../view/landing/Landing";
 import LoginPage from "../view/login/LoginPage";
-import ResetPassword from "../view/reset-password/ResetPassword";
+import ForgotPasswordPage from "../view/forgot-password/ForgotPasswordPage";
 import SignUpPage from '../view/sign-up/SignUpPage';
 import Signout from '../view/signout/Signout';
 import ValidateEmailPage from '../view/validate-email/ValidateEmailPage';
@@ -44,6 +44,11 @@ const routes: Routes[] = [
         name: "SignUp",
         path: "/signup",
       },
+      {
+        component: ForgotPasswordPage,
+        name: "Reset Password",
+        path: "/login/forgot",
+      },
     ],
   },
   {
@@ -57,14 +62,14 @@ const routes: Routes[] = [
     path: "/oauth2/authorize",
   },
   {
+    component: ForgotPasswordPage,
+    name: "Reset Password Page",
+    path: "/oauth2/forgot",
+  },
+  {
     component: SignUpPage,
     name: "Registration",
     path: "/oauth2/register",
-  },
-  {
-    component: ResetPassword,
-    name: "Reset Password",
-    path: "/password/new",
   },
   {
     component: Dialog,
