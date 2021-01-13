@@ -23,6 +23,6 @@ const http = HTTP.createServer(app);
 graphqlServer.applyMiddleware({ app });
 graphqlServer.installSubscriptionHandlers(http);
 require('./api/')(app);
-http.listen(5000, '0.0.0.0', () => {
-    console.log(`🚀 GraphQL service ready at http://0.0.0.0:5000/graphql`);
+http.listen(system_1.default.port, '0.0.0.0', () => {
+    console.log(`🚀 GraphQL service ready at http://0.0.0.0:${system_1.default.port}/graphql`);
 });

@@ -249,7 +249,6 @@ export const authorization = async (
       EnabledScopes: true,
     })
   }
-  console.log(application)
   req.query = {
     ...queryString.parse(defaultLinkBuilder(application, '')),
     ...req.query,

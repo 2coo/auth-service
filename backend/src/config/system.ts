@@ -1,5 +1,6 @@
 export default {
   domain: String(process.env.DOMAIN || 'auth.test'),
+  port: Number(process.env.PORT || 5000),
   app_secret: String(process.env.APP_SECRET || 'app$!23secret'),
   session_secret: process.env.SESSION_SECRET || 's4per$ecret',
   session_max_age: Number(process.env.SESSION_MAX_AGE || 3600),
