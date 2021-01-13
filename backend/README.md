@@ -1,40 +1,67 @@
-# Configure
+# ON DEVELOPMENT
 
-Please, create .env.development from example.env by coping and configure database and port
+## 1. Create environment file
 
-```bash
-ssh-keygen -t rsa -P "" -b 4096 -m PEM -f ./keys/default.key
-ssh-keygen -e -m PEM -f ./keys/default.key > ./keys/default.key.pub
+You can create environment file (.env) by using example.env template.
+
+```
+$ cp example.env .env
 ```
 
-1. First install packages
+then open .env and edit variables.
+
+## 2. Install dependencies
 
 ```
 $ yarn install
 ```
 
-`After that it will generate Prisma client automatically.`
-
-`Don't install prisma/client & prisma/cli because you already have prisma cli from nexus-prisma-plugin.`
-
-Datamodel - Prisma schema
-
-![Workflow](https://i.ibb.co/S02741J/prisma-migrate.png)
-
-If you have faced problem with migration, [click here](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-migrate) to read more.
-
-Command:
-
+## 3. Initialize database
+***If your database setupped for development:***
 ```
-$ npx prisma
+$ yarn dev:migrate
 ```
 
-```
-$ npx prisma migrate
-```
-
-# Run install
+## 4. Seed database with default data
 
 ```
-$ yarn run dev
+$ yarn seed
+$ yarn dev:seed
+```
+
+## 5. Start server for development
+
+```
+$ yarn dev
+```
+
+# ON PRODUCTION
+
+## 1. Build code (typescript to javascript)
+
+```
+$ yarn build
+```
+
+## 2. Start server for production
+
+```
+$ yarn start
+```
+
+# Using docker on production
+
+```
+$ docker-compose up
+$ #docker-compose up --force-recreate --build
+```
+
+#### Other useful commands
+
+```
+$ docker exec -it $container_name sh
+$ docker ps -a
+$ docker images
+$ docker rm -f $container_id_or_name
+$ docker rmi -f $container_id_or_name
 ```
