@@ -1,6 +1,6 @@
 export * from './Tenant'
 export * from './SMTPSecurity'
-export * from './EmailSettings'
+export * from './MailSetting'
 export * from './AuthPayload'
 export * from './Group'
 export * from './AccountStatusType'

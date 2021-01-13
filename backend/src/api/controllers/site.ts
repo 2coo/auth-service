@@ -1,32 +1,30 @@
-import queryString from 'query-string'
-import cryptoRandomString from 'crypto-random-string'
-import { NextFunction, Request, Response } from 'express'
-import { some, uniq } from 'lodash'
-import passport from 'passport'
-import { clearCookieTokens, logoutSSO } from '../client'
-import {
-  generateResetPasswordToken,
-  generateVerificationCode,
-  getClientById,
-  getUserById,
-  getUserByUsernameOrEmail,
-  registerUser,
-  saveRememberMeToken,
-  verifyCode,
-  verifyTokenAndUpdatePassword,
-} from './utils'
-import urlParser from 'url'
 import {
   AccountStatusType,
   Application,
   RedirectURI,
   Scope,
-  SelfRegistrationFields,
+  SelfRegistrationField,
   Tenant,
-  User,
+  User
 } from '@prisma/client'
+import * as cryptoRandomString from 'crypto-random-string'
+import { NextFunction, Request, Response } from 'express'
+import { some, uniq } from 'lodash'
+import * as passport from 'passport'
+import * as queryString from 'query-string'
+import * as urlParser from 'url'
 import Queue from '../../lib/Queue'
-import { prisma } from '../../context'
+import { clearCookieTokens, logoutSSO } from '../client'
+import {
+  generateResetPasswordToken,
+  generateVerificationCode,
+  getClientById,
+  getUserByUsernameOrEmail,
+  registerUser,
+  saveRememberMeToken,
+  verifyCode,
+  verifyTokenAndUpdatePassword
+} from './utils'
 
 export const login = [
   passport.authenticate('local', { failWithError: true }),
@@ -96,7 +94,7 @@ export const fields = async (req: any, res: Response, next: NextFunction) => {
   let application:
     | (Application & {
         EnabledScopes?: Scope[] | undefined
-        SelfRegistrationFields?: SelfRegistrationFields[] | undefined
+        SelfRegistrationFields?: SelfRegistrationField[] | undefined
         RedirectUris?: RedirectURI[] | undefined
       })
     | null = await getClientById(req.session.defaultApp.id, {
@@ -247,7 +245,10 @@ export const forgot = async (req: any, res: Response, next: NextFunction) => {
       message: 'This email does not exist in our system!',
     })
   }
-  const token = await generateResetPasswordToken(user.id, req.originalUrl || req.url)
+  const token = await generateResetPasswordToken(
+    user.id,
+    req.originalUrl || req.url,
+  )
   await Queue.add('ResetPasswordMail', { email, token })
   return res.json({
     success: true,
@@ -261,10 +262,7 @@ export const forgot = async (req: any, res: Response, next: NextFunction) => {
 export const reset = async (req: any, res: Response, next: NextFunction) => {
   const { token, password } = req.body
   try {
-    const newPasswordToken = await verifyTokenAndUpdatePassword(
-      token,
-      password,
-    )
+    const newPasswordToken = await verifyTokenAndUpdatePassword(token, password)
     req.login(newPasswordToken.User, (err: any) => {
       if (err) {
         return next(err)

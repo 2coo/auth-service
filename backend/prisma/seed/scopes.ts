@@ -1,4 +1,4 @@
-import { PrismaClient, Scope } from '@prisma/client'
+import { PrismaClient } from '@prisma/client'
 
 export const seedDefaultScopes = (prisma: PrismaClient) => {
   const scope1 = prisma.scope.create({

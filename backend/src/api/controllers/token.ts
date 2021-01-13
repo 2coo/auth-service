@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express'
-import passport from 'passport'
+import * as passport from 'passport'
 import { prisma } from '../../context'
-import fs from 'fs'
-import jose from 'node-jose'
+import * as fs from 'fs'
+import * as jose from 'node-jose'
 
 export const revoke = [
   passport.authenticate(['basic', 'clientPassword'], {

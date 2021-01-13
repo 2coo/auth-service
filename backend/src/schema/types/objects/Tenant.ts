@@ -7,7 +7,7 @@ export const Tenant = objectType({
     t.model.domainName()
     t.model.isAcitve()
     t.model.Applications()
-    t.model.EmailSettings()
+    t.model.MailSetting()
     t.model.Groups()
     t.model.createdAt()
     t.model.updatedAt()

@@ -47,7 +47,7 @@ UNIQUE INDEX `Application.tenantId_name_unique`(`tenantId`, `name`),
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `SelfRegistrationFields` (
+CREATE TABLE `SelfRegistrationField` (
     `id` VARCHAR(191) NOT NULL,
     `fieldName` VARCHAR(191) NOT NULL,
     `fieldType` VARCHAR(191),
@@ -319,7 +319,7 @@ UNIQUE INDEX `PasswordReset.token_unique`(`token`),
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `EmailSettings` (
+CREATE TABLE `MailSetting` (
     `id` VARCHAR(191) NOT NULL,
     `tenantId` VARCHAR(191) NOT NULL,
     `host` VARCHAR(191) NOT NULL,
@@ -333,7 +333,7 @@ CREATE TABLE `EmailSettings` (
     `name` VARCHAR(191),
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
-UNIQUE INDEX `EmailSettings_tenantId_unique`(`tenantId`),
+UNIQUE INDEX `MailSetting_tenantId_unique`(`tenantId`),
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -371,7 +371,7 @@ CREATE TABLE `AuditLog` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `FailedLoginLogs` (
+CREATE TABLE `FailedLoginLog` (
     `id` VARCHAR(191) NOT NULL,
     `count` INT NOT NULL DEFAULT 1,
     `tenantId` VARCHAR(191) NOT NULL,
@@ -476,7 +476,7 @@ ALTER TABLE `Registration` ADD FOREIGN KEY (`applicationId`) REFERENCES `Applica
 ALTER TABLE `Application` ADD FOREIGN KEY (`tenantId`) REFERENCES `Tenant`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `SelfRegistrationFields` ADD FOREIGN KEY (`applicationId`) REFERENCES `Application`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `SelfRegistrationField` ADD FOREIGN KEY (`applicationId`) REFERENCES `Application`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Scope` ADD FOREIGN KEY (`ResourceServerId`) REFERENCES `ResourceServer`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
@@ -548,7 +548,7 @@ ALTER TABLE `RememberMe` ADD FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON D
 ALTER TABLE `PasswordReset` ADD FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `EmailSettings` ADD FOREIGN KEY (`tenantId`) REFERENCES `Tenant`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `MailSetting` ADD FOREIGN KEY (`tenantId`) REFERENCES `Tenant`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `FailedLogin` ADD FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -557,10 +557,10 @@ ALTER TABLE `FailedLogin` ADD FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON 
 ALTER TABLE `UserDevice` ADD FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `FailedLoginLogs` ADD FOREIGN KEY (`tenantId`) REFERENCES `Tenant`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `FailedLoginLog` ADD FOREIGN KEY (`tenantId`) REFERENCES `Tenant`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `FailedLoginLogs` ADD FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `FailedLoginLog` ADD FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `LoginLog` ADD FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

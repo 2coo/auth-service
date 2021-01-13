@@ -2,7 +2,7 @@ import { join } from 'path'
 import { makeSchema } from 'nexus'
 import { nexusPrisma } from 'nexus-plugin-prisma'
 import * as types from './types'
-import path from 'path'
+import * as path from 'path'
 
 export const schema = makeSchema({
   shouldExitAfterGenerateArtifacts:

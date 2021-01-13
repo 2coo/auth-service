@@ -1,4 +1,4 @@
-import redis from 'redis'
+import * as redis from 'redis'
 const RedisStore = require('./redisstore')
 import redisConfig from './config/redis'
 

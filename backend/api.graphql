@@ -264,7 +264,7 @@ input ApplicationCreateWithoutAccessTokensInput {
   Roles: RoleCreateManyWithoutApplicationInput
   secret: String
   selfRegistrationEnabled: Boolean
-  SelfRegistrationFields: SelfRegistrationFieldsCreateManyWithoutApplicationInput
+  SelfRegistrationFields: SelfRegistrationFieldCreateManyWithoutApplicationInput
   Tenant: TenantCreateOneWithoutApplicationsInput!
   trustedApplication: Boolean
   updatedAt: DateTime
@@ -292,7 +292,7 @@ input ApplicationCreateWithoutAuthorizationCodesInput {
   Roles: RoleCreateManyWithoutApplicationInput
   secret: String
   selfRegistrationEnabled: Boolean
-  SelfRegistrationFields: SelfRegistrationFieldsCreateManyWithoutApplicationInput
+  SelfRegistrationFields: SelfRegistrationFieldCreateManyWithoutApplicationInput
   Tenant: TenantCreateOneWithoutApplicationsInput!
   trustedApplication: Boolean
   updatedAt: DateTime
@@ -320,7 +320,7 @@ input ApplicationCreateWithoutEnabledScopesInput {
   Roles: RoleCreateManyWithoutApplicationInput
   secret: String
   selfRegistrationEnabled: Boolean
-  SelfRegistrationFields: SelfRegistrationFieldsCreateManyWithoutApplicationInput
+  SelfRegistrationFields: SelfRegistrationFieldCreateManyWithoutApplicationInput
   Tenant: TenantCreateOneWithoutApplicationsInput!
   trustedApplication: Boolean
   updatedAt: DateTime
@@ -348,7 +348,7 @@ input ApplicationCreateWithoutExternalIdentifierInput {
   Roles: RoleCreateManyWithoutApplicationInput
   secret: String
   selfRegistrationEnabled: Boolean
-  SelfRegistrationFields: SelfRegistrationFieldsCreateManyWithoutApplicationInput
+  SelfRegistrationFields: SelfRegistrationFieldCreateManyWithoutApplicationInput
   Tenant: TenantCreateOneWithoutApplicationsInput!
   trustedApplication: Boolean
   updatedAt: DateTime
@@ -376,7 +376,7 @@ input ApplicationCreateWithoutIdentityProvidersInput {
   Roles: RoleCreateManyWithoutApplicationInput
   secret: String
   selfRegistrationEnabled: Boolean
-  SelfRegistrationFields: SelfRegistrationFieldsCreateManyWithoutApplicationInput
+  SelfRegistrationFields: SelfRegistrationFieldCreateManyWithoutApplicationInput
   Tenant: TenantCreateOneWithoutApplicationsInput!
   trustedApplication: Boolean
   updatedAt: DateTime
@@ -404,7 +404,7 @@ input ApplicationCreateWithoutLoginLogInput {
   Roles: RoleCreateManyWithoutApplicationInput
   secret: String
   selfRegistrationEnabled: Boolean
-  SelfRegistrationFields: SelfRegistrationFieldsCreateManyWithoutApplicationInput
+  SelfRegistrationFields: SelfRegistrationFieldCreateManyWithoutApplicationInput
   Tenant: TenantCreateOneWithoutApplicationsInput!
   trustedApplication: Boolean
   updatedAt: DateTime
@@ -432,7 +432,7 @@ input ApplicationCreateWithoutRefreshTokensInput {
   Roles: RoleCreateManyWithoutApplicationInput
   secret: String
   selfRegistrationEnabled: Boolean
-  SelfRegistrationFields: SelfRegistrationFieldsCreateManyWithoutApplicationInput
+  SelfRegistrationFields: SelfRegistrationFieldCreateManyWithoutApplicationInput
   Tenant: TenantCreateOneWithoutApplicationsInput!
   trustedApplication: Boolean
   updatedAt: DateTime
@@ -460,7 +460,7 @@ input ApplicationCreateWithoutRegistrationsInput {
   Roles: RoleCreateManyWithoutApplicationInput
   secret: String
   selfRegistrationEnabled: Boolean
-  SelfRegistrationFields: SelfRegistrationFieldsCreateManyWithoutApplicationInput
+  SelfRegistrationFields: SelfRegistrationFieldCreateManyWithoutApplicationInput
   Tenant: TenantCreateOneWithoutApplicationsInput!
   trustedApplication: Boolean
   updatedAt: DateTime
@@ -488,7 +488,7 @@ input ApplicationCreateWithoutRolesInput {
   Registrations: RegistrationCreateManyWithoutApplicationInput
   secret: String
   selfRegistrationEnabled: Boolean
-  SelfRegistrationFields: SelfRegistrationFieldsCreateManyWithoutApplicationInput
+  SelfRegistrationFields: SelfRegistrationFieldCreateManyWithoutApplicationInput
   Tenant: TenantCreateOneWithoutApplicationsInput!
   trustedApplication: Boolean
   updatedAt: DateTime
@@ -517,7 +517,7 @@ input ApplicationCreateWithoutTenantInput {
   Roles: RoleCreateManyWithoutApplicationInput
   secret: String
   selfRegistrationEnabled: Boolean
-  SelfRegistrationFields: SelfRegistrationFieldsCreateManyWithoutApplicationInput
+  SelfRegistrationFields: SelfRegistrationFieldCreateManyWithoutApplicationInput
   trustedApplication: Boolean
   updatedAt: DateTime
 }
@@ -526,6 +526,11 @@ input ApplicationListRelationFilter {
   every: ApplicationWhereInput
   none: ApplicationWhereInput
   some: ApplicationWhereInput
+}
+
+input ApplicationTenantIdNameCompoundUniqueInput {
+  name: String!
+  tenantId: String!
 }
 
 input ApplicationWhereInput {
@@ -554,7 +559,7 @@ input ApplicationWhereInput {
   Roles: RoleListRelationFilter
   secret: StringFilter
   selfRegistrationEnabled: BoolFilter
-  SelfRegistrationFields: SelfRegistrationFieldsListRelationFilter
+  SelfRegistrationFields: SelfRegistrationFieldListRelationFilter
   Tenant: TenantWhereInput
   tenantId: StringFilter
   trustedApplication: BoolFilter
@@ -563,7 +568,7 @@ input ApplicationWhereInput {
 
 input ApplicationWhereUniqueInput {
   id: String
-  tenantId_name: TenantIdNameCompoundUniqueInput
+  tenantId_name: ApplicationTenantIdNameCompoundUniqueInput
 }
 
 type AuthorizationCode {
@@ -702,69 +707,6 @@ input DateTimeNullableFilter {
   lte: DateTime
   not: NestedDateTimeNullableFilter
   notIn: [DateTime!]
-}
-
-type EmailSettings {
-  createdAt: DateTime!
-  from: String!
-  host: String!
-  id: String!
-  name: String
-  password: String
-  port: String!
-  SMTPSecurity: SMTPSecurity!
-  updatedAt: DateTime!
-  username: String
-}
-
-input EmailSettingsCreateOneWithoutTenantInput {
-  connect: EmailSettingsWhereUniqueInput
-  connectOrCreate: EmailSettingsCreateOrConnectWithoutTenantInput
-  create: EmailSettingsCreateWithoutTenantInput
-}
-
-input EmailSettingsCreateOrConnectWithoutTenantInput {
-  create: EmailSettingsCreateWithoutTenantInput!
-  where: EmailSettingsWhereUniqueInput!
-}
-
-input EmailSettingsCreateWithoutTenantInput {
-  ciphers: String
-  createdAt: DateTime
-  from: String!
-  host: String!
-  id: String
-  name: String
-  password: String
-  port: String!
-  secure: Boolean
-  SMTPSecurity: SMTPSecurity
-  updatedAt: DateTime
-  username: String
-}
-
-input EmailSettingsWhereInput {
-  AND: [EmailSettingsWhereInput!]
-  ciphers: StringNullableFilter
-  createdAt: DateTimeFilter
-  from: StringFilter
-  host: StringFilter
-  id: StringFilter
-  name: StringNullableFilter
-  NOT: [EmailSettingsWhereInput!]
-  OR: [EmailSettingsWhereInput!]
-  password: StringNullableFilter
-  port: StringFilter
-  secure: BoolFilter
-  SMTPSecurity: EnumSMTPSecurityFilter
-  Tenant: TenantWhereInput
-  tenantId: StringFilter
-  updatedAt: DateTimeFilter
-  username: StringNullableFilter
-}
-
-input EmailSettingsWhereUniqueInput {
-  id: String
 }
 
 input EnumAccountStatusTypeFilter {
@@ -991,29 +933,29 @@ input FailedLoginListRelationFilter {
   some: FailedLoginWhereInput
 }
 
-input FailedLoginLogsCreateManyWithoutTenantInput {
-  connect: [FailedLoginLogsWhereUniqueInput!]
-  connectOrCreate: [FailedLoginLogsCreateOrConnectWithoutTenantInput!]
-  create: [FailedLoginLogsCreateWithoutTenantInput!]
+input FailedLoginLogCreateManyWithoutTenantInput {
+  connect: [FailedLoginLogWhereUniqueInput!]
+  connectOrCreate: [FailedLoginLogCreateOrConnectWithoutTenantInput!]
+  create: [FailedLoginLogCreateWithoutTenantInput!]
 }
 
-input FailedLoginLogsCreateManyWithoutUserInput {
-  connect: [FailedLoginLogsWhereUniqueInput!]
-  connectOrCreate: [FailedLoginLogsCreateOrConnectWithoutUserInput!]
-  create: [FailedLoginLogsCreateWithoutUserInput!]
+input FailedLoginLogCreateManyWithoutUserInput {
+  connect: [FailedLoginLogWhereUniqueInput!]
+  connectOrCreate: [FailedLoginLogCreateOrConnectWithoutUserInput!]
+  create: [FailedLoginLogCreateWithoutUserInput!]
 }
 
-input FailedLoginLogsCreateOrConnectWithoutTenantInput {
-  create: FailedLoginLogsCreateWithoutTenantInput!
-  where: FailedLoginLogsWhereUniqueInput!
+input FailedLoginLogCreateOrConnectWithoutTenantInput {
+  create: FailedLoginLogCreateWithoutTenantInput!
+  where: FailedLoginLogWhereUniqueInput!
 }
 
-input FailedLoginLogsCreateOrConnectWithoutUserInput {
-  create: FailedLoginLogsCreateWithoutUserInput!
-  where: FailedLoginLogsWhereUniqueInput!
+input FailedLoginLogCreateOrConnectWithoutUserInput {
+  create: FailedLoginLogCreateWithoutUserInput!
+  where: FailedLoginLogWhereUniqueInput!
 }
 
-input FailedLoginLogsCreateWithoutTenantInput {
+input FailedLoginLogCreateWithoutTenantInput {
   count: Int
   createdAt: DateTime
   id: String
@@ -1021,7 +963,7 @@ input FailedLoginLogsCreateWithoutTenantInput {
   User: UserCreateOneWithoutFailedLoginLogsInput!
 }
 
-input FailedLoginLogsCreateWithoutUserInput {
+input FailedLoginLogCreateWithoutUserInput {
   count: Int
   createdAt: DateTime
   id: String
@@ -1029,19 +971,19 @@ input FailedLoginLogsCreateWithoutUserInput {
   updatedAt: DateTime
 }
 
-input FailedLoginLogsListRelationFilter {
-  every: FailedLoginLogsWhereInput
-  none: FailedLoginLogsWhereInput
-  some: FailedLoginLogsWhereInput
+input FailedLoginLogListRelationFilter {
+  every: FailedLoginLogWhereInput
+  none: FailedLoginLogWhereInput
+  some: FailedLoginLogWhereInput
 }
 
-input FailedLoginLogsWhereInput {
-  AND: [FailedLoginLogsWhereInput!]
+input FailedLoginLogWhereInput {
+  AND: [FailedLoginLogWhereInput!]
   count: IntFilter
   createdAt: DateTimeFilter
   id: StringFilter
-  NOT: [FailedLoginLogsWhereInput!]
-  OR: [FailedLoginLogsWhereInput!]
+  NOT: [FailedLoginLogWhereInput!]
+  OR: [FailedLoginLogWhereInput!]
   Tenant: TenantWhereInput
   tenantId: StringFilter
   updatedAt: DateTimeFilter
@@ -1049,7 +991,7 @@ input FailedLoginLogsWhereInput {
   userId: StringFilter
 }
 
-input FailedLoginLogsWhereUniqueInput {
+input FailedLoginLogWhereUniqueInput {
   id: String
 }
 
@@ -1502,19 +1444,72 @@ input LoginLogWhereUniqueInput {
   id: String
 }
 
+type MailSetting {
+  createdAt: DateTime!
+  from: String!
+  host: String!
+  id: String!
+  name: String
+  password: String
+  port: String!
+  SMTPSecurity: SMTPSecurity!
+  updatedAt: DateTime!
+  username: String
+}
+
+input MailSettingCreateOneWithoutTenantInput {
+  connect: MailSettingWhereUniqueInput
+  connectOrCreate: MailSettingCreateOrConnectWithoutTenantInput
+  create: MailSettingCreateWithoutTenantInput
+}
+
+input MailSettingCreateOrConnectWithoutTenantInput {
+  create: MailSettingCreateWithoutTenantInput!
+  where: MailSettingWhereUniqueInput!
+}
+
+input MailSettingCreateWithoutTenantInput {
+  ciphers: String
+  createdAt: DateTime
+  from: String!
+  host: String!
+  id: String
+  name: String
+  password: String
+  port: String!
+  secure: Boolean
+  SMTPSecurity: SMTPSecurity
+  updatedAt: DateTime
+  username: String
+}
+
+input MailSettingWhereInput {
+  AND: [MailSettingWhereInput!]
+  ciphers: StringNullableFilter
+  createdAt: DateTimeFilter
+  from: StringFilter
+  host: StringFilter
+  id: StringFilter
+  name: StringNullableFilter
+  NOT: [MailSettingWhereInput!]
+  OR: [MailSettingWhereInput!]
+  password: StringNullableFilter
+  port: StringFilter
+  secure: BoolFilter
+  SMTPSecurity: EnumSMTPSecurityFilter
+  Tenant: TenantWhereInput
+  tenantId: StringFilter
+  updatedAt: DateTimeFilter
+  username: StringNullableFilter
+}
+
+input MailSettingWhereUniqueInput {
+  id: String
+}
+
 type Mutation {
   createOneUser(data: UserCreateInput!): User!
   login(email: String!, password: String!): AuthPayload
-}
-
-input NameApplicationIdCompoundUniqueInput {
-  applicationId: String!
-  name: String!
-}
-
-input NameProfileIdCompoundUniqueInput {
-  name: String!
-  profileId: String!
 }
 
 input NestedBoolFilter {
@@ -1968,6 +1963,16 @@ input RegistrationListRelationFilter {
   some: RegistrationWhereInput
 }
 
+input RegistrationUserIdApplicationIdCompoundUniqueInput {
+  applicationId: String!
+  userId: String!
+}
+
+input RegistrationUsernameApplicationIdCompoundUniqueInput {
+  applicationId: String!
+  username: String!
+}
+
 input RegistrationWhereInput {
   AND: [RegistrationWhereInput!]
   Application: ApplicationWhereInput
@@ -1987,8 +1992,8 @@ input RegistrationWhereInput {
 
 input RegistrationWhereUniqueInput {
   id: String
-  userId_applicationId: UserIdApplicationIdCompoundUniqueInput
-  username_applicationId: UsernameApplicationIdCompoundUniqueInput
+  userId_applicationId: RegistrationUserIdApplicationIdCompoundUniqueInput
+  username_applicationId: RegistrationUsernameApplicationIdCompoundUniqueInput
 }
 
 input RememberMeCreateManyWithoutUserInput {
@@ -2220,6 +2225,11 @@ input RoleListRelationFilter {
   some: RoleWhereInput
 }
 
+input RoleNameApplicationIdCompoundUniqueInput {
+  applicationId: String!
+  name: String!
+}
+
 input RoleWhereInput {
   AND: [RoleWhereInput!]
   Application: ApplicationWhereInput
@@ -2242,7 +2252,7 @@ input RoleWhereInput {
 
 input RoleWhereUniqueInput {
   id: String
-  name_applicationId: NameApplicationIdCompoundUniqueInput
+  name_applicationId: RoleNameApplicationIdCompoundUniqueInput
 }
 
 type Scope {
@@ -2375,18 +2385,18 @@ input ScopeWhereUniqueInput {
   name: String
 }
 
-input SelfRegistrationFieldsCreateManyWithoutApplicationInput {
-  connect: [SelfRegistrationFieldsWhereUniqueInput!]
-  connectOrCreate: [SelfRegistrationFieldsCreateOrConnectWithoutApplicationInput!]
-  create: [SelfRegistrationFieldsCreateWithoutApplicationInput!]
+input SelfRegistrationFieldCreateManyWithoutApplicationInput {
+  connect: [SelfRegistrationFieldWhereUniqueInput!]
+  connectOrCreate: [SelfRegistrationFieldCreateOrConnectWithoutApplicationInput!]
+  create: [SelfRegistrationFieldCreateWithoutApplicationInput!]
 }
 
-input SelfRegistrationFieldsCreateOrConnectWithoutApplicationInput {
-  create: SelfRegistrationFieldsCreateWithoutApplicationInput!
-  where: SelfRegistrationFieldsWhereUniqueInput!
+input SelfRegistrationFieldCreateOrConnectWithoutApplicationInput {
+  create: SelfRegistrationFieldCreateWithoutApplicationInput!
+  where: SelfRegistrationFieldWhereUniqueInput!
 }
 
-input SelfRegistrationFieldsCreateWithoutApplicationInput {
+input SelfRegistrationFieldCreateWithoutApplicationInput {
   createdAt: DateTime
   fieldName: String!
   fieldType: String
@@ -2396,14 +2406,14 @@ input SelfRegistrationFieldsCreateWithoutApplicationInput {
   updatedAt: DateTime
 }
 
-input SelfRegistrationFieldsListRelationFilter {
-  every: SelfRegistrationFieldsWhereInput
-  none: SelfRegistrationFieldsWhereInput
-  some: SelfRegistrationFieldsWhereInput
+input SelfRegistrationFieldListRelationFilter {
+  every: SelfRegistrationFieldWhereInput
+  none: SelfRegistrationFieldWhereInput
+  some: SelfRegistrationFieldWhereInput
 }
 
-input SelfRegistrationFieldsWhereInput {
-  AND: [SelfRegistrationFieldsWhereInput!]
+input SelfRegistrationFieldWhereInput {
+  AND: [SelfRegistrationFieldWhereInput!]
   Application: ApplicationWhereInput
   applicationId: StringFilter
   createdAt: DateTimeFilter
@@ -2412,12 +2422,12 @@ input SelfRegistrationFieldsWhereInput {
   id: StringFilter
   isEnabled: BoolFilter
   isRequired: BoolFilter
-  NOT: [SelfRegistrationFieldsWhereInput!]
-  OR: [SelfRegistrationFieldsWhereInput!]
+  NOT: [SelfRegistrationFieldWhereInput!]
+  OR: [SelfRegistrationFieldWhereInput!]
   updatedAt: DateTimeFilter
 }
 
-input SelfRegistrationFieldsWhereUniqueInput {
+input SelfRegistrationFieldWhereUniqueInput {
   id: String
 }
 
@@ -2472,10 +2482,10 @@ type Tenant {
   Applications(after: ApplicationWhereUniqueInput, before: ApplicationWhereUniqueInput, first: Int, last: Int): [Application!]!
   createdAt: DateTime!
   domainName: String!
-  EmailSettings: EmailSettings
   Groups(after: GroupWhereUniqueInput, before: GroupWhereUniqueInput, first: Int, last: Int): [Group!]!
   id: String!
   isAcitve: Boolean!
+  MailSetting: MailSetting
   updatedAt: DateTime!
 }
 
@@ -2537,12 +2547,12 @@ input TenantCreateOrConnectWithoutUsersInput {
 input TenantCreateWithoutApplicationsInput {
   createdAt: DateTime
   domainName: String!
-  EmailSettings: EmailSettingsCreateOneWithoutTenantInput
   ExternalIdentifier: ExternalIdentifierCreateManyWithoutTenantInput
-  FailedLoginLogs: FailedLoginLogsCreateManyWithoutTenantInput
+  FailedLoginLogs: FailedLoginLogCreateManyWithoutTenantInput
   Groups: GroupCreateManyWithoutTenantInput
   id: String
   isAcitve: Boolean
+  MailSetting: MailSettingCreateOneWithoutTenantInput
   updatedAt: DateTime
   Users: UserCreateManyWithoutTenantInput
 }
@@ -2551,11 +2561,11 @@ input TenantCreateWithoutExternalIdentifierInput {
   Applications: ApplicationCreateManyWithoutTenantInput
   createdAt: DateTime
   domainName: String!
-  EmailSettings: EmailSettingsCreateOneWithoutTenantInput
-  FailedLoginLogs: FailedLoginLogsCreateManyWithoutTenantInput
+  FailedLoginLogs: FailedLoginLogCreateManyWithoutTenantInput
   Groups: GroupCreateManyWithoutTenantInput
   id: String
   isAcitve: Boolean
+  MailSetting: MailSettingCreateOneWithoutTenantInput
   updatedAt: DateTime
   Users: UserCreateManyWithoutTenantInput
 }
@@ -2564,11 +2574,11 @@ input TenantCreateWithoutFailedLoginLogsInput {
   Applications: ApplicationCreateManyWithoutTenantInput
   createdAt: DateTime
   domainName: String!
-  EmailSettings: EmailSettingsCreateOneWithoutTenantInput
   ExternalIdentifier: ExternalIdentifierCreateManyWithoutTenantInput
   Groups: GroupCreateManyWithoutTenantInput
   id: String
   isAcitve: Boolean
+  MailSetting: MailSettingCreateOneWithoutTenantInput
   updatedAt: DateTime
   Users: UserCreateManyWithoutTenantInput
 }
@@ -2577,11 +2587,11 @@ input TenantCreateWithoutGroupsInput {
   Applications: ApplicationCreateManyWithoutTenantInput
   createdAt: DateTime
   domainName: String!
-  EmailSettings: EmailSettingsCreateOneWithoutTenantInput
   ExternalIdentifier: ExternalIdentifierCreateManyWithoutTenantInput
-  FailedLoginLogs: FailedLoginLogsCreateManyWithoutTenantInput
+  FailedLoginLogs: FailedLoginLogCreateManyWithoutTenantInput
   id: String
   isAcitve: Boolean
+  MailSetting: MailSettingCreateOneWithoutTenantInput
   updatedAt: DateTime
   Users: UserCreateManyWithoutTenantInput
 }
@@ -2590,18 +2600,13 @@ input TenantCreateWithoutUsersInput {
   Applications: ApplicationCreateManyWithoutTenantInput
   createdAt: DateTime
   domainName: String!
-  EmailSettings: EmailSettingsCreateOneWithoutTenantInput
   ExternalIdentifier: ExternalIdentifierCreateManyWithoutTenantInput
-  FailedLoginLogs: FailedLoginLogsCreateManyWithoutTenantInput
+  FailedLoginLogs: FailedLoginLogCreateManyWithoutTenantInput
   Groups: GroupCreateManyWithoutTenantInput
   id: String
   isAcitve: Boolean
+  MailSetting: MailSettingCreateOneWithoutTenantInput
   updatedAt: DateTime
-}
-
-input TenantIdNameCompoundUniqueInput {
-  name: String!
-  tenantId: String!
 }
 
 input TenantWhereInput {
@@ -2609,12 +2614,12 @@ input TenantWhereInput {
   Applications: ApplicationListRelationFilter
   createdAt: DateTimeFilter
   domainName: StringFilter
-  EmailSettings: EmailSettingsWhereInput
   ExternalIdentifier: ExternalIdentifierListRelationFilter
-  FailedLoginLogs: FailedLoginLogsListRelationFilter
+  FailedLoginLogs: FailedLoginLogListRelationFilter
   Groups: GroupListRelationFilter
   id: StringFilter
   isAcitve: BoolFilter
+  MailSetting: MailSettingWhereInput
   NOT: [TenantWhereInput!]
   OR: [TenantWhereInput!]
   updatedAt: DateTimeFilter
@@ -2649,7 +2654,7 @@ input UserCreateInput {
   Devices: UserDeviceCreateManyWithoutUserInput
   email: String!
   ExternalIdentifiers: ExternalIdentifierCreateManyWithoutUserInput
-  FailedLoginLogs: FailedLoginLogsCreateManyWithoutUserInput
+  FailedLoginLogs: FailedLoginLogCreateManyWithoutUserInput
   FailedLogins: FailedLoginCreateManyWithoutUserInput
   Groups: GroupCreateManyWithoutUsersInput
   id: String
@@ -2774,7 +2779,7 @@ input UserCreateWithoutAccessTokensInput {
   Devices: UserDeviceCreateManyWithoutUserInput
   email: String!
   ExternalIdentifiers: ExternalIdentifierCreateManyWithoutUserInput
-  FailedLoginLogs: FailedLoginLogsCreateManyWithoutUserInput
+  FailedLoginLogs: FailedLoginLogCreateManyWithoutUserInput
   FailedLogins: FailedLoginCreateManyWithoutUserInput
   Groups: GroupCreateManyWithoutUsersInput
   id: String
@@ -2800,7 +2805,7 @@ input UserCreateWithoutAuthorizationCodesInput {
   Devices: UserDeviceCreateManyWithoutUserInput
   email: String!
   ExternalIdentifiers: ExternalIdentifierCreateManyWithoutUserInput
-  FailedLoginLogs: FailedLoginLogsCreateManyWithoutUserInput
+  FailedLoginLogs: FailedLoginLogCreateManyWithoutUserInput
   FailedLogins: FailedLoginCreateManyWithoutUserInput
   Groups: GroupCreateManyWithoutUsersInput
   id: String
@@ -2826,7 +2831,7 @@ input UserCreateWithoutExternalIdentifiersInput {
   createdAt: DateTime
   Devices: UserDeviceCreateManyWithoutUserInput
   email: String!
-  FailedLoginLogs: FailedLoginLogsCreateManyWithoutUserInput
+  FailedLoginLogs: FailedLoginLogCreateManyWithoutUserInput
   FailedLogins: FailedLoginCreateManyWithoutUserInput
   Groups: GroupCreateManyWithoutUsersInput
   id: String
@@ -2879,7 +2884,7 @@ input UserCreateWithoutGroupsInput {
   Devices: UserDeviceCreateManyWithoutUserInput
   email: String!
   ExternalIdentifiers: ExternalIdentifierCreateManyWithoutUserInput
-  FailedLoginLogs: FailedLoginLogsCreateManyWithoutUserInput
+  FailedLoginLogs: FailedLoginLogCreateManyWithoutUserInput
   FailedLogins: FailedLoginCreateManyWithoutUserInput
   id: String
   LoginLog: LoginLogCreateManyWithoutUserInput
@@ -2905,7 +2910,7 @@ input UserCreateWithoutLoginLogInput {
   Devices: UserDeviceCreateManyWithoutUserInput
   email: String!
   ExternalIdentifiers: ExternalIdentifierCreateManyWithoutUserInput
-  FailedLoginLogs: FailedLoginLogsCreateManyWithoutUserInput
+  FailedLoginLogs: FailedLoginLogCreateManyWithoutUserInput
   FailedLogins: FailedLoginCreateManyWithoutUserInput
   Groups: GroupCreateManyWithoutUsersInput
   id: String
@@ -2931,7 +2936,7 @@ input UserCreateWithoutRefreshTokensInput {
   Devices: UserDeviceCreateManyWithoutUserInput
   email: String!
   ExternalIdentifiers: ExternalIdentifierCreateManyWithoutUserInput
-  FailedLoginLogs: FailedLoginLogsCreateManyWithoutUserInput
+  FailedLoginLogs: FailedLoginLogCreateManyWithoutUserInput
   FailedLogins: FailedLoginCreateManyWithoutUserInput
   Groups: GroupCreateManyWithoutUsersInput
   id: String
@@ -2957,7 +2962,7 @@ input UserCreateWithoutRegistrationsInput {
   Devices: UserDeviceCreateManyWithoutUserInput
   email: String!
   ExternalIdentifiers: ExternalIdentifierCreateManyWithoutUserInput
-  FailedLoginLogs: FailedLoginLogsCreateManyWithoutUserInput
+  FailedLoginLogs: FailedLoginLogCreateManyWithoutUserInput
   FailedLogins: FailedLoginCreateManyWithoutUserInput
   Groups: GroupCreateManyWithoutUsersInput
   id: String
@@ -2983,7 +2988,7 @@ input UserCreateWithoutTenantInput {
   Devices: UserDeviceCreateManyWithoutUserInput
   email: String!
   ExternalIdentifiers: ExternalIdentifierCreateManyWithoutUserInput
-  FailedLoginLogs: FailedLoginLogsCreateManyWithoutUserInput
+  FailedLoginLogs: FailedLoginLogCreateManyWithoutUserInput
   FailedLogins: FailedLoginCreateManyWithoutUserInput
   Groups: GroupCreateManyWithoutUsersInput
   id: String
@@ -3029,6 +3034,11 @@ input UserCustomAttributeListRelationFilter {
   some: UserCustomAttributeWhereInput
 }
 
+input UserCustomAttributeNameProfileIdCompoundUniqueInput {
+  name: String!
+  profileId: String!
+}
+
 input UserCustomAttributeWhereInput {
   AND: [UserCustomAttributeWhereInput!]
   name: StringFilter
@@ -3040,7 +3050,7 @@ input UserCustomAttributeWhereInput {
 }
 
 input UserCustomAttributeWhereUniqueInput {
-  name_profileId: NameProfileIdCompoundUniqueInput
+  name_profileId: UserCustomAttributeNameProfileIdCompoundUniqueInput
 }
 
 type UserDevice {
@@ -3097,25 +3107,10 @@ input UserDeviceWhereUniqueInput {
   id: String
 }
 
-input UserIdApplicationIdCompoundUniqueInput {
-  applicationId: String!
-  userId: String!
-}
-
-input UserIdCodeCompoundUniqueInput {
-  code: String!
-  userId: String!
-}
-
 input UserListRelationFilter {
   every: UserWhereInput
   none: UserWhereInput
   some: UserWhereInput
-}
-
-input UsernameApplicationIdCompoundUniqueInput {
-  applicationId: String!
-  username: String!
 }
 
 enum UsernameStatus {
@@ -3146,7 +3141,7 @@ input UserWhereInput {
   Devices: UserDeviceListRelationFilter
   email: StringFilter
   ExternalIdentifiers: ExternalIdentifierListRelationFilter
-  FailedLoginLogs: FailedLoginLogsListRelationFilter
+  FailedLoginLogs: FailedLoginLogListRelationFilter
   FailedLogins: FailedLoginListRelationFilter
   Groups: GroupListRelationFilter
   id: StringFilter
@@ -3199,6 +3194,11 @@ input VerificationCodeListRelationFilter {
   some: VerificationCodeWhereInput
 }
 
+input VerificationCodeUserIdCodeCompoundUniqueInput {
+  code: String!
+  userId: String!
+}
+
 input VerificationCodeWhereInput {
   AND: [VerificationCodeWhereInput!]
   code: StringFilter
@@ -3214,5 +3214,5 @@ input VerificationCodeWhereInput {
 
 input VerificationCodeWhereUniqueInput {
   id: String
-  userId_code: UserIdCodeCompoundUniqueInput
+  userId_code: VerificationCodeUserIdCodeCompoundUniqueInput
 }

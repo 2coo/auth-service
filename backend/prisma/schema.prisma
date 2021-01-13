@@ -18,10 +18,10 @@ model Tenant {
   Users              User[]
   ExternalIdentifier ExternalIdentifier[]
   Groups             Group[]
-  EmailSettings      EmailSettings?
+  MailSetting        MailSetting?
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
-  FailedLoginLogs    FailedLoginLogs[]
+  FailedLoginLogs    FailedLoginLog[]
 }
 
 enum UsernameStatus {
@@ -58,7 +58,7 @@ model Application {
   name                    String
   secret                  String                    @default(cuid())
   selfRegistrationEnabled Boolean                   @default(false)
-  SelfRegistrationFields  SelfRegistrationFields[]
+  SelfRegistrationFields  SelfRegistrationField[]
   IdentityProviders       IdProviderOnApplication[]
   Grants                  Grant[]
   RedirectUris            RedirectURI[]
@@ -80,7 +80,7 @@ model Application {
   @@unique([tenantId, name])
 }
 
-model SelfRegistrationFields {
+model SelfRegistrationField {
   id            String      @id @default(uuid())
   Application   Application @relation(fields: [applicationId], references: [id])
   fieldName     String
@@ -261,7 +261,7 @@ model User {
   FailedLogins        FailedLogin[]
   Registrations       Registration[]
   RememberMe          RememberMe[]
-  FailedLoginLogs     FailedLoginLogs[]
+  FailedLoginLogs     FailedLoginLog[]
   LoginLog            LoginLog[]
   VerificationCodes   VerificationCode[]
   createdAt           DateTime             @default(now())
@@ -388,7 +388,7 @@ enum SMTPSecurity {
   SSL
 }
 
-model EmailSettings {
+model MailSetting {
   id           String       @id @default(uuid())
   Tenant       Tenant       @relation(fields: [tenantId], references: [id])
   tenantId     String
@@ -430,7 +430,7 @@ model AuditLog {
   id String @id @default(uuid())
 }
 
-model FailedLoginLogs {
+model FailedLoginLog {
   id        String   @id @default(uuid())
   count     Int      @default(1)
   Tenant    Tenant   @relation(fields: [tenantId], references: [id])

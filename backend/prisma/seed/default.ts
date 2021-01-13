@@ -1,5 +1,5 @@
 import { GrantType, PrismaClient } from '@prisma/client'
-import bcrypt from 'bcryptjs'
+import * as bcrypt from 'bcryptjs'
 import { defaultRoles } from './roles'
 
 export const seedDefaultTenantWithAdmin = (prisma: PrismaClient) => {
@@ -15,7 +15,7 @@ export const seedDefaultTenantWithAdmin = (prisma: PrismaClient) => {
   const defaultSettings = prisma.tenant.create({
     data: {
       domainName: '*',
-      EmailSettings: {
+      MailSetting: {
         create: {
           host: MAIL_HOST,
           port: MAIL_PORT,

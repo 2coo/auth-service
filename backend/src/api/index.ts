@@ -1,12 +1,12 @@
-import connectRedis from 'connect-redis'
-import errorHandler from 'errorhandler'
-import Express, { Request, Response, NextFunction } from 'express'
-import expressSession from 'express-session'
-import passport from 'passport'
-import path from 'path'
-import redis from 'redis'
-import serveStatic from 'serve-static'
-import vhost from 'vhost-ts'
+import * as connectRedis from 'connect-redis'
+import * as errorHandler from 'errorhandler'
+import * as Express from 'express'
+import { Request, Response, NextFunction } from 'express'
+import * as expressSession from 'express-session'
+import * as passport from 'passport'
+import * as path from 'path'
+import * as redis from 'redis'
+import * as serveStatic from 'serve-static'
 import {
   grantTypeCodeHandler,
   grantTypeRefreshHandler,
@@ -19,6 +19,7 @@ import { loggerMiddleware, tenantAndDefaultAppMiddleware } from './client/index'
 import routes from './controllers'
 import redisConfig from '../config/redis'
 import systemConfig from '../config/system'
+const vhost = require('vhost')
 // const corsOptions = {
 //   origin: ['http://localhost:3000'], //resource server
 //   credentials: true,
@@ -110,9 +111,11 @@ module.exports = function (app: Express.Application) {
     verifySSO(),
     routes.site.validate_email,
   ])
-  router.post('/signup/validate-email/code', [verifySSO(), routes.site.verify_code])
-  
-  
+  router.post('/signup/validate-email/code', [
+    verifySSO(),
+    routes.site.verify_code,
+  ])
+
   router.get('/oauth2/userinfo', routes.user.userinfo)
   router.get('/myabilities', routes.user.abilities)
   router

@@ -1,12 +1,14 @@
 {
   "compilerOptions": {
-    "outDir": "dist",
+    "skipLibCheck": true,
+    "target": "es2016",
+    "module": "commonjs",
+    "lib": ["esnext"],
     "rootDir": "src",
-    "esModuleInterop": true,
-    // "target": "esnext",
-    // "module": "commonjs",
     "strict": true,
+    "outDir": "dist",
+    "allowJs": true,
   },
-  "include": ["src/**/*"],
-  "exclude": ["prisma"],
+  "exclude": ["prisma/**/*"],
+  "include": ["./src/**/*", "./src/keys/jwks.json"]
 }

@@ -1,6 +1,6 @@
-import fs from 'fs'
-import jose from 'node-jose'
-import _ from 'lodash'
+import * as fs from 'fs'
+import * as jose from 'node-jose'
+import * as _ from 'lodash'
 
 const generateKeys = async (numberOfKeys: number = 2) => {
   const keystore = jose.JWK.createKeyStore()

@@ -2,11 +2,11 @@ import { Application, Scope } from '@prisma/client'
 import { compare } from 'bcryptjs'
 import { ensureLoggedIn } from 'connect-ensure-login'
 import { NextFunction, Response } from 'express'
-import _ from 'lodash'
-import moment from 'moment-timezone'
-import oauth2orize from 'oauth2orize'
-import passport from 'passport'
-import queryString from 'query-string'
+import * as _ from 'lodash'
+import * as moment from 'moment-timezone'
+import * as oauth2orize from 'oauth2orize'
+import * as passport from 'passport'
+import * as queryString from 'query-string'
 import { store } from '../../redisclient'
 import { defaultLinkBuilder, renderSPA } from '../client'
 import {
@@ -24,7 +24,7 @@ import {
   issueIdToken,
   issueRefreshToken,
 } from './utils'
-import createError from 'http-errors'
+import * as createError from 'http-errors'
 
 // Create OAuth 2.0 server
 const server = oauth2orize.createServer({
@@ -241,14 +241,18 @@ export const authorization = async (
   if (!req.isAuthenticated()) {
     return renderSPA(req, res, next)
   }
-  let application = req.session.defaultApp
+  let application: any = await getClientById(req.session.defaultApp.id, {
+    EnabledScopes: true,
+  })
   if (req.query.client_id) {
-    application = await getClientById(req.query.client_id)
-  } else {
-    req.query = {
-      ...queryString.parse(defaultLinkBuilder(application, '')),
-      ...req.query,
-    }
+    application = await getClientById(req.query.client_id, {
+      EnabledScopes: true,
+    })
+  }
+  console.log(application)
+  req.query = {
+    ...queryString.parse(defaultLinkBuilder(application, '')),
+    ...req.query,
   }
   const queries = queryString.stringify(req.query)
   if (!application)
@@ -360,7 +364,7 @@ export const decision = [
     return done(null, {
       scope: _.filter(
         requestedScopes,
-        (scope) => clientScopes.indexOf(scope) > -1,
+        (scope: any) => clientScopes.indexOf(scope) > -1,
       ),
     })
   }),

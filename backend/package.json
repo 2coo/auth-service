@@ -11,17 +11,16 @@
     "queue": "tsnd src/queue.ts",
     "dev:typecheck": "tsc --watch --noEmit",
     "dev:migrate": "dotenv -e .env.development.local -- prisma migrate dev --preview-feature",
-    "prebuild": "yarn run clean && yarn run generate",
-    "build": "yarn nexus:reflect && tsc",
+    "prebuild": "yarn -s clean && yarn -s generate",
+    "build": "tsc",
     "seed": "dotenv -e .env.development.local -- ts-node prisma/seed",
     "seed:dev": "cross-env NODE_ENV=development dotenv -e .env.development.local -- ts-node prisma/seed",
     "clean": "rimraf dist",
     "generate": "yarn -s generate:prisma && yarn -s generate:nexus",
     "generate:prisma": "prisma generate",
     "generate:nexus": "cross-env NODE_ENV=development ts-node --transpile-only ./src/schema",
-    "start": "cross-env NODE_ENV=production node dist/index.js",
+    "start": "concurrently --kill-others \"cross-env NODE_ENV=production node dist/index.js\" \"node dist/queue.js\"",
     "studio": "dotenv -e .env.development.local -- prisma studio",
-    "nexus:reflect": "NEXUS_SHOULD_EXIT_AFTER_GENERATE_ARTIFACTS=true ts-node --transpile-only api",
     "key:generate": "ts-node --transpile-only src/keys/generator.ts"
   },
   "repository": {
@@ -71,7 +70,7 @@
     "lodash": "^4.17.20",
     "moment-timezone": "^0.5.31",
     "nexus": "^1.0.0",
-    "nexus-plugin-prisma": "^0.27.0",
+    "nexus-plugin-prisma": "^0.28.0",
     "node-jose": "^2.0.0",
     "nodemailer": "^6.4.17",
     "nodemon": "^2.0.7",
@@ -92,8 +91,7 @@
     "rsa-compat": "^2.0.8",
     "serve-static": "^1.14.1",
     "uuid": "^8.3.1",
-    "vhost": "^3.0.2",
-    "vhost-ts": "^4.0.0"
+    "vhost": "^3.0.2"
   },
   "devDependencies": {
     "@prisma/cli": "^2.13.0",

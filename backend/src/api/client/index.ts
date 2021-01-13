@@ -1,12 +1,11 @@
-import queryString from 'query-string'
+import * as queryString from 'query-string'
 import { AccountStatusType, Application, Scope, User } from '@prisma/client'
 import Axios from 'axios'
 import { NextFunction, Response, Request } from 'express'
-import jwt, { VerifyOptions } from 'jsonwebtoken'
-import jwksClient, { JwksClient } from 'jwks-rsa'
-import passport from 'passport'
+import * as jwt from 'jsonwebtoken'
+import * as jwksClient from 'jwks-rsa'
 import { Strategy as CustomStrategy } from 'passport-custom'
-import path from 'path'
+import * as path from 'path'
 import { prisma } from '../../context'
 import {
   getClientById,
@@ -14,6 +13,9 @@ import {
 } from '../controllers/utils'
 import { Payload } from './../../core/interfaces/Payload'
 import { googleIdentityProvider } from './identity-providers'
+import { JwksClient } from 'jwks-rsa'
+import * as passport from 'passport'
+import { VerifyOptions } from 'jsonwebtoken'
 
 export class JWTScopeStrategy extends CustomStrategy {
   authenticate(req: any, options: any) {

@@ -4,10 +4,10 @@ import { applyMiddleware } from 'graphql-middleware'
 import { createContext } from './context'
 import { permissions } from './permissions'
 import { schema } from './schema'
-import express from 'express'
+import * as express from 'express'
 import * as HTTP from 'http'
-import fs from 'fs'
-import cookieParser from 'cookie-parser'
+import * as fs from 'fs'
+import * as cookieParser from 'cookie-parser'
 import systemConfig from './config/system'
 
 if (!fs.existsSync(`${__dirname}/keys/jwks.json`)) {

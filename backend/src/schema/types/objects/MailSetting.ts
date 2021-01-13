@@ -1,7 +1,7 @@
 import { objectType } from 'nexus'
 
-export const EmailSettings = objectType({
-  name: 'EmailSettings',
+export const MailSetting = objectType({
+  name: 'MailSetting',
   definition(t) {
     t.model.id()
     t.model.SMTPSecurity()

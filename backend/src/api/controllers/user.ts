@@ -1,7 +1,7 @@
 import { packRules } from '@casl/ability/extra'
 import { NextFunction, Response } from 'express'
-import moment from 'moment'
-import passport from 'passport'
+import * as moment from 'moment'
+import * as passport from 'passport'
 import { getRulesForUser } from '../../core/authorization'
 import { OpenIDStandardClaims } from '../../core/interfaces/OpenID'
 import {

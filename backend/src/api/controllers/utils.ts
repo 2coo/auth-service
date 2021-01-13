@@ -10,13 +10,13 @@ import {
   Prisma,
   Tenant,
 } from '@prisma/client'
-import fs from 'fs'
+import * as fs from 'fs'
 import { flatMap, groupBy, sample, uniq, uniqBy, range, has } from 'lodash'
-import moment from 'moment'
+import * as moment from 'moment'
 import { Moment } from 'moment-timezone'
 import { JWK, JWS } from 'node-jose'
 import { v4 as uuidv4 } from 'uuid'
-import bcrypt from 'bcryptjs'
+import * as bcrypt from 'bcryptjs'
 import { prisma } from '../../context'
 import { randomBytes } from 'crypto'
 

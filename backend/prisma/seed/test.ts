@@ -1,5 +1,5 @@
 import { AccountStatusType, GrantType, PrismaClient } from '@prisma/client'
-import bcrypt from 'bcryptjs'
+import * as bcrypt from 'bcryptjs'
 
 export const seedTestData = (prisma: PrismaClient) => {
   var salt = bcrypt.genSaltSync(10)
@@ -57,10 +57,10 @@ export const seedTestData = (prisma: PrismaClient) => {
           {
             User: {
               connect: {
-                email: 'giva9712@gmail.com',
+                email: 'test@tomujin.digital',
               },
             },
-            username: 'giva',
+            username: 'test',
           },
         ],
       },

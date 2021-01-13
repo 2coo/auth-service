@@ -1,9 +1,9 @@
 import { AccountStatusType, Application, User } from '@prisma/client'
 import { compare } from 'bcryptjs'
-import cryptoRandomString from 'crypto-random-string'
-import jwt from 'jsonwebtoken'
-import jwksClient from 'jwks-rsa'
-import passport from 'passport'
+import * as cryptoRandomString from 'crypto-random-string'
+import * as jwt from 'jsonwebtoken'
+import * as jwksClient from 'jwks-rsa'
+import * as passport from 'passport'
 import { BasicStrategy } from 'passport-http'
 import { Strategy as LocalStrategy } from 'passport-local'
 import { Strategy as ClientPasswordStrategy } from 'passport-oauth2-client-password'
@@ -123,7 +123,7 @@ passport.use(
   }),
 )
 
-passport.serializeUser((user: User, done) => {
+passport.serializeUser((user: any, done: any) => {
   return done(null, user.id)
 })
 
