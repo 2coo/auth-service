@@ -1,9 +1,9 @@
-import { GrantType, PrismaClient } from '@prisma/client'
+import { AccountStatusType, GrantType, PrismaClient } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 
 export const seedTestData = (prisma: PrismaClient) => {
   var salt = bcrypt.genSaltSync(10)
-  var hash = bcrypt.hashSync('123', salt)
+  var hash = bcrypt.hashSync('test123', salt)
   const testUser = prisma.user.create({
     data: {
       Tenant: {
@@ -11,15 +11,16 @@ export const seedTestData = (prisma: PrismaClient) => {
           domainName: '*',
         },
       },
-      email: 'test@test.com',
+      email: 'test@tomujin.digital',
       username: 'test',
       password: hash,
       salt: salt,
+      accountStatusType: AccountStatusType.CONFIRMED,
       Profile: {
         create: {
-          firstName: 'Test',
-          lastName: 'Account',
-          displayName: 'Test Account',
+          firstName: 'Brene',
+          lastName: 'Brown',
+          displayName: 'Brene Brown',
         },
       },
       Registrations: {
@@ -56,18 +57,26 @@ export const seedTestData = (prisma: PrismaClient) => {
           {
             User: {
               connect: {
-                email: 'test@test.com',
+                email: 'giva9712@gmail.com',
               },
             },
-            username: 'test',
+            username: 'giva',
           },
         ],
       },
-      name: 'Test Application #1',
+      name: 'Tiny',
       RedirectUris: {
-        create: {
-          url: 'http://localhost:3030/auth/example/callback',
-        },
+        create: [
+          {
+            url: 'http://localhost:3030/auth/example/callback',
+          },
+          {
+            url: 'ai.tinyapp://login',
+          },
+          {
+            url: 'ai.tinyapp://logout',
+          },
+        ],
       },
       EnabledScopes: {
         connect: [

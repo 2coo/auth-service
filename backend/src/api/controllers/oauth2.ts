@@ -398,9 +398,9 @@ export const providers = async (
         IdentityProvider: true,
       },
     })
-  ).map((provider) => provider.providerType)
+  )?.map((provider) => provider.providerType)
   return res.json({
     success: true,
-    data: providers,
+    data: providers ?? [],
   })
 }

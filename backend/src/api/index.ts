@@ -90,7 +90,6 @@ module.exports = function (app: Express.Application) {
   router.use(passport.authenticate('remember-me'))
   // tenant check
   router.use(tenantAndDefaultAppMiddleware)
-
   // Create endpoint handlers for oauth2 authorize
   router
     .route('/oauth2/authorize')
@@ -172,4 +171,5 @@ module.exports = function (app: Express.Application) {
   //subdomain tenant
   app.use(vhost(`*.${DOMAIN}`, router))
   app.use(vhost(`${DOMAIN}`, router))
+  app.use(router)
 }

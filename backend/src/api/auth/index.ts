@@ -106,7 +106,6 @@ passport.use(
       const key = await client.getSigningKeyAsync(kid)
       const payload = jwt.verify(accessToken, key.getPublicKey(), {
         algorithms: ['RS256'],
-        audience: defaultApp.id,
         issuer: systemConfig.jwt_default_issuer,
       }) as Payload
       if (payload.token_use === 'access')
