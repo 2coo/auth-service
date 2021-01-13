@@ -1,0 +1,21 @@
+version: "3.9"
+services:
+  web:
+    build: "./backend"
+    expose:
+      - "5000"
+    ports:
+      - "80:5000"
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - redis
+    links:
+      - redis
+  redis:
+    image: "redis:alpine"
+    container_name: cache
+    ports:
+      - "6379:6379"
+    expose:
+      - "6379"

@@ -27,8 +27,6 @@ graphqlServer.installSubscriptionHandlers(http)
 
 require('./api/')(app)
 
-http.listen(systemConfig.port, systemConfig.host, () => {
-  console.log(
-    `🚀 GraphQL service ready at http://localhost:${systemConfig.port}/graphql`,
-  )
+http.listen(5000, '0.0.0.0', () => {
+  console.log(`🚀 GraphQL service ready at http://0.0.0.0:5000/graphql`)
 })
