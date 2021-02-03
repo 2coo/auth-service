@@ -5,8 +5,8 @@ export interface OpenIDStandardClaims {
   name?: string
   given_name?: string
   family_name?: string
-  middle_name?: string
-  nickname?: string
+  middle_name?: string | null
+  nickname?: string | null
   preferred_username?: string
   profile?: string
   picture?: string | null

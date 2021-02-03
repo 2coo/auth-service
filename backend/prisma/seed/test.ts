@@ -71,10 +71,10 @@ export const seedTestData = (prisma: PrismaClient) => {
             url: 'http://localhost:3030/auth/example/callback',
           },
           {
-            url: 'ai.tinyapp://login',
+            url: 'tinyapp://login',
           },
           {
-            url: 'ai.tinyapp://logout',
+            url: 'tinyapp://logout',
           },
         ],
       },
@@ -83,7 +83,7 @@ export const seedTestData = (prisma: PrismaClient) => {
           { name: 'openid' },
           { name: 'email' },
           { name: 'profile' },
-          { name: 'user.admin' },
+          { name: 'update:profile' },
         ],
       },
       Grants: {

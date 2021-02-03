@@ -23,8 +23,8 @@ export const seedDefaultScopes = (prisma: PrismaClient) => {
   })
   const scope4 = prisma.scope.create({
     data: {
-      name: 'user.admin',
-      description: 'The user.admin scope grants access to the user own data.',
+      name: 'update:profile',
+      description: 'The update:profile scope grants access to the user own data.',
     },
   })
 

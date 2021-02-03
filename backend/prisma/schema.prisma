@@ -69,8 +69,8 @@ model Application {
   RefreshTokens           RefreshToken[]
   issuer                  String                    @default("http://tomujin.digital")
   refreshTokenLifetime    Int                       @default(43200)
-  accessTokenLifetime     Int                       @default(60)
-  idTokenLifetime         Int                       @default(5)
+  accessTokenLifetime     Int                       @default(5)
+  idTokenLifetime         Int                       @default(30)
   logo                    String?
   trustedApplication      Boolean                   @default(false)
   createdAt               DateTime                  @default(now())
@@ -342,9 +342,11 @@ model Profile {
   id                   String                @id @default(uuid())
   User                 User                  @relation(fields: [userId], references: [id])
   userId               String
-  firstName            String                @default("")
-  lastName             String                @default("")
+  firstName            String
+  lastName             String
+  middleName           String?
   displayName          String
+  nickName             String?
   birthdate            DateTime?
   gender               Gender                @default(OTHER)
   mobileNumber         String?

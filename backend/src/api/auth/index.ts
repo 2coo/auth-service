@@ -54,7 +54,11 @@ passport.use(
 
 passport.use(
   new RememberMeStrategy(
+    {
+      key: 'remember_me',
+    },
     async (token, done) => {
+      console.log(token)
       try {
         const user = await consumeRememberMeToken(token)
         if (!user) {
@@ -62,13 +66,14 @@ passport.use(
         }
         return done(null, user)
       } catch (err) {
-        return done(new Error(err))
+        return done(null, false)
       }
     },
     async (user, done) => {
       const token = cryptoRandomString({ length: 64, type: 'url-safe' })
       try {
         const savedToken = await saveRememberMeToken(token, user.id)
+        console.log(savedToken.token)
         if (savedToken) return done(null, token)
       } catch (err) {
         return done(new Error(err))
@@ -108,8 +113,10 @@ passport.use(
         algorithms: ['RS256'],
         issuer: systemConfig.jwt_default_issuer,
       }) as Payload
-      if (payload.token_use === 'access')
+      if (payload.token_use === 'access') {
         req.session.client_id = payload.client_id
+        req.session.scope = payload.scopes
+      }
       const appUser = new AppUser(payload)
       if (appUser.canScope(req.scope))
         return done(new Error(`Not allowed scope`))

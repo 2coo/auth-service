@@ -324,8 +324,12 @@ export const dialog = [
     const scopes = request.query!.scope
       ? (request.query!.scope as string).split(' ')
       : []
-
+    console.log(scopes);
+    console.log(clientScopes);
+  
     const invalidScopes = _.difference(scopes, clientScopes)
+    console.log(invalidScopes);
+    
     if (invalidScopes.length > 0) {
       return response.status(500).json({
         message: `Invalid scopes: [${invalidScopes.join(', ')}]`,

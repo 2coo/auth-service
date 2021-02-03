@@ -1701,11 +1701,13 @@ input ProfileCreateWithoutUserInput {
   birthdate: DateTime
   createdAt: DateTime
   displayName: String!
-  firstName: String
+  firstName: String!
   gender: Gender
   id: String
-  lastName: String
+  lastName: String!
+  middleName: String
   mobileNumber: String
+  nickName: String
   picture: String
   updatedAt: DateTime
   UserCustomAttributes: UserCustomAttributeCreateManyWithoutProfileInput
@@ -1720,7 +1722,9 @@ input ProfileWhereInput {
   gender: EnumGenderFilter
   id: StringFilter
   lastName: StringFilter
+  middleName: StringNullableFilter
   mobileNumber: StringNullableFilter
+  nickName: StringNullableFilter
   NOT: [ProfileWhereInput!]
   OR: [ProfileWhereInput!]
   picture: StringNullableFilter

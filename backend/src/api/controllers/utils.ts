@@ -251,17 +251,21 @@ export const issueIdToken = async (
         email: user.email,
         email_verified: user.accountStatusType === AccountStatusType.CONFIRMED,
       }),
-      ...(scopes.indexOf('profile') > -1 && {
-        ...(user.Profile && {
-          gender: user.Profile.gender,
-          birthdate: moment.parseZone(user.Profile.birthdate).format(),
-          family_name: user.Profile.lastName,
-          given_name: user.Profile.firstName,
-          picture: user.Profile!.picture,
-          preferred_username: user.username,
-          groups: user.Groups.map((group) => group.name),
-        }),
-      }),
+      ...(scopes.includes('profile')
+        ? {
+            name: user.Profile?.displayName,
+            family_name: user.Profile?.lastName,
+            given_name: user.Profile?.firstName,
+            middle_name: user.Profile?.middleName,
+            nickname: user.Profile?.nickName,
+            picture: user.Profile?.picture,
+            birthdate:
+              user.Profile?.birthdate &&
+              moment.parseZone(user.Profile.birthdate).format(),
+            updated_at: user.Profile?.updatedAt.toISOString(),
+            preferred_username: user.username,
+          }
+        : {}),
     })
     return token
   }
@@ -486,6 +490,7 @@ export const getUserRolesGroupedByApplication = (
 }
 
 export const consumeRememberMeToken = async (token: string) => {
+  console.log(token)
   const user = (await prisma.rememberMe.findUnique({
     where: {
       token,

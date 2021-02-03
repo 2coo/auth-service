@@ -62,7 +62,7 @@ export const seedDefaultTenantWithAdmin = (prisma: PrismaClient) => {
               { name: 'openid' },
               { name: 'email' },
               { name: 'profile' },
-              { name: 'user.admin' },
+              { name: 'update:profile' },
             ],
           },
           Grants: {

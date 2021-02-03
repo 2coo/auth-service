@@ -56,7 +56,7 @@ module.exports = function (app: Express.Application) {
       store: new RedisStore({ client: redisClient }),
       cookie: {
         path: '/',
-        secure: process.env.NODE_ENV === 'production',
+        // secure: process.env.NODE_ENV === 'production',
         // sameSite: 'strict', if you don't want SSO, it should be uncommented!
         httpOnly: true,
         maxAge: systemConfig.session_max_age,
