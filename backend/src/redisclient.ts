@@ -12,6 +12,6 @@ const redisClient = redis.createClient(
   redisConfig.host,
   {
     no_ready_check: true,
-  },
+  }
 )
 export const store = new RedisStore({ redis: redisClient })

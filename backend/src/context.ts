@@ -4,15 +4,8 @@ import { ExpressContext } from 'apollo-server-express/dist/ApolloServer'
 import { Request, Response } from 'express'
 import { defineSystemAbilitiesFor } from './core/authorization'
 import { Await } from './core/types/Awaits'
-import dbConfig from './config/database'
 
-export const prisma = new PrismaClient({
-  datasources: {
-    db: {
-      url: dbConfig.db.url,
-    },
-  },
-})
+export const prisma = new PrismaClient()
 
 export const pubsub = new PubSub()
 

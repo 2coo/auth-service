@@ -1,4 +1,5 @@
-import 'dotenv-flow/config'
+import { config } from 'dotenv'
+config()
 import { ApolloServer } from 'apollo-server-express'
 import { applyMiddleware } from 'graphql-middleware'
 import { createContext } from './context'
@@ -9,11 +10,10 @@ import * as HTTP from 'http'
 import * as fs from 'fs'
 import * as cookieParser from 'cookie-parser'
 import systemConfig from './config/system'
+import generateKeys from './keys/generator'
 
 if (!fs.existsSync(`${__dirname}/keys/jwks.json`)) {
-  throw new Error(
-    'Please generate jwks: to generate jwks run "yarn key:generate"',
-  )
+  generateKeys()
 }
 const graphqlServer = new ApolloServer({
   schema: applyMiddleware(schema, permissions),
@@ -28,5 +28,7 @@ graphqlServer.installSubscriptionHandlers(http)
 require('./api/')(app)
 
 http.listen(systemConfig.port, '0.0.0.0', () => {
-  console.log(`🚀 GraphQL service ready at http://0.0.0.0:${systemConfig.port}/graphql`)
+  console.log(
+    `🚀 GraphQL service ready at http://0.0.0.0:${systemConfig.port}/graphql`
+  )
 })

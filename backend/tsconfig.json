@@ -1,14 +1,16 @@
 {
   "compilerOptions": {
-    "skipLibCheck": true,
-    "target": "es2016",
+    "sourceMap": true,
     "module": "commonjs",
-    "lib": ["esnext"],
-    "rootDir": "src",
-    "strict": true,
+    "target": "ES2018",
     "outDir": "dist",
-    "allowJs": true,
-  },
-  "exclude": ["prisma/**/*"],
-  "include": ["./src/**/*", "./src/keys/jwks.json"]
+    "lib": ["esnext", "dom"],
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "strictBindCallApply": true,
+    "strictFunctionTypes": true,
+    "skipLibCheck": true,
+    "noUnusedParameters": false
+  }
 }

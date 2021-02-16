@@ -2,102 +2,42 @@
 ### Do not make changes to this file directly
 
 
-type AccessToken {
-  Application: Application!
-  createdAt: DateTime!
-  expirationDate: DateTime!
-  User: User
+input APICreateNestedOneWithoutScopesInput {
+  connect: APIWhereUniqueInput
+  connectOrCreate: APICreateOrConnectWithoutScopesInput
+  create: APICreateWithoutScopesInput
 }
 
-input AccessTokenCreateManyWithoutApplicationInput {
-  connect: [AccessTokenWhereUniqueInput!]
-  connectOrCreate: [AccessTokenCreateOrConnectWithoutApplicationInput!]
-  create: [AccessTokenCreateWithoutApplicationInput!]
+input APICreateOrConnectWithoutScopesInput {
+  create: APICreateWithoutScopesInput!
+  where: APIWhereUniqueInput!
 }
 
-input AccessTokenCreateManyWithoutScopesInput {
-  connect: [AccessTokenWhereUniqueInput!]
-  connectOrCreate: [AccessTokenCreateOrConnectWithoutScopesInput!]
-  create: [AccessTokenCreateWithoutScopesInput!]
-}
-
-input AccessTokenCreateManyWithoutUserInput {
-  connect: [AccessTokenWhereUniqueInput!]
-  connectOrCreate: [AccessTokenCreateOrConnectWithoutUserInput!]
-  create: [AccessTokenCreateWithoutUserInput!]
-}
-
-input AccessTokenCreateOrConnectWithoutApplicationInput {
-  create: AccessTokenCreateWithoutApplicationInput!
-  where: AccessTokenWhereUniqueInput!
-}
-
-input AccessTokenCreateOrConnectWithoutScopesInput {
-  create: AccessTokenCreateWithoutScopesInput!
-  where: AccessTokenWhereUniqueInput!
-}
-
-input AccessTokenCreateOrConnectWithoutUserInput {
-  create: AccessTokenCreateWithoutUserInput!
-  where: AccessTokenWhereUniqueInput!
-}
-
-input AccessTokenCreateWithoutApplicationInput {
+input APICreateWithoutScopesInput {
+  apiTypes: ApiTypes!
   createdAt: DateTime
-  expirationDate: DateTime!
   id: String
-  jti: String!
-  Scopes: ScopeCreateManyWithoutAccessTokensInput
-  updatedAt: DateTime
-  User: UserCreateOneWithoutAccessTokensInput
-}
-
-input AccessTokenCreateWithoutScopesInput {
-  Application: ApplicationCreateOneWithoutAccessTokensInput!
-  createdAt: DateTime
-  expirationDate: DateTime!
-  id: String
-  jti: String!
-  updatedAt: DateTime
-  User: UserCreateOneWithoutAccessTokensInput
-}
-
-input AccessTokenCreateWithoutUserInput {
-  Application: ApplicationCreateOneWithoutAccessTokensInput!
-  createdAt: DateTime
-  expirationDate: DateTime!
-  id: String
-  jti: String!
-  Scopes: ScopeCreateManyWithoutAccessTokensInput
+  name: String!
   updatedAt: DateTime
 }
 
-input AccessTokenListRelationFilter {
-  every: AccessTokenWhereInput
-  none: AccessTokenWhereInput
-  some: AccessTokenWhereInput
-}
-
-input AccessTokenWhereInput {
-  AND: [AccessTokenWhereInput!]
-  Application: ApplicationWhereInput
-  ApplicationId: StringFilter
-  createdAt: DateTimeFilter
-  expirationDate: DateTimeFilter
-  id: StringFilter
-  jti: StringFilter
-  NOT: [AccessTokenWhereInput!]
-  OR: [AccessTokenWhereInput!]
+input APIWhereInput {
+  AND: [APIWhereInput!]
+  NOT: [APIWhereInput!]
+  OR: [APIWhereInput!]
   Scopes: ScopeListRelationFilter
+  apiTypes: EnumApiTypesFilter
+  createdAt: DateTimeFilter
+  id: StringFilter
+  name: StringFilter
   updatedAt: DateTimeFilter
-  User: UserWhereInput
-  userId: StringNullableFilter
 }
 
-input AccessTokenWhereUniqueInput {
+input APIWhereUniqueInput {
   id: String
-  jti: String
 }
+
+type AccessToken
 
 """Account status of users"""
 enum AccountStatusType {
@@ -111,114 +51,63 @@ enum AccountStatusType {
   UNKNOWN
 }
 
+enum ApiTypes {
+  CUSTOM_API
+  SYSTEM_API
+}
+
 type Application {
-  accessTokenLifetime: Int!
-  AccessTokens(after: AccessTokenWhereUniqueInput, before: AccessTokenWhereUniqueInput, first: Int, last: Int): [AccessToken!]!
-  AuthorizationCodes(after: AuthorizationCodeWhereUniqueInput, before: AuthorizationCodeWhereUniqueInput, first: Int, last: Int): [AuthorizationCode!]!
-  createdAt: DateTime!
-  EnabledScopes(after: ScopeWhereUniqueInput, before: ScopeWhereUniqueInput, first: Int, last: Int): [Scope!]!
-  Grants(after: GrantWhereUniqueInput, before: GrantWhereUniqueInput, first: Int, last: Int): [Grant!]!
-  id: String!
-  idTokenLifetime: Int!
-  JavascriptOrigins(after: JavascriptOriginWhereUniqueInput, before: JavascriptOriginWhereUniqueInput, first: Int, last: Int): [JavascriptOrigin!]!
-  name: String!
-  RedirectUris(after: RedirectURIWhereUniqueInput, before: RedirectURIWhereUniqueInput, first: Int, last: Int): [RedirectURI!]!
-  refreshTokenLifetime: Int!
   RefreshTokens(after: RefreshTokenWhereUniqueInput, before: RefreshTokenWhereUniqueInput, first: Int, last: Int): [RefreshToken!]!
   Registrations(after: RegistrationWhereUniqueInput, before: RegistrationWhereUniqueInput, first: Int, last: Int): [Registration!]!
-  Roles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int): [Role!]!
+  createdAt: DateTime!
+  id: String!
+  name: String!
   secret: String!
-  trustedApplication: Boolean!
   updatedAt: DateTime!
 }
 
-input ApplicationCreateManyWithoutEnabledScopesInput {
+input ApplicationCreateNestedManyWithoutGrantedScopesInput {
   connect: [ApplicationWhereUniqueInput!]
-  connectOrCreate: [ApplicationCreateOrConnectWithoutEnabledScopesInput!]
-  create: [ApplicationCreateWithoutEnabledScopesInput!]
+  connectOrCreate: [ApplicationCreateOrConnectWithoutGrantedScopesInput!]
+  create: [ApplicationCreateWithoutGrantedScopesInput!]
 }
 
-input ApplicationCreateManyWithoutTenantInput {
-  connect: [ApplicationWhereUniqueInput!]
-  connectOrCreate: [ApplicationCreateOrConnectWithoutTenantInput!]
-  create: [ApplicationCreateWithoutTenantInput!]
-}
-
-input ApplicationCreateOneWithoutAccessTokensInput {
+input ApplicationCreateNestedOneWithoutAuthorizationCodeInput {
   connect: ApplicationWhereUniqueInput
-  connectOrCreate: ApplicationCreateOrConnectWithoutAccessTokensInput
-  create: ApplicationCreateWithoutAccessTokensInput
+  connectOrCreate: ApplicationCreateOrConnectWithoutAuthorizationCodeInput
+  create: ApplicationCreateWithoutAuthorizationCodeInput
 }
 
-input ApplicationCreateOneWithoutAuthorizationCodesInput {
+input ApplicationCreateNestedOneWithoutLoginLogsInput {
   connect: ApplicationWhereUniqueInput
-  connectOrCreate: ApplicationCreateOrConnectWithoutAuthorizationCodesInput
-  create: ApplicationCreateWithoutAuthorizationCodesInput
+  connectOrCreate: ApplicationCreateOrConnectWithoutLoginLogsInput
+  create: ApplicationCreateWithoutLoginLogsInput
 }
 
-input ApplicationCreateOneWithoutExternalIdentifierInput {
-  connect: ApplicationWhereUniqueInput
-  connectOrCreate: ApplicationCreateOrConnectWithoutExternalIdentifierInput
-  create: ApplicationCreateWithoutExternalIdentifierInput
-}
-
-input ApplicationCreateOneWithoutIdentityProvidersInput {
-  connect: ApplicationWhereUniqueInput
-  connectOrCreate: ApplicationCreateOrConnectWithoutIdentityProvidersInput
-  create: ApplicationCreateWithoutIdentityProvidersInput
-}
-
-input ApplicationCreateOneWithoutLoginLogInput {
-  connect: ApplicationWhereUniqueInput
-  connectOrCreate: ApplicationCreateOrConnectWithoutLoginLogInput
-  create: ApplicationCreateWithoutLoginLogInput
-}
-
-input ApplicationCreateOneWithoutRefreshTokensInput {
+input ApplicationCreateNestedOneWithoutRefreshTokensInput {
   connect: ApplicationWhereUniqueInput
   connectOrCreate: ApplicationCreateOrConnectWithoutRefreshTokensInput
   create: ApplicationCreateWithoutRefreshTokensInput
 }
 
-input ApplicationCreateOneWithoutRegistrationsInput {
+input ApplicationCreateNestedOneWithoutRegistrationsInput {
   connect: ApplicationWhereUniqueInput
   connectOrCreate: ApplicationCreateOrConnectWithoutRegistrationsInput
   create: ApplicationCreateWithoutRegistrationsInput
 }
 
-input ApplicationCreateOneWithoutRolesInput {
-  connect: ApplicationWhereUniqueInput
-  connectOrCreate: ApplicationCreateOrConnectWithoutRolesInput
-  create: ApplicationCreateWithoutRolesInput
-}
-
-input ApplicationCreateOrConnectWithoutAccessTokensInput {
-  create: ApplicationCreateWithoutAccessTokensInput!
+input ApplicationCreateOrConnectWithoutAuthorizationCodeInput {
+  create: ApplicationCreateWithoutAuthorizationCodeInput!
   where: ApplicationWhereUniqueInput!
 }
 
-input ApplicationCreateOrConnectWithoutAuthorizationCodesInput {
-  create: ApplicationCreateWithoutAuthorizationCodesInput!
+input ApplicationCreateOrConnectWithoutGrantedScopesInput {
+  create: ApplicationCreateWithoutGrantedScopesInput!
   where: ApplicationWhereUniqueInput!
 }
 
-input ApplicationCreateOrConnectWithoutEnabledScopesInput {
-  create: ApplicationCreateWithoutEnabledScopesInput!
-  where: ApplicationWhereUniqueInput!
-}
-
-input ApplicationCreateOrConnectWithoutExternalIdentifierInput {
-  create: ApplicationCreateWithoutExternalIdentifierInput!
-  where: ApplicationWhereUniqueInput!
-}
-
-input ApplicationCreateOrConnectWithoutIdentityProvidersInput {
-  create: ApplicationCreateWithoutIdentityProvidersInput!
-  where: ApplicationWhereUniqueInput!
-}
-
-input ApplicationCreateOrConnectWithoutLoginLogInput {
-  create: ApplicationCreateWithoutLoginLogInput!
+input ApplicationCreateOrConnectWithoutLoginLogsInput {
+  create: ApplicationCreateWithoutLoginLogsInput!
   where: ApplicationWhereUniqueInput!
 }
 
@@ -232,294 +121,154 @@ input ApplicationCreateOrConnectWithoutRegistrationsInput {
   where: ApplicationWhereUniqueInput!
 }
 
-input ApplicationCreateOrConnectWithoutRolesInput {
-  create: ApplicationCreateWithoutRolesInput!
-  where: ApplicationWhereUniqueInput!
-}
-
-input ApplicationCreateOrConnectWithoutTenantInput {
-  create: ApplicationCreateWithoutTenantInput!
-  where: ApplicationWhereUniqueInput!
-}
-
-input ApplicationCreateWithoutAccessTokensInput {
-  accessTokenLifetime: Int
-  AuthorizationCodes: AuthorizationCodeCreateManyWithoutApplicationInput
+input ApplicationCreateWithoutAuthorizationCodeInput {
+  EnabledGrantTypes: EnabledGrantTypeCreateNestedManyWithoutApplicationInput
+  FacebookConnection: FacebookConnectionCreateNestedOneWithoutApplicationsInput
+  GoogleConnection: GoogleConnectionCreateNestedOneWithoutApplicationsInput
+  GrantedScopes: ScopeCreateNestedManyWithoutUsingApplicationsInput
+  LoginLogs: LoginLogCreateNestedManyWithoutApplicationInput
+  RefreshTokens: RefreshTokenCreateNestedManyWithoutApplicationInput
+  Registrations: RegistrationCreateNestedManyWithoutApplicationInput
+  applicationLogo: String
+  applicationType: ApplicationType!
+  callbackURLs: String
+  corsOrigins: String
   createdAt: DateTime
-  EnabledScopes: ScopeCreateManyWithoutApplicationsInput
-  ExternalIdentifier: ExternalIdentifierCreateManyWithoutApplicationInput
-  Grants: GrantCreateManyWithoutApplicationsInput
+  description: String
   id: String
-  IdentityProviders: IdProviderOnApplicationCreateManyWithoutApplicationInput
-  idTokenLifetime: Int
-  issuer: String
-  JavascriptOrigins: JavascriptOriginCreateManyWithoutApplicationInput
-  LoginLog: LoginLogCreateManyWithoutApplicationInput
-  logo: String
+  idTokenExpirationInSecond: Int
+  jwtSignatureAlgorithm: JWTSignatureAlgorithm
+  loginURI: String
+  logoutURLs: String
   name: String!
-  RedirectUris: RedirectURICreateManyWithoutApplicationInput
-  refreshTokenLifetime: Int
-  RefreshTokens: RefreshTokenCreateManyWithoutApplicationInput
-  Registrations: RegistrationCreateManyWithoutApplicationInput
-  Roles: RoleCreateManyWithoutApplicationInput
-  secret: String
-  selfRegistrationEnabled: Boolean
-  SelfRegistrationFields: SelfRegistrationFieldCreateManyWithoutApplicationInput
-  Tenant: TenantCreateOneWithoutApplicationsInput!
-  trustedApplication: Boolean
+  refreshInactivityExpiration: Boolean
+  refreshInactivityLifetimeInSecond: Int
+  refreshTokenExpirationInSecond: Int
+  refreshTokenReuseInterval: Int
+  refreshTokenRotation: Boolean
+  secret: String!
   updatedAt: DateTime
+  webOrgins: String
 }
 
-input ApplicationCreateWithoutAuthorizationCodesInput {
-  accessTokenLifetime: Int
-  AccessTokens: AccessTokenCreateManyWithoutApplicationInput
+input ApplicationCreateWithoutGrantedScopesInput {
+  AuthorizationCode: AuthorizationCodeCreateNestedManyWithoutApplicationInput
+  EnabledGrantTypes: EnabledGrantTypeCreateNestedManyWithoutApplicationInput
+  FacebookConnection: FacebookConnectionCreateNestedOneWithoutApplicationsInput
+  GoogleConnection: GoogleConnectionCreateNestedOneWithoutApplicationsInput
+  LoginLogs: LoginLogCreateNestedManyWithoutApplicationInput
+  RefreshTokens: RefreshTokenCreateNestedManyWithoutApplicationInput
+  Registrations: RegistrationCreateNestedManyWithoutApplicationInput
+  applicationLogo: String
+  applicationType: ApplicationType!
+  callbackURLs: String
+  corsOrigins: String
   createdAt: DateTime
-  EnabledScopes: ScopeCreateManyWithoutApplicationsInput
-  ExternalIdentifier: ExternalIdentifierCreateManyWithoutApplicationInput
-  Grants: GrantCreateManyWithoutApplicationsInput
+  description: String
   id: String
-  IdentityProviders: IdProviderOnApplicationCreateManyWithoutApplicationInput
-  idTokenLifetime: Int
-  issuer: String
-  JavascriptOrigins: JavascriptOriginCreateManyWithoutApplicationInput
-  LoginLog: LoginLogCreateManyWithoutApplicationInput
-  logo: String
+  idTokenExpirationInSecond: Int
+  jwtSignatureAlgorithm: JWTSignatureAlgorithm
+  loginURI: String
+  logoutURLs: String
   name: String!
-  RedirectUris: RedirectURICreateManyWithoutApplicationInput
-  refreshTokenLifetime: Int
-  RefreshTokens: RefreshTokenCreateManyWithoutApplicationInput
-  Registrations: RegistrationCreateManyWithoutApplicationInput
-  Roles: RoleCreateManyWithoutApplicationInput
-  secret: String
-  selfRegistrationEnabled: Boolean
-  SelfRegistrationFields: SelfRegistrationFieldCreateManyWithoutApplicationInput
-  Tenant: TenantCreateOneWithoutApplicationsInput!
-  trustedApplication: Boolean
+  refreshInactivityExpiration: Boolean
+  refreshInactivityLifetimeInSecond: Int
+  refreshTokenExpirationInSecond: Int
+  refreshTokenReuseInterval: Int
+  refreshTokenRotation: Boolean
+  secret: String!
   updatedAt: DateTime
+  webOrgins: String
 }
 
-input ApplicationCreateWithoutEnabledScopesInput {
-  accessTokenLifetime: Int
-  AccessTokens: AccessTokenCreateManyWithoutApplicationInput
-  AuthorizationCodes: AuthorizationCodeCreateManyWithoutApplicationInput
+input ApplicationCreateWithoutLoginLogsInput {
+  AuthorizationCode: AuthorizationCodeCreateNestedManyWithoutApplicationInput
+  EnabledGrantTypes: EnabledGrantTypeCreateNestedManyWithoutApplicationInput
+  FacebookConnection: FacebookConnectionCreateNestedOneWithoutApplicationsInput
+  GoogleConnection: GoogleConnectionCreateNestedOneWithoutApplicationsInput
+  GrantedScopes: ScopeCreateNestedManyWithoutUsingApplicationsInput
+  RefreshTokens: RefreshTokenCreateNestedManyWithoutApplicationInput
+  Registrations: RegistrationCreateNestedManyWithoutApplicationInput
+  applicationLogo: String
+  applicationType: ApplicationType!
+  callbackURLs: String
+  corsOrigins: String
   createdAt: DateTime
-  ExternalIdentifier: ExternalIdentifierCreateManyWithoutApplicationInput
-  Grants: GrantCreateManyWithoutApplicationsInput
+  description: String
   id: String
-  IdentityProviders: IdProviderOnApplicationCreateManyWithoutApplicationInput
-  idTokenLifetime: Int
-  issuer: String
-  JavascriptOrigins: JavascriptOriginCreateManyWithoutApplicationInput
-  LoginLog: LoginLogCreateManyWithoutApplicationInput
-  logo: String
+  idTokenExpirationInSecond: Int
+  jwtSignatureAlgorithm: JWTSignatureAlgorithm
+  loginURI: String
+  logoutURLs: String
   name: String!
-  RedirectUris: RedirectURICreateManyWithoutApplicationInput
-  refreshTokenLifetime: Int
-  RefreshTokens: RefreshTokenCreateManyWithoutApplicationInput
-  Registrations: RegistrationCreateManyWithoutApplicationInput
-  Roles: RoleCreateManyWithoutApplicationInput
-  secret: String
-  selfRegistrationEnabled: Boolean
-  SelfRegistrationFields: SelfRegistrationFieldCreateManyWithoutApplicationInput
-  Tenant: TenantCreateOneWithoutApplicationsInput!
-  trustedApplication: Boolean
+  refreshInactivityExpiration: Boolean
+  refreshInactivityLifetimeInSecond: Int
+  refreshTokenExpirationInSecond: Int
+  refreshTokenReuseInterval: Int
+  refreshTokenRotation: Boolean
+  secret: String!
   updatedAt: DateTime
-}
-
-input ApplicationCreateWithoutExternalIdentifierInput {
-  accessTokenLifetime: Int
-  AccessTokens: AccessTokenCreateManyWithoutApplicationInput
-  AuthorizationCodes: AuthorizationCodeCreateManyWithoutApplicationInput
-  createdAt: DateTime
-  EnabledScopes: ScopeCreateManyWithoutApplicationsInput
-  Grants: GrantCreateManyWithoutApplicationsInput
-  id: String
-  IdentityProviders: IdProviderOnApplicationCreateManyWithoutApplicationInput
-  idTokenLifetime: Int
-  issuer: String
-  JavascriptOrigins: JavascriptOriginCreateManyWithoutApplicationInput
-  LoginLog: LoginLogCreateManyWithoutApplicationInput
-  logo: String
-  name: String!
-  RedirectUris: RedirectURICreateManyWithoutApplicationInput
-  refreshTokenLifetime: Int
-  RefreshTokens: RefreshTokenCreateManyWithoutApplicationInput
-  Registrations: RegistrationCreateManyWithoutApplicationInput
-  Roles: RoleCreateManyWithoutApplicationInput
-  secret: String
-  selfRegistrationEnabled: Boolean
-  SelfRegistrationFields: SelfRegistrationFieldCreateManyWithoutApplicationInput
-  Tenant: TenantCreateOneWithoutApplicationsInput!
-  trustedApplication: Boolean
-  updatedAt: DateTime
-}
-
-input ApplicationCreateWithoutIdentityProvidersInput {
-  accessTokenLifetime: Int
-  AccessTokens: AccessTokenCreateManyWithoutApplicationInput
-  AuthorizationCodes: AuthorizationCodeCreateManyWithoutApplicationInput
-  createdAt: DateTime
-  EnabledScopes: ScopeCreateManyWithoutApplicationsInput
-  ExternalIdentifier: ExternalIdentifierCreateManyWithoutApplicationInput
-  Grants: GrantCreateManyWithoutApplicationsInput
-  id: String
-  idTokenLifetime: Int
-  issuer: String
-  JavascriptOrigins: JavascriptOriginCreateManyWithoutApplicationInput
-  LoginLog: LoginLogCreateManyWithoutApplicationInput
-  logo: String
-  name: String!
-  RedirectUris: RedirectURICreateManyWithoutApplicationInput
-  refreshTokenLifetime: Int
-  RefreshTokens: RefreshTokenCreateManyWithoutApplicationInput
-  Registrations: RegistrationCreateManyWithoutApplicationInput
-  Roles: RoleCreateManyWithoutApplicationInput
-  secret: String
-  selfRegistrationEnabled: Boolean
-  SelfRegistrationFields: SelfRegistrationFieldCreateManyWithoutApplicationInput
-  Tenant: TenantCreateOneWithoutApplicationsInput!
-  trustedApplication: Boolean
-  updatedAt: DateTime
-}
-
-input ApplicationCreateWithoutLoginLogInput {
-  accessTokenLifetime: Int
-  AccessTokens: AccessTokenCreateManyWithoutApplicationInput
-  AuthorizationCodes: AuthorizationCodeCreateManyWithoutApplicationInput
-  createdAt: DateTime
-  EnabledScopes: ScopeCreateManyWithoutApplicationsInput
-  ExternalIdentifier: ExternalIdentifierCreateManyWithoutApplicationInput
-  Grants: GrantCreateManyWithoutApplicationsInput
-  id: String
-  IdentityProviders: IdProviderOnApplicationCreateManyWithoutApplicationInput
-  idTokenLifetime: Int
-  issuer: String
-  JavascriptOrigins: JavascriptOriginCreateManyWithoutApplicationInput
-  logo: String
-  name: String!
-  RedirectUris: RedirectURICreateManyWithoutApplicationInput
-  refreshTokenLifetime: Int
-  RefreshTokens: RefreshTokenCreateManyWithoutApplicationInput
-  Registrations: RegistrationCreateManyWithoutApplicationInput
-  Roles: RoleCreateManyWithoutApplicationInput
-  secret: String
-  selfRegistrationEnabled: Boolean
-  SelfRegistrationFields: SelfRegistrationFieldCreateManyWithoutApplicationInput
-  Tenant: TenantCreateOneWithoutApplicationsInput!
-  trustedApplication: Boolean
-  updatedAt: DateTime
+  webOrgins: String
 }
 
 input ApplicationCreateWithoutRefreshTokensInput {
-  accessTokenLifetime: Int
-  AccessTokens: AccessTokenCreateManyWithoutApplicationInput
-  AuthorizationCodes: AuthorizationCodeCreateManyWithoutApplicationInput
+  AuthorizationCode: AuthorizationCodeCreateNestedManyWithoutApplicationInput
+  EnabledGrantTypes: EnabledGrantTypeCreateNestedManyWithoutApplicationInput
+  FacebookConnection: FacebookConnectionCreateNestedOneWithoutApplicationsInput
+  GoogleConnection: GoogleConnectionCreateNestedOneWithoutApplicationsInput
+  GrantedScopes: ScopeCreateNestedManyWithoutUsingApplicationsInput
+  LoginLogs: LoginLogCreateNestedManyWithoutApplicationInput
+  Registrations: RegistrationCreateNestedManyWithoutApplicationInput
+  applicationLogo: String
+  applicationType: ApplicationType!
+  callbackURLs: String
+  corsOrigins: String
   createdAt: DateTime
-  EnabledScopes: ScopeCreateManyWithoutApplicationsInput
-  ExternalIdentifier: ExternalIdentifierCreateManyWithoutApplicationInput
-  Grants: GrantCreateManyWithoutApplicationsInput
+  description: String
   id: String
-  IdentityProviders: IdProviderOnApplicationCreateManyWithoutApplicationInput
-  idTokenLifetime: Int
-  issuer: String
-  JavascriptOrigins: JavascriptOriginCreateManyWithoutApplicationInput
-  LoginLog: LoginLogCreateManyWithoutApplicationInput
-  logo: String
+  idTokenExpirationInSecond: Int
+  jwtSignatureAlgorithm: JWTSignatureAlgorithm
+  loginURI: String
+  logoutURLs: String
   name: String!
-  RedirectUris: RedirectURICreateManyWithoutApplicationInput
-  refreshTokenLifetime: Int
-  Registrations: RegistrationCreateManyWithoutApplicationInput
-  Roles: RoleCreateManyWithoutApplicationInput
-  secret: String
-  selfRegistrationEnabled: Boolean
-  SelfRegistrationFields: SelfRegistrationFieldCreateManyWithoutApplicationInput
-  Tenant: TenantCreateOneWithoutApplicationsInput!
-  trustedApplication: Boolean
+  refreshInactivityExpiration: Boolean
+  refreshInactivityLifetimeInSecond: Int
+  refreshTokenExpirationInSecond: Int
+  refreshTokenReuseInterval: Int
+  refreshTokenRotation: Boolean
+  secret: String!
   updatedAt: DateTime
+  webOrgins: String
 }
 
 input ApplicationCreateWithoutRegistrationsInput {
-  accessTokenLifetime: Int
-  AccessTokens: AccessTokenCreateManyWithoutApplicationInput
-  AuthorizationCodes: AuthorizationCodeCreateManyWithoutApplicationInput
+  AuthorizationCode: AuthorizationCodeCreateNestedManyWithoutApplicationInput
+  EnabledGrantTypes: EnabledGrantTypeCreateNestedManyWithoutApplicationInput
+  FacebookConnection: FacebookConnectionCreateNestedOneWithoutApplicationsInput
+  GoogleConnection: GoogleConnectionCreateNestedOneWithoutApplicationsInput
+  GrantedScopes: ScopeCreateNestedManyWithoutUsingApplicationsInput
+  LoginLogs: LoginLogCreateNestedManyWithoutApplicationInput
+  RefreshTokens: RefreshTokenCreateNestedManyWithoutApplicationInput
+  applicationLogo: String
+  applicationType: ApplicationType!
+  callbackURLs: String
+  corsOrigins: String
   createdAt: DateTime
-  EnabledScopes: ScopeCreateManyWithoutApplicationsInput
-  ExternalIdentifier: ExternalIdentifierCreateManyWithoutApplicationInput
-  Grants: GrantCreateManyWithoutApplicationsInput
+  description: String
   id: String
-  IdentityProviders: IdProviderOnApplicationCreateManyWithoutApplicationInput
-  idTokenLifetime: Int
-  issuer: String
-  JavascriptOrigins: JavascriptOriginCreateManyWithoutApplicationInput
-  LoginLog: LoginLogCreateManyWithoutApplicationInput
-  logo: String
+  idTokenExpirationInSecond: Int
+  jwtSignatureAlgorithm: JWTSignatureAlgorithm
+  loginURI: String
+  logoutURLs: String
   name: String!
-  RedirectUris: RedirectURICreateManyWithoutApplicationInput
-  refreshTokenLifetime: Int
-  RefreshTokens: RefreshTokenCreateManyWithoutApplicationInput
-  Roles: RoleCreateManyWithoutApplicationInput
-  secret: String
-  selfRegistrationEnabled: Boolean
-  SelfRegistrationFields: SelfRegistrationFieldCreateManyWithoutApplicationInput
-  Tenant: TenantCreateOneWithoutApplicationsInput!
-  trustedApplication: Boolean
+  refreshInactivityExpiration: Boolean
+  refreshInactivityLifetimeInSecond: Int
+  refreshTokenExpirationInSecond: Int
+  refreshTokenReuseInterval: Int
+  refreshTokenRotation: Boolean
+  secret: String!
   updatedAt: DateTime
-}
-
-input ApplicationCreateWithoutRolesInput {
-  accessTokenLifetime: Int
-  AccessTokens: AccessTokenCreateManyWithoutApplicationInput
-  AuthorizationCodes: AuthorizationCodeCreateManyWithoutApplicationInput
-  createdAt: DateTime
-  EnabledScopes: ScopeCreateManyWithoutApplicationsInput
-  ExternalIdentifier: ExternalIdentifierCreateManyWithoutApplicationInput
-  Grants: GrantCreateManyWithoutApplicationsInput
-  id: String
-  IdentityProviders: IdProviderOnApplicationCreateManyWithoutApplicationInput
-  idTokenLifetime: Int
-  issuer: String
-  JavascriptOrigins: JavascriptOriginCreateManyWithoutApplicationInput
-  LoginLog: LoginLogCreateManyWithoutApplicationInput
-  logo: String
-  name: String!
-  RedirectUris: RedirectURICreateManyWithoutApplicationInput
-  refreshTokenLifetime: Int
-  RefreshTokens: RefreshTokenCreateManyWithoutApplicationInput
-  Registrations: RegistrationCreateManyWithoutApplicationInput
-  secret: String
-  selfRegistrationEnabled: Boolean
-  SelfRegistrationFields: SelfRegistrationFieldCreateManyWithoutApplicationInput
-  Tenant: TenantCreateOneWithoutApplicationsInput!
-  trustedApplication: Boolean
-  updatedAt: DateTime
-}
-
-input ApplicationCreateWithoutTenantInput {
-  accessTokenLifetime: Int
-  AccessTokens: AccessTokenCreateManyWithoutApplicationInput
-  AuthorizationCodes: AuthorizationCodeCreateManyWithoutApplicationInput
-  createdAt: DateTime
-  EnabledScopes: ScopeCreateManyWithoutApplicationsInput
-  ExternalIdentifier: ExternalIdentifierCreateManyWithoutApplicationInput
-  Grants: GrantCreateManyWithoutApplicationsInput
-  id: String
-  IdentityProviders: IdProviderOnApplicationCreateManyWithoutApplicationInput
-  idTokenLifetime: Int
-  issuer: String
-  JavascriptOrigins: JavascriptOriginCreateManyWithoutApplicationInput
-  LoginLog: LoginLogCreateManyWithoutApplicationInput
-  logo: String
-  name: String!
-  RedirectUris: RedirectURICreateManyWithoutApplicationInput
-  refreshTokenLifetime: Int
-  RefreshTokens: RefreshTokenCreateManyWithoutApplicationInput
-  Registrations: RegistrationCreateManyWithoutApplicationInput
-  Roles: RoleCreateManyWithoutApplicationInput
-  secret: String
-  selfRegistrationEnabled: Boolean
-  SelfRegistrationFields: SelfRegistrationFieldCreateManyWithoutApplicationInput
-  trustedApplication: Boolean
-  updatedAt: DateTime
+  webOrgins: String
 }
 
 input ApplicationListRelationFilter {
@@ -528,72 +277,75 @@ input ApplicationListRelationFilter {
   some: ApplicationWhereInput
 }
 
-input ApplicationTenantIdNameCompoundUniqueInput {
-  name: String!
-  tenantId: String!
+enum ApplicationType {
+  GENERIC
+  MACHINE_TO_MACHINE
+  NATIVE
+  REGULAR_WEB_APPLICATION
+  SINGLE_PAGE_APPLICATION
 }
 
 input ApplicationWhereInput {
-  accessTokenLifetime: IntFilter
-  AccessTokens: AccessTokenListRelationFilter
   AND: [ApplicationWhereInput!]
-  AuthorizationCodes: AuthorizationCodeListRelationFilter
-  createdAt: DateTimeFilter
-  EnabledScopes: ScopeListRelationFilter
-  ExternalIdentifier: ExternalIdentifierListRelationFilter
-  Grants: GrantListRelationFilter
-  id: StringFilter
-  IdentityProviders: IdProviderOnApplicationListRelationFilter
-  idTokenLifetime: IntFilter
-  issuer: StringFilter
-  JavascriptOrigins: JavascriptOriginListRelationFilter
-  LoginLog: LoginLogListRelationFilter
-  logo: StringNullableFilter
-  name: StringFilter
+  AuthorizationCode: AuthorizationCodeListRelationFilter
+  EnabledGrantTypes: EnabledGrantTypeListRelationFilter
+  FacebookConnection: FacebookConnectionWhereInput
+  GoogleConnection: GoogleConnectionWhereInput
+  GrantedScopes: ScopeListRelationFilter
+  LoginLogs: LoginLogListRelationFilter
   NOT: [ApplicationWhereInput!]
   OR: [ApplicationWhereInput!]
-  RedirectUris: RedirectURIListRelationFilter
-  refreshTokenLifetime: IntFilter
   RefreshTokens: RefreshTokenListRelationFilter
   Registrations: RegistrationListRelationFilter
-  Roles: RoleListRelationFilter
+  applicationLogo: StringFilter
+  applicationType: EnumApplicationTypeFilter
+  callbackURLs: StringFilter
+  corsOrigins: StringFilter
+  createdAt: DateTimeFilter
+  description: StringFilter
+  facebookConnectionId: StringNullableFilter
+  googleConnectionId: StringNullableFilter
+  id: StringFilter
+  idTokenExpirationInSecond: IntFilter
+  jwtSignatureAlgorithm: EnumJWTSignatureAlgorithmFilter
+  loginURI: StringNullableFilter
+  logoutURLs: StringFilter
+  name: StringFilter
+  refreshInactivityExpiration: BoolFilter
+  refreshInactivityLifetimeInSecond: IntFilter
+  refreshTokenExpirationInSecond: IntFilter
+  refreshTokenReuseInterval: IntFilter
+  refreshTokenRotation: BoolFilter
   secret: StringFilter
-  selfRegistrationEnabled: BoolFilter
-  SelfRegistrationFields: SelfRegistrationFieldListRelationFilter
-  Tenant: TenantWhereInput
-  tenantId: StringFilter
-  trustedApplication: BoolFilter
   updatedAt: DateTimeFilter
+  webOrgins: StringFilter
 }
 
 input ApplicationWhereUniqueInput {
   id: String
-  tenantId_name: ApplicationTenantIdNameCompoundUniqueInput
+}
+
+type AuthPayload {
+  token: String!
+  user: User!
 }
 
 type AuthorizationCode {
   Application: Application!
+  User: User!
   code: String!
   createdAt: DateTime!
   expirationDate: DateTime!
   redirectURI: String!
-  Scopes(after: ScopeWhereUniqueInput, before: ScopeWhereUniqueInput, first: Int, last: Int): [Scope!]!
-  User: User!
 }
 
-input AuthorizationCodeCreateManyWithoutApplicationInput {
+input AuthorizationCodeCreateNestedManyWithoutApplicationInput {
   connect: [AuthorizationCodeWhereUniqueInput!]
   connectOrCreate: [AuthorizationCodeCreateOrConnectWithoutApplicationInput!]
   create: [AuthorizationCodeCreateWithoutApplicationInput!]
 }
 
-input AuthorizationCodeCreateManyWithoutScopesInput {
-  connect: [AuthorizationCodeWhereUniqueInput!]
-  connectOrCreate: [AuthorizationCodeCreateOrConnectWithoutScopesInput!]
-  create: [AuthorizationCodeCreateWithoutScopesInput!]
-}
-
-input AuthorizationCodeCreateManyWithoutUserInput {
+input AuthorizationCodeCreateNestedManyWithoutUserInput {
   connect: [AuthorizationCodeWhereUniqueInput!]
   connectOrCreate: [AuthorizationCodeCreateOrConnectWithoutUserInput!]
   create: [AuthorizationCodeCreateWithoutUserInput!]
@@ -604,47 +356,27 @@ input AuthorizationCodeCreateOrConnectWithoutApplicationInput {
   where: AuthorizationCodeWhereUniqueInput!
 }
 
-input AuthorizationCodeCreateOrConnectWithoutScopesInput {
-  create: AuthorizationCodeCreateWithoutScopesInput!
-  where: AuthorizationCodeWhereUniqueInput!
-}
-
 input AuthorizationCodeCreateOrConnectWithoutUserInput {
   create: AuthorizationCodeCreateWithoutUserInput!
   where: AuthorizationCodeWhereUniqueInput!
 }
 
 input AuthorizationCodeCreateWithoutApplicationInput {
+  User: UserCreateNestedOneWithoutAuthorizationCodesInput!
   code: String
   createdAt: DateTime
   expirationDate: DateTime!
   id: String
   redirectURI: String!
-  Scopes: ScopeCreateManyWithoutAuthorizationCodesInput
-  updatedAt: DateTime
-  User: UserCreateOneWithoutAuthorizationCodesInput!
-}
-
-input AuthorizationCodeCreateWithoutScopesInput {
-  Application: ApplicationCreateOneWithoutAuthorizationCodesInput!
-  code: String
-  createdAt: DateTime
-  expirationDate: DateTime!
-  id: String
-  redirectURI: String!
-  updatedAt: DateTime
-  User: UserCreateOneWithoutAuthorizationCodesInput!
 }
 
 input AuthorizationCodeCreateWithoutUserInput {
-  Application: ApplicationCreateOneWithoutAuthorizationCodesInput!
+  Application: ApplicationCreateNestedOneWithoutAuthorizationCodeInput!
   code: String
   createdAt: DateTime
   expirationDate: DateTime!
   id: String
   redirectURI: String!
-  Scopes: ScopeCreateManyWithoutAuthorizationCodesInput
-  updatedAt: DateTime
 }
 
 input AuthorizationCodeListRelationFilter {
@@ -657,27 +389,20 @@ input AuthorizationCodeWhereInput {
   AND: [AuthorizationCodeWhereInput!]
   Application: ApplicationWhereInput
   ApplicationId: StringFilter
+  NOT: [AuthorizationCodeWhereInput!]
+  OR: [AuthorizationCodeWhereInput!]
+  User: UserWhereInput
   code: StringFilter
   createdAt: DateTimeFilter
   expirationDate: DateTimeFilter
   id: StringFilter
-  NOT: [AuthorizationCodeWhereInput!]
-  OR: [AuthorizationCodeWhereInput!]
   redirectURI: StringFilter
-  Scopes: ScopeListRelationFilter
-  updatedAt: DateTimeFilter
-  User: UserWhereInput
   userId: StringFilter
 }
 
 input AuthorizationCodeWhereUniqueInput {
   code: String
   id: String
-}
-
-type AuthPayload {
-  token: String!
-  user: User!
 }
 
 input BoolFilter {
@@ -698,36 +423,59 @@ input DateTimeFilter {
   notIn: [DateTime!]
 }
 
-input DateTimeNullableFilter {
-  equals: DateTime
-  gt: DateTime
-  gte: DateTime
-  in: [DateTime!]
-  lt: DateTime
-  lte: DateTime
-  not: NestedDateTimeNullableFilter
-  notIn: [DateTime!]
+input EnabledGrantTypeApplicationIdGrantTypeCompoundUniqueInput {
+  applicationId: String!
+  grantType: GrantType!
 }
 
-input EnumAccountStatusTypeFilter {
-  equals: AccountStatusType
-  in: [AccountStatusType!]
-  not: NestedEnumAccountStatusTypeFilter
-  notIn: [AccountStatusType!]
+input EnabledGrantTypeCreateNestedManyWithoutApplicationInput {
+  connect: [EnabledGrantTypeWhereUniqueInput!]
+  connectOrCreate: [EnabledGrantTypeCreateOrConnectWithoutApplicationInput!]
+  create: [EnabledGrantTypeCreateWithoutApplicationInput!]
 }
 
-input EnumExternalIdentifierStatusFilter {
-  equals: ExternalIdentifierStatus
-  in: [ExternalIdentifierStatus!]
-  not: NestedEnumExternalIdentifierStatusFilter
-  notIn: [ExternalIdentifierStatus!]
+input EnabledGrantTypeCreateOrConnectWithoutApplicationInput {
+  create: EnabledGrantTypeCreateWithoutApplicationInput!
+  where: EnabledGrantTypeWhereUniqueInput!
 }
 
-input EnumGenderFilter {
-  equals: Gender
-  in: [Gender!]
-  not: NestedEnumGenderFilter
-  notIn: [Gender!]
+input EnabledGrantTypeCreateWithoutApplicationInput {
+  createdAt: DateTime
+  grantType: GrantType!
+}
+
+input EnabledGrantTypeListRelationFilter {
+  every: EnabledGrantTypeWhereInput
+  none: EnabledGrantTypeWhereInput
+  some: EnabledGrantTypeWhereInput
+}
+
+input EnabledGrantTypeWhereInput {
+  AND: [EnabledGrantTypeWhereInput!]
+  Application: ApplicationWhereInput
+  NOT: [EnabledGrantTypeWhereInput!]
+  OR: [EnabledGrantTypeWhereInput!]
+  applicationId: StringFilter
+  createdAt: DateTimeFilter
+  grantType: EnumGrantTypeFilter
+}
+
+input EnabledGrantTypeWhereUniqueInput {
+  applicationId_grantType: EnabledGrantTypeApplicationIdGrantTypeCompoundUniqueInput
+}
+
+input EnumApiTypesFilter {
+  equals: ApiTypes
+  in: [ApiTypes!]
+  not: NestedEnumApiTypesFilter
+  notIn: [ApiTypes!]
+}
+
+input EnumApplicationTypeFilter {
+  equals: ApplicationType
+  in: [ApplicationType!]
+  not: NestedEnumApplicationTypeFilter
+  notIn: [ApplicationType!]
 }
 
 input EnumGrantTypeFilter {
@@ -737,172 +485,21 @@ input EnumGrantTypeFilter {
   notIn: [GrantType!]
 }
 
-input EnumSMTPSecurityFilter {
-  equals: SMTPSecurity
-  in: [SMTPSecurity!]
-  not: NestedEnumSMTPSecurityFilter
-  notIn: [SMTPSecurity!]
+input EnumJWTSignatureAlgorithmFilter {
+  equals: JWTSignatureAlgorithm
+  in: [JWTSignatureAlgorithm!]
+  not: NestedEnumJWTSignatureAlgorithmFilter
+  notIn: [JWTSignatureAlgorithm!]
 }
 
-input EnumSupportedProviderFilter {
-  equals: SupportedProvider
-  in: [SupportedProvider!]
-  not: NestedEnumSupportedProviderFilter
-  notIn: [SupportedProvider!]
+input EnumSyncUserProfileAttributesAtEachLoginFilter {
+  equals: SyncUserProfileAttributesAtEachLogin
+  in: [SyncUserProfileAttributesAtEachLogin!]
+  not: NestedEnumSyncUserProfileAttributesAtEachLoginFilter
+  notIn: [SyncUserProfileAttributesAtEachLogin!]
 }
 
-input EnumUsernameStatusFilter {
-  equals: UsernameStatus
-  in: [UsernameStatus!]
-  not: NestedEnumUsernameStatusFilter
-  notIn: [UsernameStatus!]
-}
-
-type ExternalIdentifier {
-  Application: Application!
-  createdAt: DateTime!
-  data: Json
-  IdentityProvider: IdentityProvider!
-  isUserCreatedBefore: Boolean!
-  providerType: SupportedProvider!
-  status: ExternalIdentifierStatus!
-  Tenant: Tenant!
-  updatedAt: DateTime!
-  User: User!
-}
-
-input ExternalIdentifierCreateManyWithoutApplicationInput {
-  connect: [ExternalIdentifierWhereUniqueInput!]
-  connectOrCreate: [ExternalIdentifierCreateOrConnectWithoutApplicationInput!]
-  create: [ExternalIdentifierCreateWithoutApplicationInput!]
-}
-
-input ExternalIdentifierCreateManyWithoutIdentityProviderInput {
-  connect: [ExternalIdentifierWhereUniqueInput!]
-  connectOrCreate: [ExternalIdentifierCreateOrConnectWithoutIdentityProviderInput!]
-  create: [ExternalIdentifierCreateWithoutIdentityProviderInput!]
-}
-
-input ExternalIdentifierCreateManyWithoutTenantInput {
-  connect: [ExternalIdentifierWhereUniqueInput!]
-  connectOrCreate: [ExternalIdentifierCreateOrConnectWithoutTenantInput!]
-  create: [ExternalIdentifierCreateWithoutTenantInput!]
-}
-
-input ExternalIdentifierCreateManyWithoutUserInput {
-  connect: [ExternalIdentifierWhereUniqueInput!]
-  connectOrCreate: [ExternalIdentifierCreateOrConnectWithoutUserInput!]
-  create: [ExternalIdentifierCreateWithoutUserInput!]
-}
-
-input ExternalIdentifierCreateOrConnectWithoutApplicationInput {
-  create: ExternalIdentifierCreateWithoutApplicationInput!
-  where: ExternalIdentifierWhereUniqueInput!
-}
-
-input ExternalIdentifierCreateOrConnectWithoutIdentityProviderInput {
-  create: ExternalIdentifierCreateWithoutIdentityProviderInput!
-  where: ExternalIdentifierWhereUniqueInput!
-}
-
-input ExternalIdentifierCreateOrConnectWithoutTenantInput {
-  create: ExternalIdentifierCreateWithoutTenantInput!
-  where: ExternalIdentifierWhereUniqueInput!
-}
-
-input ExternalIdentifierCreateOrConnectWithoutUserInput {
-  create: ExternalIdentifierCreateWithoutUserInput!
-  where: ExternalIdentifierWhereUniqueInput!
-}
-
-input ExternalIdentifierCreateWithoutApplicationInput {
-  createdAt: DateTime
-  data: Json
-  id: String
-  IdentityProvider: IdentityProviderCreateOneWithoutExternalIdentifiersInput!
-  isUserCreatedBefore: Boolean!
-  providerType: SupportedProvider!
-  status: ExternalIdentifierStatus
-  Tenant: TenantCreateOneWithoutExternalIdentifierInput!
-  updatedAt: DateTime
-  User: UserCreateOneWithoutExternalIdentifiersInput!
-}
-
-input ExternalIdentifierCreateWithoutIdentityProviderInput {
-  Application: ApplicationCreateOneWithoutExternalIdentifierInput!
-  createdAt: DateTime
-  data: Json
-  id: String
-  isUserCreatedBefore: Boolean!
-  providerType: SupportedProvider!
-  status: ExternalIdentifierStatus
-  Tenant: TenantCreateOneWithoutExternalIdentifierInput!
-  updatedAt: DateTime
-  User: UserCreateOneWithoutExternalIdentifiersInput!
-}
-
-input ExternalIdentifierCreateWithoutTenantInput {
-  Application: ApplicationCreateOneWithoutExternalIdentifierInput!
-  createdAt: DateTime
-  data: Json
-  id: String
-  IdentityProvider: IdentityProviderCreateOneWithoutExternalIdentifiersInput!
-  isUserCreatedBefore: Boolean!
-  providerType: SupportedProvider!
-  status: ExternalIdentifierStatus
-  updatedAt: DateTime
-  User: UserCreateOneWithoutExternalIdentifiersInput!
-}
-
-input ExternalIdentifierCreateWithoutUserInput {
-  Application: ApplicationCreateOneWithoutExternalIdentifierInput!
-  createdAt: DateTime
-  data: Json
-  id: String
-  IdentityProvider: IdentityProviderCreateOneWithoutExternalIdentifiersInput!
-  isUserCreatedBefore: Boolean!
-  providerType: SupportedProvider!
-  status: ExternalIdentifierStatus
-  Tenant: TenantCreateOneWithoutExternalIdentifierInput!
-  updatedAt: DateTime
-}
-
-input ExternalIdentifierListRelationFilter {
-  every: ExternalIdentifierWhereInput
-  none: ExternalIdentifierWhereInput
-  some: ExternalIdentifierWhereInput
-}
-
-enum ExternalIdentifierStatus {
-  CONFIRMED
-  DISABLED
-  UNCONFIRMED
-}
-
-input ExternalIdentifierWhereInput {
-  AND: [ExternalIdentifierWhereInput!]
-  Application: ApplicationWhereInput
-  applicationId: StringFilter
-  createdAt: DateTimeFilter
-  data: JsonNullableFilter
-  id: StringFilter
-  IdentityProvider: IdentityProviderWhereInput
-  identityProviderId: StringFilter
-  isUserCreatedBefore: BoolFilter
-  NOT: [ExternalIdentifierWhereInput!]
-  OR: [ExternalIdentifierWhereInput!]
-  providerType: EnumSupportedProviderFilter
-  status: EnumExternalIdentifierStatusFilter
-  Tenant: TenantWhereInput
-  tenantId: StringFilter
-  updatedAt: DateTimeFilter
-  User: UserWhereInput
-  userId: StringFilter
-}
-
-input ExternalIdentifierWhereUniqueInput {
-  id: String
-}
+type ExternalIdentifier
 
 """Status of external identity"""
 enum ExternalIdentityStatus {
@@ -911,43 +508,49 @@ enum ExternalIdentityStatus {
   UNCONFIRMED
 }
 
-input FailedLoginCreateManyWithoutUserInput {
-  connect: [FailedLoginWhereUniqueInput!]
-  connectOrCreate: [FailedLoginCreateOrConnectWithoutUserInput!]
-  create: [FailedLoginCreateWithoutUserInput!]
+input FacebookConnectionCreateNestedOneWithoutApplicationsInput {
+  connect: FacebookConnectionWhereUniqueInput
+  connectOrCreate: FacebookConnectionCreateOrConnectWithoutApplicationsInput
+  create: FacebookConnectionCreateWithoutApplicationsInput
 }
 
-input FailedLoginCreateOrConnectWithoutUserInput {
-  create: FailedLoginCreateWithoutUserInput!
-  where: FailedLoginWhereUniqueInput!
+input FacebookConnectionCreateOrConnectWithoutApplicationsInput {
+  create: FacebookConnectionCreateWithoutApplicationsInput!
+  where: FacebookConnectionWhereUniqueInput!
 }
 
-input FailedLoginCreateWithoutUserInput {
+input FacebookConnectionCreateWithoutApplicationsInput {
+  appId: String
+  appSecret: String
   createdAt: DateTime
+  id: String
+  scopes: String!
+  syncUserProfileAttributesAtEachLogin: SyncUserProfileAttributesAtEachLogin
+  updatedAt: DateTime
+}
+
+input FacebookConnectionWhereInput {
+  AND: [FacebookConnectionWhereInput!]
+  Applications: ApplicationListRelationFilter
+  NOT: [FacebookConnectionWhereInput!]
+  OR: [FacebookConnectionWhereInput!]
+  appId: StringFilter
+  appSecret: StringFilter
+  createdAt: DateTimeFilter
+  id: StringFilter
+  scopes: StringFilter
+  syncUserProfileAttributesAtEachLogin: EnumSyncUserProfileAttributesAtEachLoginFilter
+  updatedAt: DateTimeFilter
+}
+
+input FacebookConnectionWhereUniqueInput {
   id: String
 }
 
-input FailedLoginListRelationFilter {
-  every: FailedLoginWhereInput
-  none: FailedLoginWhereInput
-  some: FailedLoginWhereInput
-}
-
-input FailedLoginLogCreateManyWithoutTenantInput {
-  connect: [FailedLoginLogWhereUniqueInput!]
-  connectOrCreate: [FailedLoginLogCreateOrConnectWithoutTenantInput!]
-  create: [FailedLoginLogCreateWithoutTenantInput!]
-}
-
-input FailedLoginLogCreateManyWithoutUserInput {
+input FailedLoginLogCreateNestedManyWithoutUserInput {
   connect: [FailedLoginLogWhereUniqueInput!]
   connectOrCreate: [FailedLoginLogCreateOrConnectWithoutUserInput!]
   create: [FailedLoginLogCreateWithoutUserInput!]
-}
-
-input FailedLoginLogCreateOrConnectWithoutTenantInput {
-  create: FailedLoginLogCreateWithoutTenantInput!
-  where: FailedLoginLogWhereUniqueInput!
 }
 
 input FailedLoginLogCreateOrConnectWithoutUserInput {
@@ -955,19 +558,10 @@ input FailedLoginLogCreateOrConnectWithoutUserInput {
   where: FailedLoginLogWhereUniqueInput!
 }
 
-input FailedLoginLogCreateWithoutTenantInput {
-  count: Int
-  createdAt: DateTime
-  id: String
-  updatedAt: DateTime
-  User: UserCreateOneWithoutFailedLoginLogsInput!
-}
-
 input FailedLoginLogCreateWithoutUserInput {
   count: Int
   createdAt: DateTime
   id: String
-  Tenant: TenantCreateOneWithoutFailedLoginLogsInput!
   updatedAt: DateTime
 }
 
@@ -979,33 +573,17 @@ input FailedLoginLogListRelationFilter {
 
 input FailedLoginLogWhereInput {
   AND: [FailedLoginLogWhereInput!]
+  NOT: [FailedLoginLogWhereInput!]
+  OR: [FailedLoginLogWhereInput!]
+  User: UserWhereInput
   count: IntFilter
   createdAt: DateTimeFilter
   id: StringFilter
-  NOT: [FailedLoginLogWhereInput!]
-  OR: [FailedLoginLogWhereInput!]
-  Tenant: TenantWhereInput
-  tenantId: StringFilter
   updatedAt: DateTimeFilter
-  User: UserWhereInput
   userId: StringFilter
 }
 
 input FailedLoginLogWhereUniqueInput {
-  id: String
-}
-
-input FailedLoginWhereInput {
-  AND: [FailedLoginWhereInput!]
-  createdAt: DateTimeFilter
-  id: StringFilter
-  NOT: [FailedLoginWhereInput!]
-  OR: [FailedLoginWhereInput!]
-  User: UserWhereInput
-  userId: StringFilter
-}
-
-input FailedLoginWhereUniqueInput {
   id: String
 }
 
@@ -1016,34 +594,48 @@ enum Gender {
   OTHER
 }
 
-type Grant {
-  createdAt: DateTime!
-  grantType: GrantType!
+input GoogleConnectionCreateNestedOneWithoutApplicationsInput {
+  connect: GoogleConnectionWhereUniqueInput
+  connectOrCreate: GoogleConnectionCreateOrConnectWithoutApplicationsInput
+  create: GoogleConnectionCreateWithoutApplicationsInput
 }
 
-input GrantCreateManyWithoutApplicationsInput {
-  connect: [GrantWhereUniqueInput!]
-  connectOrCreate: [GrantCreateOrConnectWithoutApplicationsInput!]
-  create: [GrantCreateWithoutApplicationsInput!]
+input GoogleConnectionCreateOrConnectWithoutApplicationsInput {
+  create: GoogleConnectionCreateWithoutApplicationsInput!
+  where: GoogleConnectionWhereUniqueInput!
 }
 
-input GrantCreateOrConnectWithoutApplicationsInput {
-  create: GrantCreateWithoutApplicationsInput!
-  where: GrantWhereUniqueInput!
-}
-
-input GrantCreateWithoutApplicationsInput {
+input GoogleConnectionCreateWithoutApplicationsInput {
+  allowedMobileClientIDs: String
+  clientID: String
+  clientSecret: String
   createdAt: DateTime
-  grantType: GrantType!
   id: String
+  scopes: String!
+  syncUserProfileAttributesAtEachLogin: SyncUserProfileAttributesAtEachLogin
   updatedAt: DateTime
 }
 
-input GrantListRelationFilter {
-  every: GrantWhereInput
-  none: GrantWhereInput
-  some: GrantWhereInput
+input GoogleConnectionWhereInput {
+  AND: [GoogleConnectionWhereInput!]
+  Applications: ApplicationListRelationFilter
+  NOT: [GoogleConnectionWhereInput!]
+  OR: [GoogleConnectionWhereInput!]
+  allowedMobileClientIDs: StringFilter
+  clientID: StringFilter
+  clientSecret: StringFilter
+  createdAt: DateTimeFilter
+  id: StringFilter
+  scopes: StringFilter
+  syncUserProfileAttributesAtEachLogin: EnumSyncUserProfileAttributesAtEachLoginFilter
+  updatedAt: DateTimeFilter
 }
+
+input GoogleConnectionWhereUniqueInput {
+  id: String
+}
+
+type Grant
 
 """"""
 enum GrantType {
@@ -1054,44 +646,22 @@ enum GrantType {
   REFRESH_TOKEN
 }
 
-input GrantWhereInput {
-  AND: [GrantWhereInput!]
-  Applications: ApplicationListRelationFilter
-  createdAt: DateTimeFilter
-  grantType: EnumGrantTypeFilter
-  id: StringFilter
-  NOT: [GrantWhereInput!]
-  OR: [GrantWhereInput!]
-  updatedAt: DateTimeFilter
-}
-
-input GrantWhereUniqueInput {
-  grantType: GrantType
-  id: String
-}
-
 type Group {
+  Roles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int): [Role!]!
+  Users(after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int): [User!]!
   createdAt: DateTime!
   description: String
   name: String!
-  Roles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int): [Role!]!
   updatedAt: DateTime!
-  Users(after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int): [User!]!
 }
 
-input GroupCreateManyWithoutRolesInput {
+input GroupCreateNestedManyWithoutRolesInput {
   connect: [GroupWhereUniqueInput!]
   connectOrCreate: [GroupCreateOrConnectWithoutRolesInput!]
   create: [GroupCreateWithoutRolesInput!]
 }
 
-input GroupCreateManyWithoutTenantInput {
-  connect: [GroupWhereUniqueInput!]
-  connectOrCreate: [GroupCreateOrConnectWithoutTenantInput!]
-  create: [GroupCreateWithoutTenantInput!]
-}
-
-input GroupCreateManyWithoutUsersInput {
+input GroupCreateNestedManyWithoutUsersInput {
   connect: [GroupWhereUniqueInput!]
   connectOrCreate: [GroupCreateOrConnectWithoutUsersInput!]
   create: [GroupCreateWithoutUsersInput!]
@@ -1102,43 +672,26 @@ input GroupCreateOrConnectWithoutRolesInput {
   where: GroupWhereUniqueInput!
 }
 
-input GroupCreateOrConnectWithoutTenantInput {
-  create: GroupCreateWithoutTenantInput!
-  where: GroupWhereUniqueInput!
-}
-
 input GroupCreateOrConnectWithoutUsersInput {
   create: GroupCreateWithoutUsersInput!
   where: GroupWhereUniqueInput!
 }
 
 input GroupCreateWithoutRolesInput {
+  Users: UserCreateNestedManyWithoutGroupsInput
   createdAt: DateTime
   description: String
   id: String
   name: String!
-  Tenant: TenantCreateOneWithoutGroupsInput!
   updatedAt: DateTime
-  Users: UserCreateManyWithoutGroupsInput
-}
-
-input GroupCreateWithoutTenantInput {
-  createdAt: DateTime
-  description: String
-  id: String
-  name: String!
-  Roles: RoleCreateManyWithoutGroupsInput
-  updatedAt: DateTime
-  Users: UserCreateManyWithoutGroupsInput
 }
 
 input GroupCreateWithoutUsersInput {
+  Roles: RoleCreateNestedManyWithoutGroupsInput
   createdAt: DateTime
   description: String
   id: String
   name: String!
-  Roles: RoleCreateManyWithoutGroupsInput
-  Tenant: TenantCreateOneWithoutGroupsInput!
   updatedAt: DateTime
 }
 
@@ -1150,17 +703,15 @@ input GroupListRelationFilter {
 
 input GroupWhereInput {
   AND: [GroupWhereInput!]
+  NOT: [GroupWhereInput!]
+  OR: [GroupWhereInput!]
+  Roles: RoleListRelationFilter
+  Users: UserListRelationFilter
   createdAt: DateTimeFilter
   description: StringNullableFilter
   id: StringFilter
   name: StringFilter
-  NOT: [GroupWhereInput!]
-  OR: [GroupWhereInput!]
-  Roles: RoleListRelationFilter
-  Tenant: TenantWhereInput
-  tenantId: StringFilter
   updatedAt: DateTimeFilter
-  Users: UserListRelationFilter
 }
 
 input GroupWhereUniqueInput {
@@ -1168,156 +719,9 @@ input GroupWhereUniqueInput {
   name: String
 }
 
-type IdentityProvider {
-  Applications(after: IdProviderOnApplicationWhereUniqueInput, before: IdProviderOnApplicationWhereUniqueInput, first: Int, last: Int): [IdProviderOnApplication!]!
-  createdAt: DateTime!
-  data: Json!
-  ExternalIdentifiers(after: ExternalIdentifierWhereUniqueInput, before: ExternalIdentifierWhereUniqueInput, first: Int, last: Int): [ExternalIdentifier!]!
-  isEnabled: Boolean!
-  providerType: SupportedProvider!
-  updatedAt: DateTime!
-}
+type IdProviderOnApplication
 
-input IdentityProviderCreateOneWithoutApplicationsInput {
-  connect: IdentityProviderWhereUniqueInput
-  connectOrCreate: IdentityProviderCreateOrConnectWithoutApplicationsInput
-  create: IdentityProviderCreateWithoutApplicationsInput
-}
-
-input IdentityProviderCreateOneWithoutExternalIdentifiersInput {
-  connect: IdentityProviderWhereUniqueInput
-  connectOrCreate: IdentityProviderCreateOrConnectWithoutExternalIdentifiersInput
-  create: IdentityProviderCreateWithoutExternalIdentifiersInput
-}
-
-input IdentityProviderCreateOrConnectWithoutApplicationsInput {
-  create: IdentityProviderCreateWithoutApplicationsInput!
-  where: IdentityProviderWhereUniqueInput!
-}
-
-input IdentityProviderCreateOrConnectWithoutExternalIdentifiersInput {
-  create: IdentityProviderCreateWithoutExternalIdentifiersInput!
-  where: IdentityProviderWhereUniqueInput!
-}
-
-input IdentityProviderCreateWithoutApplicationsInput {
-  createdAt: DateTime
-  data: Json!
-  ExternalIdentifiers: ExternalIdentifierCreateManyWithoutIdentityProviderInput
-  id: String
-  isEnabled: Boolean
-  providerType: SupportedProvider!
-  updatedAt: DateTime
-}
-
-input IdentityProviderCreateWithoutExternalIdentifiersInput {
-  Applications: IdProviderOnApplicationCreateManyWithoutIdentityProviderInput
-  createdAt: DateTime
-  data: Json!
-  id: String
-  isEnabled: Boolean
-  providerType: SupportedProvider!
-  updatedAt: DateTime
-}
-
-input IdentityProviderWhereInput {
-  AND: [IdentityProviderWhereInput!]
-  Applications: IdProviderOnApplicationListRelationFilter
-  createdAt: DateTimeFilter
-  ExternalIdentifiers: ExternalIdentifierListRelationFilter
-  id: StringFilter
-  isEnabled: BoolFilter
-  NOT: [IdentityProviderWhereInput!]
-  OR: [IdentityProviderWhereInput!]
-  providerType: EnumSupportedProviderFilter
-  updatedAt: DateTimeFilter
-}
-
-input IdentityProviderWhereUniqueInput {
-  id: String
-}
-
-type IdProviderOnApplication {
-  Application: Application!
-  createdAt: DateTime!
-  data: Json
-  IdentityProvider: IdentityProvider!
-  isEnabled: Boolean!
-  isOverwritten: Boolean!
-  providerType: SupportedProvider!
-  updatedAt: DateTime!
-}
-
-input IdProviderOnApplicationCreateManyWithoutApplicationInput {
-  connect: [IdProviderOnApplicationWhereUniqueInput!]
-  connectOrCreate: [IdProviderOnApplicationCreateOrConnectWithoutApplicationInput!]
-  create: [IdProviderOnApplicationCreateWithoutApplicationInput!]
-}
-
-input IdProviderOnApplicationCreateManyWithoutIdentityProviderInput {
-  connect: [IdProviderOnApplicationWhereUniqueInput!]
-  connectOrCreate: [IdProviderOnApplicationCreateOrConnectWithoutIdentityProviderInput!]
-  create: [IdProviderOnApplicationCreateWithoutIdentityProviderInput!]
-}
-
-input IdProviderOnApplicationCreateOrConnectWithoutApplicationInput {
-  create: IdProviderOnApplicationCreateWithoutApplicationInput!
-  where: IdProviderOnApplicationWhereUniqueInput!
-}
-
-input IdProviderOnApplicationCreateOrConnectWithoutIdentityProviderInput {
-  create: IdProviderOnApplicationCreateWithoutIdentityProviderInput!
-  where: IdProviderOnApplicationWhereUniqueInput!
-}
-
-input IdProviderOnApplicationCreateWithoutApplicationInput {
-  createdAt: DateTime
-  data: Json
-  id: String
-  IdentityProvider: IdentityProviderCreateOneWithoutApplicationsInput!
-  isEnabled: Boolean
-  isOverwritten: Boolean
-  providerType: SupportedProvider!
-  updatedAt: DateTime
-}
-
-input IdProviderOnApplicationCreateWithoutIdentityProviderInput {
-  Application: ApplicationCreateOneWithoutIdentityProvidersInput!
-  createdAt: DateTime
-  data: Json
-  id: String
-  isEnabled: Boolean
-  isOverwritten: Boolean
-  providerType: SupportedProvider!
-  updatedAt: DateTime
-}
-
-input IdProviderOnApplicationListRelationFilter {
-  every: IdProviderOnApplicationWhereInput
-  none: IdProviderOnApplicationWhereInput
-  some: IdProviderOnApplicationWhereInput
-}
-
-input IdProviderOnApplicationWhereInput {
-  AND: [IdProviderOnApplicationWhereInput!]
-  Application: ApplicationWhereInput
-  applicationId: StringFilter
-  createdAt: DateTimeFilter
-  data: JsonNullableFilter
-  id: StringFilter
-  IdentityProvider: IdentityProviderWhereInput
-  identityProviderId: StringFilter
-  isEnabled: BoolFilter
-  isOverwritten: BoolFilter
-  NOT: [IdProviderOnApplicationWhereInput!]
-  OR: [IdProviderOnApplicationWhereInput!]
-  providerType: EnumSupportedProviderFilter
-  updatedAt: DateTimeFilter
-}
-
-input IdProviderOnApplicationWhereUniqueInput {
-  id: String
-}
+type IdentityProvider
 
 input IntFilter {
   equals: Int
@@ -1330,50 +734,12 @@ input IntFilter {
   notIn: [Int!]
 }
 
-type JavascriptOrigin {
-  createdAt: DateTime!
-  uri: String!
+enum JWTSignatureAlgorithm {
+  HS256
+  RS256
 }
 
-input JavascriptOriginCreateManyWithoutApplicationInput {
-  connect: [JavascriptOriginWhereUniqueInput!]
-  connectOrCreate: [JavascriptOriginCreateOrConnectWithoutApplicationInput!]
-  create: [JavascriptOriginCreateWithoutApplicationInput!]
-}
-
-input JavascriptOriginCreateOrConnectWithoutApplicationInput {
-  create: JavascriptOriginCreateWithoutApplicationInput!
-  where: JavascriptOriginWhereUniqueInput!
-}
-
-input JavascriptOriginCreateWithoutApplicationInput {
-  createdAt: DateTime
-  id: String
-  updatedAt: DateTime
-  uri: String!
-}
-
-input JavascriptOriginListRelationFilter {
-  every: JavascriptOriginWhereInput
-  none: JavascriptOriginWhereInput
-  some: JavascriptOriginWhereInput
-}
-
-input JavascriptOriginWhereInput {
-  AND: [JavascriptOriginWhereInput!]
-  Application: ApplicationWhereInput
-  ApplicationId: StringFilter
-  createdAt: DateTimeFilter
-  id: StringFilter
-  NOT: [JavascriptOriginWhereInput!]
-  OR: [JavascriptOriginWhereInput!]
-  updatedAt: DateTimeFilter
-  uri: StringFilter
-}
-
-input JavascriptOriginWhereUniqueInput {
-  id: String
-}
+type JavascriptOrigin
 
 scalar Json
 
@@ -1382,13 +748,13 @@ input JsonNullableFilter {
   not: Json
 }
 
-input LoginLogCreateManyWithoutApplicationInput {
+input LoginLogCreateNestedManyWithoutApplicationInput {
   connect: [LoginLogWhereUniqueInput!]
   connectOrCreate: [LoginLogCreateOrConnectWithoutApplicationInput!]
   create: [LoginLogCreateWithoutApplicationInput!]
 }
 
-input LoginLogCreateManyWithoutUserInput {
+input LoginLogCreateNestedManyWithoutUserInput {
   connect: [LoginLogWhereUniqueInput!]
   connectOrCreate: [LoginLogCreateOrConnectWithoutUserInput!]
   create: [LoginLogCreateWithoutUserInput!]
@@ -1405,15 +771,15 @@ input LoginLogCreateOrConnectWithoutUserInput {
 }
 
 input LoginLogCreateWithoutApplicationInput {
+  User: UserCreateNestedOneWithoutLoginLogsInput!
   createdAt: DateTime
   id: String
   ipAddress: String!
   updatedAt: DateTime
-  User: UserCreateOneWithoutLoginLogInput!
 }
 
 input LoginLogCreateWithoutUserInput {
-  Application: ApplicationCreateOneWithoutLoginLogInput!
+  Application: ApplicationCreateNestedOneWithoutLoginLogsInput!
   createdAt: DateTime
   id: String
   ipAddress: String!
@@ -1429,14 +795,14 @@ input LoginLogListRelationFilter {
 input LoginLogWhereInput {
   AND: [LoginLogWhereInput!]
   Application: ApplicationWhereInput
+  NOT: [LoginLogWhereInput!]
+  OR: [LoginLogWhereInput!]
+  User: UserWhereInput
   applicationId: StringFilter
   createdAt: DateTimeFilter
   id: StringFilter
   ipAddress: StringFilter
-  NOT: [LoginLogWhereInput!]
-  OR: [LoginLogWhereInput!]
   updatedAt: DateTimeFilter
-  User: UserWhereInput
   userId: StringFilter
 }
 
@@ -1444,68 +810,7 @@ input LoginLogWhereUniqueInput {
   id: String
 }
 
-type MailSetting {
-  createdAt: DateTime!
-  from: String!
-  host: String!
-  id: String!
-  name: String
-  password: String
-  port: String!
-  SMTPSecurity: SMTPSecurity!
-  updatedAt: DateTime!
-  username: String
-}
-
-input MailSettingCreateOneWithoutTenantInput {
-  connect: MailSettingWhereUniqueInput
-  connectOrCreate: MailSettingCreateOrConnectWithoutTenantInput
-  create: MailSettingCreateWithoutTenantInput
-}
-
-input MailSettingCreateOrConnectWithoutTenantInput {
-  create: MailSettingCreateWithoutTenantInput!
-  where: MailSettingWhereUniqueInput!
-}
-
-input MailSettingCreateWithoutTenantInput {
-  ciphers: String
-  createdAt: DateTime
-  from: String!
-  host: String!
-  id: String
-  name: String
-  password: String
-  port: String!
-  secure: Boolean
-  SMTPSecurity: SMTPSecurity
-  updatedAt: DateTime
-  username: String
-}
-
-input MailSettingWhereInput {
-  AND: [MailSettingWhereInput!]
-  ciphers: StringNullableFilter
-  createdAt: DateTimeFilter
-  from: StringFilter
-  host: StringFilter
-  id: StringFilter
-  name: StringNullableFilter
-  NOT: [MailSettingWhereInput!]
-  OR: [MailSettingWhereInput!]
-  password: StringNullableFilter
-  port: StringFilter
-  secure: BoolFilter
-  SMTPSecurity: EnumSMTPSecurityFilter
-  Tenant: TenantWhereInput
-  tenantId: StringFilter
-  updatedAt: DateTimeFilter
-  username: StringNullableFilter
-}
-
-input MailSettingWhereUniqueInput {
-  id: String
-}
+type MailSetting
 
 type Mutation {
   createOneUser(data: UserCreateInput!): User!
@@ -1528,36 +833,18 @@ input NestedDateTimeFilter {
   notIn: [DateTime!]
 }
 
-input NestedDateTimeNullableFilter {
-  equals: DateTime
-  gt: DateTime
-  gte: DateTime
-  in: [DateTime!]
-  lt: DateTime
-  lte: DateTime
-  not: NestedDateTimeNullableFilter
-  notIn: [DateTime!]
+input NestedEnumApiTypesFilter {
+  equals: ApiTypes
+  in: [ApiTypes!]
+  not: NestedEnumApiTypesFilter
+  notIn: [ApiTypes!]
 }
 
-input NestedEnumAccountStatusTypeFilter {
-  equals: AccountStatusType
-  in: [AccountStatusType!]
-  not: NestedEnumAccountStatusTypeFilter
-  notIn: [AccountStatusType!]
-}
-
-input NestedEnumExternalIdentifierStatusFilter {
-  equals: ExternalIdentifierStatus
-  in: [ExternalIdentifierStatus!]
-  not: NestedEnumExternalIdentifierStatusFilter
-  notIn: [ExternalIdentifierStatus!]
-}
-
-input NestedEnumGenderFilter {
-  equals: Gender
-  in: [Gender!]
-  not: NestedEnumGenderFilter
-  notIn: [Gender!]
+input NestedEnumApplicationTypeFilter {
+  equals: ApplicationType
+  in: [ApplicationType!]
+  not: NestedEnumApplicationTypeFilter
+  notIn: [ApplicationType!]
 }
 
 input NestedEnumGrantTypeFilter {
@@ -1567,25 +854,18 @@ input NestedEnumGrantTypeFilter {
   notIn: [GrantType!]
 }
 
-input NestedEnumSMTPSecurityFilter {
-  equals: SMTPSecurity
-  in: [SMTPSecurity!]
-  not: NestedEnumSMTPSecurityFilter
-  notIn: [SMTPSecurity!]
+input NestedEnumJWTSignatureAlgorithmFilter {
+  equals: JWTSignatureAlgorithm
+  in: [JWTSignatureAlgorithm!]
+  not: NestedEnumJWTSignatureAlgorithmFilter
+  notIn: [JWTSignatureAlgorithm!]
 }
 
-input NestedEnumSupportedProviderFilter {
-  equals: SupportedProvider
-  in: [SupportedProvider!]
-  not: NestedEnumSupportedProviderFilter
-  notIn: [SupportedProvider!]
-}
-
-input NestedEnumUsernameStatusFilter {
-  equals: UsernameStatus
-  in: [UsernameStatus!]
-  not: NestedEnumUsernameStatusFilter
-  notIn: [UsernameStatus!]
+input NestedEnumSyncUserProfileAttributesAtEachLoginFilter {
+  equals: SyncUserProfileAttributesAtEachLogin
+  in: [SyncUserProfileAttributesAtEachLogin!]
+  not: NestedEnumSyncUserProfileAttributesAtEachLoginFilter
+  notIn: [SyncUserProfileAttributesAtEachLogin!]
 }
 
 input NestedIntFilter {
@@ -1627,116 +907,56 @@ input NestedStringNullableFilter {
   startsWith: String
 }
 
-input PasswordResetCreateManyWithoutUserInput {
-  connect: [PasswordResetWhereUniqueInput!]
-  connectOrCreate: [PasswordResetCreateOrConnectWithoutUserInput!]
-  create: [PasswordResetCreateWithoutUserInput!]
+input PermissionCreateNestedManyWithoutRolesInput {
+  connect: [PermissionWhereUniqueInput!]
+  connectOrCreate: [PermissionCreateOrConnectWithoutRolesInput!]
+  create: [PermissionCreateWithoutRolesInput!]
 }
 
-input PasswordResetCreateOrConnectWithoutUserInput {
-  create: PasswordResetCreateWithoutUserInput!
-  where: PasswordResetWhereUniqueInput!
+input PermissionCreateOrConnectWithoutRolesInput {
+  create: PermissionCreateWithoutRolesInput!
+  where: PermissionWhereUniqueInput!
 }
 
-input PasswordResetCreateWithoutUserInput {
+input PermissionCreateWithoutRolesInput {
+  action: String!
+  conditions: Json
   createdAt: DateTime
-  expirationDate: DateTime!
+  fields: Json
   id: String
-  returnTo: String!
-  token: String!
+  inverted: Boolean
+  reason: String
+  subject: String!
   updatedAt: DateTime
 }
 
-input PasswordResetListRelationFilter {
-  every: PasswordResetWhereInput
-  none: PasswordResetWhereInput
-  some: PasswordResetWhereInput
+input PermissionListRelationFilter {
+  every: PermissionWhereInput
+  none: PermissionWhereInput
+  some: PermissionWhereInput
 }
 
-input PasswordResetWhereInput {
-  AND: [PasswordResetWhereInput!]
+input PermissionWhereInput {
+  AND: [PermissionWhereInput!]
+  NOT: [PermissionWhereInput!]
+  OR: [PermissionWhereInput!]
+  Roles: RoleListRelationFilter
+  action: StringFilter
+  conditions: JsonNullableFilter
   createdAt: DateTimeFilter
-  expirationDate: DateTimeFilter
+  fields: JsonNullableFilter
   id: StringFilter
-  NOT: [PasswordResetWhereInput!]
-  OR: [PasswordResetWhereInput!]
-  returnTo: StringFilter
-  token: StringFilter
+  inverted: BoolFilter
+  reason: StringNullableFilter
+  subject: StringFilter
   updatedAt: DateTimeFilter
-  User: UserWhereInput
-  userId: StringFilter
 }
 
-input PasswordResetWhereUniqueInput {
-  id: String
-  token: String
-}
-
-type Profile {
-  birthdate: DateTime
-  createdAt: DateTime!
-  displayName: String!
-  firstName: String!
-  gender: Gender!
-  lastName: String!
-  mobileNumber: String
-  picture: String
-  updatedAt: DateTime!
-  User: User!
-  UserCustomAttributes(after: UserCustomAttributeWhereUniqueInput, before: UserCustomAttributeWhereUniqueInput, first: Int, last: Int): [UserCustomAttribute!]!
-}
-
-input ProfileCreateOneWithoutUserInput {
-  connect: ProfileWhereUniqueInput
-  connectOrCreate: ProfileCreateOrConnectWithoutUserInput
-  create: ProfileCreateWithoutUserInput
-}
-
-input ProfileCreateOrConnectWithoutUserInput {
-  create: ProfileCreateWithoutUserInput!
-  where: ProfileWhereUniqueInput!
-}
-
-input ProfileCreateWithoutUserInput {
-  birthdate: DateTime
-  createdAt: DateTime
-  displayName: String!
-  firstName: String!
-  gender: Gender
-  id: String
-  lastName: String!
-  middleName: String
-  mobileNumber: String
-  nickName: String
-  picture: String
-  updatedAt: DateTime
-  UserCustomAttributes: UserCustomAttributeCreateManyWithoutProfileInput
-}
-
-input ProfileWhereInput {
-  AND: [ProfileWhereInput!]
-  birthdate: DateTimeNullableFilter
-  createdAt: DateTimeFilter
-  displayName: StringFilter
-  firstName: StringFilter
-  gender: EnumGenderFilter
-  id: StringFilter
-  lastName: StringFilter
-  middleName: StringNullableFilter
-  mobileNumber: StringNullableFilter
-  nickName: StringNullableFilter
-  NOT: [ProfileWhereInput!]
-  OR: [ProfileWhereInput!]
-  picture: StringNullableFilter
-  updatedAt: DateTimeFilter
-  User: UserWhereInput
-  UserCustomAttributes: UserCustomAttributeListRelationFilter
-  userId: StringFilter
-}
-
-input ProfileWhereUniqueInput {
+input PermissionWhereUniqueInput {
   id: String
 }
+
+type Profile
 
 type Query {
   Test: String
@@ -1744,50 +964,7 @@ type Query {
   users(after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int, orderBy: [UserOrderByInput!], where: UserWhereInput): [User!]!
 }
 
-type RedirectURI {
-  createdAt: DateTime!
-  url: String!
-}
-
-input RedirectURICreateManyWithoutApplicationInput {
-  connect: [RedirectURIWhereUniqueInput!]
-  connectOrCreate: [RedirectURICreateOrConnectWithoutApplicationInput!]
-  create: [RedirectURICreateWithoutApplicationInput!]
-}
-
-input RedirectURICreateOrConnectWithoutApplicationInput {
-  create: RedirectURICreateWithoutApplicationInput!
-  where: RedirectURIWhereUniqueInput!
-}
-
-input RedirectURICreateWithoutApplicationInput {
-  createdAt: DateTime
-  id: String
-  updatedAt: DateTime
-  url: String!
-}
-
-input RedirectURIListRelationFilter {
-  every: RedirectURIWhereInput
-  none: RedirectURIWhereInput
-  some: RedirectURIWhereInput
-}
-
-input RedirectURIWhereInput {
-  AND: [RedirectURIWhereInput!]
-  Application: ApplicationWhereInput
-  ApplicationId: StringFilter
-  createdAt: DateTimeFilter
-  id: StringFilter
-  NOT: [RedirectURIWhereInput!]
-  OR: [RedirectURIWhereInput!]
-  updatedAt: DateTimeFilter
-  url: StringFilter
-}
-
-input RedirectURIWhereUniqueInput {
-  id: String
-}
+type RedirectURI
 
 type RefreshToken {
   createdAt: DateTime!
@@ -1795,19 +972,19 @@ type RefreshToken {
   refreshToken: String!
 }
 
-input RefreshTokenCreateManyWithoutApplicationInput {
+input RefreshTokenCreateNestedManyWithoutApplicationInput {
   connect: [RefreshTokenWhereUniqueInput!]
   connectOrCreate: [RefreshTokenCreateOrConnectWithoutApplicationInput!]
   create: [RefreshTokenCreateWithoutApplicationInput!]
 }
 
-input RefreshTokenCreateManyWithoutScopesInput {
+input RefreshTokenCreateNestedManyWithoutScopesInput {
   connect: [RefreshTokenWhereUniqueInput!]
   connectOrCreate: [RefreshTokenCreateOrConnectWithoutScopesInput!]
   create: [RefreshTokenCreateWithoutScopesInput!]
 }
 
-input RefreshTokenCreateManyWithoutUserInput {
+input RefreshTokenCreateNestedManyWithoutUserInput {
   connect: [RefreshTokenWhereUniqueInput!]
   connectOrCreate: [RefreshTokenCreateOrConnectWithoutUserInput!]
   create: [RefreshTokenCreateWithoutUserInput!]
@@ -1829,33 +1006,30 @@ input RefreshTokenCreateOrConnectWithoutUserInput {
 }
 
 input RefreshTokenCreateWithoutApplicationInput {
+  Scopes: ScopeCreateNestedManyWithoutRefreshTokensInput
+  User: UserCreateNestedOneWithoutRefreshTokensInput!
   createdAt: DateTime
   expirationDate: DateTime!
   id: String
-  refreshToken: String
-  Scopes: ScopeCreateManyWithoutRefreshTokensInput
-  updatedAt: DateTime
-  User: UserCreateOneWithoutRefreshTokensInput!
+  refreshToken: String!
 }
 
 input RefreshTokenCreateWithoutScopesInput {
-  Application: ApplicationCreateOneWithoutRefreshTokensInput!
+  Application: ApplicationCreateNestedOneWithoutRefreshTokensInput!
+  User: UserCreateNestedOneWithoutRefreshTokensInput!
   createdAt: DateTime
   expirationDate: DateTime!
   id: String
-  refreshToken: String
-  updatedAt: DateTime
-  User: UserCreateOneWithoutRefreshTokensInput!
+  refreshToken: String!
 }
 
 input RefreshTokenCreateWithoutUserInput {
-  Application: ApplicationCreateOneWithoutRefreshTokensInput!
+  Application: ApplicationCreateNestedOneWithoutRefreshTokensInput!
+  Scopes: ScopeCreateNestedManyWithoutRefreshTokensInput
   createdAt: DateTime
   expirationDate: DateTime!
   id: String
-  refreshToken: String
-  Scopes: ScopeCreateManyWithoutRefreshTokensInput
-  updatedAt: DateTime
+  refreshToken: String!
 }
 
 input RefreshTokenListRelationFilter {
@@ -1868,15 +1042,14 @@ input RefreshTokenWhereInput {
   AND: [RefreshTokenWhereInput!]
   Application: ApplicationWhereInput
   ApplicationId: StringFilter
+  NOT: [RefreshTokenWhereInput!]
+  OR: [RefreshTokenWhereInput!]
+  Scopes: ScopeListRelationFilter
+  User: UserWhereInput
   createdAt: DateTimeFilter
   expirationDate: DateTimeFilter
   id: StringFilter
-  NOT: [RefreshTokenWhereInput!]
-  OR: [RefreshTokenWhereInput!]
   refreshToken: StringFilter
-  Scopes: ScopeListRelationFilter
-  updatedAt: DateTimeFilter
-  User: UserWhereInput
   userId: StringFilter
 }
 
@@ -1887,27 +1060,25 @@ input RefreshTokenWhereUniqueInput {
 
 type Registration {
   Application: Application!
-  createdAt: DateTime!
-  isVerified: Boolean!
   Roles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int): [Role!]!
-  updatedAt: DateTime!
   User: User!
-  username: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
-input RegistrationCreateManyWithoutApplicationInput {
+input RegistrationCreateNestedManyWithoutApplicationInput {
   connect: [RegistrationWhereUniqueInput!]
   connectOrCreate: [RegistrationCreateOrConnectWithoutApplicationInput!]
   create: [RegistrationCreateWithoutApplicationInput!]
 }
 
-input RegistrationCreateManyWithoutRolesInput {
+input RegistrationCreateNestedManyWithoutRolesInput {
   connect: [RegistrationWhereUniqueInput!]
   connectOrCreate: [RegistrationCreateOrConnectWithoutRolesInput!]
   create: [RegistrationCreateWithoutRolesInput!]
 }
 
-input RegistrationCreateManyWithoutUserInput {
+input RegistrationCreateNestedManyWithoutUserInput {
   connect: [RegistrationWhereUniqueInput!]
   connectOrCreate: [RegistrationCreateOrConnectWithoutUserInput!]
   create: [RegistrationCreateWithoutUserInput!]
@@ -1929,36 +1100,27 @@ input RegistrationCreateOrConnectWithoutUserInput {
 }
 
 input RegistrationCreateWithoutApplicationInput {
+  Roles: RoleCreateNestedManyWithoutRegistrationsInput
+  User: UserCreateNestedOneWithoutRegistrationsInput!
   createdAt: DateTime
   id: String
-  isVerified: Boolean
-  Roles: RoleCreateManyWithoutRegistrationsInput
   updatedAt: DateTime
-  User: UserCreateOneWithoutRegistrationsInput!
-  username: String
-  usernameStatus: UsernameStatus
 }
 
 input RegistrationCreateWithoutRolesInput {
-  Application: ApplicationCreateOneWithoutRegistrationsInput!
+  Application: ApplicationCreateNestedOneWithoutRegistrationsInput!
+  User: UserCreateNestedOneWithoutRegistrationsInput!
   createdAt: DateTime
   id: String
-  isVerified: Boolean
   updatedAt: DateTime
-  User: UserCreateOneWithoutRegistrationsInput!
-  username: String
-  usernameStatus: UsernameStatus
 }
 
 input RegistrationCreateWithoutUserInput {
-  Application: ApplicationCreateOneWithoutRegistrationsInput!
+  Application: ApplicationCreateNestedOneWithoutRegistrationsInput!
+  Roles: RoleCreateNestedManyWithoutRegistrationsInput
   createdAt: DateTime
   id: String
-  isVerified: Boolean
-  Roles: RoleCreateManyWithoutRegistrationsInput
   updatedAt: DateTime
-  username: String
-  usernameStatus: UsernameStatus
 }
 
 input RegistrationListRelationFilter {
@@ -1972,174 +1134,88 @@ input RegistrationUserIdApplicationIdCompoundUniqueInput {
   userId: String!
 }
 
-input RegistrationUsernameApplicationIdCompoundUniqueInput {
-  applicationId: String!
-  username: String!
-}
-
 input RegistrationWhereInput {
   AND: [RegistrationWhereInput!]
   Application: ApplicationWhereInput
-  applicationId: StringFilter
-  createdAt: DateTimeFilter
-  id: StringFilter
-  isVerified: BoolFilter
   NOT: [RegistrationWhereInput!]
   OR: [RegistrationWhereInput!]
   Roles: RoleListRelationFilter
-  updatedAt: DateTimeFilter
   User: UserWhereInput
+  applicationId: StringFilter
+  createdAt: DateTimeFilter
+  id: StringFilter
+  updatedAt: DateTimeFilter
   userId: StringFilter
-  username: StringFilter
-  usernameStatus: EnumUsernameStatusFilter
 }
 
 input RegistrationWhereUniqueInput {
   id: String
   userId_applicationId: RegistrationUserIdApplicationIdCompoundUniqueInput
-  username_applicationId: RegistrationUsernameApplicationIdCompoundUniqueInput
 }
 
-input RememberMeCreateManyWithoutUserInput {
-  connect: [RememberMeWhereUniqueInput!]
-  connectOrCreate: [RememberMeCreateOrConnectWithoutUserInput!]
-  create: [RememberMeCreateWithoutUserInput!]
+input RememberMeTokenCreateNestedManyWithoutUserInput {
+  connect: [RememberMeTokenWhereUniqueInput!]
+  connectOrCreate: [RememberMeTokenCreateOrConnectWithoutUserInput!]
+  create: [RememberMeTokenCreateWithoutUserInput!]
 }
 
-input RememberMeCreateOrConnectWithoutUserInput {
-  create: RememberMeCreateWithoutUserInput!
-  where: RememberMeWhereUniqueInput!
+input RememberMeTokenCreateOrConnectWithoutUserInput {
+  create: RememberMeTokenCreateWithoutUserInput!
+  where: RememberMeTokenWhereUniqueInput!
 }
 
-input RememberMeCreateWithoutUserInput {
+input RememberMeTokenCreateWithoutUserInput {
   createdAt: DateTime
   id: String
   token: String!
 }
 
-input RememberMeListRelationFilter {
-  every: RememberMeWhereInput
-  none: RememberMeWhereInput
-  some: RememberMeWhereInput
+input RememberMeTokenListRelationFilter {
+  every: RememberMeTokenWhereInput
+  none: RememberMeTokenWhereInput
+  some: RememberMeTokenWhereInput
 }
 
-input RememberMeWhereInput {
-  AND: [RememberMeWhereInput!]
+input RememberMeTokenWhereInput {
+  AND: [RememberMeTokenWhereInput!]
+  NOT: [RememberMeTokenWhereInput!]
+  OR: [RememberMeTokenWhereInput!]
+  User: UserWhereInput
   createdAt: DateTimeFilter
   id: StringFilter
-  NOT: [RememberMeWhereInput!]
-  OR: [RememberMeWhereInput!]
   token: StringFilter
-  User: UserWhereInput
   userId: StringFilter
 }
 
-input RememberMeWhereUniqueInput {
+input RememberMeTokenWhereUniqueInput {
   id: String
   token: String
 }
 
-type ResourceServer {
-  createdAt: DateTime!
-  identifier: String!
-  name: String!
-  Scopes(after: ScopeWhereUniqueInput, before: ScopeWhereUniqueInput, first: Int, last: Int): [Scope!]!
-}
-
-input ResourceServerCreateOneWithoutScopesInput {
-  connect: ResourceServerWhereUniqueInput
-  connectOrCreate: ResourceServerCreateOrConnectWithoutScopesInput
-  create: ResourceServerCreateWithoutScopesInput
-}
-
-input ResourceServerCreateOrConnectWithoutScopesInput {
-  create: ResourceServerCreateWithoutScopesInput!
-  where: ResourceServerWhereUniqueInput!
-}
-
-input ResourceServerCreateWithoutScopesInput {
-  createdAt: DateTime
-  id: String
-  identifier: String!
-  name: String!
-  updatedAt: DateTime
-}
-
-input ResourceServerWhereInput {
-  AND: [ResourceServerWhereInput!]
-  createdAt: DateTimeFilter
-  id: StringFilter
-  identifier: StringFilter
-  name: StringFilter
-  NOT: [ResourceServerWhereInput!]
-  OR: [ResourceServerWhereInput!]
-  Scopes: ScopeListRelationFilter
-  updatedAt: DateTimeFilter
-}
-
-input ResourceServerWhereUniqueInput {
-  id: String
-  identifier: String
-}
+type ResourceServer
 
 type Role {
-  ChildRoles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int): [Role!]!
-  createdAt: DateTime!
   Groups(after: GroupWhereUniqueInput, before: GroupWhereUniqueInput, first: Int, last: Int): [Group!]!
-  name: String!
-  ParentRoles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int): [Role!]!
-  permissions: Json
   Registrations(after: RegistrationWhereUniqueInput, before: RegistrationWhereUniqueInput, first: Int, last: Int): [Registration!]!
+  createdAt: DateTime!
+  name: String!
   updatedAt: DateTime!
 }
 
-input RoleCreateManyWithoutApplicationInput {
-  connect: [RoleWhereUniqueInput!]
-  connectOrCreate: [RoleCreateOrConnectWithoutApplicationInput!]
-  create: [RoleCreateWithoutApplicationInput!]
-}
-
-input RoleCreateManyWithoutChildRolesInput {
-  connect: [RoleWhereUniqueInput!]
-  connectOrCreate: [RoleCreateOrConnectWithoutChildRolesInput!]
-  create: [RoleCreateWithoutChildRolesInput!]
-}
-
-input RoleCreateManyWithoutGroupsInput {
+input RoleCreateNestedManyWithoutGroupsInput {
   connect: [RoleWhereUniqueInput!]
   connectOrCreate: [RoleCreateOrConnectWithoutGroupsInput!]
   create: [RoleCreateWithoutGroupsInput!]
 }
 
-input RoleCreateManyWithoutParentRolesInput {
-  connect: [RoleWhereUniqueInput!]
-  connectOrCreate: [RoleCreateOrConnectWithoutParentRolesInput!]
-  create: [RoleCreateWithoutParentRolesInput!]
-}
-
-input RoleCreateManyWithoutRegistrationsInput {
+input RoleCreateNestedManyWithoutRegistrationsInput {
   connect: [RoleWhereUniqueInput!]
   connectOrCreate: [RoleCreateOrConnectWithoutRegistrationsInput!]
   create: [RoleCreateWithoutRegistrationsInput!]
 }
 
-input RoleCreateOrConnectWithoutApplicationInput {
-  create: RoleCreateWithoutApplicationInput!
-  where: RoleWhereUniqueInput!
-}
-
-input RoleCreateOrConnectWithoutChildRolesInput {
-  create: RoleCreateWithoutChildRolesInput!
-  where: RoleWhereUniqueInput!
-}
-
 input RoleCreateOrConnectWithoutGroupsInput {
   create: RoleCreateWithoutGroupsInput!
-  where: RoleWhereUniqueInput!
-}
-
-input RoleCreateOrConnectWithoutParentRolesInput {
-  create: RoleCreateWithoutParentRolesInput!
   where: RoleWhereUniqueInput!
 }
 
@@ -2148,78 +1224,23 @@ input RoleCreateOrConnectWithoutRegistrationsInput {
   where: RoleWhereUniqueInput!
 }
 
-input RoleCreateWithoutApplicationInput {
-  ChildRoles: RoleCreateManyWithoutParentRolesInput
-  createdAt: DateTime
-  description: String
-  Groups: GroupCreateManyWithoutRolesInput
-  id: String
-  isDefault: Boolean
-  isSuperRole: Boolean
-  name: String!
-  ParentRoles: RoleCreateManyWithoutChildRolesInput
-  permissions: Json
-  Registrations: RegistrationCreateManyWithoutRolesInput
-  updatedAt: DateTime
-}
-
-input RoleCreateWithoutChildRolesInput {
-  Application: ApplicationCreateOneWithoutRolesInput!
-  createdAt: DateTime
-  description: String
-  Groups: GroupCreateManyWithoutRolesInput
-  id: String
-  isDefault: Boolean
-  isSuperRole: Boolean
-  name: String!
-  ParentRoles: RoleCreateManyWithoutChildRolesInput
-  permissions: Json
-  Registrations: RegistrationCreateManyWithoutRolesInput
-  updatedAt: DateTime
-}
-
 input RoleCreateWithoutGroupsInput {
-  Application: ApplicationCreateOneWithoutRolesInput!
-  ChildRoles: RoleCreateManyWithoutParentRolesInput
+  Permissions: PermissionCreateNestedManyWithoutRolesInput
+  Registrations: RegistrationCreateNestedManyWithoutRolesInput
   createdAt: DateTime
   description: String
   id: String
-  isDefault: Boolean
-  isSuperRole: Boolean
   name: String!
-  ParentRoles: RoleCreateManyWithoutChildRolesInput
-  permissions: Json
-  Registrations: RegistrationCreateManyWithoutRolesInput
-  updatedAt: DateTime
-}
-
-input RoleCreateWithoutParentRolesInput {
-  Application: ApplicationCreateOneWithoutRolesInput!
-  ChildRoles: RoleCreateManyWithoutParentRolesInput
-  createdAt: DateTime
-  description: String
-  Groups: GroupCreateManyWithoutRolesInput
-  id: String
-  isDefault: Boolean
-  isSuperRole: Boolean
-  name: String!
-  permissions: Json
-  Registrations: RegistrationCreateManyWithoutRolesInput
   updatedAt: DateTime
 }
 
 input RoleCreateWithoutRegistrationsInput {
-  Application: ApplicationCreateOneWithoutRolesInput!
-  ChildRoles: RoleCreateManyWithoutParentRolesInput
+  Groups: GroupCreateNestedManyWithoutRolesInput
+  Permissions: PermissionCreateNestedManyWithoutRolesInput
   createdAt: DateTime
   description: String
-  Groups: GroupCreateManyWithoutRolesInput
   id: String
-  isDefault: Boolean
-  isSuperRole: Boolean
   name: String!
-  ParentRoles: RoleCreateManyWithoutChildRolesInput
-  permissions: Json
   updatedAt: DateTime
 }
 
@@ -2229,34 +1250,30 @@ input RoleListRelationFilter {
   some: RoleWhereInput
 }
 
-input RoleNameApplicationIdCompoundUniqueInput {
-  applicationId: String!
-  name: String!
-}
-
 input RoleWhereInput {
   AND: [RoleWhereInput!]
-  Application: ApplicationWhereInput
-  applicationId: StringFilter
-  ChildRoles: RoleListRelationFilter
-  createdAt: DateTimeFilter
-  description: StringNullableFilter
   Groups: GroupListRelationFilter
-  id: StringFilter
-  isDefault: BoolFilter
-  isSuperRole: BoolFilter
-  name: StringFilter
   NOT: [RoleWhereInput!]
   OR: [RoleWhereInput!]
-  ParentRoles: RoleListRelationFilter
-  permissions: JsonNullableFilter
+  Permissions: PermissionListRelationFilter
   Registrations: RegistrationListRelationFilter
+  createdAt: DateTimeFilter
+  description: StringFilter
+  id: StringFilter
+  name: StringFilter
   updatedAt: DateTimeFilter
 }
 
 input RoleWhereUniqueInput {
   id: String
-  name_applicationId: RoleNameApplicationIdCompoundUniqueInput
+  name: String
+}
+
+"""Security options of SMTP server"""
+enum SMTPSecurity {
+  NONE
+  SSL
+  TLS
 }
 
 type Scope {
@@ -2264,43 +1281,16 @@ type Scope {
   name: String!
 }
 
-input ScopeCreateManyWithoutAccessTokensInput {
-  connect: [ScopeWhereUniqueInput!]
-  connectOrCreate: [ScopeCreateOrConnectWithoutAccessTokensInput!]
-  create: [ScopeCreateWithoutAccessTokensInput!]
-}
-
-input ScopeCreateManyWithoutApplicationsInput {
-  connect: [ScopeWhereUniqueInput!]
-  connectOrCreate: [ScopeCreateOrConnectWithoutApplicationsInput!]
-  create: [ScopeCreateWithoutApplicationsInput!]
-}
-
-input ScopeCreateManyWithoutAuthorizationCodesInput {
-  connect: [ScopeWhereUniqueInput!]
-  connectOrCreate: [ScopeCreateOrConnectWithoutAuthorizationCodesInput!]
-  create: [ScopeCreateWithoutAuthorizationCodesInput!]
-}
-
-input ScopeCreateManyWithoutRefreshTokensInput {
+input ScopeCreateNestedManyWithoutRefreshTokensInput {
   connect: [ScopeWhereUniqueInput!]
   connectOrCreate: [ScopeCreateOrConnectWithoutRefreshTokensInput!]
   create: [ScopeCreateWithoutRefreshTokensInput!]
 }
 
-input ScopeCreateOrConnectWithoutAccessTokensInput {
-  create: ScopeCreateWithoutAccessTokensInput!
-  where: ScopeWhereUniqueInput!
-}
-
-input ScopeCreateOrConnectWithoutApplicationsInput {
-  create: ScopeCreateWithoutApplicationsInput!
-  where: ScopeWhereUniqueInput!
-}
-
-input ScopeCreateOrConnectWithoutAuthorizationCodesInput {
-  create: ScopeCreateWithoutAuthorizationCodesInput!
-  where: ScopeWhereUniqueInput!
+input ScopeCreateNestedManyWithoutUsingApplicationsInput {
+  connect: [ScopeWhereUniqueInput!]
+  connectOrCreate: [ScopeCreateOrConnectWithoutUsingApplicationsInput!]
+  create: [ScopeCreateWithoutUsingApplicationsInput!]
 }
 
 input ScopeCreateOrConnectWithoutRefreshTokensInput {
@@ -2308,55 +1298,28 @@ input ScopeCreateOrConnectWithoutRefreshTokensInput {
   where: ScopeWhereUniqueInput!
 }
 
-input ScopeCreateWithoutAccessTokensInput {
-  Applications: ApplicationCreateManyWithoutEnabledScopesInput
-  AuthorizationCodes: AuthorizationCodeCreateManyWithoutScopesInput
-  createdAt: DateTime
-  description: String
-  id: String
-  isCustomScope: Boolean
-  name: String!
-  RefreshTokens: RefreshTokenCreateManyWithoutScopesInput
-  ResourceServer: ResourceServerCreateOneWithoutScopesInput
-  updatedAt: DateTime
-}
-
-input ScopeCreateWithoutApplicationsInput {
-  AccessTokens: AccessTokenCreateManyWithoutScopesInput
-  AuthorizationCodes: AuthorizationCodeCreateManyWithoutScopesInput
-  createdAt: DateTime
-  description: String
-  id: String
-  isCustomScope: Boolean
-  name: String!
-  RefreshTokens: RefreshTokenCreateManyWithoutScopesInput
-  ResourceServer: ResourceServerCreateOneWithoutScopesInput
-  updatedAt: DateTime
-}
-
-input ScopeCreateWithoutAuthorizationCodesInput {
-  AccessTokens: AccessTokenCreateManyWithoutScopesInput
-  Applications: ApplicationCreateManyWithoutEnabledScopesInput
-  createdAt: DateTime
-  description: String
-  id: String
-  isCustomScope: Boolean
-  name: String!
-  RefreshTokens: RefreshTokenCreateManyWithoutScopesInput
-  ResourceServer: ResourceServerCreateOneWithoutScopesInput
-  updatedAt: DateTime
+input ScopeCreateOrConnectWithoutUsingApplicationsInput {
+  create: ScopeCreateWithoutUsingApplicationsInput!
+  where: ScopeWhereUniqueInput!
 }
 
 input ScopeCreateWithoutRefreshTokensInput {
-  AccessTokens: AccessTokenCreateManyWithoutScopesInput
-  Applications: ApplicationCreateManyWithoutEnabledScopesInput
-  AuthorizationCodes: AuthorizationCodeCreateManyWithoutScopesInput
+  API: APICreateNestedOneWithoutScopesInput!
+  UsingApplications: ApplicationCreateNestedManyWithoutGrantedScopesInput
   createdAt: DateTime
   description: String
   id: String
-  isCustomScope: Boolean
   name: String!
-  ResourceServer: ResourceServerCreateOneWithoutScopesInput
+  updatedAt: DateTime
+}
+
+input ScopeCreateWithoutUsingApplicationsInput {
+  API: APICreateNestedOneWithoutScopesInput!
+  RefreshTokens: RefreshTokenCreateNestedManyWithoutScopesInput
+  createdAt: DateTime
+  description: String
+  id: String
+  name: String!
   updatedAt: DateTime
 }
 
@@ -2367,79 +1330,23 @@ input ScopeListRelationFilter {
 }
 
 input ScopeWhereInput {
-  AccessTokens: AccessTokenListRelationFilter
   AND: [ScopeWhereInput!]
-  Applications: ApplicationListRelationFilter
-  AuthorizationCodes: AuthorizationCodeListRelationFilter
-  createdAt: DateTimeFilter
-  description: StringNullableFilter
-  id: StringFilter
-  isCustomScope: BoolFilter
-  name: StringFilter
+  API: APIWhereInput
   NOT: [ScopeWhereInput!]
   OR: [ScopeWhereInput!]
   RefreshTokens: RefreshTokenListRelationFilter
-  ResourceServer: ResourceServerWhereInput
-  ResourceServerId: StringNullableFilter
+  UsingApplications: ApplicationListRelationFilter
+  apiId: StringFilter
+  createdAt: DateTimeFilter
+  description: StringNullableFilter
+  id: StringFilter
+  name: StringFilter
   updatedAt: DateTimeFilter
 }
 
 input ScopeWhereUniqueInput {
   id: String
   name: String
-}
-
-input SelfRegistrationFieldCreateManyWithoutApplicationInput {
-  connect: [SelfRegistrationFieldWhereUniqueInput!]
-  connectOrCreate: [SelfRegistrationFieldCreateOrConnectWithoutApplicationInput!]
-  create: [SelfRegistrationFieldCreateWithoutApplicationInput!]
-}
-
-input SelfRegistrationFieldCreateOrConnectWithoutApplicationInput {
-  create: SelfRegistrationFieldCreateWithoutApplicationInput!
-  where: SelfRegistrationFieldWhereUniqueInput!
-}
-
-input SelfRegistrationFieldCreateWithoutApplicationInput {
-  createdAt: DateTime
-  fieldName: String!
-  fieldType: String
-  id: String
-  isEnabled: Boolean
-  isRequired: Boolean
-  updatedAt: DateTime
-}
-
-input SelfRegistrationFieldListRelationFilter {
-  every: SelfRegistrationFieldWhereInput
-  none: SelfRegistrationFieldWhereInput
-  some: SelfRegistrationFieldWhereInput
-}
-
-input SelfRegistrationFieldWhereInput {
-  AND: [SelfRegistrationFieldWhereInput!]
-  Application: ApplicationWhereInput
-  applicationId: StringFilter
-  createdAt: DateTimeFilter
-  fieldName: StringFilter
-  fieldType: StringNullableFilter
-  id: StringFilter
-  isEnabled: BoolFilter
-  isRequired: BoolFilter
-  NOT: [SelfRegistrationFieldWhereInput!]
-  OR: [SelfRegistrationFieldWhereInput!]
-  updatedAt: DateTimeFilter
-}
-
-input SelfRegistrationFieldWhereUniqueInput {
-  id: String
-}
-
-"""Security options of SMTP server"""
-enum SMTPSecurity {
-  NONE
-  SSL
-  TLS
 }
 
 enum SortOrder {
@@ -2482,272 +1389,75 @@ enum SupportedProvider {
   GOOGLE
 }
 
-type Tenant {
-  Applications(after: ApplicationWhereUniqueInput, before: ApplicationWhereUniqueInput, first: Int, last: Int): [Application!]!
-  createdAt: DateTime!
-  domainName: String!
-  Groups(after: GroupWhereUniqueInput, before: GroupWhereUniqueInput, first: Int, last: Int): [Group!]!
-  id: String!
-  isAcitve: Boolean!
-  MailSetting: MailSetting
-  updatedAt: DateTime!
+enum SyncUserProfileAttributesAtEachLogin {
+  DISABLED
+  ENABLED
 }
 
-input TenantCreateOneWithoutApplicationsInput {
-  connect: TenantWhereUniqueInput
-  connectOrCreate: TenantCreateOrConnectWithoutApplicationsInput
-  create: TenantCreateWithoutApplicationsInput
-}
-
-input TenantCreateOneWithoutExternalIdentifierInput {
-  connect: TenantWhereUniqueInput
-  connectOrCreate: TenantCreateOrConnectWithoutExternalIdentifierInput
-  create: TenantCreateWithoutExternalIdentifierInput
-}
-
-input TenantCreateOneWithoutFailedLoginLogsInput {
-  connect: TenantWhereUniqueInput
-  connectOrCreate: TenantCreateOrConnectWithoutFailedLoginLogsInput
-  create: TenantCreateWithoutFailedLoginLogsInput
-}
-
-input TenantCreateOneWithoutGroupsInput {
-  connect: TenantWhereUniqueInput
-  connectOrCreate: TenantCreateOrConnectWithoutGroupsInput
-  create: TenantCreateWithoutGroupsInput
-}
-
-input TenantCreateOneWithoutUsersInput {
-  connect: TenantWhereUniqueInput
-  connectOrCreate: TenantCreateOrConnectWithoutUsersInput
-  create: TenantCreateWithoutUsersInput
-}
-
-input TenantCreateOrConnectWithoutApplicationsInput {
-  create: TenantCreateWithoutApplicationsInput!
-  where: TenantWhereUniqueInput!
-}
-
-input TenantCreateOrConnectWithoutExternalIdentifierInput {
-  create: TenantCreateWithoutExternalIdentifierInput!
-  where: TenantWhereUniqueInput!
-}
-
-input TenantCreateOrConnectWithoutFailedLoginLogsInput {
-  create: TenantCreateWithoutFailedLoginLogsInput!
-  where: TenantWhereUniqueInput!
-}
-
-input TenantCreateOrConnectWithoutGroupsInput {
-  create: TenantCreateWithoutGroupsInput!
-  where: TenantWhereUniqueInput!
-}
-
-input TenantCreateOrConnectWithoutUsersInput {
-  create: TenantCreateWithoutUsersInput!
-  where: TenantWhereUniqueInput!
-}
-
-input TenantCreateWithoutApplicationsInput {
-  createdAt: DateTime
-  domainName: String!
-  ExternalIdentifier: ExternalIdentifierCreateManyWithoutTenantInput
-  FailedLoginLogs: FailedLoginLogCreateManyWithoutTenantInput
-  Groups: GroupCreateManyWithoutTenantInput
-  id: String
-  isAcitve: Boolean
-  MailSetting: MailSettingCreateOneWithoutTenantInput
-  updatedAt: DateTime
-  Users: UserCreateManyWithoutTenantInput
-}
-
-input TenantCreateWithoutExternalIdentifierInput {
-  Applications: ApplicationCreateManyWithoutTenantInput
-  createdAt: DateTime
-  domainName: String!
-  FailedLoginLogs: FailedLoginLogCreateManyWithoutTenantInput
-  Groups: GroupCreateManyWithoutTenantInput
-  id: String
-  isAcitve: Boolean
-  MailSetting: MailSettingCreateOneWithoutTenantInput
-  updatedAt: DateTime
-  Users: UserCreateManyWithoutTenantInput
-}
-
-input TenantCreateWithoutFailedLoginLogsInput {
-  Applications: ApplicationCreateManyWithoutTenantInput
-  createdAt: DateTime
-  domainName: String!
-  ExternalIdentifier: ExternalIdentifierCreateManyWithoutTenantInput
-  Groups: GroupCreateManyWithoutTenantInput
-  id: String
-  isAcitve: Boolean
-  MailSetting: MailSettingCreateOneWithoutTenantInput
-  updatedAt: DateTime
-  Users: UserCreateManyWithoutTenantInput
-}
-
-input TenantCreateWithoutGroupsInput {
-  Applications: ApplicationCreateManyWithoutTenantInput
-  createdAt: DateTime
-  domainName: String!
-  ExternalIdentifier: ExternalIdentifierCreateManyWithoutTenantInput
-  FailedLoginLogs: FailedLoginLogCreateManyWithoutTenantInput
-  id: String
-  isAcitve: Boolean
-  MailSetting: MailSettingCreateOneWithoutTenantInput
-  updatedAt: DateTime
-  Users: UserCreateManyWithoutTenantInput
-}
-
-input TenantCreateWithoutUsersInput {
-  Applications: ApplicationCreateManyWithoutTenantInput
-  createdAt: DateTime
-  domainName: String!
-  ExternalIdentifier: ExternalIdentifierCreateManyWithoutTenantInput
-  FailedLoginLogs: FailedLoginLogCreateManyWithoutTenantInput
-  Groups: GroupCreateManyWithoutTenantInput
-  id: String
-  isAcitve: Boolean
-  MailSetting: MailSettingCreateOneWithoutTenantInput
-  updatedAt: DateTime
-}
-
-input TenantWhereInput {
-  AND: [TenantWhereInput!]
-  Applications: ApplicationListRelationFilter
-  createdAt: DateTimeFilter
-  domainName: StringFilter
-  ExternalIdentifier: ExternalIdentifierListRelationFilter
-  FailedLoginLogs: FailedLoginLogListRelationFilter
-  Groups: GroupListRelationFilter
-  id: StringFilter
-  isAcitve: BoolFilter
-  MailSetting: MailSettingWhereInput
-  NOT: [TenantWhereInput!]
-  OR: [TenantWhereInput!]
-  updatedAt: DateTimeFilter
-  Users: UserListRelationFilter
-}
-
-input TenantWhereUniqueInput {
-  domainName: String
-  id: String
-}
+type Tenant
 
 type User {
-  accountStatusType: AccountStatusType!
-  createdAt: DateTime!
-  Devices(after: UserDeviceWhereUniqueInput, before: UserDeviceWhereUniqueInput, first: Int, last: Int): [UserDevice!]!
-  email: String!
-  ExternalIdentifiers(after: ExternalIdentifierWhereUniqueInput, before: ExternalIdentifierWhereUniqueInput, first: Int, last: Int): [ExternalIdentifier!]!
   Groups(after: GroupWhereUniqueInput, before: GroupWhereUniqueInput, first: Int, last: Int): [Group!]!
-  id: String!
-  Profile: Profile
   Registrations(after: RegistrationWhereUniqueInput, before: RegistrationWhereUniqueInput, first: Int, last: Int): [Registration!]!
-  Tenant: Tenant!
+  createdAt: DateTime!
+  email: String!
+  id: String!
   updatedAt: DateTime!
   username: String!
 }
 
 input UserCreateInput {
-  AccessTokens: AccessTokenCreateManyWithoutUserInput
-  accountStatusType: AccountStatusType
-  AuthorizationCodes: AuthorizationCodeCreateManyWithoutUserInput
+  AuthorizationCodes: AuthorizationCodeCreateNestedManyWithoutUserInput
+  FailedLoginLogs: FailedLoginLogCreateNestedManyWithoutUserInput
+  Groups: GroupCreateNestedManyWithoutUsersInput
+  LoginLogs: LoginLogCreateNestedManyWithoutUserInput
+  RefreshTokens: RefreshTokenCreateNestedManyWithoutUserInput
+  Registrations: RegistrationCreateNestedManyWithoutUserInput
+  RememberMeTokens: RememberMeTokenCreateNestedManyWithoutUserInput
+  VerificationCodes: VerificationCodeCreateNestedManyWithoutUserInput
   createdAt: DateTime
-  Devices: UserDeviceCreateManyWithoutUserInput
   email: String!
-  ExternalIdentifiers: ExternalIdentifierCreateManyWithoutUserInput
-  FailedLoginLogs: FailedLoginLogCreateManyWithoutUserInput
-  FailedLogins: FailedLoginCreateManyWithoutUserInput
-  Groups: GroupCreateManyWithoutUsersInput
+  email_verified: Boolean
   id: String
-  LoginLog: LoginLogCreateManyWithoutUserInput
+  name: String!
   password: String!
-  PasswordResets: PasswordResetCreateManyWithoutUserInput
-  Profile: ProfileCreateOneWithoutUserInput
-  RefreshTokens: RefreshTokenCreateManyWithoutUserInput
-  Registrations: RegistrationCreateManyWithoutUserInput
-  RememberMe: RememberMeCreateManyWithoutUserInput
   salt: String!
-  Tenant: TenantCreateOneWithoutUsersInput!
   updatedAt: DateTime
-  username: String
-  usernameStatus: UsernameStatus
-  VerificationCodes: VerificationCodeCreateManyWithoutUserInput
+  username: String!
 }
 
-input UserCreateManyWithoutGroupsInput {
+input UserCreateNestedManyWithoutGroupsInput {
   connect: [UserWhereUniqueInput!]
   connectOrCreate: [UserCreateOrConnectWithoutGroupsInput!]
   create: [UserCreateWithoutGroupsInput!]
 }
 
-input UserCreateManyWithoutTenantInput {
-  connect: [UserWhereUniqueInput!]
-  connectOrCreate: [UserCreateOrConnectWithoutTenantInput!]
-  create: [UserCreateWithoutTenantInput!]
-}
-
-input UserCreateOneWithoutAccessTokensInput {
-  connect: UserWhereUniqueInput
-  connectOrCreate: UserCreateOrConnectWithoutAccessTokensInput
-  create: UserCreateWithoutAccessTokensInput
-}
-
-input UserCreateOneWithoutAuthorizationCodesInput {
+input UserCreateNestedOneWithoutAuthorizationCodesInput {
   connect: UserWhereUniqueInput
   connectOrCreate: UserCreateOrConnectWithoutAuthorizationCodesInput
   create: UserCreateWithoutAuthorizationCodesInput
 }
 
-input UserCreateOneWithoutExternalIdentifiersInput {
+input UserCreateNestedOneWithoutLoginLogsInput {
   connect: UserWhereUniqueInput
-  connectOrCreate: UserCreateOrConnectWithoutExternalIdentifiersInput
-  create: UserCreateWithoutExternalIdentifiersInput
+  connectOrCreate: UserCreateOrConnectWithoutLoginLogsInput
+  create: UserCreateWithoutLoginLogsInput
 }
 
-input UserCreateOneWithoutFailedLoginLogsInput {
-  connect: UserWhereUniqueInput
-  connectOrCreate: UserCreateOrConnectWithoutFailedLoginLogsInput
-  create: UserCreateWithoutFailedLoginLogsInput
-}
-
-input UserCreateOneWithoutLoginLogInput {
-  connect: UserWhereUniqueInput
-  connectOrCreate: UserCreateOrConnectWithoutLoginLogInput
-  create: UserCreateWithoutLoginLogInput
-}
-
-input UserCreateOneWithoutRefreshTokensInput {
+input UserCreateNestedOneWithoutRefreshTokensInput {
   connect: UserWhereUniqueInput
   connectOrCreate: UserCreateOrConnectWithoutRefreshTokensInput
   create: UserCreateWithoutRefreshTokensInput
 }
 
-input UserCreateOneWithoutRegistrationsInput {
+input UserCreateNestedOneWithoutRegistrationsInput {
   connect: UserWhereUniqueInput
   connectOrCreate: UserCreateOrConnectWithoutRegistrationsInput
   create: UserCreateWithoutRegistrationsInput
 }
 
-input UserCreateOrConnectWithoutAccessTokensInput {
-  create: UserCreateWithoutAccessTokensInput!
-  where: UserWhereUniqueInput!
-}
-
 input UserCreateOrConnectWithoutAuthorizationCodesInput {
   create: UserCreateWithoutAuthorizationCodesInput!
-  where: UserWhereUniqueInput!
-}
-
-input UserCreateOrConnectWithoutExternalIdentifiersInput {
-  create: UserCreateWithoutExternalIdentifiersInput!
-  where: UserWhereUniqueInput!
-}
-
-input UserCreateOrConnectWithoutFailedLoginLogsInput {
-  create: UserCreateWithoutFailedLoginLogsInput!
   where: UserWhereUniqueInput!
 }
 
@@ -2756,8 +1466,8 @@ input UserCreateOrConnectWithoutGroupsInput {
   where: UserWhereUniqueInput!
 }
 
-input UserCreateOrConnectWithoutLoginLogInput {
-  create: UserCreateWithoutLoginLogInput!
+input UserCreateOrConnectWithoutLoginLogsInput {
+  create: UserCreateWithoutLoginLogsInput!
   where: UserWhereUniqueInput!
 }
 
@@ -2771,345 +1481,104 @@ input UserCreateOrConnectWithoutRegistrationsInput {
   where: UserWhereUniqueInput!
 }
 
-input UserCreateOrConnectWithoutTenantInput {
-  create: UserCreateWithoutTenantInput!
-  where: UserWhereUniqueInput!
-}
-
-input UserCreateWithoutAccessTokensInput {
-  accountStatusType: AccountStatusType
-  AuthorizationCodes: AuthorizationCodeCreateManyWithoutUserInput
-  createdAt: DateTime
-  Devices: UserDeviceCreateManyWithoutUserInput
-  email: String!
-  ExternalIdentifiers: ExternalIdentifierCreateManyWithoutUserInput
-  FailedLoginLogs: FailedLoginLogCreateManyWithoutUserInput
-  FailedLogins: FailedLoginCreateManyWithoutUserInput
-  Groups: GroupCreateManyWithoutUsersInput
-  id: String
-  LoginLog: LoginLogCreateManyWithoutUserInput
-  password: String!
-  PasswordResets: PasswordResetCreateManyWithoutUserInput
-  Profile: ProfileCreateOneWithoutUserInput
-  RefreshTokens: RefreshTokenCreateManyWithoutUserInput
-  Registrations: RegistrationCreateManyWithoutUserInput
-  RememberMe: RememberMeCreateManyWithoutUserInput
-  salt: String!
-  Tenant: TenantCreateOneWithoutUsersInput!
-  updatedAt: DateTime
-  username: String
-  usernameStatus: UsernameStatus
-  VerificationCodes: VerificationCodeCreateManyWithoutUserInput
-}
-
 input UserCreateWithoutAuthorizationCodesInput {
-  AccessTokens: AccessTokenCreateManyWithoutUserInput
-  accountStatusType: AccountStatusType
+  FailedLoginLogs: FailedLoginLogCreateNestedManyWithoutUserInput
+  Groups: GroupCreateNestedManyWithoutUsersInput
+  LoginLogs: LoginLogCreateNestedManyWithoutUserInput
+  RefreshTokens: RefreshTokenCreateNestedManyWithoutUserInput
+  Registrations: RegistrationCreateNestedManyWithoutUserInput
+  RememberMeTokens: RememberMeTokenCreateNestedManyWithoutUserInput
+  VerificationCodes: VerificationCodeCreateNestedManyWithoutUserInput
   createdAt: DateTime
-  Devices: UserDeviceCreateManyWithoutUserInput
   email: String!
-  ExternalIdentifiers: ExternalIdentifierCreateManyWithoutUserInput
-  FailedLoginLogs: FailedLoginLogCreateManyWithoutUserInput
-  FailedLogins: FailedLoginCreateManyWithoutUserInput
-  Groups: GroupCreateManyWithoutUsersInput
+  email_verified: Boolean
   id: String
-  LoginLog: LoginLogCreateManyWithoutUserInput
+  name: String!
   password: String!
-  PasswordResets: PasswordResetCreateManyWithoutUserInput
-  Profile: ProfileCreateOneWithoutUserInput
-  RefreshTokens: RefreshTokenCreateManyWithoutUserInput
-  Registrations: RegistrationCreateManyWithoutUserInput
-  RememberMe: RememberMeCreateManyWithoutUserInput
   salt: String!
-  Tenant: TenantCreateOneWithoutUsersInput!
   updatedAt: DateTime
-  username: String
-  usernameStatus: UsernameStatus
-  VerificationCodes: VerificationCodeCreateManyWithoutUserInput
-}
-
-input UserCreateWithoutExternalIdentifiersInput {
-  AccessTokens: AccessTokenCreateManyWithoutUserInput
-  accountStatusType: AccountStatusType
-  AuthorizationCodes: AuthorizationCodeCreateManyWithoutUserInput
-  createdAt: DateTime
-  Devices: UserDeviceCreateManyWithoutUserInput
-  email: String!
-  FailedLoginLogs: FailedLoginLogCreateManyWithoutUserInput
-  FailedLogins: FailedLoginCreateManyWithoutUserInput
-  Groups: GroupCreateManyWithoutUsersInput
-  id: String
-  LoginLog: LoginLogCreateManyWithoutUserInput
-  password: String!
-  PasswordResets: PasswordResetCreateManyWithoutUserInput
-  Profile: ProfileCreateOneWithoutUserInput
-  RefreshTokens: RefreshTokenCreateManyWithoutUserInput
-  Registrations: RegistrationCreateManyWithoutUserInput
-  RememberMe: RememberMeCreateManyWithoutUserInput
-  salt: String!
-  Tenant: TenantCreateOneWithoutUsersInput!
-  updatedAt: DateTime
-  username: String
-  usernameStatus: UsernameStatus
-  VerificationCodes: VerificationCodeCreateManyWithoutUserInput
-}
-
-input UserCreateWithoutFailedLoginLogsInput {
-  AccessTokens: AccessTokenCreateManyWithoutUserInput
-  accountStatusType: AccountStatusType
-  AuthorizationCodes: AuthorizationCodeCreateManyWithoutUserInput
-  createdAt: DateTime
-  Devices: UserDeviceCreateManyWithoutUserInput
-  email: String!
-  ExternalIdentifiers: ExternalIdentifierCreateManyWithoutUserInput
-  FailedLogins: FailedLoginCreateManyWithoutUserInput
-  Groups: GroupCreateManyWithoutUsersInput
-  id: String
-  LoginLog: LoginLogCreateManyWithoutUserInput
-  password: String!
-  PasswordResets: PasswordResetCreateManyWithoutUserInput
-  Profile: ProfileCreateOneWithoutUserInput
-  RefreshTokens: RefreshTokenCreateManyWithoutUserInput
-  Registrations: RegistrationCreateManyWithoutUserInput
-  RememberMe: RememberMeCreateManyWithoutUserInput
-  salt: String!
-  Tenant: TenantCreateOneWithoutUsersInput!
-  updatedAt: DateTime
-  username: String
-  usernameStatus: UsernameStatus
-  VerificationCodes: VerificationCodeCreateManyWithoutUserInput
+  username: String!
 }
 
 input UserCreateWithoutGroupsInput {
-  AccessTokens: AccessTokenCreateManyWithoutUserInput
-  accountStatusType: AccountStatusType
-  AuthorizationCodes: AuthorizationCodeCreateManyWithoutUserInput
+  AuthorizationCodes: AuthorizationCodeCreateNestedManyWithoutUserInput
+  FailedLoginLogs: FailedLoginLogCreateNestedManyWithoutUserInput
+  LoginLogs: LoginLogCreateNestedManyWithoutUserInput
+  RefreshTokens: RefreshTokenCreateNestedManyWithoutUserInput
+  Registrations: RegistrationCreateNestedManyWithoutUserInput
+  RememberMeTokens: RememberMeTokenCreateNestedManyWithoutUserInput
+  VerificationCodes: VerificationCodeCreateNestedManyWithoutUserInput
   createdAt: DateTime
-  Devices: UserDeviceCreateManyWithoutUserInput
   email: String!
-  ExternalIdentifiers: ExternalIdentifierCreateManyWithoutUserInput
-  FailedLoginLogs: FailedLoginLogCreateManyWithoutUserInput
-  FailedLogins: FailedLoginCreateManyWithoutUserInput
+  email_verified: Boolean
   id: String
-  LoginLog: LoginLogCreateManyWithoutUserInput
+  name: String!
   password: String!
-  PasswordResets: PasswordResetCreateManyWithoutUserInput
-  Profile: ProfileCreateOneWithoutUserInput
-  RefreshTokens: RefreshTokenCreateManyWithoutUserInput
-  Registrations: RegistrationCreateManyWithoutUserInput
-  RememberMe: RememberMeCreateManyWithoutUserInput
   salt: String!
-  Tenant: TenantCreateOneWithoutUsersInput!
   updatedAt: DateTime
-  username: String
-  usernameStatus: UsernameStatus
-  VerificationCodes: VerificationCodeCreateManyWithoutUserInput
+  username: String!
 }
 
-input UserCreateWithoutLoginLogInput {
-  AccessTokens: AccessTokenCreateManyWithoutUserInput
-  accountStatusType: AccountStatusType
-  AuthorizationCodes: AuthorizationCodeCreateManyWithoutUserInput
+input UserCreateWithoutLoginLogsInput {
+  AuthorizationCodes: AuthorizationCodeCreateNestedManyWithoutUserInput
+  FailedLoginLogs: FailedLoginLogCreateNestedManyWithoutUserInput
+  Groups: GroupCreateNestedManyWithoutUsersInput
+  RefreshTokens: RefreshTokenCreateNestedManyWithoutUserInput
+  Registrations: RegistrationCreateNestedManyWithoutUserInput
+  RememberMeTokens: RememberMeTokenCreateNestedManyWithoutUserInput
+  VerificationCodes: VerificationCodeCreateNestedManyWithoutUserInput
   createdAt: DateTime
-  Devices: UserDeviceCreateManyWithoutUserInput
   email: String!
-  ExternalIdentifiers: ExternalIdentifierCreateManyWithoutUserInput
-  FailedLoginLogs: FailedLoginLogCreateManyWithoutUserInput
-  FailedLogins: FailedLoginCreateManyWithoutUserInput
-  Groups: GroupCreateManyWithoutUsersInput
+  email_verified: Boolean
   id: String
+  name: String!
   password: String!
-  PasswordResets: PasswordResetCreateManyWithoutUserInput
-  Profile: ProfileCreateOneWithoutUserInput
-  RefreshTokens: RefreshTokenCreateManyWithoutUserInput
-  Registrations: RegistrationCreateManyWithoutUserInput
-  RememberMe: RememberMeCreateManyWithoutUserInput
   salt: String!
-  Tenant: TenantCreateOneWithoutUsersInput!
   updatedAt: DateTime
-  username: String
-  usernameStatus: UsernameStatus
-  VerificationCodes: VerificationCodeCreateManyWithoutUserInput
+  username: String!
 }
 
 input UserCreateWithoutRefreshTokensInput {
-  AccessTokens: AccessTokenCreateManyWithoutUserInput
-  accountStatusType: AccountStatusType
-  AuthorizationCodes: AuthorizationCodeCreateManyWithoutUserInput
+  AuthorizationCodes: AuthorizationCodeCreateNestedManyWithoutUserInput
+  FailedLoginLogs: FailedLoginLogCreateNestedManyWithoutUserInput
+  Groups: GroupCreateNestedManyWithoutUsersInput
+  LoginLogs: LoginLogCreateNestedManyWithoutUserInput
+  Registrations: RegistrationCreateNestedManyWithoutUserInput
+  RememberMeTokens: RememberMeTokenCreateNestedManyWithoutUserInput
+  VerificationCodes: VerificationCodeCreateNestedManyWithoutUserInput
   createdAt: DateTime
-  Devices: UserDeviceCreateManyWithoutUserInput
   email: String!
-  ExternalIdentifiers: ExternalIdentifierCreateManyWithoutUserInput
-  FailedLoginLogs: FailedLoginLogCreateManyWithoutUserInput
-  FailedLogins: FailedLoginCreateManyWithoutUserInput
-  Groups: GroupCreateManyWithoutUsersInput
+  email_verified: Boolean
   id: String
-  LoginLog: LoginLogCreateManyWithoutUserInput
+  name: String!
   password: String!
-  PasswordResets: PasswordResetCreateManyWithoutUserInput
-  Profile: ProfileCreateOneWithoutUserInput
-  Registrations: RegistrationCreateManyWithoutUserInput
-  RememberMe: RememberMeCreateManyWithoutUserInput
   salt: String!
-  Tenant: TenantCreateOneWithoutUsersInput!
   updatedAt: DateTime
-  username: String
-  usernameStatus: UsernameStatus
-  VerificationCodes: VerificationCodeCreateManyWithoutUserInput
+  username: String!
 }
 
 input UserCreateWithoutRegistrationsInput {
-  AccessTokens: AccessTokenCreateManyWithoutUserInput
-  accountStatusType: AccountStatusType
-  AuthorizationCodes: AuthorizationCodeCreateManyWithoutUserInput
+  AuthorizationCodes: AuthorizationCodeCreateNestedManyWithoutUserInput
+  FailedLoginLogs: FailedLoginLogCreateNestedManyWithoutUserInput
+  Groups: GroupCreateNestedManyWithoutUsersInput
+  LoginLogs: LoginLogCreateNestedManyWithoutUserInput
+  RefreshTokens: RefreshTokenCreateNestedManyWithoutUserInput
+  RememberMeTokens: RememberMeTokenCreateNestedManyWithoutUserInput
+  VerificationCodes: VerificationCodeCreateNestedManyWithoutUserInput
   createdAt: DateTime
-  Devices: UserDeviceCreateManyWithoutUserInput
   email: String!
-  ExternalIdentifiers: ExternalIdentifierCreateManyWithoutUserInput
-  FailedLoginLogs: FailedLoginLogCreateManyWithoutUserInput
-  FailedLogins: FailedLoginCreateManyWithoutUserInput
-  Groups: GroupCreateManyWithoutUsersInput
+  email_verified: Boolean
   id: String
-  LoginLog: LoginLogCreateManyWithoutUserInput
+  name: String!
   password: String!
-  PasswordResets: PasswordResetCreateManyWithoutUserInput
-  Profile: ProfileCreateOneWithoutUserInput
-  RefreshTokens: RefreshTokenCreateManyWithoutUserInput
-  RememberMe: RememberMeCreateManyWithoutUserInput
-  salt: String!
-  Tenant: TenantCreateOneWithoutUsersInput!
-  updatedAt: DateTime
-  username: String
-  usernameStatus: UsernameStatus
-  VerificationCodes: VerificationCodeCreateManyWithoutUserInput
-}
-
-input UserCreateWithoutTenantInput {
-  AccessTokens: AccessTokenCreateManyWithoutUserInput
-  accountStatusType: AccountStatusType
-  AuthorizationCodes: AuthorizationCodeCreateManyWithoutUserInput
-  createdAt: DateTime
-  Devices: UserDeviceCreateManyWithoutUserInput
-  email: String!
-  ExternalIdentifiers: ExternalIdentifierCreateManyWithoutUserInput
-  FailedLoginLogs: FailedLoginLogCreateManyWithoutUserInput
-  FailedLogins: FailedLoginCreateManyWithoutUserInput
-  Groups: GroupCreateManyWithoutUsersInput
-  id: String
-  LoginLog: LoginLogCreateManyWithoutUserInput
-  password: String!
-  PasswordResets: PasswordResetCreateManyWithoutUserInput
-  Profile: ProfileCreateOneWithoutUserInput
-  RefreshTokens: RefreshTokenCreateManyWithoutUserInput
-  Registrations: RegistrationCreateManyWithoutUserInput
-  RememberMe: RememberMeCreateManyWithoutUserInput
   salt: String!
   updatedAt: DateTime
-  username: String
-  usernameStatus: UsernameStatus
-  VerificationCodes: VerificationCodeCreateManyWithoutUserInput
+  username: String!
 }
 
-type UserCustomAttribute {
-  name: String!
-  Profile: Profile!
-  value: String!
-}
+type UserCustomAttribute
 
-input UserCustomAttributeCreateManyWithoutProfileInput {
-  connect: [UserCustomAttributeWhereUniqueInput!]
-  connectOrCreate: [UserCustomAttributeCreateOrConnectWithoutProfileInput!]
-  create: [UserCustomAttributeCreateWithoutProfileInput!]
-}
-
-input UserCustomAttributeCreateOrConnectWithoutProfileInput {
-  create: UserCustomAttributeCreateWithoutProfileInput!
-  where: UserCustomAttributeWhereUniqueInput!
-}
-
-input UserCustomAttributeCreateWithoutProfileInput {
-  name: String!
-  value: String!
-}
-
-input UserCustomAttributeListRelationFilter {
-  every: UserCustomAttributeWhereInput
-  none: UserCustomAttributeWhereInput
-  some: UserCustomAttributeWhereInput
-}
-
-input UserCustomAttributeNameProfileIdCompoundUniqueInput {
-  name: String!
-  profileId: String!
-}
-
-input UserCustomAttributeWhereInput {
-  AND: [UserCustomAttributeWhereInput!]
-  name: StringFilter
-  NOT: [UserCustomAttributeWhereInput!]
-  OR: [UserCustomAttributeWhereInput!]
-  Profile: ProfileWhereInput
-  profileId: StringFilter
-  value: StringFilter
-}
-
-input UserCustomAttributeWhereUniqueInput {
-  name_profileId: UserCustomAttributeNameProfileIdCompoundUniqueInput
-}
-
-type UserDevice {
-  User: User!
-}
-
-input UserDeviceCreateManyWithoutUserInput {
-  connect: [UserDeviceWhereUniqueInput!]
-  connectOrCreate: [UserDeviceCreateOrConnectWithoutUserInput!]
-  create: [UserDeviceCreateWithoutUserInput!]
-}
-
-input UserDeviceCreateOrConnectWithoutUserInput {
-  create: UserDeviceCreateWithoutUserInput!
-  where: UserDeviceWhereUniqueInput!
-}
-
-input UserDeviceCreateWithoutUserInput {
-  createdAt: DateTime
-  deviceKey: String!
-  id: String
-  isRemembered: Boolean
-  lastIP: String!
-  lastSeen: DateTime!
-  name: String
-  SDK: String
-  updatedAt: DateTime
-}
-
-input UserDeviceListRelationFilter {
-  every: UserDeviceWhereInput
-  none: UserDeviceWhereInput
-  some: UserDeviceWhereInput
-}
-
-input UserDeviceWhereInput {
-  AND: [UserDeviceWhereInput!]
-  createdAt: DateTimeFilter
-  deviceKey: StringFilter
-  id: StringFilter
-  isRemembered: BoolFilter
-  lastIP: StringFilter
-  lastSeen: DateTimeFilter
-  name: StringNullableFilter
-  NOT: [UserDeviceWhereInput!]
-  OR: [UserDeviceWhereInput!]
-  SDK: StringNullableFilter
-  updatedAt: DateTimeFilter
-  User: UserWhereInput
-  userId: StringFilter
-}
-
-input UserDeviceWhereUniqueInput {
-  id: String
-}
+type UserDevice
 
 input UserListRelationFilter {
   every: UserWhereInput
@@ -3117,54 +1586,39 @@ input UserListRelationFilter {
   some: UserWhereInput
 }
 
-enum UsernameStatus {
-  ACTIVE
-  PENDING
-  REJECTED
-}
-
 input UserOrderByInput {
-  accountStatusType: SortOrder
   createdAt: SortOrder
   email: SortOrder
+  email_verified: SortOrder
   id: SortOrder
+  name: SortOrder
   password: SortOrder
   salt: SortOrder
-  tenantId: SortOrder
   updatedAt: SortOrder
   username: SortOrder
-  usernameStatus: SortOrder
 }
 
 input UserWhereInput {
-  AccessTokens: AccessTokenListRelationFilter
-  accountStatusType: EnumAccountStatusTypeFilter
   AND: [UserWhereInput!]
   AuthorizationCodes: AuthorizationCodeListRelationFilter
-  createdAt: DateTimeFilter
-  Devices: UserDeviceListRelationFilter
-  email: StringFilter
-  ExternalIdentifiers: ExternalIdentifierListRelationFilter
   FailedLoginLogs: FailedLoginLogListRelationFilter
-  FailedLogins: FailedLoginListRelationFilter
   Groups: GroupListRelationFilter
-  id: StringFilter
-  LoginLog: LoginLogListRelationFilter
+  LoginLogs: LoginLogListRelationFilter
   NOT: [UserWhereInput!]
   OR: [UserWhereInput!]
-  password: StringFilter
-  PasswordResets: PasswordResetListRelationFilter
-  Profile: ProfileWhereInput
   RefreshTokens: RefreshTokenListRelationFilter
   Registrations: RegistrationListRelationFilter
-  RememberMe: RememberMeListRelationFilter
+  RememberMeTokens: RememberMeTokenListRelationFilter
+  VerificationCodes: VerificationCodeListRelationFilter
+  createdAt: DateTimeFilter
+  email: StringFilter
+  email_verified: BoolFilter
+  id: StringFilter
+  name: StringFilter
+  password: StringFilter
   salt: StringFilter
-  Tenant: TenantWhereInput
-  tenantId: StringFilter
   updatedAt: DateTimeFilter
   username: StringFilter
-  usernameStatus: EnumUsernameStatusFilter
-  VerificationCodes: VerificationCodeListRelationFilter
 }
 
 input UserWhereUniqueInput {
@@ -3173,7 +1627,7 @@ input UserWhereUniqueInput {
   username: String
 }
 
-input VerificationCodeCreateManyWithoutUserInput {
+input VerificationCodeCreateNestedManyWithoutUserInput {
   connect: [VerificationCodeWhereUniqueInput!]
   connectOrCreate: [VerificationCodeCreateOrConnectWithoutUserInput!]
   create: [VerificationCodeCreateWithoutUserInput!]
@@ -3189,7 +1643,6 @@ input VerificationCodeCreateWithoutUserInput {
   createdAt: DateTime
   expirationDate: DateTime!
   id: String
-  updatedAt: DateTime
 }
 
 input VerificationCodeListRelationFilter {
@@ -3205,14 +1658,13 @@ input VerificationCodeUserIdCodeCompoundUniqueInput {
 
 input VerificationCodeWhereInput {
   AND: [VerificationCodeWhereInput!]
+  NOT: [VerificationCodeWhereInput!]
+  OR: [VerificationCodeWhereInput!]
+  User: UserWhereInput
   code: StringFilter
   createdAt: DateTimeFilter
   expirationDate: DateTimeFilter
   id: StringFilter
-  NOT: [VerificationCodeWhereInput!]
-  OR: [VerificationCodeWhereInput!]
-  updatedAt: DateTimeFilter
-  User: UserWhereInput
   userId: StringFilter
 }
 

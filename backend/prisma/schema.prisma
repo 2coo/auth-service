@@ -10,262 +10,189 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Tenant {
-  id                 String               @id @default(uuid())
-  domainName         String               @unique
-  isAcitve           Boolean              @default(true)
-  Applications       Application[]
-  Users              User[]
-  ExternalIdentifier ExternalIdentifier[]
-  Groups             Group[]
-  MailSetting        MailSetting?
-  createdAt          DateTime             @default(now())
-  updatedAt          DateTime             @updatedAt
-  FailedLoginLogs    FailedLoginLog[]
-}
-
-enum UsernameStatus {
-  ACTIVE
-  PENDING
-  REJECTED
-}
-
-model Registration {
-  id             String         @id @default(uuid())
-  User           User           @relation(fields: [userId], references: [id])
-  userId         String
-  Application    Application    @relation(fields: [applicationId], references: [id])
-  applicationId  String
-  username       String         @default(uuid())
-  usernameStatus UsernameStatus @default(PENDING)
-  Roles          Role[]
-  isVerified     Boolean        @default(false)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([userId, applicationId])
-  @@unique([username, applicationId])
-}
-
-model Application {
-  id                      String                    @id @default(uuid())
-  Tenant                  Tenant                    @relation(fields: [tenantId], references: [id])
-  tenantId                String
-  Registrations           Registration[]
-  ExternalIdentifier      ExternalIdentifier[]
-  Roles                   Role[]
-  name                    String
-  secret                  String                    @default(cuid())
-  selfRegistrationEnabled Boolean                   @default(false)
-  SelfRegistrationFields  SelfRegistrationField[]
-  IdentityProviders       IdProviderOnApplication[]
-  Grants                  Grant[]
-  RedirectUris            RedirectURI[]
-  JavascriptOrigins       JavascriptOrigin[]
-  EnabledScopes           Scope[]
-  AccessTokens            AccessToken[]
-  AuthorizationCodes      AuthorizationCode[]
-  RefreshTokens           RefreshToken[]
-  issuer                  String                    @default("http://tomujin.digital")
-  refreshTokenLifetime    Int                       @default(43200)
-  accessTokenLifetime     Int                       @default(5)
-  idTokenLifetime         Int                       @default(30)
-  logo                    String?
-  trustedApplication      Boolean                   @default(false)
-  createdAt               DateTime                  @default(now())
-  updatedAt               DateTime                  @updatedAt
-
-  LoginLog LoginLog[]
-  @@unique([tenantId, name])
-}
-
-model SelfRegistrationField {
-  id            String      @id @default(uuid())
-  Application   Application @relation(fields: [applicationId], references: [id])
-  fieldName     String
-  fieldType     String?
-  isRequired    Boolean     @default(false)
-  isEnabled     Boolean     @default(false)
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  applicationId String
-}
-
-model Scope {
+model User {
   id                 String              @id @default(uuid())
-  name               String              @unique
-  description        String?
-  isCustomScope      Boolean             @default(false)
-  ResourceServer     ResourceServer?     @relation(fields: [ResourceServerId], references: [id])
-  ResourceServerId   String?
-  Applications       Application[]
-  AccessTokens       AccessToken[]
+  name               String
+  nickname           String
+  username           String              @unique
+  picture            String
+  email              String              @unique
+  email_verified     Boolean             @default(false)
+  password           String
+  salt               String
+  Identities         Identity[]
+  Groups             Group[]
+  Registrations      Registration[]
+  RememberMeTokens   RememberMeToken[]
   AuthorizationCodes AuthorizationCode[]
   RefreshTokens      RefreshToken[]
+  VerificationCodes  VerificationCode[]
+  FailedLoginLogs    FailedLoginLog[]
+  LoginLogs          LoginLog[]
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
 }
 
-enum GrantType {
-  AUTHORIZATION_CODE
-  PASSWORD
-  REFRESH_TOKEN
-  CLIENT_CREDENTIALS
-  EXTENSION
-}
-
-model Grant {
-  id           String        @id @default(uuid())
-  grantType    GrantType     @unique
-  Applications Application[]
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-}
-
-model RedirectURI {
-  id            String      @id @default(uuid())
-  Application   Application @relation(fields: [ApplicationId], references: [id])
-  ApplicationId String
-  url           String
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-}
-
-model JavascriptOrigin {
-  id            String      @id @default(uuid())
-  Application   Application @relation(fields: [ApplicationId], references: [id])
-  ApplicationId String
-  uri           String
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-}
-
-model ResourceServer {
-  id         String   @id @default(uuid())
-  name       String
-  identifier String   @unique
-  Scopes     Scope[]
+model Identity {
+  id         String   @id @default(cuid())
+  provider   String
+  isSocial   Boolean
+  User       User     @relation(fields: [userId], references: [id])
+  userId     String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
 
-model AccessToken {
-  id             String      @id @default(uuid())
-  jti            String      @unique
-  expirationDate DateTime
-  Scopes         Scope[]
-  User           User?       @relation(fields: [userId], references: [id])
-  userId         String?
-  Application    Application @relation(fields: [ApplicationId], references: [id])
-  ApplicationId  String
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
-}
+model Registration {
+  id            String      @id @default(uuid())
+  User          User        @relation(fields: [userId], references: [id])
+  userId        String
+  Application   Application @relation(fields: [applicationId], references: [id])
+  applicationId String
+  Roles         Role[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 
-model RefreshToken {
-  id             String      @id @default(uuid())
-  refreshToken   String      @unique @default(uuid())
-  expirationDate DateTime
-  Scopes         Scope[]
-  User           User        @relation(fields: [userId], references: [id])
-  userId         String
-  Application    Application @relation(fields: [ApplicationId], references: [id])
-  ApplicationId  String
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
-}
-
-model AuthorizationCode {
-  id             String      @id @default(uuid())
-  code           String      @unique @default(cuid(16))
-  expirationDate DateTime
-  redirectURI    String
-  Scopes         Scope[]
-  User           User        @relation(fields: [userId], references: [id])
-  userId         String
-  Application    Application @relation(fields: [ApplicationId], references: [id])
-  ApplicationId  String
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
-}
-
-enum Gender {
-  FEMALE
-  MALE
-  OTHER
-}
-
-model Group {
-  id          String   @id @default(uuid())
-  Tenant      Tenant   @relation(fields: [tenantId], references: [id])
-  tenantId    String
-  name        String   @unique
-  description String?
-  Roles       Role[]
-  Users       User[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  @@unique([userId, applicationId])
 }
 
 model Role {
   id            String         @id @default(uuid())
-  Application   Application    @relation(fields: [applicationId], references: [id])
-  applicationId String
-  name          String
-  description   String?
-  isDefault     Boolean        @default(false)
-  isSuperRole   Boolean        @default(false)
-  Registrations Registration[]
+  name          String         @unique
+  description   String         @default("")
+  Permissions   Permission[]
   Groups        Group[]
-  permissions   Json?
-  ParentRoles   Role[]         @relation("RoleHierarchy", references: [id])
-  ChildRoles    Role[]         @relation("RoleHierarchy", references: [id])
+  Registrations Registration[]
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
-
-  @@unique([name, applicationId])
 }
 
-enum AccountStatusType {
-  UNCONFIRMED
-  CONFIRMED
-  ARCHIVED
-  COMPROMISED
-  UNKNOWN
-  RESET_REQUIRED
-  FORCE_CHANGE_PASSWORD
-  DISABLED
+model Permission {
+  id         String   @id @default(uuid())
+  action     String
+  subject    String
+  fields     Json?
+  conditions Json?
+  reason     String?
+  inverted   Boolean  @default(false)
+  Roles      Role[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
-model User {
-  id                  String               @id @default(uuid())
-  Tenant              Tenant               @relation(fields: [tenantId], references: [id])
-  tenantId            String
-  username            String               @unique @default(cuid())
-  usernameStatus      UsernameStatus       @default(PENDING)
-  email               String               @unique
-  password            String
-  salt                String
-  //
-  accountStatusType   AccountStatusType    @default(UNCONFIRMED)
-  ExternalIdentifiers ExternalIdentifier[]
-  //
-  Profile             Profile?
-  PasswordResets      PasswordReset[]
-  Devices             UserDevice[]
-  AccessTokens        AccessToken[]
-  AuthorizationCodes  AuthorizationCode[]
-  RefreshTokens       RefreshToken[]
-  Groups              Group[]
-  FailedLogins        FailedLogin[]
-  Registrations       Registration[]
-  RememberMe          RememberMe[]
-  FailedLoginLogs     FailedLoginLog[]
-  LoginLog            LoginLog[]
-  VerificationCodes   VerificationCode[]
-  createdAt           DateTime             @default(now())
-  updatedAt           DateTime             @updatedAt
+enum ApplicationType {
+  GENERIC
+  NATIVE
+  SINGLE_PAGE_APPLICATION
+  REGULAR_WEB_APPLICATION
+  MACHINE_TO_MACHINE
+}
+
+enum JWTSignatureAlgorithm {
+  RS256
+  HS256
+}
+
+model Application {
+  id                                String                @id @default(cuid())
+  name                              String
+  description                       String                @default("")
+  applicationType                   ApplicationType
+  secret                            String
+  applicationLogo                   String                @default("")
+  loginURI                          String?
+  callbackURLs                      String                @default("")
+  logoutURLs                        String                @default("")
+  webOrgins                         String                @default("")
+  corsOrigins                       String                @default("")
+  idTokenExpirationInSecond         Int                   @default(36000)
+  refreshTokenRotation              Boolean               @default(true)
+  refreshTokenReuseInterval         Int                   @default(0)
+  refreshTokenExpirationInSecond    Int                   @default(2592000)
+  refreshInactivityExpiration       Boolean               @default(true)
+  refreshInactivityLifetimeInSecond Int                   @default(1296000)
+  EnabledGrantTypes                 EnabledGrantType[]
+  jwtSignatureAlgorithm             JWTSignatureAlgorithm @default(RS256)
+  AuthorizationCode                 AuthorizationCode[]
+  GrantedScopes                     Scope[]
+  RefreshTokens                     RefreshToken[]
+  GoogleConnection                  GoogleConnection?     @relation(fields: [googleConnectionId], references: [id])
+  googleConnectionId                String?
+  FacebookConnection                FacebookConnection?   @relation(fields: [facebookConnectionId], references: [id])
+  facebookConnectionId              String?
+  Registrations                     Registration[]
+  LoginLogs                         LoginLog[]
+  createdAt                         DateTime              @default(now())
+  updatedAt                         DateTime              @updatedAt
+}
+
+enum GrantType {
+  IMPLICIT
+  AUTHORIZATION_CODE
+  REFRESH_TOKEN
+  CLIENT_CREDENTIALS
+  PASSWORD
+  MFA
+  PASSWORDLESS_OTP
+}
+
+model EnabledGrantType {
+  grantType     GrantType
+  Application   Application @relation(fields: [applicationId], references: [id])
+  applicationId String
+  createdAt     DateTime    @default(now())
+
+  @@id([applicationId, grantType])
+}
+
+model Scope {
+  id                String         @id @default(uuid())
+  name              String         @unique
+  description       String?
+  UsingApplications Application[]
+  API               API            @relation(fields: [apiId], references: [id])
+  apiId             String
+  RefreshTokens     RefreshToken[]
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+}
+
+enum ApiTypes {
+  SYSTEM_API
+  CUSTOM_API
+}
+
+model API {
+  id        String   @id @default(uuid())
+  name      String
+  apiTypes  ApiTypes
+  Scopes    Scope[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AuthorizationCode {
+  id             String      @id @default(uuid())
+  code           String      @unique @default(cuid())
+  expirationDate DateTime
+  redirectURI    String
+  User           User        @relation(fields: [userId], references: [id])
+  userId         String
+  Application    Application @relation(fields: [ApplicationId], references: [id])
+  ApplicationId  String
+  createdAt      DateTime    @default(now())
+}
+
+model RefreshToken {
+  id             String      @id @default(uuid())
+  refreshToken   String      @unique
+  expirationDate DateTime
+  Scopes         Scope[]
+  User           User        @relation(fields: [userId], references: [id])
+  userId         String
+  Application    Application @relation(fields: [ApplicationId], references: [id])
+  ApplicationId  String
+  createdAt      DateTime    @default(now())
 }
 
 model VerificationCode {
@@ -275,97 +202,11 @@ model VerificationCode {
   code           String
   expirationDate DateTime
   createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
 
   @@unique([userId, code])
 }
 
-enum SupportedProvider {
-  GOOGLE
-  FACEBOOK
-  APPLE
-}
-
-model IdProviderOnApplication {
-  id            String            @id @default(uuid())
-  isEnabled     Boolean           @default(true)
-  isOverwritten Boolean           @default(false)
-  providerType  SupportedProvider
-  data          Json?
-
-  IdentityProvider   IdentityProvider @relation(fields: [identityProviderId], references: [id])
-  Application        Application      @relation(fields: [applicationId], references: [id])
-  identityProviderId String
-  applicationId      String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-}
-
-model IdentityProvider {
-  id                  String                    @id @default(uuid())
-  isEnabled           Boolean                   @default(true)
-  providerType        SupportedProvider
-  data                Json
-  Applications        IdProviderOnApplication[]
-  ExternalIdentifiers ExternalIdentifier[]
-  createdAt           DateTime                  @default(now())
-  updatedAt           DateTime                  @updatedAt
-}
-
-enum ExternalIdentifierStatus {
-  UNCONFIRMED
-  CONFIRMED
-  DISABLED
-}
-
-model ExternalIdentifier {
-  id                  String                   @id @default(uuid())
-  Tenant              Tenant                   @relation(fields: [tenantId], references: [id])
-  tenantId            String
-  Application         Application              @relation(fields: [applicationId], references: [id])
-  applicationId       String
-  data                Json?
-  providerType        SupportedProvider
-  User                User                     @relation(fields: [userId], references: [id])
-  userId              String
-  status              ExternalIdentifierStatus @default(CONFIRMED)
-  isUserCreatedBefore Boolean
-  IdentityProvider    IdentityProvider         @relation(fields: [identityProviderId], references: [id])
-  identityProviderId  String
-  createdAt           DateTime                 @default(now())
-  updatedAt           DateTime                 @updatedAt
-}
-
-model Profile {
-  id                   String                @id @default(uuid())
-  User                 User                  @relation(fields: [userId], references: [id])
-  userId               String
-  firstName            String
-  lastName             String
-  middleName           String?
-  displayName          String
-  nickName             String?
-  birthdate            DateTime?
-  gender               Gender                @default(OTHER)
-  mobileNumber         String?
-  picture              String?
-  UserCustomAttributes UserCustomAttribute[]
-  createdAt            DateTime              @default(now())
-  updatedAt            DateTime              @updatedAt
-}
-
-model UserCustomAttribute {
-  name      String
-  value     String
-  Profile   Profile @relation(fields: [profileId], references: [id])
-  profileId String
-
-  @@id([name, profileId])
-}
-
-model RememberMe {
+model RememberMeToken {
   id        String   @id @default(uuid())
   token     String   @unique
   User      User     @relation(fields: [userId], references: [id])
@@ -373,71 +214,59 @@ model RememberMe {
   createdAt DateTime @default(now())
 }
 
-model PasswordReset {
-  id             String   @id @default(uuid())
-  User           User     @relation(fields: [userId], references: [id])
-  userId         String
-  token          String   @unique
-  returnTo       String
-  expirationDate DateTime
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+model Group {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  Users       User[]
+  Roles       Role[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
-enum SMTPSecurity {
-  NONE
-  TLS
-  SSL
+enum SyncUserProfileAttributesAtEachLogin {
+  ENABLED
+  DISABLED
 }
 
-model MailSetting {
-  id           String       @id @default(uuid())
-  Tenant       Tenant       @relation(fields: [tenantId], references: [id])
-  tenantId     String
-  host         String
-  port         String
-  username     String?
-  password     String?
-  secure       Boolean      @default(false)
-  SMTPSecurity SMTPSecurity @default(NONE)
-  ciphers      String?
-  from         String
-  name         String?
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+model GoogleConnection {
+  id                                   String                               @id @default(uuid())
+  clientID                             String                               @default("")
+  clientSecret                         String                               @default("")
+  allowedMobileClientIDs               String                               @default("")
+  scopes                               String
+  syncUserProfileAttributesAtEachLogin SyncUserProfileAttributesAtEachLogin @default(ENABLED)
+  Applications                         Application[]
+  createdAt                            DateTime                             @default(now())
+  updatedAt                            DateTime                             @updatedAt
 }
 
-model FailedLogin {
+model FacebookConnection {
+  id                                   String                               @id @default(uuid())
+  appId                                String                               @default("")
+  appSecret                            String                               @default("")
+  scopes                               String
+  syncUserProfileAttributesAtEachLogin SyncUserProfileAttributesAtEachLogin @default(ENABLED)
+  Applications                         Application[]
+  createdAt                            DateTime                             @default(now())
+  updatedAt                            DateTime                             @updatedAt
+}
+
+model EmailProvider {
   id        String   @id @default(uuid())
-  User      User     @relation(fields: [userId], references: [id])
+  from      String
+  host      String
+  port      Int
+  username  String
+  password  String
   createdAt DateTime @default(now())
-  userId    String
-}
-
-model UserDevice {
-  id           String   @id @default(uuid())
-  User         User     @relation(fields: [userId], references: [id])
-  userId       String
-  deviceKey    String
-  name         String?
-  lastIP       String
-  isRemembered Boolean  @default(false)
-  SDK          String?
-  lastSeen     DateTime
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-}
-
-model AuditLog {
-  id String @id @default(uuid())
+  updatedAt DateTime @updatedAt
 }
 
 model FailedLoginLog {
   id        String   @id @default(uuid())
   count     Int      @default(1)
-  Tenant    Tenant   @relation(fields: [tenantId], references: [id])
   User      User     @relation(fields: [userId], references: [id])
-  tenantId  String
   userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -447,8 +276,8 @@ model LoginLog {
   id            String      @id @default(uuid())
   ipAddress     String
   User          User        @relation(fields: [userId], references: [id])
-  Application   Application @relation(fields: [applicationId], references: [id])
   userId        String
+  Application   Application @relation(fields: [applicationId], references: [id])
   applicationId String
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
